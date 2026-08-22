@@ -4,9 +4,19 @@
   "description": "Lager- & Verpackungsassistent für heroal Systeme (Offline-fähig)",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#121417",
-  "theme_color": "#d9001b",
+  "background_color": "#0a1118",
+  "theme_color": "#003a79",
   "icons": [
+    {
+      "src": "icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",

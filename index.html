@@ -6,29 +6,50 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <meta name="theme-color" content="#d9001b" />
+    <meta name="theme-color" content="#003a79" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
     <meta name="apple-mobile-web-app-title" content="heroal Guide" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="icons/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="icons/apple-touch-icon.png"
+    />
     <link rel="manifest" href="manifest.json" />
+
     <title>heroal LagerGuide</title>
 
     <style>
       :root {
-        --heroal-red: #d9001b;
-        --heroal-dark-red: #a80015;
-        --bg-dark: #0f1115;
-        --card-bg: #181b20;
-        --card-inner: #22262d;
-        --border-color: #2e3440;
-        --text-main: #f3f5f8;
-        --text-sub: #9ca3af;
+        --heroal-blue: #003a79;
+        --heroal-dark-blue: #00244d;
+        --heroal-light-blue: #0284c7;
+        --bg-dark: #090e15;
+        --card-bg: #111823;
+        --card-inner: #1a2332;
+        --border-color: #243247;
+        --text-main: #f1f5f9;
+        --text-sub: #94a3b8;
         --highlight: #facc15;
         --accent-green: #10b981;
-        --accent-blue: #38bdf8;
         --accent-orange: #fb923c;
       }
 
@@ -60,7 +81,7 @@
       #login-overlay {
         position: fixed;
         inset: 0;
-        background: #0b0c0e;
+        background: #05080c;
         z-index: 1000;
         display: flex;
         flex-direction: column;
@@ -88,7 +109,7 @@
         color: #fff;
       }
       .login-logo span {
-        color: var(--heroal-red);
+        color: var(--heroal-light-blue);
       }
       .login-sub {
         font-size: 13px;
@@ -98,7 +119,7 @@
       }
       .login-input {
         width: 100%;
-        background: #0d1117;
+        background: #070b10;
         border: 2px solid var(--border-color);
         border-radius: 10px;
         color: #fff;
@@ -111,13 +132,13 @@
         transition: border-color 0.2s;
       }
       .login-input:focus {
-        border-color: var(--heroal-red);
+        border-color: var(--heroal-blue);
       }
       .login-btn {
         width: 100%;
-        background: var(--heroal-red);
+        background: var(--heroal-blue);
         color: #fff;
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
         padding: 14px;
         font-size: 16px;
@@ -126,7 +147,7 @@
         transition: background 0.2s;
       }
       .login-btn:active {
-        background: var(--heroal-dark-red);
+        background: var(--heroal-dark-blue);
         transform: scale(0.98);
       }
       .login-msg {
@@ -138,8 +159,8 @@
 
       /* Top App Header */
       header {
-        background-color: var(--heroal-red);
-        padding: 10px 14px;
+        background-color: var(--heroal-blue);
+        padding: 10px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -153,9 +174,12 @@
       }
       .brand-title {
         font-weight: 900;
-        font-size: 17px;
+        font-size: 18px;
         letter-spacing: 0.5px;
         line-height: 1.1;
+      }
+      .brand-title span {
+        color: #7dd3fc;
       }
       .brand-user {
         font-size: 11px;
@@ -167,8 +191,61 @@
       }
       .header-actions {
         display: flex;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
+      }
+
+      /* Desktop Header Navigation */
+      .desktop-nav {
+        display: none;
+        gap: 6px;
+        margin-right: 12px;
+      }
+      .desktop-nav-item {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .desktop-nav-item.active,
+      .desktop-nav-item:hover {
+        background: #fff;
+        color: var(--heroal-blue);
+        border-color: #fff;
+      }
+
+      /* Online Status Badge */
+      .net-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        user-select: none;
+      }
+      .net-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #22c55e;
+        box-shadow: 0 0 8px #22c55e;
+      }
+      .net-badge.offline {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: #ef4444;
+      }
+      .net-badge.offline .net-dot {
+        background-color: #ef4444;
+        box-shadow: 0 0 8px #ef4444;
       }
 
       .btn-hdr {
@@ -176,7 +253,7 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
         color: #fff;
         border-radius: 6px;
-        padding: 5px 8px;
+        padding: 5px 9px;
         font-size: 11px;
         font-weight: 700;
         cursor: pointer;
@@ -187,36 +264,50 @@
       .btn-hdr:active {
         background: rgba(0, 0, 0, 0.5);
       }
+      .btn-hdr:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
 
       /* Main Content Area */
       main {
         flex: 1;
         overflow-y: auto;
-        padding: 10px 10px 75px 10px;
+        padding: 12px 12px 75px 12px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         -webkit-overflow-scrolling: touch;
       }
 
       .tab-view {
         display: none;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
       }
       .tab-view.active {
         display: flex;
       }
 
-      /* Compact Search Zones */
+      .suche-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      /* Search Zones */
       .zone-container {
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 12px;
-        padding: 10px;
+        padding: 12px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
       .zone-header {
         display: flex;
@@ -224,20 +315,20 @@
         align-items: center;
       }
       .zone-label {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 800;
         color: #cbd5e1;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
       }
       .zone-badge {
         font-size: 10px;
         background: var(--card-inner);
         color: var(--text-sub);
-        padding: 2px 6px;
+        padding: 2px 7px;
         border-radius: 4px;
         border: 1px solid var(--border-color);
       }
@@ -248,17 +339,17 @@
       }
       .search-field {
         width: 100%;
-        background: #0a0c0f;
+        background: #080d14;
         border: 1.5px solid var(--border-color);
         border-radius: 8px;
         color: #fff;
-        padding: 9px 36px 9px 12px;
-        font-size: 17px;
+        padding: 10px 36px 10px 12px;
+        font-size: 16px;
         font-weight: 700;
         outline: none;
       }
       .search-field:focus {
-        border-color: var(--heroal-red);
+        border-color: var(--heroal-light-blue);
       }
       .search-field::placeholder {
         color: #475569;
@@ -284,7 +375,7 @@
         display: flex;
         gap: 6px;
         overflow-x: auto;
-        padding-bottom: 2px;
+        padding-bottom: 4px;
         scrollbar-width: none;
       }
       .category-scroll::-webkit-scrollbar {
@@ -293,7 +384,7 @@
       .cat-pill {
         font-size: 11px;
         font-weight: 700;
-        padding: 4px 10px;
+        padding: 5px 12px;
         border-radius: 20px;
         background: var(--card-inner);
         color: var(--text-sub);
@@ -303,47 +394,47 @@
         transition: all 0.15s;
       }
       .cat-pill.active {
-        background: var(--heroal-red);
+        background: var(--heroal-blue);
         color: #fff;
-        border-color: var(--heroal-red);
+        border-color: var(--heroal-light-blue);
       }
 
       /* Profile Display Card */
       .profile-card {
-        background: #111418;
+        background: #0c121b;
         border: 1px solid var(--border-color);
         border-radius: 10px;
-        padding: 10px;
+        padding: 12px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
       .profile-drawing-box {
         width: 100%;
         min-height: 180px;
-        max-height: 240px;
+        max-height: 260px;
         background: #ffffff;
         border-radius: 8px;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 8px;
+        padding: 10px;
         position: relative;
         cursor: zoom-in;
       }
       .profile-drawing-img {
         max-width: 100%;
-        max-height: 220px;
+        max-height: 240px;
         object-fit: contain;
       }
       .btn-zoom-hint {
         position: absolute;
         right: 8px;
         bottom: 8px;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.7);
         color: #fff;
-        font-size: 10px;
-        padding: 3px 6px;
+        font-size: 11px;
+        padding: 3px 8px;
         border-radius: 4px;
         pointer-events: none;
       }
@@ -355,14 +446,14 @@
         text-align: center;
       }
       .profile-title {
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 800;
         color: #fff;
         line-height: 1.2;
       }
       .profile-title-ru {
-        font-size: 12px;
-        color: var(--accent-blue);
+        font-size: 13px;
+        color: var(--heroal-light-blue);
         font-weight: 500;
       }
 
@@ -376,7 +467,7 @@
       .tag-chip {
         font-size: 11px;
         font-weight: 700;
-        padding: 3px 8px;
+        padding: 4px 9px;
         border-radius: 5px;
       }
       .tag-size {
@@ -385,25 +476,24 @@
         border: 1px solid #574618;
       }
       .tag-kat {
-        background: #12283a;
-        color: var(--accent-blue);
+        background: #0e2b48;
+        color: #7dd3fc;
         border: 1px solid #1e496d;
       }
 
       .profile-note {
-        font-size: 11px;
+        font-size: 12px;
         background: #231e13;
         color: #fde047;
-        padding: 6px 8px;
+        padding: 8px 10px;
         border-radius: 6px;
         border-left: 3px solid #eab308;
         text-align: left;
       }
 
-      /* Extra Thumbnails Gallery */
       .extra-tray {
         display: flex;
-        gap: 6px;
+        gap: 8px;
         overflow-x: auto;
         padding-top: 4px;
         scrollbar-width: none;
@@ -412,8 +502,8 @@
         display: none;
       }
       .extra-thumb {
-        width: 52px;
-        height: 52px;
+        width: 56px;
+        height: 56px;
         border-radius: 6px;
         background: #fff;
         object-fit: cover;
@@ -426,72 +516,72 @@
       .color-card {
         display: flex;
         align-items: center;
-        gap: 12px;
-        background: #111418;
+        gap: 14px;
+        background: #0c121b;
         border: 1px solid var(--border-color);
-        padding: 10px;
+        padding: 12px;
         border-radius: 10px;
       }
       .color-box {
-        width: 68px;
-        height: 68px;
+        width: 72px;
+        height: 72px;
         border-radius: 8px;
         border: 2px solid rgba(255, 255, 255, 0.25);
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 900;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
       }
       .color-details {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 3px;
         overflow: hidden;
       }
       .color-name {
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 800;
         color: #fff;
       }
       .color-sub {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text-sub);
       }
       .color-hex {
-        font-size: 11px;
+        font-size: 12px;
         font-family: monospace;
         color: var(--accent-orange);
         font-weight: 700;
       }
 
-      /* Accordion Cards (Ausschuss & Auskunft) */
+      /* Accordion Cards */
       .acc-item {
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 10px;
-        padding: 12px;
+        padding: 14px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
         cursor: pointer;
         transition: background 0.15s;
       }
-      .acc-item:active {
+      .acc-item:hover {
         background: var(--card-inner);
       }
       .acc-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
       }
       .acc-badge {
         font-size: 11px;
         font-weight: 800;
-        padding: 2px 7px;
+        padding: 3px 8px;
         border-radius: 44px;
         flex-shrink: 0;
       }
@@ -512,11 +602,11 @@
         flex: 1;
       }
       .acc-body {
-        font-size: 12px;
+        font-size: 13px;
         color: #cbd5e1;
-        line-height: 1.45;
+        line-height: 1.5;
         border-top: 1px solid var(--border-color);
-        padding-top: 8px;
+        padding-top: 10px;
         margin-top: 4px;
         display: none;
       }
@@ -524,23 +614,23 @@
         display: block;
       }
       .action-block {
-        background: #1c1917;
+        background: #19202a;
         border-left: 3px solid #f97316;
-        padding: 6px 8px;
+        padding: 8px 10px;
         border-radius: 4px;
-        margin-top: 6px;
-        font-size: 11px;
+        margin-top: 8px;
+        font-size: 12px;
         color: #fdba74;
       }
 
-      /* Bottom Sticky Navigation */
+      /* Mobile Navigation Bar */
       nav {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
         height: 58px;
-        background: #12151a;
+        background: #0a1118;
         border-top: 1px solid var(--border-color);
         display: flex;
         justify-content: space-around;
@@ -564,13 +654,32 @@
         cursor: pointer;
       }
       .nav-item.active {
-        color: var(--heroal-red);
+        color: #38bdf8;
       }
       .nav-icon {
         font-size: 19px;
       }
 
-      /* Fullscreen Modal Image Zoom */
+      /* Responsive Breakpoint */
+      @media (min-width: 1024px) {
+        nav {
+          display: none;
+        }
+        main {
+          padding: 20px 24px;
+        }
+        .desktop-nav {
+          display: flex;
+        }
+        .suche-grid {
+          display: grid;
+          grid-template-columns: 1.25fr 1fr;
+          align-items: start;
+          gap: 16px;
+        }
+      }
+
+      /* Zoom Modal */
       .zoom-modal {
         display: none;
         position: fixed;
@@ -608,7 +717,7 @@
         cursor: pointer;
       }
 
-      /* Settings & Settings Modal */
+      /* Settings Modal */
       .settings-modal {
         display: none;
         position: fixed;
@@ -624,11 +733,11 @@
       }
       .settings-card {
         width: 100%;
-        max-width: 380px;
+        max-width: 420px;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 14px;
-        padding: 18px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -647,13 +756,22 @@
       }
       .url-input {
         width: 100%;
-        background: #0a0c0f;
+        background: #080d14;
         border: 1px solid var(--border-color);
         border-radius: 6px;
         color: #fff;
-        padding: 6px 8px;
-        font-size: 11px;
+        padding: 8px 10px;
+        font-size: 12px;
         outline: none;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
     </style>
   </head>
@@ -688,7 +806,34 @@
           <span id="hdr-user-badge">👤 #----</span>
         </div>
       </div>
+
+      <!-- Desktop Navigation Links -->
+      <div class="desktop-nav">
+        <button
+          class="desktop-nav-item active"
+          onclick="navigate('view-suche', this)"
+        >
+          🔍 Suche
+        </button>
+        <button
+          class="desktop-nav-item"
+          onclick="navigate('view-ausschuss', this)"
+        >
+          ⚠️ Ausschuss
+        </button>
+        <button
+          class="desktop-nav-item"
+          onclick="navigate('view-auskunft', this)"
+        >
+          📋 Auskunft
+        </button>
+      </div>
+
       <div class="header-actions">
+        <div id="netStatus" class="net-badge" title="Status: Online">
+          <span class="net-dot"></span>
+          <span class="net-text" id="netStatus-txt">Online</span>
+        </div>
         <button class="btn-hdr" onclick="toggleLanguage()" id="btn-lang">
           RU
         </button>
@@ -703,124 +848,134 @@
     <main>
       <!-- TAB 1: SUCHE (Profile & Farben) -->
       <div id="view-suche" class="tab-view active">
-        <!-- Profile & Zubehör -->
-        <section class="zone-container">
-          <div class="zone-header">
-            <span class="zone-label" id="lbl-prof-head"
-              >📐 Profile / Zubehör</span
-            >
-            <span class="zone-badge" id="lbl-prof-badge">Art.-Nr.</span>
-          </div>
+        <div class="suche-grid">
+          <!-- Profile & Zubehör -->
+          <section class="zone-container">
+            <div class="zone-header">
+              <span class="zone-label" id="lbl-prof-head"
+                >📐 Profile / Zubehör</span
+              >
+              <span class="zone-badge" id="lbl-prof-badge">Art.-Nr.</span>
+            </div>
 
-          <div class="input-box">
-            <input
-              type="text"
-              id="find-prof"
-              class="search-field"
-              placeholder="z. B. 1371, 5044, 2042..."
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-            />
-            <button
-              class="btn-clear"
-              id="clr-prof"
-              onclick="clearInput('find-prof')"
-            >
-              ✕
-            </button>
-          </div>
-
-          <!-- Quick Category Filter -->
-          <div class="category-scroll" id="cat-pill-container">
-            <div class="cat-pill active" onclick="filterByCat('')" id="cat-all">
-              Alle
-            </div>
-            <div class="cat-pill" onclick="filterByCat('Blenden')">Blenden</div>
-            <div class="cat-pill" onclick="filterByCat('Führungen')">
-              Führungen
-            </div>
-            <div class="cat-pill" onclick="filterByCat('Endleisten')">
-              Endleisten
-            </div>
-            <div class="cat-pill" onclick="filterByCat('Einlagen')">
-              Einlagen
-            </div>
-            <div class="cat-pill" onclick="filterByCat('Kästen')">Kästen</div>
-            <div class="cat-pill" onclick="filterByCat('Stäbe')">Stäbe</div>
-            <div class="cat-pill" onclick="filterByCat('Dichtungen')">
-              Dichtungen
-            </div>
-            <div class="cat-pill" onclick="filterByCat('Zubehör')">Zubehör</div>
-          </div>
-
-          <!-- Profile Output Result -->
-          <div id="prof-card" class="profile-card" style="display: none">
-            <div
-              class="profile-drawing-box"
-              onclick="showZoom(document.getElementById('prof-img').src)"
-            >
-              <img
-                id="prof-img"
-                class="profile-drawing-img"
-                src=""
-                alt="Чертеж"
+            <div class="input-box">
+              <input
+                type="text"
+                id="find-prof"
+                class="search-field"
+                placeholder="z. B. 1371, 5044, 2042..."
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
               />
-              <span class="btn-zoom-hint">🔍 Zoom</span>
+              <button
+                class="btn-clear"
+                id="clr-prof"
+                onclick="clearInput('find-prof')"
+              >
+                ✕
+              </button>
             </div>
 
-            <div class="profile-info">
-              <div class="profile-title" id="prof-title-de">--</div>
-              <div class="profile-title-ru" id="prof-title-ru">--</div>
-              <div class="profile-tags-row">
-                <span class="tag-chip tag-size" id="prof-size">--</span>
-                <span class="tag-chip tag-kat" id="prof-kat">--</span>
+            <!-- Category Filter -->
+            <div class="category-scroll" id="cat-pill-container">
+              <div
+                class="cat-pill active"
+                onclick="filterByCat('')"
+                id="cat-all"
+              >
+                Alle
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Blenden')">
+                Blenden
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Führungen')">
+                Führungen
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Endleisten')">
+                Endleisten
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Einlagen')">
+                Einlagen
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Kästen')">Kästen</div>
+              <div class="cat-pill" onclick="filterByCat('Stäbe')">Stäbe</div>
+              <div class="cat-pill" onclick="filterByCat('Dichtungen')">
+                Dichtungen
+              </div>
+              <div class="cat-pill" onclick="filterByCat('Zubehör')">
+                Zubehör
               </div>
             </div>
 
-            <div
-              id="prof-note"
-              class="profile-note"
-              style="display: none"
-            ></div>
-            <div class="extra-tray" id="prof-extra-tray"></div>
-          </div>
-        </section>
+            <!-- Profile Output Result -->
+            <div id="prof-card" class="profile-card" style="display: none">
+              <div
+                class="profile-drawing-box"
+                onclick="showZoom(document.getElementById('prof-img').src)"
+              >
+                <img
+                  id="prof-img"
+                  class="profile-drawing-img"
+                  src=""
+                  alt="Zeichnung"
+                />
+                <span class="btn-zoom-hint">🔍 Zoom</span>
+              </div>
 
-        <!-- Farben Zone -->
-        <section class="zone-container">
-          <div class="zone-header">
-            <span class="zone-label" id="lbl-color-head">🎨 Farben</span>
-            <span class="zone-badge">RAL / SD</span>
-          </div>
+              <div class="profile-info">
+                <div class="profile-title" id="prof-title-de">--</div>
+                <div class="profile-title-ru" id="prof-title-ru">--</div>
+                <div class="profile-tags-row">
+                  <span class="tag-chip tag-size" id="prof-size">--</span>
+                  <span class="tag-chip tag-kat" id="prof-kat">--</span>
+                </div>
+              </div>
 
-          <div class="input-box">
-            <input
-              type="text"
-              id="find-color"
-              class="search-field"
-              placeholder="z. B. 7016, 9016, 0108..."
-              autocomplete="off"
-            />
-            <button
-              class="btn-clear"
-              id="clr-col"
-              onclick="clearInput('find-color')"
-            >
-              ✕
-            </button>
-          </div>
-
-          <!-- Color Output Result -->
-          <div id="col-card" class="color-card" style="display: none">
-            <div class="color-box" id="col-swatch">HEX</div>
-            <div class="color-details">
-              <div class="color-name" id="col-name">--</div>
-              <div class="color-sub" id="col-desc">--</div>
-              <div class="color-hex" id="col-hex">--</div>
+              <div
+                id="prof-note"
+                class="profile-note"
+                style="display: none"
+              ></div>
+              <div class="extra-tray" id="prof-extra-tray"></div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <!-- Farben Zone -->
+          <section class="zone-container">
+            <div class="zone-header">
+              <span class="zone-label" id="lbl-color-head">🎨 Farben</span>
+              <span class="zone-badge">RAL / SD</span>
+            </div>
+
+            <div class="input-box">
+              <input
+                type="text"
+                id="find-color"
+                class="search-field"
+                placeholder="z. B. 7016, 9016, 0108..."
+                autocomplete="off"
+              />
+              <button
+                class="btn-clear"
+                id="clr-col"
+                onclick="clearInput('find-color')"
+              >
+                ✕
+              </button>
+            </div>
+
+            <!-- Color Output Result -->
+            <div id="col-card" class="color-card" style="display: none">
+              <div class="color-box" id="col-swatch">HEX</div>
+              <div class="color-details">
+                <div class="color-name" id="col-name">--</div>
+                <div class="color-sub" id="col-desc">--</div>
+                <div class="color-hex" id="col-hex">--</div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
 
       <!-- TAB 2: AUSSCHUSS -->
@@ -858,8 +1013,8 @@
       </div>
     </main>
 
-    <!-- 4. BOTTOM NAVIGATION -->
-    <nav>
+    <!-- 4. BOTTOM NAVIGATION (Mobile Only) -->
+    <nav id="bottom-nav">
       <button class="nav-item active" onclick="navigate('view-suche', this)">
         <span class="nav-icon">🔍</span>
         <span id="nav-lbl-suche">Suche</span>
@@ -880,7 +1035,7 @@
       <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
     </div>
 
-    <!-- 6. SETTINGS MODAL (URLS CONFIG) -->
+    <!-- 6. SETTINGS MODAL -->
     <div id="settings-dialog" class="settings-modal">
       <div class="settings-card">
         <div class="settings-title">
@@ -944,10 +1099,33 @@
 
     <!-- 7. APPLICATION LOGIC -->
     <script>
-      // Register Service Worker for Offline PWA support
+      // Service Worker Registration
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js").catch(console.warn);
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(console.warn);
+        });
       }
+
+      // Online/Offline Tracker
+      function updateOnlineStatus() {
+        const badge = document.getElementById("netStatus");
+        const txt = document.getElementById("netStatus-txt");
+        const btnSync = document.getElementById("btn-sync");
+
+        if (navigator.onLine) {
+          badge.className = "net-badge";
+          txt.innerText = "Online";
+          btnSync.removeAttribute("disabled");
+          btnSync.title = "Daten synchronisieren";
+        } else {
+          badge.className = "net-badge offline";
+          txt.innerText = "Offline";
+          btnSync.setAttribute("disabled", "true");
+          btnSync.title = "Offline: Sync deaktiviert";
+        }
+      }
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
 
       // Default Seed Data
       const DEFAULT_DATA = {
@@ -1035,7 +1213,6 @@
         ],
       };
 
-      // State Variables
       let appLang = localStorage.getItem("heroal_lang") || "DE";
       let appDB =
         JSON.parse(localStorage.getItem("heroal_db_v2")) || DEFAULT_DATA;
@@ -1057,11 +1234,11 @@
       let appUrls =
         JSON.parse(localStorage.getItem("heroal_urls")) || DEFAULT_URLS;
 
-      // Initialization
       window.addEventListener("DOMContentLoaded", () => {
         checkAuth();
         applyLanguage();
         initSearchHandlers();
+        updateOnlineStatus();
       });
 
       // --- Authentication ---
@@ -1105,7 +1282,6 @@
           );
           checkAuth();
         } else {
-          // Allow fallback / demo login if local DB empty
           currentUser = {
             pack: val,
             first: "Mitarbeiter",
@@ -1132,7 +1308,6 @@
         appLang = appLang === "DE" ? "RU" : "DE";
         localStorage.setItem("heroal_lang", appLang);
         applyLanguage();
-        // Re-trigger searches to update titles
         document.getElementById("find-prof").dispatchEvent(new Event("input"));
         document.getElementById("find-color").dispatchEvent(new Event("input"));
         renderDefects();
@@ -1157,22 +1332,23 @@
           appLang === "DE" ? "Auskunft" : "Справка ERP";
       }
 
-      // --- Tab Navigation ---
+      // --- Unified Navigation ---
       function navigate(viewId, btn) {
         document
           .querySelectorAll(".tab-view")
           .forEach((v) => v.classList.remove("active"));
         document
-          .querySelectorAll(".nav-item")
+          .querySelectorAll(".nav-item, .desktop-nav-item")
           .forEach((b) => b.classList.remove("active"));
+
         document.getElementById(viewId).classList.add("active");
-        btn.classList.add("active");
+        if (btn) btn.classList.add("active");
 
         if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") renderAuskunft();
       }
 
-      // --- Search Engine ---
+      // --- Search Handlers ---
       function initSearchHandlers() {
         const pIn = document.getElementById("find-prof");
         const pClr = document.getElementById("clr-prof");
@@ -1187,7 +1363,6 @@
             return;
           }
 
-          // Search in keys or names
           let matchKey = Object.keys(appDB.base).find((key) => {
             const item = appDB.base[key];
             const catOk =
@@ -1195,7 +1370,7 @@
               (item.kat &&
                 item.kat.toLowerCase() === selectedCategory.toLowerCase());
             if (!catOk) return false;
-            if (!query) return true; // Show first in category
+            if (!query) return true;
             return (
               key.toLowerCase().includes(query) ||
               (item.de && item.de.toLowerCase().includes(query)) ||
@@ -1226,7 +1401,6 @@
               noteEl.style.display = "none";
             }
 
-            // Extra photos
             const tray = document.getElementById("prof-extra-tray");
             if (it.extra && it.extra.length > 0) {
               tray.innerHTML = it.extra
@@ -1413,14 +1587,20 @@
       }
 
       async function triggerSync() {
+        if (!navigator.onLine) {
+          alert(
+            appLang === "DE"
+              ? "⚠️ Offline: Keine Internetverbindung!"
+              : "⚠️ Офлайн: Нет подключения к интернету!",
+          );
+          return;
+        }
+
         const icon = document.getElementById("sync-icon");
         icon.style.display = "inline-block";
         icon.style.animation = "spin 1s infinite linear";
 
         try {
-          let updated = false;
-
-          // Sync Base
           if (appUrls.base) {
             const r = await fetch(appUrls.base);
             const rows = parseCSV(await r.text());
@@ -1440,35 +1620,69 @@
               }
             }
             appDB.base = newBase;
-            updated = true;
           }
 
-          // Sync Farben
           if (appUrls.farben) {
             const r = await fetch(appUrls.farben);
             const rows = parseCSV(await r.text());
             const newFarben = {};
             for (let i = 1; i < rows.length; i++) {
               const [code, name, desc, hex] = rows[i];
-              if (code)
+              if (code) {
                 newFarben[code.trim()] = {
                   name: name || "",
                   desc: desc || "",
                   hex: hex || "#ffffff",
                 };
+              }
             }
             appDB.farben = newFarben;
-            updated = true;
           }
 
-          // Sync Users
+          if (appUrls.defects) {
+            const r = await fetch(appUrls.defects);
+            const rows = parseCSV(await r.text());
+            const newDefects = [];
+            for (let i = 1; i < rows.length; i++) {
+              const [code, de, ru, act] = rows[i];
+              if (code) {
+                newDefects.push({
+                  code: code.trim(),
+                  de: de || "",
+                  ru: ru || "",
+                  act: act || "",
+                });
+              }
+            }
+            if (newDefects.length > 0) appDB.defects = newDefects;
+          }
+
+          if (appUrls.auskunft) {
+            const r = await fetch(appUrls.auskunft);
+            const rows = parseCSV(await r.text());
+            const newAuskunft = [];
+            for (let i = 1; i < rows.length; i++) {
+              const [kat, de_t, ru_t, de_txt, ru_txt] = rows[i];
+              if (kat || de_t) {
+                newAuskunft.push({
+                  kat: kat || "",
+                  de_t: de_t || "",
+                  ru_t: ru_t || "",
+                  de_txt: de_txt || "",
+                  ru_txt: ru_txt || "",
+                });
+              }
+            }
+            if (newAuskunft.length > 0) appDB.auskunft = newAuskunft;
+          }
+
           if (appUrls.users) {
             const r = await fetch(appUrls.users);
             const rows = parseCSV(await r.text());
             const newUsers = {};
             for (let i = 1; i < rows.length; i++) {
               const [pack, pnr, first, last, dept, stat] = rows[i];
-              if (pack)
+              if (pack) {
                 newUsers[pack.trim()] = {
                   nr: pnr || "",
                   first: first || "",
@@ -1476,24 +1690,23 @@
                   dept: dept || "",
                   status: stat || "Aktiv",
                 };
+              }
             }
             appDB.users = newUsers;
-            updated = true;
           }
 
-          // Save into phone persistence
           localStorage.setItem("heroal_db_v2", JSON.stringify(appDB));
           alert(
             appLang === "DE"
-              ? "✅ Synchronisation erfolgreich abgeschlossen!"
+              ? "✅ Synchronisation erfolgreich!"
               : "✅ Синхронизация успешно завершена!",
           );
         } catch (err) {
           console.error(err);
           alert(
             appLang === "DE"
-              ? "⚠️ Offline-Modus: Daten aus Speicher geladen."
-              : "⚠️ Нет сети: используются локально сохраненные данные.",
+              ? "⚠️ Fehler beim Synchronisieren."
+              : "⚠️ Ошибка синхронизации данных.",
           );
         } finally {
           icon.style.animation = "none";
@@ -1527,20 +1740,9 @@
         alert(
           appLang === "DE"
             ? "URLs gespeichert! Drücken Sie Sync."
-            : "Ссылки сохранены! Нажмите Sync для загрузки.",
+            : "Ссылки сохранены! Нажмите Sync.",
         );
       }
     </script>
-
-    <style>
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
   </body>
 </html>
