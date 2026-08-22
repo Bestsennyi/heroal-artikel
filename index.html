@@ -492,7 +492,7 @@
         font-size: 11px;
         font-weight: 800;
         padding: 2px 7px;
-        border-radius: 4px;
+        border-radius: 44px;
         flex-shrink: 0;
       }
       .badge-defect {
@@ -944,414 +944,592 @@
 
     <!-- 7. APPLICATION LOGIC -->
     <script>
-          // Register Service Worker for Offline PWA support
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(console.warn);
+      // Register Service Worker for Offline PWA support
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js").catch(console.warn);
+      }
+
+      // Default Seed Data
+      const DEFAULT_DATA = {
+        users: {
+          1234: {
+            nr: "2020",
+            first: "Max",
+            last: "Best",
+            dept: "Test",
+            status: "Aktiv",
+          },
+        },
+        base: {
+          1371: {
+            de: "Blende FMR HC oben",
+            ru: "Крышка FMR HC верхняя",
+            size: "137 мм",
+            kat: "Blenden",
+            img: "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
+            extra: [],
+            note: "",
+          },
+          5044: {
+            de: "F-HTF-IS DRP (Insektenschutz)",
+            ru: "Направляющая москитной сетки",
+            size: "22 x 93 mm (Rollladen + ISG)",
+            kat: "Führungen",
+            img: "",
+            extra: [],
+            note: "Achtung: Bürste 3108 montieren",
+          },
+        },
+        farben: {
+          7016: {
+            name: "Anthrazitgrau",
+            hex: "#383E42",
+            desc: "RAL 7016 Matt / Glanz",
+          },
+          9016: {
+            name: "Verkehrsweiß",
+            hex: "#F1F0EA",
+            desc: "RAL 9016 Standard",
+          },
+          8000: { name: "Grünbraun", hex: "#826C34", desc: "heroal Standard" },
+        },
+        defects: [
+          {
+            code: "F01",
+            de: "Kratzer auf Sichtfläche",
+            ru: "Царапина на видимой лицевой поверхности",
+            act: "ERP Maske 15 -> Schrott buchen, Nachbestellung veranlassen",
+          },
+          {
+            code: "F02",
+            de: "Beschichtungsfehler / Blasen",
+            ru: "Дефект порошковой покраски / пузыри",
+            act: "Teil markieren -> QS / Pulverabteilung rückmelden",
+          },
+          {
+            code: "F03",
+            de: "Falsche Profillänge / Maßabweichung",
+            ru: "Неправильная длина / отклонение размера",
+            act: "Sägebereich informieren -> Neues Profil zuschneiden",
+          },
+        ],
+        auskunft: [
+          {
+            kat: "ERP 15",
+            de_t: "Ausschuss richtig buchen",
+            ru_t: "Списание брака в ERP 15",
+            de_txt:
+              "1. ERP Maske 15 öffnen.\n2. Packnummer scannen.\n3. Ausschussgrund-Code eingeben.\n4. Anzahl bestätigen.",
+            ru_txt:
+              "1. Открыть меню ERP 15.\n2. Сканировать номер упаковки (Packnummer).\n3. Указать код причины дефекта.\n4. Подтвердить списание.",
+          },
+          {
+            kat: "Verpackung",
+            de_t: "Verpackungsrichtlinie Blenden",
+            ru_t: "Правила упаковки коробов и бленд",
+            de_txt:
+              "Schutzfolie prüfen, Eckschützer anbringen und mit Stretchfolie fixieren.",
+            ru_txt:
+              "Проверить защитную пленку, установить угловые протекторы и зафиксировать стрейч-пленкой.",
+          },
+        ],
+      };
+
+      // State Variables
+      let appLang = localStorage.getItem("heroal_lang") || "DE";
+      let appDB =
+        JSON.parse(localStorage.getItem("heroal_db_v2")) || DEFAULT_DATA;
+      let currentUser =
+        JSON.parse(localStorage.getItem("heroal_current_user")) || null;
+      let selectedCategory = "";
+
+      const DEFAULT_URLS = {
+        base: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
+        farben:
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=0&single=true&output=csv",
+        defects:
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=131063811&single=true&output=csv",
+        auskunft:
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
+        users:
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv",
+      };
+      let appUrls =
+        JSON.parse(localStorage.getItem("heroal_urls")) || DEFAULT_URLS;
+
+      // Initialization
+      window.addEventListener("DOMContentLoaded", () => {
+        checkAuth();
+        applyLanguage();
+        initSearchHandlers();
+      });
+
+      // --- Authentication ---
+      function checkAuth() {
+        const overlay = document.getElementById("login-overlay");
+        if (currentUser) {
+          overlay.style.display = "none";
+          document.getElementById("hdr-user-badge").innerText =
+            `👤 #${currentUser.pack} (${currentUser.first})`;
+        } else {
+          overlay.style.display = "flex";
+        }
+      }
+
+      function handleLogin() {
+        const val = document.getElementById("input-login-nr").value.trim();
+        const err = document.getElementById("login-error-msg");
+        err.innerText = "";
+
+        if (!val) {
+          err.innerText =
+            appLang === "DE"
+              ? "Bitte Packnummer eingeben!"
+              : "Пожалуйста, введите Packnummer!";
+          return;
+        }
+
+        const user = appDB.users[val];
+        if (user) {
+          if (user.status && user.status.toLowerCase() === "gesperrt") {
+            err.innerText =
+              appLang === "DE"
+                ? "Benutzer ist gesperrt!"
+                : "Доступ заблокирован администратором!";
+            return;
+          }
+          currentUser = { pack: val, ...user };
+          localStorage.setItem(
+            "heroal_current_user",
+            JSON.stringify(currentUser),
+          );
+          checkAuth();
+        } else {
+          // Allow fallback / demo login if local DB empty
+          currentUser = {
+            pack: val,
+            first: "Mitarbeiter",
+            last: "",
+            dept: "Lager",
+          };
+          localStorage.setItem(
+            "heroal_current_user",
+            JSON.stringify(currentUser),
+          );
+          checkAuth();
+        }
+      }
+
+      function handleLogout() {
+        currentUser = null;
+        localStorage.removeItem("heroal_current_user");
+        closeSettings();
+        checkAuth();
+      }
+
+      // --- Language Switcher ---
+      function toggleLanguage() {
+        appLang = appLang === "DE" ? "RU" : "DE";
+        localStorage.setItem("heroal_lang", appLang);
+        applyLanguage();
+        // Re-trigger searches to update titles
+        document.getElementById("find-prof").dispatchEvent(new Event("input"));
+        document.getElementById("find-color").dispatchEvent(new Event("input"));
+        renderDefects();
+        renderAuskunft();
+      }
+
+      function applyLanguage() {
+        document.getElementById("btn-lang").innerText = appLang;
+        document.getElementById("lbl-prof-head").innerText =
+          appLang === "DE"
+            ? "📐 Profile / Zubehör"
+            : "📐 Профили / Комплектующие";
+        document.getElementById("lbl-prof-badge").innerText =
+          appLang === "DE" ? "Art.-Nr." : "Артикул";
+        document.getElementById("lbl-color-head").innerText =
+          appLang === "DE" ? "🎨 Farben" : "🎨 Цвета RAL / SD";
+        document.getElementById("nav-lbl-suche").innerText =
+          appLang === "DE" ? "Suche" : "Поиск";
+        document.getElementById("nav-lbl-ausschuss").innerText =
+          appLang === "DE" ? "Ausschuss" : "Брак / Дефекты";
+        document.getElementById("nav-lbl-auskunft").innerText =
+          appLang === "DE" ? "Auskunft" : "Справка ERP";
+      }
+
+      // --- Tab Navigation ---
+      function navigate(viewId, btn) {
+        document
+          .querySelectorAll(".tab-view")
+          .forEach((v) => v.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(viewId).classList.add("active");
+        btn.classList.add("active");
+
+        if (viewId === "view-ausschuss") renderDefects();
+        if (viewId === "view-auskunft") renderAuskunft();
+      }
+
+      // --- Search Engine ---
+      function initSearchHandlers() {
+        const pIn = document.getElementById("find-prof");
+        const pClr = document.getElementById("clr-prof");
+        const pCard = document.getElementById("prof-card");
+
+        pIn.addEventListener("input", (e) => {
+          const query = e.target.value.trim().toLowerCase();
+          pClr.style.display = query ? "block" : "none";
+
+          if (!query && !selectedCategory) {
+            pCard.style.display = "none";
+            return;
           }
 
-          // Default Seed Data
-          const DEFAULT_DATA = {
-            users: {
-              "1234": { nr: "2020", first: "Max", last: "Best", dept: "Test", status: "Aktiv" }
-            },
-            base: {
-              "1371": { de: "Blende FMR HC oben", ru: "Крышка FMR HC верхняя", size: "137 мм", kat: "Blenden", img: "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL", extra: [], note: "" },
-              "5044": { de: "F-HTF-IS DRP (Insektenschutz)", ru: "Направляющая москитной сетки", size: "22 x 93 mm (Rollladen + ISG)", kat: "Führungen", img: "", extra: [], note: "Achtung: Bürste 3108 montieren" }
-            },
-            farben: {
-              "7016": { name: "Anthrazitgrau", hex: "#383E42", desc: "RAL 7016 Matt / Glanz" },
-              "9016": { name: "Verkehrsweiß", hex: "#F1F0EA", desc: "RAL 9016 Standard" },
-              "8000": { name: "Grünbraun", hex: "#826C34", desc: "heroal Standard" }
-            },
-            defects: [
-              { code: "F01", de: "Kratzer auf Sichtfläche", ru: "Царапина на видимой лицевой поверхности", act: "ERP Maske 15 -> Schrott buchen, Nachbestellung veranlassen" },
-              { code: "F02", de: "Beschichtungsfehler / Blasen", ru: "Дефект порошковой покраски / пузыри", act: "Teil markieren -> QS / Pulverabteilung rückmelden" },
-              { code: "F03", de: "Falsche Profillänge / Maßabweichung", ru: "Неправильная длина / отклонение размера", act: "Sägebereich informieren -> Neues Profil zuschneiden" }
-            ],
-            auskunft: [
-              { kat: "ERP 15", de_t: "Ausschuss richtig buchen", ru_t: "Списание брака в ERP 15", de_txt: "1. ERP Maske 15 öffnen.
-      2. Packnummer scannen.
-      3. Ausschussgrund-Code eingeben.
-      4. Anzahl bestätigen.", ru_txt: "1. Открыть меню ERP 15.
-      2. Сканировать номер упаковки (Packnummer).
-      3. Указать код причины дефекта.
-      4. Подтвердить списание." },
-              { kat: "Verpackung", de_t: "Verpackungsrichtlinie Blenden", ru_t: "Правила упаковки коробов и бленд", de_txt: "Schutzfolie prüfen, Eckschützer anbringen und mit Stretchfolie fixieren.", ru_txt: "Проверить защитную пленку, установить угловые протекторы и зафиксировать стрейч-пленкой." }
-            ]
-          };
-
-          // State Variables
-          let appLang = localStorage.getItem('heroal_lang') || 'DE';
-          let appDB = JSON.parse(localStorage.getItem('heroal_db_v2')) || DEFAULT_DATA;
-          let currentUser = JSON.parse(localStorage.getItem('heroal_current_user')) || null;
-          let selectedCategory = '';
-
-          const DEFAULT_URLS = {
-            base: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
-            farben: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=0&single=true&output=csv",
-            defects: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=131063811&single=true&output=csv",
-            auskunft: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
-            users: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv"
-          };
-          let appUrls = JSON.parse(localStorage.getItem('heroal_urls')) || DEFAULT_URLS;
-
-          // Initialization
-          window.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            applyLanguage();
-            initSearchHandlers();
+          // Search in keys or names
+          let matchKey = Object.keys(appDB.base).find((key) => {
+            const item = appDB.base[key];
+            const catOk =
+              !selectedCategory ||
+              (item.kat &&
+                item.kat.toLowerCase() === selectedCategory.toLowerCase());
+            if (!catOk) return false;
+            if (!query) return true; // Show first in category
+            return (
+              key.toLowerCase().includes(query) ||
+              (item.de && item.de.toLowerCase().includes(query)) ||
+              (item.ru && item.ru.toLowerCase().includes(query))
+            );
           });
 
-          // --- Authentication ---
-          function checkAuth() {
-            const overlay = document.getElementById('login-overlay');
-            if (currentUser) {
-              overlay.style.display = 'none';
-              document.getElementById('hdr-user-badge').innerText = `👤 #${currentUser.pack} (${currentUser.first})`;
+          if (matchKey) {
+            const it = appDB.base[matchKey];
+            document.getElementById("prof-title-de").innerText =
+              `${matchKey} — ${it.de || ""}`;
+            document.getElementById("prof-title-ru").innerText = it.ru || "";
+            document.getElementById("prof-size").innerText = it.size
+              ? `📏 ${it.size}`
+              : "Standard";
+            document.getElementById("prof-kat").innerText = it.kat || "heroal";
+
+            const imgEl = document.getElementById("prof-img");
+            imgEl.src =
+              it.img ||
+              'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888">Keine Zeichnung</text></svg>';
+
+            const noteEl = document.getElementById("prof-note");
+            if (it.note) {
+              noteEl.innerText = `💡 ${it.note}`;
+              noteEl.style.display = "block";
             } else {
-              overlay.style.display = 'flex';
-            }
-          }
-
-          function handleLogin() {
-            const val = document.getElementById('input-login-nr').value.trim();
-            const err = document.getElementById('login-error-msg');
-            err.innerText = "";
-
-            if (!val) {
-              err.innerText = appLang === 'DE' ? 'Bitte Packnummer eingeben!' : 'Пожалуйста, введите Packnummer!';
-              return;
+              noteEl.style.display = "none";
             }
 
-            const user = appDB.users[val];
-            if (user) {
-              if (user.status && user.status.toLowerCase() === 'gesperrt') {
-                err.innerText = appLang === 'DE' ? 'Benutzer ist gesperrt!' : 'Доступ заблокирован администратором!';
-                return;
-              }
-              currentUser = { pack: val, ...user };
-              localStorage.setItem('heroal_current_user', JSON.stringify(currentUser));
-              checkAuth();
+            // Extra photos
+            const tray = document.getElementById("prof-extra-tray");
+            if (it.extra && it.extra.length > 0) {
+              tray.innerHTML = it.extra
+                .map(
+                  (u) =>
+                    `<img class="extra-thumb" src="${u}" onclick="showZoom('${u}')">`,
+                )
+                .join("");
+              tray.style.display = "flex";
             } else {
-              // Allow fallback / demo login if local DB empty
-              currentUser = { pack: val, first: "Mitarbeiter", last: "", dept: "Lager" };
-              localStorage.setItem('heroal_current_user', JSON.stringify(currentUser));
-              checkAuth();
+              tray.innerHTML = "";
+              tray.style.display = "none";
             }
+
+            pCard.style.display = "flex";
+          } else {
+            pCard.style.display = "none";
+          }
+        });
+
+        const cIn = document.getElementById("find-color");
+        const cClr = document.getElementById("clr-col");
+        const cCard = document.getElementById("col-card");
+
+        cIn.addEventListener("input", (e) => {
+          const query = e.target.value.trim().toLowerCase();
+          cClr.style.display = query ? "block" : "none";
+
+          if (!query) {
+            cCard.style.display = "none";
+            return;
           }
 
-          function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('heroal_current_user');
-            closeSettings();
-            checkAuth();
+          const matchKey = Object.keys(appDB.farben).find(
+            (k) =>
+              k.toLowerCase().includes(query) ||
+              (appDB.farben[k].name &&
+                appDB.farben[k].name.toLowerCase().includes(query)),
+          );
+
+          if (matchKey) {
+            const col = appDB.farben[matchKey];
+            document.getElementById("col-name").innerText =
+              `${matchKey} — ${col.name}`;
+            document.getElementById("col-desc").innerText =
+              col.desc || "heroal Beschichtung";
+            document.getElementById("col-hex").innerText = col.hex;
+
+            const swatch = document.getElementById("col-swatch");
+            swatch.style.backgroundColor = col.hex;
+            const isBright = getLuminance(col.hex) > 130;
+            swatch.style.color = isBright ? "#000000" : "#ffffff";
+            swatch.innerText = matchKey;
+
+            cCard.style.display = "flex";
+          } else {
+            cCard.style.display = "none";
           }
+        });
+      }
 
-          // --- Language Switcher ---
-          function toggleLanguage() {
-            appLang = appLang === 'DE' ? 'RU' : 'DE';
-            localStorage.setItem('heroal_lang', appLang);
-            applyLanguage();
-            // Re-trigger searches to update titles
-            document.getElementById('find-prof').dispatchEvent(new Event('input'));
-            document.getElementById('find-color').dispatchEvent(new Event('input'));
-            renderDefects();
-            renderAuskunft();
-          }
+      function filterByCat(catName) {
+        selectedCategory = catName;
+        document.querySelectorAll(".cat-pill").forEach((p) => {
+          p.classList.toggle(
+            "active",
+            (catName === "" && p.id === "cat-all") || p.innerText === catName,
+          );
+        });
+        document.getElementById("find-prof").dispatchEvent(new Event("input"));
+      }
 
-          function applyLanguage() {
-            document.getElementById('btn-lang').innerText = appLang;
-            document.getElementById('lbl-prof-head').innerText = appLang === 'DE' ? '📐 Profile / Zubehör' : '📐 Профили / Комплектующие';
-            document.getElementById('lbl-prof-badge').innerText = appLang === 'DE' ? 'Art.-Nr.' : 'Артикул';
-            document.getElementById('lbl-color-head').innerText = appLang === 'DE' ? '🎨 Farben' : '🎨 Цвета RAL / SD';
-            document.getElementById('nav-lbl-suche').innerText = appLang === 'DE' ? 'Suche' : 'Поиск';
-            document.getElementById('nav-lbl-ausschuss').innerText = appLang === 'DE' ? 'Ausschuss' : 'Брак / Дефекты';
-            document.getElementById('nav-lbl-auskunft').innerText = appLang === 'DE' ? 'Auskunft' : 'Справка ERP';
-          }
+      function clearInput(id) {
+        const el = document.getElementById(id);
+        el.value = "";
+        el.dispatchEvent(new Event("input"));
+      }
 
-          // --- Tab Navigation ---
-          function navigate(viewId, btn) {
-            document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            btn.classList.add('active');
+      function getLuminance(hex) {
+        hex = (hex || "").replace("#", "");
+        if (hex.length === 3)
+          hex = hex
+            .split("")
+            .map((c) => c + c)
+            .join("");
+        const r = parseInt(hex.substr(0, 2), 16) || 0;
+        const g = parseInt(hex.substr(2, 2), 16) || 0;
+        const b = parseInt(hex.substr(4, 2), 16) || 0;
+        return (r * 299 + g * 587 + b * 114) / 1000;
+      }
 
-            if (viewId === 'view-ausschuss') renderDefects();
-            if (viewId === 'view-auskunft') renderAuskunft();
-          }
-
-          // --- Search Engine ---
-          function initSearchHandlers() {
-            const pIn = document.getElementById('find-prof');
-            const pClr = document.getElementById('clr-prof');
-            const pCard = document.getElementById('prof-card');
-
-            pIn.addEventListener('input', (e) => {
-              const query = e.target.value.trim().toLowerCase();
-              pClr.style.display = query ? 'block' : 'none';
-
-              if (!query && !selectedCategory) {
-                pCard.style.display = 'none';
-                return;
-              }
-
-              // Search in keys or names
-              let matchKey = Object.keys(appDB.base).find(key => {
-                const item = appDB.base[key];
-                const catOk = !selectedCategory || (item.kat && item.kat.toLowerCase() === selectedCategory.toLowerCase());
-                if (!catOk) return false;
-                if (!query) return true; // Show first in category
-                return key.toLowerCase().includes(query) || (item.de && item.de.toLowerCase().includes(query)) || (item.ru && item.ru.toLowerCase().includes(query));
-              });
-
-              if (matchKey) {
-                const it = appDB.base[matchKey];
-                document.getElementById('prof-title-de').innerText = `${matchKey} — ${it.de || ''}`;
-                document.getElementById('prof-title-ru').innerText = it.ru || '';
-                document.getElementById('prof-size').innerText = it.size ? `📏 ${it.size}` : 'Standard';
-                document.getElementById('prof-kat').innerText = it.kat || 'heroal';
-
-                const imgEl = document.getElementById('prof-img');
-                imgEl.src = it.img || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888">Keine Zeichnung</text></svg>';
-
-                const noteEl = document.getElementById('prof-note');
-                if (it.note) {
-                  noteEl.innerText = `💡 ${it.note}`;
-                  noteEl.style.display = 'block';
-                } else {
-                  noteEl.style.display = 'none';
-                }
-
-                // Extra photos
-                const tray = document.getElementById('prof-extra-tray');
-                if (it.extra && it.extra.length > 0) {
-                  tray.innerHTML = it.extra.map(u => `<img class="extra-thumb" src="${u}" onclick="showZoom('${u}')">`).join('');
-                  tray.style.display = 'flex';
-                } else {
-                  tray.innerHTML = '';
-                  tray.style.display = 'none';
-                }
-
-                pCard.style.display = 'flex';
-              } else {
-                pCard.style.display = 'none';
-              }
-            });
-
-            const cIn = document.getElementById('find-color');
-            const cClr = document.getElementById('clr-col');
-            const cCard = document.getElementById('col-card');
-
-            cIn.addEventListener('input', (e) => {
-              const query = e.target.value.trim().toLowerCase();
-              cClr.style.display = query ? 'block' : 'none';
-
-              if (!query) {
-                cCard.style.display = 'none';
-                return;
-              }
-
-              const matchKey = Object.keys(appDB.farben).find(k => k.toLowerCase().includes(query) || (appDB.farben[k].name && appDB.farben[k].name.toLowerCase().includes(query)));
-
-              if (matchKey) {
-                const col = appDB.farben[matchKey];
-                document.getElementById('col-name').innerText = `${matchKey} — ${col.name}`;
-                document.getElementById('col-desc').innerText = col.desc || 'heroal Beschichtung';
-                document.getElementById('col-hex').innerText = col.hex;
-
-                const swatch = document.getElementById('col-swatch');
-                swatch.style.backgroundColor = col.hex;
-                const isBright = getLuminance(col.hex) > 130;
-                swatch.style.color = isBright ? '#000000' : '#ffffff';
-                swatch.innerText = matchKey;
-
-                cCard.style.display = 'flex';
-              } else {
-                cCard.style.display = 'none';
-              }
-            });
-          }
-
-          function filterByCat(catName) {
-            selectedCategory = catName;
-            document.querySelectorAll('.cat-pill').forEach(p => {
-              p.classList.toggle('active', (catName === '' && p.id === 'cat-all') || p.innerText === catName);
-            });
-            document.getElementById('find-prof').dispatchEvent(new Event('input'));
-          }
-
-          function clearInput(id) {
-            const el = document.getElementById(id);
-            el.value = '';
-            el.dispatchEvent(new Event('input'));
-          }
-
-          function getLuminance(hex) {
-            hex = (hex || '').replace('#', '');
-            if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
-            const r = parseInt(hex.substr(0, 2), 16) || 0;
-            const g = parseInt(hex.substr(2, 2), 16) || 0;
-            const b = parseInt(hex.substr(4, 2), 16) || 0;
-            return (r * 299 + g * 587 + b * 114) / 1000;
-          }
-
-          // --- Defect & Auskunft Renderers ---
-          function renderDefects() {
-            const q = (document.getElementById('find-defect').value || '').toLowerCase();
-            const list = appDB.defects.filter(d => d.code.toLowerCase().includes(q) || d.de.toLowerCase().includes(q) || (d.ru && d.ru.toLowerCase().includes(q)));
-            const cont = document.getElementById('defect-container');
-            cont.innerHTML = list.map(d => `
+      // --- Defect & Auskunft Renderers ---
+      function renderDefects() {
+        const q = (
+          document.getElementById("find-defect").value || ""
+        ).toLowerCase();
+        const list = appDB.defects.filter(
+          (d) =>
+            d.code.toLowerCase().includes(q) ||
+            d.de.toLowerCase().includes(q) ||
+            (d.ru && d.ru.toLowerCase().includes(q)),
+        );
+        const cont = document.getElementById("defect-container");
+        cont.innerHTML = list
+          .map(
+            (d) => `
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-defect">${d.code}</span>
-                  <div class="acc-title">${appLang === 'DE' ? d.de : (d.ru || d.de)}</div>
+                  <div class="acc-title">${appLang === "DE" ? d.de : d.ru || d.de}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div><strong>${appLang === 'DE' ? 'Beschreibung:' : 'Описание:'}</strong> ${appLang === 'DE' ? d.de : (d.ru || d.de)}</div>
+                  <div><strong>${appLang === "DE" ? "Beschreibung:" : "Описание:"}</strong> ${appLang === "DE" ? d.de : d.ru || d.de}</div>
                   <div class="action-block">
-                    <strong>${appLang === 'DE' ? 'Vorgehen (Aktion):' : 'Инструкция по действию:'}</strong><br>${d.act}
+                    <strong>${appLang === "DE" ? "Vorgehen (Aktion):" : "Инструкция по действию:"}</strong><br>${d.act}
                   </div>
                 </div>
               </div>
-            `).join('');
-          }
+            `,
+          )
+          .join("");
+      }
 
-          function renderAuskunft() {
-            const q = (document.getElementById('find-guide').value || '').toLowerCase();
-            const list = appDB.auskunft.filter(a => (a.kat && a.kat.toLowerCase().includes(q)) || (a.de_t && a.de_t.toLowerCase().includes(q)) || (a.ru_t && a.ru_t.toLowerCase().includes(q)));
-            const cont = document.getElementById('auskunft-container');
-            cont.innerHTML = list.map(a => `
+      function renderAuskunft() {
+        const q = (
+          document.getElementById("find-guide").value || ""
+        ).toLowerCase();
+        const list = appDB.auskunft.filter(
+          (a) =>
+            (a.kat && a.kat.toLowerCase().includes(q)) ||
+            (a.de_t && a.de_t.toLowerCase().includes(q)) ||
+            (a.ru_t && a.ru_t.toLowerCase().includes(q)),
+        );
+        const cont = document.getElementById("auskunft-container");
+        cont.innerHTML = list
+          .map(
+            (a) => `
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-guide">${a.kat}</span>
-                  <div class="acc-title">${appLang === 'DE' ? a.de_t : (a.ru_t || a.de_t)}</div>
+                  <div class="acc-title">${appLang === "DE" ? a.de_t : a.ru_t || a.de_t}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div>${(appLang === 'DE' ? a.de_txt : (a.ru_txt || a.de_txt)).replace(/\n/g, '<br>')}</div>
+                  <div>${(appLang === "DE" ? a.de_txt : a.ru_txt || a.de_txt).replace(/\n/g, "<br>")}</div>
                 </div>
               </div>
-            `).join('');
-          }
+            `,
+          )
+          .join("");
+      }
 
-          // --- Zoom Dialog ---
-          function showZoom(url) {
-            if (!url) return;
-            document.getElementById('zoom-img-target').src = url;
-            document.getElementById('zoom-dialog').classList.add('active');
-          }
-          function closeZoom() {
-            document.getElementById('zoom-dialog').classList.remove('active');
-          }
+      // --- Zoom Dialog ---
+      function showZoom(url) {
+        if (!url) return;
+        document.getElementById("zoom-img-target").src = url;
+        document.getElementById("zoom-dialog").classList.add("active");
+      }
+      function closeZoom() {
+        document.getElementById("zoom-dialog").classList.remove("active");
+      }
 
-          // --- CSV Synchronizer Engine ---
-          function parseCSV(text) {
-            const lines = text.trim().split(/\r?\n/);
-            return lines.map(line => {
-              const row = [];
-              let inside = false;
-              let cell = '';
-              for (let i = 0; i < line.length; i++) {
-                const c = line[i];
-                if (c === '"') inside = !inside;
-                else if (c === ',' && !inside) { row.push(cell.trim()); cell = ''; }
-                else { cell += c; }
-              }
+      // --- CSV Synchronizer Engine ---
+      function parseCSV(text) {
+        const lines = text.trim().split(/\r?\n/);
+        return lines.map((line) => {
+          const row = [];
+          let inside = false;
+          let cell = "";
+          for (let i = 0; i < line.length; i++) {
+            const c = line[i];
+            if (c === '"') inside = !inside;
+            else if (c === "," && !inside) {
               row.push(cell.trim());
-              return row;
-            });
-          }
-
-          async function triggerSync() {
-            const icon = document.getElementById('sync-icon');
-            icon.style.display = 'inline-block';
-            icon.style.animation = 'spin 1s infinite linear';
-
-            try {
-              let updated = false;
-
-              // Sync Base
-              if (appUrls.base) {
-                const r = await fetch(appUrls.base);
-                const rows = parseCSV(await r.text());
-                const newBase = {};
-                for (let i = 1; i < rows.length; i++) {
-                  const [artnr, de, ru, size, kat, img, extra, note] = rows[i];
-                  if (artnr) {
-                    newBase[artnr.trim()] = {
-                      de: de || '', ru: ru || '', size: size || '',
-                      kat: kat || '', img: img || '',
-                      extra: extra ? extra.split(',').map(s=>s.trim()) : [],
-                      note: note || ''
-                    };
-                  }
-                }
-                appDB.base = newBase;
-                updated = true;
-              }
-
-              // Sync Farben
-              if (appUrls.farben) {
-                const r = await fetch(appUrls.farben);
-                const rows = parseCSV(await r.text());
-                const newFarben = {};
-                for (let i = 1; i < rows.length; i++) {
-                  const [code, name, desc, hex] = rows[i];
-                  if (code) newFarben[code.trim()] = { name: name || '', desc: desc || '', hex: hex || '#ffffff' };
-                }
-                appDB.farben = newFarben;
-                updated = true;
-              }
-
-              // Sync Users
-              if (appUrls.users) {
-                const r = await fetch(appUrls.users);
-                const rows = parseCSV(await r.text());
-                const newUsers = {};
-                for (let i = 1; i < rows.length; i++) {
-                  const [pack, pnr, first, last, dept, stat] = rows[i];
-                  if (pack) newUsers[pack.trim()] = { nr: pnr || '', first: first || '', last: last || '', dept: dept || '', status: stat || 'Aktiv' };
-                }
-                appDB.users = newUsers;
-                updated = true;
-              }
-
-              // Save into phone persistence
-              localStorage.setItem('heroal_db_v2', JSON.stringify(appDB));
-              alert(appLang === 'DE' ? '✅ Synchronisation erfolgreich abgeschlossen!' : '✅ Синхронизация успешно завершена!');
-            } catch (err) {
-              console.error(err);
-              alert(appLang === 'DE' ? '⚠️ Offline-Modus: Daten aus Speicher geladen.' : '⚠️ Нет сети: используются локально сохраненные данные.');
-            } finally {
-              icon.style.animation = 'none';
+              cell = "";
+            } else {
+              cell += c;
             }
           }
+          row.push(cell.trim());
+          return row;
+        });
+      }
 
-          // --- Settings Dialog ---
-          function openSettings() {
-            document.getElementById('cfg-url-base').value = appUrls.base || '';
-            document.getElementById('cfg-url-farben').value = appUrls.farben || '';
-            document.getElementById('cfg-url-defects').value = appUrls.defects || '';
-            document.getElementById('cfg-url-auskunft').value = appUrls.auskunft || '';
-            document.getElementById('cfg-url-users').value = appUrls.users || '';
-            document.getElementById('settings-dialog').classList.add('active');
+      async function triggerSync() {
+        const icon = document.getElementById("sync-icon");
+        icon.style.display = "inline-block";
+        icon.style.animation = "spin 1s infinite linear";
+
+        try {
+          let updated = false;
+
+          // Sync Base
+          if (appUrls.base) {
+            const r = await fetch(appUrls.base);
+            const rows = parseCSV(await r.text());
+            const newBase = {};
+            for (let i = 1; i < rows.length; i++) {
+              const [artnr, de, ru, size, kat, img, extra, note] = rows[i];
+              if (artnr) {
+                newBase[artnr.trim()] = {
+                  de: de || "",
+                  ru: ru || "",
+                  size: size || "",
+                  kat: kat || "",
+                  img: img || "",
+                  extra: extra ? extra.split(",").map((s) => s.trim()) : [],
+                  note: note || "",
+                };
+              }
+            }
+            appDB.base = newBase;
+            updated = true;
           }
-          function closeSettings() {
-            document.getElementById('settings-dialog').classList.remove('active');
+
+          // Sync Farben
+          if (appUrls.farben) {
+            const r = await fetch(appUrls.farben);
+            const rows = parseCSV(await r.text());
+            const newFarben = {};
+            for (let i = 1; i < rows.length; i++) {
+              const [code, name, desc, hex] = rows[i];
+              if (code)
+                newFarben[code.trim()] = {
+                  name: name || "",
+                  desc: desc || "",
+                  hex: hex || "#ffffff",
+                };
+            }
+            appDB.farben = newFarben;
+            updated = true;
           }
-          function saveSettings() {
-            appUrls = {
-              base: document.getElementById('cfg-url-base').value.trim(),
-              farben: document.getElementById('cfg-url-farben').value.trim(),
-              defects: document.getElementById('cfg-url-defects').value.trim(),
-              auskunft: document.getElementById('cfg-url-auskunft').value.trim(),
-              users: document.getElementById('cfg-url-users').value.trim()
-            };
-            localStorage.setItem('heroal_urls', JSON.stringify(appUrls));
-            closeSettings();
-            alert(appLang === 'DE' ? 'URLs gespeichert! Drücken Sie Sync.' : 'Ссылки сохранены! Нажмите Sync для загрузки.');
+
+          // Sync Users
+          if (appUrls.users) {
+            const r = await fetch(appUrls.users);
+            const rows = parseCSV(await r.text());
+            const newUsers = {};
+            for (let i = 1; i < rows.length; i++) {
+              const [pack, pnr, first, last, dept, stat] = rows[i];
+              if (pack)
+                newUsers[pack.trim()] = {
+                  nr: pnr || "",
+                  first: first || "",
+                  last: last || "",
+                  dept: dept || "",
+                  status: stat || "Aktiv",
+                };
+            }
+            appDB.users = newUsers;
+            updated = true;
           }
+
+          // Save into phone persistence
+          localStorage.setItem("heroal_db_v2", JSON.stringify(appDB));
+          alert(
+            appLang === "DE"
+              ? "✅ Synchronisation erfolgreich abgeschlossen!"
+              : "✅ Синхронизация успешно завершена!",
+          );
+        } catch (err) {
+          console.error(err);
+          alert(
+            appLang === "DE"
+              ? "⚠️ Offline-Modus: Daten aus Speicher geladen."
+              : "⚠️ Нет сети: используются локально сохраненные данные.",
+          );
+        } finally {
+          icon.style.animation = "none";
+        }
+      }
+
+      // --- Settings Dialog ---
+      function openSettings() {
+        document.getElementById("cfg-url-base").value = appUrls.base || "";
+        document.getElementById("cfg-url-farben").value = appUrls.farben || "";
+        document.getElementById("cfg-url-defects").value =
+          appUrls.defects || "";
+        document.getElementById("cfg-url-auskunft").value =
+          appUrls.auskunft || "";
+        document.getElementById("cfg-url-users").value = appUrls.users || "";
+        document.getElementById("settings-dialog").classList.add("active");
+      }
+      function closeSettings() {
+        document.getElementById("settings-dialog").classList.remove("active");
+      }
+      function saveSettings() {
+        appUrls = {
+          base: document.getElementById("cfg-url-base").value.trim(),
+          farben: document.getElementById("cfg-url-farben").value.trim(),
+          defects: document.getElementById("cfg-url-defects").value.trim(),
+          auskunft: document.getElementById("cfg-url-auskunft").value.trim(),
+          users: document.getElementById("cfg-url-users").value.trim(),
+        };
+        localStorage.setItem("heroal_urls", JSON.stringify(appUrls));
+        closeSettings();
+        alert(
+          appLang === "DE"
+            ? "URLs gespeichert! Drücken Sie Sync."
+            : "Ссылки сохранены! Нажмите Sync для загрузки.",
+        );
+      }
     </script>
 
     <style>
@@ -1366,4 +1544,3 @@
     </style>
   </body>
 </html>
-
