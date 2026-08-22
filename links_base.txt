@@ -1,0 +1,14 @@
+Base
+https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv
+
+Farben
+https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=0&single=true&output=csv
+
+Ausschuss
+https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=131063811&single=true&output=csv
+
+Auskunft
+https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv
+
+Users
+https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv

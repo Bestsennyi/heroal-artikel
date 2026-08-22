@@ -1,0 +1,1368 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#d9001b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="heroal Guide" />
+    <link rel="manifest" href="manifest.json" />
+    <title>heroal LagerGuide</title>
+
+    <style>
+      :root {
+        --heroal-red: #d9001b;
+        --heroal-dark-red: #a80015;
+        --bg-dark: #0f1115;
+        --card-bg: #181b20;
+        --card-inner: #22262d;
+        --border-color: #2e3440;
+        --text-main: #f3f5f8;
+        --text-sub: #9ca3af;
+        --highlight: #facc15;
+        --accent-green: #10b981;
+        --accent-blue: #38bdf8;
+        --accent-orange: #fb923c;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      input,
+      textarea {
+        user-select: text;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Login Screen Modal */
+      #login-overlay {
+        position: fixed;
+        inset: 0;
+        background: #0b0c0e;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+      }
+      .login-box {
+        width: 100%;
+        max-width: 360px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 28px 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      }
+      .login-logo {
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: #fff;
+      }
+      .login-logo span {
+        color: var(--heroal-red);
+      }
+      .login-sub {
+        font-size: 13px;
+        color: var(--text-sub);
+        text-align: center;
+        line-height: 1.4;
+      }
+      .login-input {
+        width: 100%;
+        background: #0d1117;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        color: #fff;
+        padding: 14px;
+        font-size: 22px;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: 4px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .login-input:focus {
+        border-color: var(--heroal-red);
+      }
+      .login-btn {
+        width: 100%;
+        background: var(--heroal-red);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .login-btn:active {
+        background: var(--heroal-dark-red);
+        transform: scale(0.98);
+      }
+      .login-msg {
+        font-size: 12px;
+        color: #f87171;
+        min-height: 16px;
+        text-align: center;
+      }
+
+      /* Top App Header */
+      header {
+        background-color: var(--heroal-red);
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        z-index: 10;
+        flex-shrink: 0;
+      }
+      .brand-wrap {
+        display: flex;
+        flex-direction: column;
+      }
+      .brand-title {
+        font-weight: 900;
+        font-size: 17px;
+        letter-spacing: 0.5px;
+        line-height: 1.1;
+      }
+      .brand-user {
+        font-size: 11px;
+        opacity: 0.9;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .header-actions {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .btn-hdr {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .btn-hdr:active {
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      /* Main Content Area */
+      main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 10px 75px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tab-view {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tab-view.active {
+        display: flex;
+      }
+
+      /* Compact Search Zones */
+      .zone-container {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .zone-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .zone-label {
+        font-size: 12px;
+        font-weight: 800;
+        color: #cbd5e1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .zone-badge {
+        font-size: 10px;
+        background: var(--card-inner);
+        color: var(--text-sub);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+      }
+
+      .input-box {
+        position: relative;
+        width: 100%;
+      }
+      .search-field {
+        width: 100%;
+        background: #0a0c0f;
+        border: 1.5px solid var(--border-color);
+        border-radius: 8px;
+        color: #fff;
+        padding: 9px 36px 9px 12px;
+        font-size: 17px;
+        font-weight: 700;
+        outline: none;
+      }
+      .search-field:focus {
+        border-color: var(--heroal-red);
+      }
+      .search-field::placeholder {
+        color: #475569;
+        font-weight: 400;
+        font-size: 13px;
+      }
+      .btn-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #64748b;
+        font-size: 16px;
+        padding: 4px;
+        cursor: pointer;
+        display: none;
+      }
+
+      /* Category Pill Filter */
+      .category-scroll {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+      }
+      .category-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .cat-pill {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: var(--card-inner);
+        color: var(--text-sub);
+        border: 1px solid var(--border-color);
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .cat-pill.active {
+        background: var(--heroal-red);
+        color: #fff;
+        border-color: var(--heroal-red);
+      }
+
+      /* Profile Display Card */
+      .profile-card {
+        background: #111418;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .profile-drawing-box {
+        width: 100%;
+        min-height: 180px;
+        max-height: 240px;
+        background: #ffffff;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+        position: relative;
+        cursor: zoom-in;
+      }
+      .profile-drawing-img {
+        max-width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+      }
+      .btn-zoom-hint {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        font-size: 10px;
+        padding: 3px 6px;
+        border-radius: 4px;
+        pointer-events: none;
+      }
+
+      .profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+      }
+      .profile-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.2;
+      }
+      .profile-title-ru {
+        font-size: 12px;
+        color: var(--accent-blue);
+        font-weight: 500;
+      }
+
+      .profile-tags-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 2px;
+      }
+      .tag-chip {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .tag-size {
+        background: #261f0c;
+        color: var(--highlight);
+        border: 1px solid #574618;
+      }
+      .tag-kat {
+        background: #12283a;
+        color: var(--accent-blue);
+        border: 1px solid #1e496d;
+      }
+
+      .profile-note {
+        font-size: 11px;
+        background: #231e13;
+        color: #fde047;
+        padding: 6px 8px;
+        border-radius: 6px;
+        border-left: 3px solid #eab308;
+        text-align: left;
+      }
+
+      /* Extra Thumbnails Gallery */
+      .extra-tray {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-top: 4px;
+        scrollbar-width: none;
+      }
+      .extra-tray::-webkit-scrollbar {
+        display: none;
+      }
+      .extra-thumb {
+        width: 52px;
+        height: 52px;
+        border-radius: 6px;
+        background: #fff;
+        object-fit: cover;
+        border: 1.5px solid var(--border-color);
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      /* Color Swatch Card */
+      .color-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #111418;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .color-box {
+        width: 68px;
+        height: 68px;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 900;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      .color-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow: hidden;
+      }
+      .color-name {
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .color-sub {
+        font-size: 12px;
+        color: var(--text-sub);
+      }
+      .color-hex {
+        font-size: 11px;
+        font-family: monospace;
+        color: var(--accent-orange);
+        font-weight: 700;
+      }
+
+      /* Accordion Cards (Ausschuss & Auskunft) */
+      .acc-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .acc-item:active {
+        background: var(--card-inner);
+      }
+      .acc-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .acc-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .badge-defect {
+        background: #3c1618;
+        color: #f87171;
+        border: 1px solid #7f1d1d;
+      }
+      .badge-guide {
+        background: #064e3b;
+        color: #34d399;
+        border: 1px solid #047857;
+      }
+      .acc-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #f1f5f9;
+        flex: 1;
+      }
+      .acc-body {
+        font-size: 12px;
+        color: #cbd5e1;
+        line-height: 1.45;
+        border-top: 1px solid var(--border-color);
+        padding-top: 8px;
+        margin-top: 4px;
+        display: none;
+      }
+      .acc-item.open .acc-body {
+        display: block;
+      }
+      .action-block {
+        background: #1c1917;
+        border-left: 3px solid #f97316;
+        padding: 6px 8px;
+        border-radius: 4px;
+        margin-top: 6px;
+        font-size: 11px;
+        color: #fdba74;
+      }
+
+      /* Bottom Sticky Navigation */
+      nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 58px;
+        background: #12151a;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 50;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        color: #64748b;
+        background: none;
+        border: none;
+        font-size: 10px;
+        font-weight: 700;
+        height: 100%;
+        cursor: pointer;
+      }
+      .nav-item.active {
+        color: var(--heroal-red);
+      }
+      .nav-icon {
+        font-size: 19px;
+      }
+
+      /* Fullscreen Modal Image Zoom */
+      .zoom-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.94);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        padding: 14px;
+      }
+      .zoom-modal.active {
+        display: flex;
+      }
+      .zoom-img-view {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+      }
+      .zoom-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* Settings & Settings Modal */
+      .settings-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1500;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+      }
+      .settings-modal.active {
+        display: flex;
+      }
+      .settings-card {
+        width: 100%;
+        max-width: 380px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .settings-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+      }
+      .url-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-sub);
+      }
+      .url-input {
+        width: 100%;
+        background: #0a0c0f;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: #fff;
+        padding: 6px 8px;
+        font-size: 11px;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. LOGIN SCREEN -->
+    <div id="login-overlay">
+      <div class="login-box">
+        <div class="login-logo">heroal <span>Guide</span></div>
+        <div class="login-sub" id="login-sub-txt">
+          Geben Sie Ihre <strong>Packnummer</strong> ein, um zu beginnen /
+          Введите ваш Packnummer:
+        </div>
+        <input
+          type="number"
+          id="input-login-nr"
+          class="login-input"
+          placeholder="1234"
+          inputmode="numeric"
+        />
+        <div class="login-msg" id="login-error-msg"></div>
+        <button class="login-btn" onclick="handleLogin()" id="btn-login-submit">
+          Anmelden / Войти
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. MAIN HEADER -->
+    <header>
+      <div class="brand-wrap">
+        <div class="brand-title">heroal <span>LagerGuide</span></div>
+        <div class="brand-user">
+          <span id="hdr-user-badge">👤 #----</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-hdr" onclick="toggleLanguage()" id="btn-lang">
+          RU
+        </button>
+        <button class="btn-hdr" onclick="triggerSync()" id="btn-sync">
+          <span id="sync-icon">🔄</span> <span id="btn-sync-txt">Sync</span>
+        </button>
+        <button class="btn-hdr" onclick="openSettings()">⚙️</button>
+      </div>
+    </header>
+
+    <!-- 3. TABS CONTAINER -->
+    <main>
+      <!-- TAB 1: SUCHE (Profile & Farben) -->
+      <div id="view-suche" class="tab-view active">
+        <!-- Profile & Zubehör -->
+        <section class="zone-container">
+          <div class="zone-header">
+            <span class="zone-label" id="lbl-prof-head"
+              >📐 Profile / Zubehör</span
+            >
+            <span class="zone-badge" id="lbl-prof-badge">Art.-Nr.</span>
+          </div>
+
+          <div class="input-box">
+            <input
+              type="text"
+              id="find-prof"
+              class="search-field"
+              placeholder="z. B. 1371, 5044, 2042..."
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+            />
+            <button
+              class="btn-clear"
+              id="clr-prof"
+              onclick="clearInput('find-prof')"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Quick Category Filter -->
+          <div class="category-scroll" id="cat-pill-container">
+            <div class="cat-pill active" onclick="filterByCat('')" id="cat-all">
+              Alle
+            </div>
+            <div class="cat-pill" onclick="filterByCat('Blenden')">Blenden</div>
+            <div class="cat-pill" onclick="filterByCat('Führungen')">
+              Führungen
+            </div>
+            <div class="cat-pill" onclick="filterByCat('Endleisten')">
+              Endleisten
+            </div>
+            <div class="cat-pill" onclick="filterByCat('Einlagen')">
+              Einlagen
+            </div>
+            <div class="cat-pill" onclick="filterByCat('Kästen')">Kästen</div>
+            <div class="cat-pill" onclick="filterByCat('Stäbe')">Stäbe</div>
+            <div class="cat-pill" onclick="filterByCat('Dichtungen')">
+              Dichtungen
+            </div>
+            <div class="cat-pill" onclick="filterByCat('Zubehör')">Zubehör</div>
+          </div>
+
+          <!-- Profile Output Result -->
+          <div id="prof-card" class="profile-card" style="display: none">
+            <div
+              class="profile-drawing-box"
+              onclick="showZoom(document.getElementById('prof-img').src)"
+            >
+              <img
+                id="prof-img"
+                class="profile-drawing-img"
+                src=""
+                alt="Чертеж"
+              />
+              <span class="btn-zoom-hint">🔍 Zoom</span>
+            </div>
+
+            <div class="profile-info">
+              <div class="profile-title" id="prof-title-de">--</div>
+              <div class="profile-title-ru" id="prof-title-ru">--</div>
+              <div class="profile-tags-row">
+                <span class="tag-chip tag-size" id="prof-size">--</span>
+                <span class="tag-chip tag-kat" id="prof-kat">--</span>
+              </div>
+            </div>
+
+            <div
+              id="prof-note"
+              class="profile-note"
+              style="display: none"
+            ></div>
+            <div class="extra-tray" id="prof-extra-tray"></div>
+          </div>
+        </section>
+
+        <!-- Farben Zone -->
+        <section class="zone-container">
+          <div class="zone-header">
+            <span class="zone-label" id="lbl-color-head">🎨 Farben</span>
+            <span class="zone-badge">RAL / SD</span>
+          </div>
+
+          <div class="input-box">
+            <input
+              type="text"
+              id="find-color"
+              class="search-field"
+              placeholder="z. B. 7016, 9016, 0108..."
+              autocomplete="off"
+            />
+            <button
+              class="btn-clear"
+              id="clr-col"
+              onclick="clearInput('find-color')"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Color Output Result -->
+          <div id="col-card" class="color-card" style="display: none">
+            <div class="color-box" id="col-swatch">HEX</div>
+            <div class="color-details">
+              <div class="color-name" id="col-name">--</div>
+              <div class="color-sub" id="col-desc">--</div>
+              <div class="color-hex" id="col-hex">--</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 2: AUSSCHUSS -->
+      <div id="view-ausschuss" class="tab-view">
+        <div class="input-box">
+          <input
+            type="text"
+            id="find-defect"
+            class="search-field"
+            placeholder="Fehler / Дефект suchen..."
+            oninput="renderDefects()"
+          />
+        </div>
+        <div
+          id="defect-container"
+          style="display: flex; flex-direction: column; gap: 8px"
+        ></div>
+      </div>
+
+      <!-- TAB 3: AUSKUNFT -->
+      <div id="view-auskunft" class="tab-view">
+        <div class="input-box">
+          <input
+            type="text"
+            id="find-guide"
+            class="search-field"
+            placeholder="Thema / Тема suchen..."
+            oninput="renderAuskunft()"
+          />
+        </div>
+        <div
+          id="auskunft-container"
+          style="display: flex; flex-direction: column; gap: 8px"
+        ></div>
+      </div>
+    </main>
+
+    <!-- 4. BOTTOM NAVIGATION -->
+    <nav>
+      <button class="nav-item active" onclick="navigate('view-suche', this)">
+        <span class="nav-icon">🔍</span>
+        <span id="nav-lbl-suche">Suche</span>
+      </button>
+      <button class="nav-item" onclick="navigate('view-ausschuss', this)">
+        <span class="nav-icon">⚠️</span>
+        <span id="nav-lbl-ausschuss">Ausschuss</span>
+      </button>
+      <button class="nav-item" onclick="navigate('view-auskunft', this)">
+        <span class="nav-icon">📋</span>
+        <span id="nav-lbl-auskunft">Auskunft</span>
+      </button>
+    </nav>
+
+    <!-- 5. ZOOM MODAL -->
+    <div id="zoom-dialog" class="zoom-modal" onclick="closeZoom()">
+      <button class="zoom-close" onclick="closeZoom()">✕</button>
+      <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
+    </div>
+
+    <!-- 6. SETTINGS MODAL (URLS CONFIG) -->
+    <div id="settings-dialog" class="settings-modal">
+      <div class="settings-card">
+        <div class="settings-title">
+          <span>⚙️ Einstellungen</span>
+          <button
+            style="
+              background: none;
+              border: none;
+              color: #fff;
+              font-size: 16px;
+              cursor: pointer;
+            "
+            onclick="closeSettings()"
+          >
+            ✕
+          </button>
+        </div>
+        <div style="font-size: 11px; color: var(--text-sub)">
+          Google Sheets CSV Publish URLs:
+        </div>
+
+        <div>
+          <div class="url-label">Base CSV URL</div>
+          <input type="text" id="cfg-url-base" class="url-input" />
+        </div>
+        <div>
+          <div class="url-label">Farben CSV URL</div>
+          <input type="text" id="cfg-url-farben" class="url-input" />
+        </div>
+        <div>
+          <div class="url-label">Ausschuss CSV URL</div>
+          <input type="text" id="cfg-url-defects" class="url-input" />
+        </div>
+        <div>
+          <div class="url-label">Auskunft CSV URL</div>
+          <input type="text" id="cfg-url-auskunft" class="url-input" />
+        </div>
+        <div>
+          <div class="url-label">Users CSV URL</div>
+          <input type="text" id="cfg-url-users" class="url-input" />
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 6px">
+          <button
+            class="login-btn"
+            style="flex: 1; padding: 10px; font-size: 13px"
+            onclick="saveSettings()"
+          >
+            Speichern
+          </button>
+          <button
+            class="btn-hdr"
+            style="padding: 10px; font-size: 12px; background: #ef4444"
+            onclick="handleLogout()"
+          >
+            Abmelden
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. APPLICATION LOGIC -->
+    <script>
+          // Register Service Worker for Offline PWA support
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(console.warn);
+          }
+
+          // Default Seed Data
+          const DEFAULT_DATA = {
+            users: {
+              "1234": { nr: "2020", first: "Max", last: "Best", dept: "Test", status: "Aktiv" }
+            },
+            base: {
+              "1371": { de: "Blende FMR HC oben", ru: "Крышка FMR HC верхняя", size: "137 мм", kat: "Blenden", img: "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL", extra: [], note: "" },
+              "5044": { de: "F-HTF-IS DRP (Insektenschutz)", ru: "Направляющая москитной сетки", size: "22 x 93 mm (Rollladen + ISG)", kat: "Führungen", img: "", extra: [], note: "Achtung: Bürste 3108 montieren" }
+            },
+            farben: {
+              "7016": { name: "Anthrazitgrau", hex: "#383E42", desc: "RAL 7016 Matt / Glanz" },
+              "9016": { name: "Verkehrsweiß", hex: "#F1F0EA", desc: "RAL 9016 Standard" },
+              "8000": { name: "Grünbraun", hex: "#826C34", desc: "heroal Standard" }
+            },
+            defects: [
+              { code: "F01", de: "Kratzer auf Sichtfläche", ru: "Царапина на видимой лицевой поверхности", act: "ERP Maske 15 -> Schrott buchen, Nachbestellung veranlassen" },
+              { code: "F02", de: "Beschichtungsfehler / Blasen", ru: "Дефект порошковой покраски / пузыри", act: "Teil markieren -> QS / Pulverabteilung rückmelden" },
+              { code: "F03", de: "Falsche Profillänge / Maßabweichung", ru: "Неправильная длина / отклонение размера", act: "Sägebereich informieren -> Neues Profil zuschneiden" }
+            ],
+            auskunft: [
+              { kat: "ERP 15", de_t: "Ausschuss richtig buchen", ru_t: "Списание брака в ERP 15", de_txt: "1. ERP Maske 15 öffnen.
+      2. Packnummer scannen.
+      3. Ausschussgrund-Code eingeben.
+      4. Anzahl bestätigen.", ru_txt: "1. Открыть меню ERP 15.
+      2. Сканировать номер упаковки (Packnummer).
+      3. Указать код причины дефекта.
+      4. Подтвердить списание." },
+              { kat: "Verpackung", de_t: "Verpackungsrichtlinie Blenden", ru_t: "Правила упаковки коробов и бленд", de_txt: "Schutzfolie prüfen, Eckschützer anbringen und mit Stretchfolie fixieren.", ru_txt: "Проверить защитную пленку, установить угловые протекторы и зафиксировать стрейч-пленкой." }
+            ]
+          };
+
+          // State Variables
+          let appLang = localStorage.getItem('heroal_lang') || 'DE';
+          let appDB = JSON.parse(localStorage.getItem('heroal_db_v2')) || DEFAULT_DATA;
+          let currentUser = JSON.parse(localStorage.getItem('heroal_current_user')) || null;
+          let selectedCategory = '';
+
+          const DEFAULT_URLS = {
+            base: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
+            farben: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=0&single=true&output=csv",
+            defects: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=131063811&single=true&output=csv",
+            auskunft: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
+            users: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv"
+          };
+          let appUrls = JSON.parse(localStorage.getItem('heroal_urls')) || DEFAULT_URLS;
+
+          // Initialization
+          window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            applyLanguage();
+            initSearchHandlers();
+          });
+
+          // --- Authentication ---
+          function checkAuth() {
+            const overlay = document.getElementById('login-overlay');
+            if (currentUser) {
+              overlay.style.display = 'none';
+              document.getElementById('hdr-user-badge').innerText = `👤 #${currentUser.pack} (${currentUser.first})`;
+            } else {
+              overlay.style.display = 'flex';
+            }
+          }
+
+          function handleLogin() {
+            const val = document.getElementById('input-login-nr').value.trim();
+            const err = document.getElementById('login-error-msg');
+            err.innerText = "";
+
+            if (!val) {
+              err.innerText = appLang === 'DE' ? 'Bitte Packnummer eingeben!' : 'Пожалуйста, введите Packnummer!';
+              return;
+            }
+
+            const user = appDB.users[val];
+            if (user) {
+              if (user.status && user.status.toLowerCase() === 'gesperrt') {
+                err.innerText = appLang === 'DE' ? 'Benutzer ist gesperrt!' : 'Доступ заблокирован администратором!';
+                return;
+              }
+              currentUser = { pack: val, ...user };
+              localStorage.setItem('heroal_current_user', JSON.stringify(currentUser));
+              checkAuth();
+            } else {
+              // Allow fallback / demo login if local DB empty
+              currentUser = { pack: val, first: "Mitarbeiter", last: "", dept: "Lager" };
+              localStorage.setItem('heroal_current_user', JSON.stringify(currentUser));
+              checkAuth();
+            }
+          }
+
+          function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('heroal_current_user');
+            closeSettings();
+            checkAuth();
+          }
+
+          // --- Language Switcher ---
+          function toggleLanguage() {
+            appLang = appLang === 'DE' ? 'RU' : 'DE';
+            localStorage.setItem('heroal_lang', appLang);
+            applyLanguage();
+            // Re-trigger searches to update titles
+            document.getElementById('find-prof').dispatchEvent(new Event('input'));
+            document.getElementById('find-color').dispatchEvent(new Event('input'));
+            renderDefects();
+            renderAuskunft();
+          }
+
+          function applyLanguage() {
+            document.getElementById('btn-lang').innerText = appLang;
+            document.getElementById('lbl-prof-head').innerText = appLang === 'DE' ? '📐 Profile / Zubehör' : '📐 Профили / Комплектующие';
+            document.getElementById('lbl-prof-badge').innerText = appLang === 'DE' ? 'Art.-Nr.' : 'Артикул';
+            document.getElementById('lbl-color-head').innerText = appLang === 'DE' ? '🎨 Farben' : '🎨 Цвета RAL / SD';
+            document.getElementById('nav-lbl-suche').innerText = appLang === 'DE' ? 'Suche' : 'Поиск';
+            document.getElementById('nav-lbl-ausschuss').innerText = appLang === 'DE' ? 'Ausschuss' : 'Брак / Дефекты';
+            document.getElementById('nav-lbl-auskunft').innerText = appLang === 'DE' ? 'Auskunft' : 'Справка ERP';
+          }
+
+          // --- Tab Navigation ---
+          function navigate(viewId, btn) {
+            document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            btn.classList.add('active');
+
+            if (viewId === 'view-ausschuss') renderDefects();
+            if (viewId === 'view-auskunft') renderAuskunft();
+          }
+
+          // --- Search Engine ---
+          function initSearchHandlers() {
+            const pIn = document.getElementById('find-prof');
+            const pClr = document.getElementById('clr-prof');
+            const pCard = document.getElementById('prof-card');
+
+            pIn.addEventListener('input', (e) => {
+              const query = e.target.value.trim().toLowerCase();
+              pClr.style.display = query ? 'block' : 'none';
+
+              if (!query && !selectedCategory) {
+                pCard.style.display = 'none';
+                return;
+              }
+
+              // Search in keys or names
+              let matchKey = Object.keys(appDB.base).find(key => {
+                const item = appDB.base[key];
+                const catOk = !selectedCategory || (item.kat && item.kat.toLowerCase() === selectedCategory.toLowerCase());
+                if (!catOk) return false;
+                if (!query) return true; // Show first in category
+                return key.toLowerCase().includes(query) || (item.de && item.de.toLowerCase().includes(query)) || (item.ru && item.ru.toLowerCase().includes(query));
+              });
+
+              if (matchKey) {
+                const it = appDB.base[matchKey];
+                document.getElementById('prof-title-de').innerText = `${matchKey} — ${it.de || ''}`;
+                document.getElementById('prof-title-ru').innerText = it.ru || '';
+                document.getElementById('prof-size').innerText = it.size ? `📏 ${it.size}` : 'Standard';
+                document.getElementById('prof-kat').innerText = it.kat || 'heroal';
+
+                const imgEl = document.getElementById('prof-img');
+                imgEl.src = it.img || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888">Keine Zeichnung</text></svg>';
+
+                const noteEl = document.getElementById('prof-note');
+                if (it.note) {
+                  noteEl.innerText = `💡 ${it.note}`;
+                  noteEl.style.display = 'block';
+                } else {
+                  noteEl.style.display = 'none';
+                }
+
+                // Extra photos
+                const tray = document.getElementById('prof-extra-tray');
+                if (it.extra && it.extra.length > 0) {
+                  tray.innerHTML = it.extra.map(u => `<img class="extra-thumb" src="${u}" onclick="showZoom('${u}')">`).join('');
+                  tray.style.display = 'flex';
+                } else {
+                  tray.innerHTML = '';
+                  tray.style.display = 'none';
+                }
+
+                pCard.style.display = 'flex';
+              } else {
+                pCard.style.display = 'none';
+              }
+            });
+
+            const cIn = document.getElementById('find-color');
+            const cClr = document.getElementById('clr-col');
+            const cCard = document.getElementById('col-card');
+
+            cIn.addEventListener('input', (e) => {
+              const query = e.target.value.trim().toLowerCase();
+              cClr.style.display = query ? 'block' : 'none';
+
+              if (!query) {
+                cCard.style.display = 'none';
+                return;
+              }
+
+              const matchKey = Object.keys(appDB.farben).find(k => k.toLowerCase().includes(query) || (appDB.farben[k].name && appDB.farben[k].name.toLowerCase().includes(query)));
+
+              if (matchKey) {
+                const col = appDB.farben[matchKey];
+                document.getElementById('col-name').innerText = `${matchKey} — ${col.name}`;
+                document.getElementById('col-desc').innerText = col.desc || 'heroal Beschichtung';
+                document.getElementById('col-hex').innerText = col.hex;
+
+                const swatch = document.getElementById('col-swatch');
+                swatch.style.backgroundColor = col.hex;
+                const isBright = getLuminance(col.hex) > 130;
+                swatch.style.color = isBright ? '#000000' : '#ffffff';
+                swatch.innerText = matchKey;
+
+                cCard.style.display = 'flex';
+              } else {
+                cCard.style.display = 'none';
+              }
+            });
+          }
+
+          function filterByCat(catName) {
+            selectedCategory = catName;
+            document.querySelectorAll('.cat-pill').forEach(p => {
+              p.classList.toggle('active', (catName === '' && p.id === 'cat-all') || p.innerText === catName);
+            });
+            document.getElementById('find-prof').dispatchEvent(new Event('input'));
+          }
+
+          function clearInput(id) {
+            const el = document.getElementById(id);
+            el.value = '';
+            el.dispatchEvent(new Event('input'));
+          }
+
+          function getLuminance(hex) {
+            hex = (hex || '').replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+            const r = parseInt(hex.substr(0, 2), 16) || 0;
+            const g = parseInt(hex.substr(2, 2), 16) || 0;
+            const b = parseInt(hex.substr(4, 2), 16) || 0;
+            return (r * 299 + g * 587 + b * 114) / 1000;
+          }
+
+          // --- Defect & Auskunft Renderers ---
+          function renderDefects() {
+            const q = (document.getElementById('find-defect').value || '').toLowerCase();
+            const list = appDB.defects.filter(d => d.code.toLowerCase().includes(q) || d.de.toLowerCase().includes(q) || (d.ru && d.ru.toLowerCase().includes(q)));
+            const cont = document.getElementById('defect-container');
+            cont.innerHTML = list.map(d => `
+              <div class="acc-item" onclick="this.classList.toggle('open')">
+                <div class="acc-top">
+                  <span class="acc-badge badge-defect">${d.code}</span>
+                  <div class="acc-title">${appLang === 'DE' ? d.de : (d.ru || d.de)}</div>
+                  <span>▾</span>
+                </div>
+                <div class="acc-body">
+                  <div><strong>${appLang === 'DE' ? 'Beschreibung:' : 'Описание:'}</strong> ${appLang === 'DE' ? d.de : (d.ru || d.de)}</div>
+                  <div class="action-block">
+                    <strong>${appLang === 'DE' ? 'Vorgehen (Aktion):' : 'Инструкция по действию:'}</strong><br>${d.act}
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          function renderAuskunft() {
+            const q = (document.getElementById('find-guide').value || '').toLowerCase();
+            const list = appDB.auskunft.filter(a => (a.kat && a.kat.toLowerCase().includes(q)) || (a.de_t && a.de_t.toLowerCase().includes(q)) || (a.ru_t && a.ru_t.toLowerCase().includes(q)));
+            const cont = document.getElementById('auskunft-container');
+            cont.innerHTML = list.map(a => `
+              <div class="acc-item" onclick="this.classList.toggle('open')">
+                <div class="acc-top">
+                  <span class="acc-badge badge-guide">${a.kat}</span>
+                  <div class="acc-title">${appLang === 'DE' ? a.de_t : (a.ru_t || a.de_t)}</div>
+                  <span>▾</span>
+                </div>
+                <div class="acc-body">
+                  <div>${(appLang === 'DE' ? a.de_txt : (a.ru_txt || a.de_txt)).replace(/\n/g, '<br>')}</div>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          // --- Zoom Dialog ---
+          function showZoom(url) {
+            if (!url) return;
+            document.getElementById('zoom-img-target').src = url;
+            document.getElementById('zoom-dialog').classList.add('active');
+          }
+          function closeZoom() {
+            document.getElementById('zoom-dialog').classList.remove('active');
+          }
+
+          // --- CSV Synchronizer Engine ---
+          function parseCSV(text) {
+            const lines = text.trim().split(/\r?\n/);
+            return lines.map(line => {
+              const row = [];
+              let inside = false;
+              let cell = '';
+              for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c === '"') inside = !inside;
+                else if (c === ',' && !inside) { row.push(cell.trim()); cell = ''; }
+                else { cell += c; }
+              }
+              row.push(cell.trim());
+              return row;
+            });
+          }
+
+          async function triggerSync() {
+            const icon = document.getElementById('sync-icon');
+            icon.style.display = 'inline-block';
+            icon.style.animation = 'spin 1s infinite linear';
+
+            try {
+              let updated = false;
+
+              // Sync Base
+              if (appUrls.base) {
+                const r = await fetch(appUrls.base);
+                const rows = parseCSV(await r.text());
+                const newBase = {};
+                for (let i = 1; i < rows.length; i++) {
+                  const [artnr, de, ru, size, kat, img, extra, note] = rows[i];
+                  if (artnr) {
+                    newBase[artnr.trim()] = {
+                      de: de || '', ru: ru || '', size: size || '',
+                      kat: kat || '', img: img || '',
+                      extra: extra ? extra.split(',').map(s=>s.trim()) : [],
+                      note: note || ''
+                    };
+                  }
+                }
+                appDB.base = newBase;
+                updated = true;
+              }
+
+              // Sync Farben
+              if (appUrls.farben) {
+                const r = await fetch(appUrls.farben);
+                const rows = parseCSV(await r.text());
+                const newFarben = {};
+                for (let i = 1; i < rows.length; i++) {
+                  const [code, name, desc, hex] = rows[i];
+                  if (code) newFarben[code.trim()] = { name: name || '', desc: desc || '', hex: hex || '#ffffff' };
+                }
+                appDB.farben = newFarben;
+                updated = true;
+              }
+
+              // Sync Users
+              if (appUrls.users) {
+                const r = await fetch(appUrls.users);
+                const rows = parseCSV(await r.text());
+                const newUsers = {};
+                for (let i = 1; i < rows.length; i++) {
+                  const [pack, pnr, first, last, dept, stat] = rows[i];
+                  if (pack) newUsers[pack.trim()] = { nr: pnr || '', first: first || '', last: last || '', dept: dept || '', status: stat || 'Aktiv' };
+                }
+                appDB.users = newUsers;
+                updated = true;
+              }
+
+              // Save into phone persistence
+              localStorage.setItem('heroal_db_v2', JSON.stringify(appDB));
+              alert(appLang === 'DE' ? '✅ Synchronisation erfolgreich abgeschlossen!' : '✅ Синхронизация успешно завершена!');
+            } catch (err) {
+              console.error(err);
+              alert(appLang === 'DE' ? '⚠️ Offline-Modus: Daten aus Speicher geladen.' : '⚠️ Нет сети: используются локально сохраненные данные.');
+            } finally {
+              icon.style.animation = 'none';
+            }
+          }
+
+          // --- Settings Dialog ---
+          function openSettings() {
+            document.getElementById('cfg-url-base').value = appUrls.base || '';
+            document.getElementById('cfg-url-farben').value = appUrls.farben || '';
+            document.getElementById('cfg-url-defects').value = appUrls.defects || '';
+            document.getElementById('cfg-url-auskunft').value = appUrls.auskunft || '';
+            document.getElementById('cfg-url-users').value = appUrls.users || '';
+            document.getElementById('settings-dialog').classList.add('active');
+          }
+          function closeSettings() {
+            document.getElementById('settings-dialog').classList.remove('active');
+          }
+          function saveSettings() {
+            appUrls = {
+              base: document.getElementById('cfg-url-base').value.trim(),
+              farben: document.getElementById('cfg-url-farben').value.trim(),
+              defects: document.getElementById('cfg-url-defects').value.trim(),
+              auskunft: document.getElementById('cfg-url-auskunft').value.trim(),
+              users: document.getElementById('cfg-url-users').value.trim()
+            };
+            localStorage.setItem('heroal_urls', JSON.stringify(appUrls));
+            closeSettings();
+            alert(appLang === 'DE' ? 'URLs gespeichert! Drücken Sie Sync.' : 'Ссылки сохранены! Нажмите Sync для загрузки.');
+          }
+    </script>
+
+    <style>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </body>
+</html>
