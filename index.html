@@ -77,7 +77,7 @@
         overflow: hidden;
       }
 
-      /* Login Screen Modal */
+      /* Login Modal */
       #login-overlay {
         position: fixed;
         inset: 0;
@@ -87,25 +87,24 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 24px;
+        padding: 20px;
       }
       .login-box {
         width: 100%;
-        max-width: 360px;
+        max-width: 380px;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 16px;
-        padding: 28px 22px;
+        padding: 28px 24px;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
       }
       .login-logo {
         font-size: 26px;
-        font-weight: 900;
-        letter-spacing: -0.5px;
+        font-weight: 700;
         color: #fff;
       }
       .login-logo span {
@@ -119,63 +118,60 @@
       }
       .login-input {
         width: 100%;
+        height: 50px;
         background: #070b10;
         border: 2px solid var(--border-color);
         border-radius: 10px;
         color: #fff;
-        padding: 14px;
         font-size: 22px;
-        font-weight: 800;
+        font-weight: 700;
         text-align: center;
         letter-spacing: 4px;
         outline: none;
-        transition: border-color 0.2s;
       }
       .login-input:focus {
         border-color: var(--heroal-blue);
       }
       .login-btn {
         width: 100%;
+        height: 48px;
         background: var(--heroal-blue);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background 0.2s;
       }
       .login-btn:active {
         background: var(--heroal-dark-blue);
-        transform: scale(0.98);
       }
       .login-msg {
         font-size: 12px;
         color: #f87171;
         min-height: 16px;
-        text-align: center;
       }
 
-      /* Top App Header */
+      /* Top Header */
       header {
         background-color: var(--heroal-blue);
-        padding: 10px 16px;
+        padding: 8px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
         z-index: 10;
         flex-shrink: 0;
+        min-height: 56px;
       }
       .brand-wrap {
         display: flex;
         flex-direction: column;
       }
       .brand-title {
-        font-weight: 900;
+        font-weight: 800;
         font-size: 18px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         line-height: 1.1;
       }
       .brand-title span {
@@ -195,20 +191,18 @@
         align-items: center;
       }
 
-      /* Desktop Header Navigation */
       .desktop-nav {
         display: none;
         gap: 6px;
-        margin-right: 12px;
       }
       .desktop-nav-item {
         background: rgba(0, 0, 0, 0.25);
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff;
         border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 12px;
-        font-weight: 700;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.2s;
       }
@@ -219,18 +213,16 @@
         border-color: #fff;
       }
 
-      /* Online Status Badge */
       .net-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 10px;
+        padding: 5px 10px;
         border-radius: 20px;
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 600;
         background: rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        user-select: none;
       }
       .net-dot {
         width: 8px;
@@ -253,99 +245,112 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
         color: #fff;
         border-radius: 6px;
-        padding: 5px 9px;
-        font-size: 11px;
-        font-weight: 700;
+        padding: 6px 10px;
+        min-height: 34px;
+        font-size: 12px;
+        font-weight: 600;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 4px;
-      }
-      .btn-hdr:active {
-        background: rgba(0, 0, 0, 0.5);
       }
       .btn-hdr:disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
 
-      /* Main Content Area */
+      /* Main Workspace */
       main {
         flex: 1;
-        overflow-y: auto;
-        padding: 12px 12px 75px 12px;
+        overflow: hidden;
+        padding: 8px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        -webkit-overflow-scrolling: touch;
       }
 
       .tab-view {
         display: none;
-        flex-direction: column;
-        gap: 12px;
         width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
+        height: 100%;
       }
       .tab-view.active {
         display: flex;
+        flex-direction: column;
       }
 
+      /* Mobile 60 / 40 Split Layout */
       .suche-grid {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
         width: 100%;
+        height: calc(100vh - 56px - 60px);
       }
 
-      /* Search Zones */
-      .zone-container {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 12px;
+      .zone-prof {
+        flex: 0 0 60%;
+        height: 60%;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 8px 10px;
+        gap: 6px;
+        overflow: hidden;
       }
+
+      .zone-color {
+        flex: 0 0 calc(40% - 8px);
+        height: calc(40% - 8px);
+        display: flex;
+        flex-direction: column;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 8px 10px;
+        gap: 6px;
+        overflow: hidden;
+      }
+
       .zone-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-shrink: 0;
       }
       .zone-label {
-        font-size: 13px;
-        font-weight: 800;
+        font-size: 12px;
+        font-weight: 700;
         color: #cbd5e1;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
       }
       .zone-badge {
         font-size: 10px;
         background: var(--card-inner);
         color: var(--text-sub);
-        padding: 2px 7px;
+        padding: 2px 6px;
         border-radius: 4px;
         border: 1px solid var(--border-color);
+        font-weight: 600;
       }
 
       .input-box {
         position: relative;
         width: 100%;
+        flex-shrink: 0;
       }
       .search-field {
         width: 100%;
+        height: 38px;
         background: #080d14;
         border: 1.5px solid var(--border-color);
         border-radius: 8px;
         color: #fff;
-        padding: 10px 36px 10px 12px;
-        font-size: 16px;
-        font-weight: 700;
+        padding: 0 36px 0 10px;
+        font-size: 15px;
+        font-weight: 600;
         outline: none;
       }
       .search-field:focus {
@@ -353,7 +358,6 @@
       }
       .search-field::placeholder {
         color: #475569;
-        font-weight: 400;
         font-size: 13px;
       }
       .btn-clear {
@@ -365,17 +369,16 @@
         border: none;
         color: #64748b;
         font-size: 16px;
-        padding: 4px;
         cursor: pointer;
         display: none;
       }
 
-      /* Category Pill Filter */
       .category-scroll {
         display: flex;
-        gap: 6px;
+        gap: 5px;
         overflow-x: auto;
-        padding-bottom: 4px;
+        padding-bottom: 2px;
+        flex-shrink: 0;
         scrollbar-width: none;
       }
       .category-scroll::-webkit-scrollbar {
@@ -383,15 +386,14 @@
       }
       .cat-pill {
         font-size: 11px;
-        font-weight: 700;
-        padding: 5px 12px;
-        border-radius: 20px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 16px;
         background: var(--card-inner);
         color: var(--text-sub);
         border: 1px solid var(--border-color);
         white-space: nowrap;
         cursor: pointer;
-        transition: all 0.15s;
       }
       .cat-pill.active {
         background: var(--heroal-blue);
@@ -399,76 +401,102 @@
         border-color: var(--heroal-light-blue);
       }
 
-      /* Profile Display Card */
-      .profile-card {
+      /* Profile Result Card */
+      .display-card-prof {
         background: #0c121b;
         border: 1px solid var(--border-color);
-        border-radius: 10px;
-        padding: 12px;
+        border-radius: 8px;
+        padding: 8px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 6px;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
       }
+
       .profile-drawing-box {
         width: 100%;
-        min-height: 180px;
-        max-height: 260px;
+        flex: 1;
+        min-height: 0;
         background: #ffffff;
-        border-radius: 8px;
+        border-radius: 6px;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 10px;
+        padding: 6px;
         position: relative;
         cursor: zoom-in;
       }
       .profile-drawing-img {
         max-width: 100%;
-        max-height: 240px;
+        max-height: 100%;
         object-fit: contain;
       }
       .btn-zoom-hint {
         position: absolute;
-        right: 8px;
-        bottom: 8px;
+        right: 6px;
+        bottom: 6px;
         background: rgba(0, 0, 0, 0.7);
         color: #fff;
-        font-size: 11px;
-        padding: 3px 8px;
+        font-size: 10px;
+        padding: 2px 6px;
         border-radius: 4px;
         pointer-events: none;
       }
 
-      .profile-info {
+      .info-details {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
         text-align: center;
+        flex-shrink: 0;
       }
-      .profile-title {
-        font-size: 16px;
-        font-weight: 800;
+      .info-title-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .info-title {
+        font-size: 14px;
+        font-weight: 700;
         color: #fff;
-        line-height: 1.2;
+        line-height: 1.15;
       }
-      .profile-title-ru {
-        font-size: 13px;
+      .btn-copy {
+        background: var(--card-inner);
+        border: 1px solid var(--border-color);
+        color: var(--text-sub);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .btn-copy:hover {
+        color: #fff;
+        border-color: var(--heroal-light-blue);
+      }
+      .info-subtitle {
+        font-size: 12px;
         color: var(--heroal-light-blue);
         font-weight: 500;
       }
 
-      .profile-tags-row {
+      .info-tags-row {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 2px;
+        gap: 4px;
       }
       .tag-chip {
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 9px;
-        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 4px;
       }
       .tag-size {
         background: #261f0c;
@@ -480,97 +508,79 @@
         color: #7dd3fc;
         border: 1px solid #1e496d;
       }
-
-      .profile-note {
-        font-size: 12px;
-        background: #231e13;
-        color: #fde047;
-        padding: 8px 10px;
-        border-radius: 6px;
-        border-left: 3px solid #eab308;
-        text-align: left;
-      }
-
-      .extra-tray {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        padding-top: 4px;
-        scrollbar-width: none;
-      }
-      .extra-tray::-webkit-scrollbar {
-        display: none;
-      }
-      .extra-thumb {
-        width: 56px;
-        height: 56px;
-        border-radius: 6px;
-        background: #fff;
-        object-fit: cover;
-        border: 1.5px solid var(--border-color);
-        flex-shrink: 0;
+      .tag-hex {
+        background: #1c1917;
+        color: var(--accent-orange);
+        border: 1px solid #573118;
+        font-family: monospace;
         cursor: pointer;
       }
 
-      /* Color Swatch Card */
-      .color-card {
-        display: flex;
-        align-items: center;
-        gap: 14px;
+      .profile-note {
+        font-size: 11px;
+        background: #231e13;
+        color: #fde047;
+        padding: 4px 8px;
+        border-radius: 5px;
+        border-left: 3px solid #eab308;
+        text-align: left;
+        flex-shrink: 0;
+      }
+
+      /* Color Mobile Card */
+      .display-card-color {
         background: #0c121b;
         border: 1px solid var(--border-color);
-        padding: 12px;
-        border-radius: 10px;
-      }
-      .color-box {
-        width: 72px;
-        height: 72px;
         border-radius: 8px;
-        border: 2px solid rgba(255, 255, 255, 0.25);
-        flex-shrink: 0;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-height: 0;
+      }
+      .color-showcase-box {
+        width: 76px;
+        height: 100%;
+        max-height: 90px;
+        border-radius: 6px;
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
-        font-weight: 900;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        flex-shrink: 0;
       }
-      .color-details {
+      .color-showcase-code {
+        font-size: 16px;
+        font-weight: 700;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+      }
+      .color-text-details {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: 3px;
         overflow: hidden;
       }
-      .color-name {
-        font-size: 16px;
-        font-weight: 800;
-        color: #fff;
-      }
-      .color-sub {
-        font-size: 13px;
-        color: var(--text-sub);
-      }
-      .color-hex {
-        font-size: 12px;
-        font-family: monospace;
-        color: var(--accent-orange);
-        font-weight: 700;
-      }
 
       /* Accordion Cards */
+      .acc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow-y: auto;
+        height: 100%;
+        padding-bottom: 60px;
+      }
       .acc-item {
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 10px;
-        padding: 14px;
+        padding: 12px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
         cursor: pointer;
-        transition: background 0.15s;
-      }
-      .acc-item:hover {
-        background: var(--card-inner);
       }
       .acc-top {
         display: flex;
@@ -580,10 +590,9 @@
       }
       .acc-badge {
         font-size: 11px;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 44px;
-        flex-shrink: 0;
+        font-weight: 700;
+        padding: 3px 7px;
+        border-radius: 4px;
       }
       .badge-defect {
         background: #3c1618;
@@ -596,18 +605,17 @@
         border: 1px solid #047857;
       }
       .acc-title {
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 600;
         color: #f1f5f9;
         flex: 1;
       }
       .acc-body {
-        font-size: 13px;
+        font-size: 12px;
         color: #cbd5e1;
-        line-height: 1.5;
+        line-height: 1.45;
         border-top: 1px solid var(--border-color);
-        padding-top: 10px;
-        margin-top: 4px;
+        padding-top: 8px;
         display: none;
       }
       .acc-item.open .acc-body {
@@ -616,20 +624,20 @@
       .action-block {
         background: #19202a;
         border-left: 3px solid #f97316;
-        padding: 8px 10px;
+        padding: 6px 8px;
         border-radius: 4px;
-        margin-top: 8px;
-        font-size: 12px;
+        margin-top: 6px;
+        font-size: 11px;
         color: #fdba74;
       }
 
-      /* Mobile Navigation Bar */
+      /* Mobile Navigation */
       nav {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 58px;
+        height: 56px;
         background: #0a1118;
         border-top: 1px solid var(--border-color);
         display: flex;
@@ -644,7 +652,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 3px;
+        gap: 2px;
         color: #64748b;
         background: none;
         border: none;
@@ -657,30 +665,148 @@
         color: #38bdf8;
       }
       .nav-icon {
-        font-size: 19px;
+        font-size: 18px;
       }
 
-      /* Responsive Breakpoint */
-      @media (min-width: 1024px) {
+      /* Desktop Layout */
+      @media (min-width: 900px) {
         nav {
           display: none;
         }
         main {
-          padding: 20px 24px;
+          padding: 16px 20px;
+          height: calc(100vh - 56px);
         }
         .desktop-nav {
           display: flex;
         }
         .suche-grid {
           display: grid;
-          grid-template-columns: 1.25fr 1fr;
-          align-items: start;
+          grid-template-columns: 1fr 1fr;
           gap: 16px;
+          height: 100%;
+        }
+        .zone-prof,
+        .zone-color {
+          flex: 1;
+          height: 100%;
+          padding: 14px;
+          gap: 10px;
+        }
+        .search-field {
+          height: 44px;
+          font-size: 16px;
+        }
+        .display-card-prof,
+        .display-card-color {
+          flex: 1;
+          padding: 12px;
+          gap: 10px;
+        }
+        .display-card-color {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .color-showcase-box {
+          width: 100%;
+          height: 100%;
+          max-height: none;
+          flex: 1;
+          border-radius: 8px;
+        }
+        .color-showcase-code {
+          font-size: 32px;
+        }
+        .color-text-details {
+          align-items: center;
+          text-align: center;
+        }
+        .info-title {
+          font-size: 16px;
+        }
+        .info-subtitle {
+          font-size: 13px;
+        }
+        .tag-chip {
+          font-size: 11px;
+          padding: 3px 10px;
         }
       }
 
-      /* Zoom Modal */
-      .zoom-modal {
+      /* Toast Notifications */
+      #app-toast {
+        position: fixed;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid var(--heroal-light-blue);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        z-index: 3000;
+        transition:
+          transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28),
+          opacity 0.3s;
+        opacity: 0;
+        pointer-events: none;
+      }
+      #app-toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      /* Sync Progress Modal */
+      .sync-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 2500;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+      }
+      .sync-modal.active {
+        display: flex;
+      }
+      .sync-box {
+        width: 100%;
+        max-width: 380px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .sync-progress-bar-bg {
+        width: 100%;
+        height: 10px;
+        background: #080d14;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+      }
+      .sync-progress-bar-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--heroal-blue),
+          var(--heroal-light-blue)
+        );
+        transition: width 0.3s ease;
+      }
+
+      /* Modals */
+      .zoom-modal,
+      .settings-modal {
         display: none;
         position: fixed;
         inset: 0;
@@ -690,7 +816,8 @@
         align-items: center;
         padding: 14px;
       }
-      .zoom-modal.active {
+      .zoom-modal.active,
+      .settings-modal.active {
         display: flex;
       }
       .zoom-img-view {
@@ -698,9 +825,8 @@
         max-height: 90vh;
         object-fit: contain;
         background: #ffffff;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+        border-radius: 8px;
+        padding: 8px;
       }
       .zoom-close {
         position: absolute;
@@ -709,58 +835,44 @@
         background: rgba(255, 255, 255, 0.2);
         border: none;
         color: #fff;
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
         cursor: pointer;
       }
-
-      /* Settings Modal */
-      .settings-modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        z-index: 1500;
-        justify-content: center;
-        align-items: center;
-        padding: 16px;
-      }
-      .settings-modal.active {
-        display: flex;
-      }
       .settings-card {
         width: 100%;
-        max-width: 420px;
+        max-width: 440px;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 14px;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
       }
       .settings-title {
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 700;
         color: #fff;
         display: flex;
         justify-content: space-between;
       }
       .url-label {
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-sub);
       }
       .url-input {
         width: 100%;
+        height: 36px;
         background: #080d14;
         border: 1px solid var(--border-color);
         border-radius: 6px;
         color: #fff;
-        padding: 8px 10px;
+        padding: 0 10px;
         font-size: 12px;
         outline: none;
       }
@@ -776,6 +888,9 @@
     </style>
   </head>
   <body>
+    <!-- Toast Message Container -->
+    <div id="app-toast"></div>
+
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay">
       <div class="login-box">
@@ -813,7 +928,7 @@
           class="desktop-nav-item active"
           onclick="navigate('view-suche', this)"
         >
-          🔍 Suche
+          🔍 Suche [/]
         </button>
         <button
           class="desktop-nav-item"
@@ -844,18 +959,18 @@
       </div>
     </header>
 
-    <!-- 3. TABS CONTAINER -->
+    <!-- 3. MAIN WORKSPACE -->
     <main>
       <!-- TAB 1: SUCHE (Profile & Farben) -->
       <div id="view-suche" class="tab-view active">
         <div class="suche-grid">
-          <!-- Profile & Zubehör -->
-          <section class="zone-container">
+          <!-- Zone 1: Profile & Zubehör (60% on Mobile) -->
+          <section class="zone-prof">
             <div class="zone-header">
               <span class="zone-label" id="lbl-prof-head"
                 >📐 Profile / Zubehör</span
               >
-              <span class="zone-badge" id="lbl-prof-badge">Art.-Nr.</span>
+              <span class="zone-badge" id="lbl-prof-badge">Art.-Nr. [/]</span>
             </div>
 
             <div class="input-box">
@@ -863,7 +978,7 @@
                 type="text"
                 id="find-prof"
                 class="search-field"
-                placeholder="z. B. 1371, 5044, 2042..."
+                placeholder="z. B. 1371, 5044, 2042... [/]"
                 autocomplete="off"
                 autocorrect="off"
                 autocapitalize="off"
@@ -908,8 +1023,8 @@
               </div>
             </div>
 
-            <!-- Profile Output Result -->
-            <div id="prof-card" class="profile-card" style="display: none">
+            <!-- Profile Output Result Card -->
+            <div id="prof-card" class="display-card-prof" style="display: none">
               <div
                 class="profile-drawing-box"
                 onclick="showZoom(document.getElementById('prof-img').src)"
@@ -923,10 +1038,19 @@
                 <span class="btn-zoom-hint">🔍 Zoom</span>
               </div>
 
-              <div class="profile-info">
-                <div class="profile-title" id="prof-title-de">--</div>
-                <div class="profile-title-ru" id="prof-title-ru">--</div>
-                <div class="profile-tags-row">
+              <div class="info-details">
+                <div class="info-title-wrap">
+                  <div class="info-title" id="prof-title-de">--</div>
+                  <button
+                    class="btn-copy"
+                    id="btn-copy-prof"
+                    title="Artikelnummer kopieren"
+                  >
+                    📋 Copy
+                  </button>
+                </div>
+                <div class="info-subtitle" id="prof-title-ru">--</div>
+                <div class="info-tags-row">
                   <span class="tag-chip tag-size" id="prof-size">--</span>
                   <span class="tag-chip tag-kat" id="prof-kat">--</span>
                 </div>
@@ -937,15 +1061,14 @@
                 class="profile-note"
                 style="display: none"
               ></div>
-              <div class="extra-tray" id="prof-extra-tray"></div>
             </div>
           </section>
 
-          <!-- Farben Zone -->
-          <section class="zone-container">
+          <!-- Zone 2: Farben (40% on Mobile, Symmetrical on Desktop) -->
+          <section class="zone-color">
             <div class="zone-header">
               <span class="zone-label" id="lbl-color-head">🎨 Farben</span>
-              <span class="zone-badge">RAL / SD</span>
+              <span class="zone-badge">RAL / SD [Alt+C]</span>
             </div>
 
             <div class="input-box">
@@ -953,7 +1076,7 @@
                 type="text"
                 id="find-color"
                 class="search-field"
-                placeholder="z. B. 7016, 9016, 0108..."
+                placeholder="z. B. 7016, 9016, 0108... [Alt+C]"
                 autocomplete="off"
               />
               <button
@@ -965,13 +1088,35 @@
               </button>
             </div>
 
-            <!-- Color Output Result -->
-            <div id="col-card" class="color-card" style="display: none">
-              <div class="color-box" id="col-swatch">HEX</div>
-              <div class="color-details">
-                <div class="color-name" id="col-name">--</div>
-                <div class="color-sub" id="col-desc">--</div>
-                <div class="color-hex" id="col-hex">--</div>
+            <!-- Color Output Result Card -->
+            <div id="col-card" class="display-card-color" style="display: none">
+              <div class="color-showcase-box" id="col-swatch">
+                <span class="color-showcase-code" id="col-swatch-code"
+                  >7016</span
+                >
+              </div>
+
+              <div class="color-text-details">
+                <div class="info-title-wrap">
+                  <div class="info-title" id="col-name">--</div>
+                  <button
+                    class="btn-copy"
+                    id="btn-copy-col"
+                    title="Farbcode kopieren"
+                  >
+                    📋 Copy
+                  </button>
+                </div>
+                <div class="info-subtitle" id="col-desc">--</div>
+                <div class="info-tags-row">
+                  <span
+                    class="tag-chip tag-hex"
+                    id="col-hex"
+                    title="Hex-Code kopieren"
+                    >#000000</span
+                  >
+                  <span class="tag-chip tag-kat">heroal Color</span>
+                </div>
               </div>
             </div>
           </section>
@@ -980,7 +1125,7 @@
 
       <!-- TAB 2: AUSSCHUSS -->
       <div id="view-ausschuss" class="tab-view">
-        <div class="input-box">
+        <div class="input-box" style="margin-bottom: 8px">
           <input
             type="text"
             id="find-defect"
@@ -989,15 +1134,12 @@
             oninput="renderDefects()"
           />
         </div>
-        <div
-          id="defect-container"
-          style="display: flex; flex-direction: column; gap: 8px"
-        ></div>
+        <div id="defect-container" class="acc-list"></div>
       </div>
 
       <!-- TAB 3: AUSKUNFT -->
       <div id="view-auskunft" class="tab-view">
-        <div class="input-box">
+        <div class="input-box" style="margin-bottom: 8px">
           <input
             type="text"
             id="find-guide"
@@ -1006,10 +1148,7 @@
             oninput="renderAuskunft()"
           />
         </div>
-        <div
-          id="auskunft-container"
-          style="display: flex; flex-direction: column; gap: 8px"
-        ></div>
+        <div id="auskunft-container" class="acc-list"></div>
       </div>
     </main>
 
@@ -1035,7 +1174,28 @@
       <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
     </div>
 
-    <!-- 6. SETTINGS MODAL -->
+    <!-- 6. SYNC PROGRESS MODAL -->
+    <div id="sync-dialog" class="sync-modal">
+      <div class="sync-box">
+        <div
+          style="font-weight: 700; font-size: 15px; color: #fff"
+          id="sync-title"
+        >
+          🔄 Synchronisation...
+        </div>
+        <div
+          style="font-size: 12px; color: var(--text-sub)"
+          id="sync-status-txt"
+        >
+          Tabellen werden geladen...
+        </div>
+        <div class="sync-progress-bar-bg">
+          <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. SETTINGS MODAL -->
     <div id="settings-dialog" class="settings-modal">
       <div class="settings-card">
         <div class="settings-title">
@@ -1045,7 +1205,7 @@
               background: none;
               border: none;
               color: #fff;
-              font-size: 16px;
+              font-size: 18px;
               cursor: pointer;
             "
             onclick="closeSettings()"
@@ -1081,14 +1241,14 @@
         <div style="display: flex; gap: 8px; margin-top: 6px">
           <button
             class="login-btn"
-            style="flex: 1; padding: 10px; font-size: 13px"
+            style="flex: 1; height: 40px; font-size: 13px"
             onclick="saveSettings()"
           >
             Speichern
           </button>
           <button
             class="btn-hdr"
-            style="padding: 10px; font-size: 12px; background: #ef4444"
+            style="height: 40px; font-size: 12px; background: #ef4444"
             onclick="handleLogout()"
           >
             Abmelden
@@ -1097,7 +1257,7 @@
       </div>
     </div>
 
-    <!-- 7. APPLICATION LOGIC -->
+    <!-- 8. APPLICATION LOGIC & INDEXEDDB INTEGRATION -->
     <script>
       // Service Worker Registration
       if ("serviceWorker" in navigator) {
@@ -1126,6 +1286,51 @@
       }
       window.addEventListener("online", updateOnlineStatus);
       window.addEventListener("offline", updateOnlineStatus);
+
+      // IndexedDB Database Wrapper
+      const DB_NAME = "heroal_warehouse_db";
+      const DB_VERSION = 1;
+      let dbInstance = null;
+
+      function openWarehouseDB() {
+        return new Promise((resolve, reject) => {
+          if (dbInstance) return resolve(dbInstance);
+          const req = indexedDB.open(DB_NAME, DB_VERSION);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains("store_data")) {
+              db.createObjectStore("store_data");
+            }
+          };
+          req.onsuccess = (e) => {
+            dbInstance = e.target.result;
+            resolve(dbInstance);
+          };
+          req.onerror = (e) => reject(e);
+        });
+      }
+
+      async function idbGet(key) {
+        const db = await openWarehouseDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction("store_data", "readonly");
+          const store = tx.objectStore("store_data");
+          const req = store.get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async function idbSet(key, val) {
+        const db = await openWarehouseDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction("store_data", "readwrite");
+          const store = tx.objectStore("store_data");
+          const req = store.put(val, key);
+          req.onsuccess = () => resolve();
+          req.onerror = () => reject(req.error);
+        });
+      }
 
       // Default Seed Data
       const DEFAULT_DATA = {
@@ -1214,11 +1419,12 @@
       };
 
       let appLang = localStorage.getItem("heroal_lang") || "DE";
-      let appDB =
-        JSON.parse(localStorage.getItem("heroal_db_v2")) || DEFAULT_DATA;
+      let appDB = DEFAULT_DATA;
       let currentUser =
         JSON.parse(localStorage.getItem("heroal_current_user")) || null;
       let selectedCategory = "";
+      let lastActiveArticle = "";
+      let lastActiveColorCode = "";
 
       const DEFAULT_URLS = {
         base: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
@@ -1234,14 +1440,124 @@
       let appUrls =
         JSON.parse(localStorage.getItem("heroal_urls")) || DEFAULT_URLS;
 
-      window.addEventListener("DOMContentLoaded", () => {
+      window.addEventListener("DOMContentLoaded", async () => {
+        await initDatabase();
         checkAuth();
         applyLanguage();
         initSearchHandlers();
+        initHotkeys();
+        initAutoLogout();
         updateOnlineStatus();
       });
 
-      // --- Authentication ---
+      async function initDatabase() {
+        try {
+          const cachedDB = await idbGet("heroal_db");
+          if (cachedDB) {
+            appDB = cachedDB;
+          } else {
+            const legacy = localStorage.getItem("heroal_db_v2");
+            if (legacy) {
+              appDB = JSON.parse(legacy);
+              await idbSet("heroal_db", appDB);
+              localStorage.removeItem("heroal_db_v2");
+            } else {
+              await idbSet("heroal_db", DEFAULT_DATA);
+            }
+          }
+        } catch (e) {
+          console.warn("IndexedDB init fallback:", e);
+        }
+      }
+
+      // Hotkeys Handler
+      function initHotkeys() {
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeZoom();
+            closeSettings();
+            clearInput("find-prof");
+            clearInput("find-color");
+            return;
+          }
+
+          if (
+            document.activeElement.tagName === "INPUT" ||
+            document.activeElement.tagName === "TEXTAREA"
+          ) {
+            return;
+          }
+
+          if (e.key === "/") {
+            e.preventDefault();
+            navigate("view-suche");
+            const p = document.getElementById("find-prof");
+            p.focus();
+            p.select();
+          } else if (
+            e.altKey &&
+            (e.key === "c" || e.key === "C" || e.code === "KeyC")
+          ) {
+            e.preventDefault();
+            navigate("view-suche");
+            const c = document.getElementById("find-color");
+            c.focus();
+            c.select();
+          }
+        });
+      }
+
+      // Warehouse Activity Tracker (Auto Logout)
+      function initAutoLogout() {
+        const TIMEOUT_MS = 20 * 60 * 1000; // 20 минут простоя
+        let timeoutId;
+
+        function resetTimer() {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            if (currentUser) {
+              showToast(
+                appLang === "DE"
+                  ? "Sitzung wegen Inaktivität beendet."
+                  : "Сессия завершена из-за неактивности.",
+              );
+              handleLogout();
+            }
+          }, TIMEOUT_MS);
+        }
+
+        ["mousedown", "keydown", "touchstart", "scroll"].forEach((ev) => {
+          window.addEventListener(ev, resetTimer, { passive: true });
+        });
+        resetTimer();
+      }
+
+      // Toast Notification
+      function showToast(msg) {
+        const t = document.getElementById("app-toast");
+        t.innerText = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2200);
+      }
+
+      // Copy Helper
+      function copyToClipboard(text, label) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(
+            appLang === "DE"
+              ? `✅ ${label || text} kopiert!`
+              : `✅ ${label || text} скопировано!`,
+          );
+        });
+      }
+
+      // Fallback SVG Drawing
+      function getSvgPlaceholder(artNr) {
+        const cleanArt = artNr || "heroal";
+        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">Zeichnung nicht hinterlegt</text></svg>`;
+      }
+
       function checkAuth() {
         const overlay = document.getElementById("login-overlay");
         if (currentUser) {
@@ -1276,11 +1592,6 @@
             return;
           }
           currentUser = { pack: val, ...user };
-          localStorage.setItem(
-            "heroal_current_user",
-            JSON.stringify(currentUser),
-          );
-          checkAuth();
         } else {
           currentUser = {
             pack: val,
@@ -1288,12 +1599,12 @@
             last: "",
             dept: "Lager",
           };
-          localStorage.setItem(
-            "heroal_current_user",
-            JSON.stringify(currentUser),
-          );
-          checkAuth();
         }
+        localStorage.setItem(
+          "heroal_current_user",
+          JSON.stringify(currentUser),
+        );
+        checkAuth();
       }
 
       function handleLogout() {
@@ -1303,7 +1614,6 @@
         checkAuth();
       }
 
-      // --- Language Switcher ---
       function toggleLanguage() {
         appLang = appLang === "DE" ? "RU" : "DE";
         localStorage.setItem("heroal_lang", appLang);
@@ -1321,7 +1631,7 @@
             ? "📐 Profile / Zubehör"
             : "📐 Профили / Комплектующие";
         document.getElementById("lbl-prof-badge").innerText =
-          appLang === "DE" ? "Art.-Nr." : "Артикул";
+          appLang === "DE" ? "Art.-Nr. [/]" : "Артикул [/]";
         document.getElementById("lbl-color-head").innerText =
           appLang === "DE" ? "🎨 Farben" : "🎨 Цвета RAL / SD";
         document.getElementById("nav-lbl-suche").innerText =
@@ -1332,7 +1642,6 @@
           appLang === "DE" ? "Auskunft" : "Справка ERP";
       }
 
-      // --- Unified Navigation ---
       function navigate(viewId, btn) {
         document
           .querySelectorAll(".tab-view")
@@ -1341,18 +1650,36 @@
           .querySelectorAll(".nav-item, .desktop-nav-item")
           .forEach((b) => b.classList.remove("active"));
 
-        document.getElementById(viewId).classList.add("active");
+        const target = document.getElementById(viewId);
+        if (target) target.classList.add("active");
         if (btn) btn.classList.add("active");
 
         if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") renderAuskunft();
       }
 
-      // --- Search Handlers ---
       function initSearchHandlers() {
         const pIn = document.getElementById("find-prof");
         const pClr = document.getElementById("clr-prof");
         const pCard = document.getElementById("prof-card");
+        const copyProfBtn = document.getElementById("btn-copy-prof");
+        const copyColBtn = document.getElementById("btn-copy-col");
+        const hexChip = document.getElementById("col-hex");
+
+        copyProfBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          copyToClipboard(lastActiveArticle, "Art.-Nr.");
+        });
+
+        copyColBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          copyToClipboard(lastActiveColorCode, "Farbcode");
+        });
+
+        hexChip.addEventListener("click", (e) => {
+          e.stopPropagation();
+          copyToClipboard(hexChip.innerText, "Hex-Code");
+        });
 
         pIn.addEventListener("input", (e) => {
           const query = e.target.value.trim().toLowerCase();
@@ -1379,6 +1706,7 @@
           });
 
           if (matchKey) {
+            lastActiveArticle = matchKey;
             const it = appDB.base[matchKey];
             document.getElementById("prof-title-de").innerText =
               `${matchKey} — ${it.de || ""}`;
@@ -1389,9 +1717,11 @@
             document.getElementById("prof-kat").innerText = it.kat || "heroal";
 
             const imgEl = document.getElementById("prof-img");
-            imgEl.src =
-              it.img ||
-              'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888">Keine Zeichnung</text></svg>';
+            imgEl.onerror = () => {
+              imgEl.onerror = null;
+              imgEl.src = getSvgPlaceholder(matchKey);
+            };
+            imgEl.src = it.img || getSvgPlaceholder(matchKey);
 
             const noteEl = document.getElementById("prof-note");
             if (it.note) {
@@ -1399,20 +1729,6 @@
               noteEl.style.display = "block";
             } else {
               noteEl.style.display = "none";
-            }
-
-            const tray = document.getElementById("prof-extra-tray");
-            if (it.extra && it.extra.length > 0) {
-              tray.innerHTML = it.extra
-                .map(
-                  (u) =>
-                    `<img class="extra-thumb" src="${u}" onclick="showZoom('${u}')">`,
-                )
-                .join("");
-              tray.style.display = "flex";
-            } else {
-              tray.innerHTML = "";
-              tray.style.display = "none";
             }
 
             pCard.style.display = "flex";
@@ -1442,6 +1758,7 @@
           );
 
           if (matchKey) {
+            lastActiveColorCode = matchKey;
             const col = appDB.farben[matchKey];
             document.getElementById("col-name").innerText =
               `${matchKey} — ${col.name}`;
@@ -1450,10 +1767,11 @@
             document.getElementById("col-hex").innerText = col.hex;
 
             const swatch = document.getElementById("col-swatch");
+            const swatchCode = document.getElementById("col-swatch-code");
             swatch.style.backgroundColor = col.hex;
             const isBright = getLuminance(col.hex) > 130;
-            swatch.style.color = isBright ? "#000000" : "#ffffff";
-            swatch.innerText = matchKey;
+            swatchCode.style.color = isBright ? "#000000" : "#ffffff";
+            swatchCode.innerText = matchKey;
 
             cCard.style.display = "flex";
           } else {
@@ -1492,7 +1810,6 @@
         return (r * 299 + g * 587 + b * 114) / 1000;
       }
 
-      // --- Defect & Auskunft Renderers ---
       function renderDefects() {
         const q = (
           document.getElementById("find-defect").value || ""
@@ -1554,7 +1871,6 @@
           .join("");
       }
 
-      // --- Zoom Dialog ---
       function showZoom(url) {
         if (!url) return;
         document.getElementById("zoom-img-target").src = url;
@@ -1564,7 +1880,6 @@
         document.getElementById("zoom-dialog").classList.remove("active");
       }
 
-      // --- CSV Synchronizer Engine ---
       function parseCSV(text) {
         const lines = text.trim().split(/\r?\n/);
         return lines.map((line) => {
@@ -1600,7 +1915,21 @@
         icon.style.display = "inline-block";
         icon.style.animation = "spin 1s infinite linear";
 
+        const syncModal = document.getElementById("sync-dialog");
+        const statusTxt = document.getElementById("sync-status-txt");
+        const fillBar = document.getElementById("sync-progress-fill");
+        syncModal.classList.add("active");
+
+        const updateProgress = (pct, label) => {
+          fillBar.style.width = `${pct}%`;
+          statusTxt.innerText = label;
+        };
+
         try {
+          updateProgress(
+            15,
+            appLang === "DE" ? "Lade Profile CSV..." : "Загрузка профилей...",
+          );
           if (appUrls.base) {
             const r = await fetch(appUrls.base);
             const rows = parseCSV(await r.text());
@@ -1622,6 +1951,12 @@
             appDB.base = newBase;
           }
 
+          updateProgress(
+            40,
+            appLang === "DE"
+              ? "Lade Farben CSV..."
+              : "Загрузка каталога цветов...",
+          );
           if (appUrls.farben) {
             const r = await fetch(appUrls.farben);
             const rows = parseCSV(await r.text());
@@ -1639,6 +1974,12 @@
             appDB.farben = newFarben;
           }
 
+          updateProgress(
+            65,
+            appLang === "DE"
+              ? "Lade Ausschuss & ERP..."
+              : "Загрузка дефектов и ERP...",
+          );
           if (appUrls.defects) {
             const r = await fetch(appUrls.defects);
             const rows = parseCSV(await r.text());
@@ -1676,6 +2017,12 @@
             if (newAuskunft.length > 0) appDB.auskunft = newAuskunft;
           }
 
+          updateProgress(
+            85,
+            appLang === "DE"
+              ? "Lade Mitarbeiterdaten..."
+              : "Загрузка списка сотрудников...",
+          );
           if (appUrls.users) {
             const r = await fetch(appUrls.users);
             const rows = parseCSV(await r.text());
@@ -1695,14 +2042,26 @@
             appDB.users = newUsers;
           }
 
-          localStorage.setItem("heroal_db_v2", JSON.stringify(appDB));
-          alert(
+          updateProgress(
+            95,
             appLang === "DE"
-              ? "✅ Synchronisation erfolgreich!"
-              : "✅ Синхронизация успешно завершена!",
+              ? "Speichere in IndexedDB..."
+              : "Сохранение в IndexedDB...",
           );
+          await idbSet("heroal_db", appDB);
+          updateProgress(100, appLang === "DE" ? "Abgeschlossen!" : "Готово!");
+
+          setTimeout(() => {
+            syncModal.classList.remove("active");
+            showToast(
+              appLang === "DE"
+                ? "✅ Synchronisation erfolgreich!"
+                : "✅ Синхронизация успешно завершена!",
+            );
+          }, 500);
         } catch (err) {
           console.error(err);
+          syncModal.classList.remove("active");
           alert(
             appLang === "DE"
               ? "⚠️ Fehler beim Synchronisieren."
@@ -1713,7 +2072,6 @@
         }
       }
 
-      // --- Settings Dialog ---
       function openSettings() {
         document.getElementById("cfg-url-base").value = appUrls.base || "";
         document.getElementById("cfg-url-farben").value = appUrls.farben || "";
@@ -1737,7 +2095,7 @@
         };
         localStorage.setItem("heroal_urls", JSON.stringify(appUrls));
         closeSettings();
-        alert(
+        showToast(
           appLang === "DE"
             ? "URLs gespeichert! Drücken Sie Sync."
             : "Ссылки сохранены! Нажмите Sync.",

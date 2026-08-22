@@ -1,4 +1,4 @@
-const CACHE_NAME = "heroal-lagerguide-v3";
+const CACHE_NAME = "heroal-lagerguide-v4";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
@@ -11,7 +11,6 @@ const STATIC_ASSETS = [
   "./icons/icon-512.png",
 ];
 
-// Установка Service Worker и сохранение ассетов
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -21,7 +20,6 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Активация и удаление старого кэша
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
@@ -37,7 +35,6 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Cache-First стратегия с динамическим кэшированием чертежей
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
