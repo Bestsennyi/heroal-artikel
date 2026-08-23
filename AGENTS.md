@@ -26,6 +26,42 @@ A static, offline-capable Progressive Web App (PWA) — a warehouse/packing assi
 
 **Working agreement.** The brief above is the design intent; it is expected to be reviewed against real results and adjusted as the project evolves. Treat it as direction, not a frozen spec.
 
+## The offline rule
+
+**Offline is the baseline state, not a fallback mode.** The app must be fully usable with no connectivity at all — the stated bar is "working 1 km underground". Reliable, fast, simple. Any change that makes correct behaviour depend on a live network is a regression, even if it works on a desk with good WiFi.
+
+Consequences that are easy to get wrong:
+
+- **Drawings must be downloaded during sync, not on first view.** They are the only content the app cannot reconstruct locally. `triggerSync` hands every drawing URL to the service worker (`PRECACHE_MEDIA`), which downloads and verifies each one.
+- **Never cache a response you cannot verify.** A cross-origin `no-cors` request returns an opaque response whose status is unreadable, so a transient HTTP 429 gets stored as if it were a drawing and the terminal shows a placeholder forever, offline, with nothing reporting it. Drawings are therefore fetched via the CORS-capable `lh3.googleusercontent.com/d/<id>=<size>` form of each Drive link so status and content type can be checked. This also cuts reported storage from ~1.3 GB to ~8 MB, because browsers pad opaque cache entries by megabytes each.
+- **Google Drive rate-limits bursts.** One sync asks for ~185 images. Downloads run at concurrency 2 with a cooldown shared across workers; retrying each image independently turns a burst limit into a stampede (a 3x retry once produced 579 requests, all 429, and cached nothing).
+- **A partially cached terminal must not look ready.** When drawings are missing the sync result warns with the count instead of reporting success, and startup logs `[offline] Artikel: N, Zeichnungen im Cache: X/Y`.
+- **Two caches, on purpose.** `heroal-shell-v*` is versioned and replaced on deploy; `heroal-media-v*` holds drawings and deliberately survives shell updates. Bumping the media cache name forces every terminal to re-download, so only do it to discard entries that may be corrupt.
+- **Service worker image lookups must search all caches.** App icons live in the shell cache while drawings live in the media cache, so `handleImage` uses `caches.match` rather than opening one cache.
+- **`navigator.storage.persist()` is requested at startup** so the cache is not evicted under storage pressure. Chrome grants this only for installed PWAs or sites with engagement, so it returns false on a plain localhost tab — expect `PERSISTED=false` in development. Real terminals should install the PWA.
+
+### Verifying offline behaviour
+
+Do not trust the DevTools "Offline" checkbox alone; it has silently failed to apply during testing. To prove offline behaviour, stop the static server *and* block the data hosts at DNS level, then flush Chrome's host cache via `chrome://net-internals/#dns`:
+
+```
+127.0.0.1 drive.google.com
+127.0.0.1 lh3.googleusercontent.com
+127.0.0.1 docs.google.com
+```
+
+Leaving throttling at "No throttling" makes the test stricter: the app still believes it is online, so anything that renders provably came from cache. Useful console checks:
+
+```js
+caches.keys().then(async ks => { for (const k of ks) { const c = await caches.open(k); console.log(k, (await c.keys()).length); } })
+navigator.storage.estimate().then(e => console.log((e.usage/1048576).toFixed(1) + ' MB'))
+```
+
+### Known weak points (not yet addressed)
+
+- Drawings are hosted on Google Drive via the undocumented `thumbnail`/`lh3` endpoints. This is the most fragile dependency in the project: it rate-limits, and the URL format could change without notice. Hosting the drawings with the app or on a real CDN would remove the sync's only unreliable step.
+- `handleLogin` accepts any unknown Packnummer as a generic "Mitarbeiter", so the `gesperrt` block is bypassable by typing a different number. `README.md` also documents a master code `9999` that does not exist in the code.
+
 ## Communication
 
 The maintainer (Maksym) communicates in Russian — reply in Russian unless asked otherwise. Code, identifiers and commit messages stay in English; user-facing UI strings stay German/Russian.
