@@ -2193,12 +2193,23 @@
           setTimeout(() => {
             syncModal.classList.remove("active");
             const cached = mediaResult ? mediaResult.cached : 0;
+            const missing = mediaResult ? mediaResult.failed : 0;
             const base = Object.keys(appDB.base || {}).length;
-            showToast(
-              appLang === "DE"
-                ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline`
-                : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн`,
-            );
+
+            // A partially cached terminal must not look fully offline-ready.
+            if (missing > 0) {
+              showToast(
+                appLang === "DE"
+                  ? `⚠️ ${base} Artikel, ${cached} Zeichnungen offline — ${missing} fehlen, Sync wiederholen`
+                  : `⚠️ ${base} артикулов, ${cached} чертежей офлайн — ${missing} не загружено, повторите Sync`,
+              );
+            } else {
+              showToast(
+                appLang === "DE"
+                  ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline`
+                  : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн`,
+              );
+            }
           }, 500);
         } catch (err) {
           console.error(err);

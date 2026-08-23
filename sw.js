@@ -11,7 +11,9 @@
  */
 const SHELL_VERSION = "v5";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
-const MEDIA_CACHE = "heroal-media-v1";
+// v2: v1 could contain unverified opaque responses, including cached error
+// pages that render as permanently broken drawings. Renaming discards them once.
+const MEDIA_CACHE = "heroal-media-v2";
 const KEEP_CACHES = [SHELL_CACHE, MEDIA_CACHE];
 
 const SHELL_ASSETS = [
@@ -26,7 +28,8 @@ const SHELL_ASSETS = [
   "./icons/icon-512.png",
 ];
 
-const PRECACHE_CONCURRENCY = 6;
+const PRECACHE_CONCURRENCY = 4;
+const MAX_DOWNLOAD_ATTEMPTS = 3;
 
 /** Requests for article drawings and other pictures. */
 function isImageRequest(request) {
@@ -38,13 +41,26 @@ function isImageRequest(request) {
 }
 
 /**
- * An opaque response (cross-origin `no-cors`) always reports status 0, so
- * `response.ok` is false even when the download succeeded. Treating opaque
- * responses as cacheable is what makes the Google Drive drawings available
- * offline at all.
+ * Google Drive thumbnail links redirect to lh3.googleusercontent.com, and only
+ * that final host sends CORS headers. Requesting it directly makes the response
+ * readable, which is what allows us to tell a real drawing from an error page
+ * (a cached HTTP 429 would look like a permanently broken drawing on a terminal
+ * that is already underground). It also avoids the multi-megabyte storage
+ * padding the browser applies to unreadable opaque responses.
  */
-function isCacheable(response) {
-  return Boolean(response) && (response.ok || response.type === "opaque");
+function corsCandidate(url) {
+  const match = /^https?:\/\/drive\.google\.com\/thumbnail\?(.*)$/i.exec(url);
+  if (!match) return null;
+
+  const params = new URLSearchParams(match[1]);
+  const id = params.get("id");
+  if (!id) return null;
+
+  return `https://lh3.googleusercontent.com/d/${id}=${params.get("sz") || "w1000"}`;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function offlineResponse(message) {
@@ -91,13 +107,18 @@ self.addEventListener("activate", (event) => {
 
 /** Cache-first: drawings are immutable, so a hit is served without touching the network. */
 async function handleImage(request) {
-  const cache = await caches.open(MEDIA_CACHE);
-  const cached = await cache.match(request);
+  // Searches every cache: app icons are precached in the shell cache while
+  // article drawings live in the media cache.
+  const cached = await caches.match(request);
   if (cached) return cached;
 
   try {
     const response = await fetch(request);
-    if (isCacheable(response)) {
+    // Only verifiable responses are stored. Cross-origin drawings arrive here as
+    // unreadable opaque responses, so they are cached exclusively by the
+    // validated precache path below rather than gambling on an error page.
+    if (response.ok) {
+      const cache = await caches.open(MEDIA_CACHE);
       await cache.put(request, response.clone());
     }
     return response;
@@ -144,6 +165,33 @@ self.addEventListener("fetch", (event) => {
 });
 
 /**
+ * Fetches one drawing and returns it only if it is definitely an image.
+ * Rate limiting (429) and server errors are retried, because a single sync
+ * requests a couple of hundred drawings from the same host in a burst.
+ */
+async function downloadDrawing(url) {
+  const target = corsCandidate(url) || url;
+
+  for (let attempt = 1; attempt <= MAX_DOWNLOAD_ATTEMPTS; attempt++) {
+    let transient = true;
+    try {
+      const response = await fetch(target, { mode: "cors", cache: "no-store" });
+      const type = response.headers.get("Content-Type") || "";
+      if (response.ok && type.startsWith("image/")) return response;
+      // 4xx other than 429 will not resolve by trying again.
+      transient = response.status === 429 || response.status >= 500;
+    } catch (err) {
+      // Network or CORS failure; worth one more try.
+    }
+
+    if (!transient) return null;
+    if (attempt < MAX_DOWNLOAD_ATTEMPTS) await sleep(600 * 2 ** (attempt - 1));
+  }
+
+  return null;
+}
+
+/**
  * Downloads every article drawing so the app is offline-ready before the
  * device loses connectivity. Re-running overwrites existing entries, which is
  * how a drawing corrected in the source data reaches already-synced devices.
@@ -166,11 +214,9 @@ async function precacheMedia(urls, port) {
     while (cursor < unique.length) {
       const url = unique[cursor++];
       try {
-        const response = await fetch(url, {
-          mode: "no-cors",
-          cache: "no-store",
-        });
-        if (isCacheable(response)) {
+        const response = await downloadDrawing(url);
+        if (response) {
+          // Stored under the original URL so the <img> tags hit the cache.
           await cache.put(url, response);
           cachedCount++;
         } else {
