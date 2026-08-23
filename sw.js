@@ -16,17 +16,33 @@ const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 const MEDIA_CACHE = "heroal-media-v2";
 const KEEP_CACHES = [SHELL_CACHE, MEDIA_CACHE];
 
+// Icons declared only in the HTML, which the manifest does not list.
 const SHELL_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icons/favicon.ico",
-  "./icons/favicon-16x16.png",
-  "./icons/favicon-32x32.png",
   "./icons/apple-touch-icon.png",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
 ];
+
+/**
+ * Icons listed in the manifest, so adding one there is enough to have it
+ * available offline. Hardcoding the set here meant a new icon silently missed
+ * the cache until someone remembered to edit this file too.
+ */
+async function manifestIconAssets() {
+  try {
+    const response = await fetch("./manifest.json", { cache: "reload" });
+    if (!response.ok) return [];
+    const manifest = await response.json();
+    return (manifest.icons || [])
+      .map((icon) => icon && icon.src)
+      .filter(Boolean);
+  } catch (err) {
+    console.warn("[sw] could not read icons from manifest:", err);
+    return [];
+  }
+}
 
 // Google Drive rate-limits bursts, and a sync asks for a couple of hundred
 // drawings at once, so downloads stay deliberately gentle and back off together.
@@ -91,10 +107,13 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(SHELL_CACHE);
+      const assets = [
+        ...new Set([...SHELL_ASSETS, ...(await manifestIconAssets())]),
+      ];
       // Cache assets individually: with addAll a single missing file would
       // abort the whole install and leave the app without an offline shell.
       await Promise.all(
-        SHELL_ASSETS.map(async (asset) => {
+        assets.map(async (asset) => {
           try {
             await cache.add(new Request(asset, { cache: "reload" }));
           } catch (err) {
