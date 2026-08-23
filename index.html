@@ -1266,6 +1266,77 @@
         });
       }
 
+      /**
+       * Sends a command to the service worker over a private MessageChannel.
+       * `onProgress` receives every intermediate message; the promise resolves
+       * with the final one. Resolves to null when no worker is controlling the
+       * page yet, so callers can degrade instead of hanging.
+       */
+      function swRequest(message, onProgress, timeoutMs = 15 * 60 * 1000) {
+        if (!("serviceWorker" in navigator)) return Promise.resolve(null);
+
+        return navigator.serviceWorker.ready
+          .then((registration) => {
+            const worker = registration.active;
+            if (!worker) return null;
+
+            return new Promise((resolve) => {
+              const channel = new MessageChannel();
+              const timer = setTimeout(() => {
+                channel.port1.close();
+                resolve(null);
+              }, timeoutMs);
+
+              channel.port1.onmessage = (event) => {
+                const data = event.data || {};
+                if (data.type && data.type.endsWith("_PROGRESS")) {
+                  if (onProgress) onProgress(data);
+                  return;
+                }
+                clearTimeout(timer);
+                channel.port1.close();
+                resolve(data);
+              };
+
+              worker.postMessage(message, [channel.port2]);
+            });
+          })
+          .catch(() => null);
+      }
+
+      /**
+       * Asks the browser to exempt our storage from automatic eviction. Without
+       * this, the drawing cache can be purged under storage pressure and a
+       * warehouse terminal would silently lose its offline data.
+       */
+      async function requestPersistentStorage() {
+        try {
+          if (!navigator.storage || !navigator.storage.persist) return;
+          if (await navigator.storage.persisted()) return;
+          await navigator.storage.persist();
+        } catch (err) {
+          console.warn("[offline] persistent storage unavailable", err);
+        }
+      }
+
+      /** Every distinct drawing URL referenced by the article database. */
+      function collectDrawingUrls() {
+        const urls = new Set();
+        Object.values(appDB.base || {}).forEach((item) => {
+          if (item.img) urls.add(item.img);
+          (item.extra || []).forEach((extra) => {
+            if (extra && /^https?:\/\//i.test(extra)) urls.add(extra);
+          });
+        });
+        return [...urls];
+      }
+
+      /** Number of drawings currently available offline. */
+      async function getCachedDrawingCount() {
+        const res = await swRequest({ type: "MEDIA_STATS" }, null, 15000);
+        return res && typeof res.count === "number" ? res.count : null;
+      }
+
       // Online/Offline Tracker
       function updateOnlineStatus() {
         const badge = document.getElementById("netStatus");
@@ -1304,32 +1375,56 @@
           };
           req.onsuccess = (e) => {
             dbInstance = e.target.result;
+            // A cached handle stays unusable once the database is closed or
+            // deleted underneath us, so drop it and let the next call reopen.
+            dbInstance.onclose = () => {
+              dbInstance = null;
+            };
+            dbInstance.onversionchange = () => {
+              if (dbInstance) dbInstance.close();
+              dbInstance = null;
+            };
             resolve(dbInstance);
           };
           req.onerror = (e) => reject(e);
         });
       }
 
-      async function idbGet(key) {
-        const db = await openWarehouseDB();
+      function runTransaction(mode, work) {
         return new Promise((resolve, reject) => {
-          const tx = db.transaction("store_data", "readonly");
-          const store = tx.objectStore("store_data");
-          const req = store.get(key);
-          req.onsuccess = () => resolve(req.result);
-          req.onerror = () => reject(req.error);
+          openWarehouseDB().then((db) => {
+            let req;
+            try {
+              const tx = db.transaction("store_data", mode);
+              req = work(tx.objectStore("store_data"));
+            } catch (err) {
+              // Stale handle (e.g. storage cleared): forget it so the retry reopens.
+              dbInstance = null;
+              reject(err);
+              return;
+            }
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          }, reject);
         });
       }
 
-      async function idbSet(key, val) {
-        const db = await openWarehouseDB();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction("store_data", "readwrite");
-          const store = tx.objectStore("store_data");
-          const req = store.put(val, key);
-          req.onsuccess = () => resolve();
-          req.onerror = () => reject(req.error);
-        });
+      /** Retries once with a fresh connection before giving up. */
+      async function idbRun(mode, work) {
+        try {
+          return await runTransaction(mode, work);
+        } catch (err) {
+          dbInstance = null;
+          return runTransaction(mode, work);
+        }
+      }
+
+      function idbGet(key) {
+        return idbRun("readonly", (store) => store.get(key));
+      }
+
+      function idbSet(key, val) {
+        return idbRun("readwrite", (store) => store.put(val, key));
       }
 
       // Default Seed Data
@@ -1448,7 +1543,25 @@
         initHotkeys();
         initAutoLogout();
         updateOnlineStatus();
+        requestPersistentStorage();
+        reportOfflineReadiness();
       });
+
+      /** Logs how much of the database is available without connectivity. */
+      async function reportOfflineReadiness() {
+        const expected = collectDrawingUrls().length;
+        const cached = await getCachedDrawingCount();
+        console.info(
+          `[offline] Artikel: ${Object.keys(appDB.base || {}).length}, ` +
+            `Zeichnungen im Cache: ${cached === null ? "?" : cached}/${expected}`,
+        );
+        if (cached !== null && expected > 0 && cached < expected) {
+          document.getElementById("btn-sync").title =
+            appLang === "DE"
+              ? `Sync: ${expected - cached} Zeichnungen fehlen offline`
+              : `Sync: не хватает ${expected - cached} чертежей для офлайна`;
+        }
+      }
 
       async function initDatabase() {
         try {
@@ -1925,9 +2038,13 @@
           statusTxt.innerText = label;
         };
 
+        // Staged so a failure halfway through cannot leave the in-memory
+        // database holding a mix of new and old tables.
+        const staged = {};
+
         try {
           updateProgress(
-            15,
+            10,
             appLang === "DE" ? "Lade Profile CSV..." : "Загрузка профилей...",
           );
           if (appUrls.base) {
@@ -1948,11 +2065,11 @@
                 };
               }
             }
-            appDB.base = newBase;
+            staged.base = newBase;
           }
 
           updateProgress(
-            40,
+            25,
             appLang === "DE"
               ? "Lade Farben CSV..."
               : "Загрузка каталога цветов...",
@@ -1971,11 +2088,11 @@
                 };
               }
             }
-            appDB.farben = newFarben;
+            staged.farben = newFarben;
           }
 
           updateProgress(
-            65,
+            35,
             appLang === "DE"
               ? "Lade Ausschuss & ERP..."
               : "Загрузка дефектов и ERP...",
@@ -1995,7 +2112,7 @@
                 });
               }
             }
-            if (newDefects.length > 0) appDB.defects = newDefects;
+            if (newDefects.length > 0) staged.defects = newDefects;
           }
 
           if (appUrls.auskunft) {
@@ -2014,11 +2131,11 @@
                 });
               }
             }
-            if (newAuskunft.length > 0) appDB.auskunft = newAuskunft;
+            if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
           }
 
           updateProgress(
-            85,
+            45,
             appLang === "DE"
               ? "Lade Mitarbeiterdaten..."
               : "Загрузка списка сотрудников...",
@@ -2039,24 +2156,48 @@
                 };
               }
             }
-            appDB.users = newUsers;
+            staged.users = newUsers;
           }
 
           updateProgress(
-            95,
+            55,
             appLang === "DE"
               ? "Speichere in IndexedDB..."
               : "Сохранение в IndexedDB...",
           );
+          appDB = { ...appDB, ...staged };
           await idbSet("heroal_db", appDB);
+
+          // Drawings are the one thing the app cannot reconstruct offline, so
+          // they are downloaded now rather than on first view.
+          const drawings = collectDrawingUrls();
+          let mediaResult = null;
+          if (drawings.length > 0) {
+            const drawingLabel = (done, total) =>
+              appLang === "DE"
+                ? `Zeichnungen offline verfügbar machen... ${done}/${total}`
+                : `Сохранение чертежей для офлайна... ${done}/${total}`;
+
+            updateProgress(60, drawingLabel(0, drawings.length));
+            mediaResult = await swRequest(
+              { type: "PRECACHE_MEDIA", urls: drawings },
+              ({ done, total }) => {
+                const pct = total ? 60 + Math.round((done / total) * 38) : 98;
+                updateProgress(pct, drawingLabel(done, total));
+              },
+            );
+          }
+
           updateProgress(100, appLang === "DE" ? "Abgeschlossen!" : "Готово!");
 
           setTimeout(() => {
             syncModal.classList.remove("active");
+            const cached = mediaResult ? mediaResult.cached : 0;
+            const base = Object.keys(appDB.base || {}).length;
             showToast(
               appLang === "DE"
-                ? "✅ Synchronisation erfolgreich!"
-                : "✅ Синхронизация успешно завершена!",
+                ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline`
+                : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн`,
             );
           }, 500);
         } catch (err) {
