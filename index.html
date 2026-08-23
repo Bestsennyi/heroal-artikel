@@ -6,7 +6,14 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
+    <meta
+      name="description"
+      content="Lager- und Verpackungsassistent für heroal Profilsysteme: Artikelsuche mit Zeichnungen, Farbkatalog (RAL/SD), Ausschussgründe für ERP-Maske 15 und Verpackungsvorgaben. Offline-fähig."
+    />
     <meta name="theme-color" content="#003a79" />
+    <!-- mobile-web-app-capable is the current standard; the apple- prefixed
+         variant is kept for older iOS but is deprecated on its own. -->
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
@@ -27,6 +34,14 @@
       type="image/png"
       sizes="16x16"
       href="icons/favicon-16x16.png"
+    />
+    <!-- Google picks a search-result favicon only from a square icon whose size
+         is a multiple of 48px, which 16x16 and 32x32 are not. -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="icons/icon-192.png"
     />
     <link
       rel="apple-touch-icon"
@@ -1238,6 +1253,15 @@
           <input type="text" id="cfg-url-users" class="url-input" />
         </div>
 
+        <button
+          class="btn-hdr"
+          style="height: 36px; font-size: 12px; margin-top: 6px"
+          onclick="reloadAllDrawings()"
+          title="Nur nötig, wenn eine Zeichnung in der Quelle korrigiert wurde"
+        >
+          🖼 Alle Zeichnungen neu laden
+        </button>
+
         <div style="display: flex; gap: 8px; margin-top: 6px">
           <button
             class="login-btn"
@@ -2014,7 +2038,19 @@
         });
       }
 
-      async function triggerSync() {
+      /** Label for the drawing stage; `total` is only what still needs fetching. */
+      function drawingProgressLabel(done, total) {
+        if (!total) {
+          return appLang === "DE"
+            ? "Zeichnungen prüfen..."
+            : "Проверка чертежей...";
+        }
+        return appLang === "DE"
+          ? `Neue Zeichnungen laden... ${done}/${total}`
+          : `Загрузка новых чертежей... ${done}/${total}`;
+      }
+
+      async function triggerSync(force = false) {
         if (!navigator.onLine) {
           alert(
             appLang === "DE"
@@ -2169,21 +2205,17 @@
           await idbSet("heroal_db", appDB);
 
           // Drawings are the one thing the app cannot reconstruct offline, so
-          // they are downloaded now rather than on first view.
+          // they are downloaded now rather than on first view. Only the ones
+          // missing from the cache are fetched, which keeps a daily sync short.
           const drawings = collectDrawingUrls();
           let mediaResult = null;
           if (drawings.length > 0) {
-            const drawingLabel = (done, total) =>
-              appLang === "DE"
-                ? `Zeichnungen offline verfügbar machen... ${done}/${total}`
-                : `Сохранение чертежей для офлайна... ${done}/${total}`;
-
-            updateProgress(60, drawingLabel(0, drawings.length));
+            updateProgress(60, drawingProgressLabel(0, 0));
             mediaResult = await swRequest(
-              { type: "PRECACHE_MEDIA", urls: drawings },
+              { type: "PRECACHE_MEDIA", urls: drawings, force },
               ({ done, total }) => {
                 const pct = total ? 60 + Math.round((done / total) * 38) : 98;
-                updateProgress(pct, drawingLabel(done, total));
+                updateProgress(pct, drawingProgressLabel(done, total));
               },
             );
           }
@@ -2194,20 +2226,41 @@
             syncModal.classList.remove("active");
             const cached = mediaResult ? mediaResult.cached : 0;
             const missing = mediaResult ? mediaResult.failed : 0;
+            const added = mediaResult ? mediaResult.downloaded || 0 : 0;
             const base = Object.keys(appDB.base || {}).length;
 
             // A partially cached terminal must not look fully offline-ready.
-            if (missing > 0) {
+            if (mediaResult && mediaResult.aborted) {
+              const drawings = cached + missing;
+              const lostConnection = mediaResult.reason === "network";
+              showToast(
+                appLang === "DE"
+                  ? lostConnection
+                    ? `⚠️ Verbindung verloren: ${cached} von ${drawings} Zeichnungen offline — Sync wiederholen`
+                    : `⚠️ Zeichnungs-Server begrenzt Anfragen: ${cached} von ${drawings} offline — Sync später wiederholen`
+                  : lostConnection
+                    ? `⚠️ Соединение потеряно: ${cached} из ${drawings} чертежей офлайн — повторите Sync`
+                    : `⚠️ Сервер чертежей ограничивает запросы: ${cached} из ${drawings} офлайн — повторите Sync позже`,
+              );
+            } else if (missing > 0) {
               showToast(
                 appLang === "DE"
                   ? `⚠️ ${base} Artikel, ${cached} Zeichnungen offline — ${missing} fehlen, Sync wiederholen`
                   : `⚠️ ${base} артикулов, ${cached} чертежей офлайн — ${missing} не загружено, повторите Sync`,
               );
             } else {
+              // Naming the newly fetched count makes it obvious that a routine
+              // sync only pulls the day's additions.
+              const newlyAdded =
+                added > 0
+                  ? appLang === "DE"
+                    ? `, ${added} neu geladen`
+                    : `, ${added} новых загружено`
+                  : "";
               showToast(
                 appLang === "DE"
-                  ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline`
-                  : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн`,
+                  ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline${newlyAdded}`
+                  : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн${newlyAdded}`,
               );
             }
           }, 500);
@@ -2237,6 +2290,31 @@
       function closeSettings() {
         document.getElementById("settings-dialog").classList.remove("active");
       }
+      /**
+       * Re-downloads every drawing, ignoring what is already cached. Needed when
+       * a drawing was corrected at the source, since the incremental path would
+       * otherwise keep serving the version already on the device.
+       */
+      function reloadAllDrawings() {
+        if (!navigator.onLine) {
+          alert(
+            appLang === "DE"
+              ? "⚠️ Offline: Keine Internetverbindung!"
+              : "⚠️ Офлайн: Нет подключения к интернету!",
+          );
+          return;
+        }
+        const count = collectDrawingUrls().length;
+        const confirmed = confirm(
+          appLang === "DE"
+            ? `${count} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.`
+            : `Перекачать все ${count} чертежей заново? Это заметно дольше обычной синхронизации.`,
+        );
+        if (!confirmed) return;
+        closeSettings();
+        triggerSync(true);
+      }
+
       function saveSettings() {
         appUrls = {
           base: document.getElementById("cfg-url-base").value.trim(),
