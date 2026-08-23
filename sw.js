@@ -28,8 +28,12 @@ const SHELL_ASSETS = [
   "./icons/icon-512.png",
 ];
 
-const PRECACHE_CONCURRENCY = 4;
-const MAX_DOWNLOAD_ATTEMPTS = 3;
+// Google Drive rate-limits bursts, and a sync asks for a couple of hundred
+// drawings at once, so downloads stay deliberately gentle and back off together.
+const PRECACHE_CONCURRENCY = 2;
+const MAX_DOWNLOAD_ATTEMPTS = 4;
+const RATE_LIMIT_COOLDOWN_MS = 4000;
+const MAX_COOLDOWN_MS = 30000;
 
 /** Requests for article drawings and other pictures. */
 function isImageRequest(request) {
@@ -165,27 +169,54 @@ self.addEventListener("fetch", (event) => {
 });
 
 /**
- * Fetches one drawing and returns it only if it is definitely an image.
- * Rate limiting (429) and server errors are retried, because a single sync
- * requests a couple of hundred drawings from the same host in a burst.
+ * Shared cooldown: when one download is rate-limited, every worker waits.
+ * Retrying independently is what turns a burst limit into a stampede.
  */
+let rateLimitedUntil = 0;
+
+async function awaitRateLimit() {
+  const remaining = rateLimitedUntil - Date.now();
+  if (remaining > 0) await sleep(remaining);
+}
+
+function noteRateLimit(response) {
+  // Retry-After is not CORS-safelisted, so it is usually unreadable here.
+  const retryAfter = Number(response.headers.get("Retry-After"));
+  const delay =
+    Number.isFinite(retryAfter) && retryAfter > 0
+      ? retryAfter * 1000
+      : RATE_LIMIT_COOLDOWN_MS;
+  rateLimitedUntil = Math.max(
+    rateLimitedUntil,
+    Date.now() + Math.min(delay, MAX_COOLDOWN_MS),
+  );
+}
+
+/** Fetches one drawing and returns it only if it is definitely an image. */
 async function downloadDrawing(url) {
   const target = corsCandidate(url) || url;
 
   for (let attempt = 1; attempt <= MAX_DOWNLOAD_ATTEMPTS; attempt++) {
+    await awaitRateLimit();
+
     let transient = true;
     try {
       const response = await fetch(target, { mode: "cors", cache: "no-store" });
       const type = response.headers.get("Content-Type") || "";
       if (response.ok && type.startsWith("image/")) return response;
-      // 4xx other than 429 will not resolve by trying again.
-      transient = response.status === 429 || response.status >= 500;
+
+      if (response.status === 429) {
+        noteRateLimit(response);
+      } else if (response.status < 500) {
+        // Any other 4xx means this drawing will not appear by asking again.
+        transient = false;
+      }
     } catch (err) {
-      // Network or CORS failure; worth one more try.
+      // Network or CORS failure; worth another try.
     }
 
     if (!transient) return null;
-    if (attempt < MAX_DOWNLOAD_ATTEMPTS) await sleep(600 * 2 ** (attempt - 1));
+    if (attempt < MAX_DOWNLOAD_ATTEMPTS) await sleep(1500 * 2 ** (attempt - 1));
   }
 
   return null;
