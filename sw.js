@@ -34,6 +34,18 @@ const PRECACHE_CONCURRENCY = 2;
 const MAX_DOWNLOAD_ATTEMPTS = 4;
 const RATE_LIMIT_COOLDOWN_MS = 4000;
 const MAX_COOLDOWN_MS = 30000;
+// Being throttled is worth waiting out; an unreachable host is not. Retrying
+// every drawing through the full backoff once the connection is gone stalls the
+// sync dialog for many minutes, so hard network errors give up quickly and the
+// run is abandoned altogether after a few in a row.
+const MAX_NETWORK_ATTEMPTS = 2;
+const NETWORK_ABORT_THRESHOLD = 6;
+// Patience for throttling still needs a ceiling. When the host refuses nearly
+// everything, walking the whole list caches nothing and leaves the operator in
+// front of a frozen dialog for minutes, so the run is bounded both by a run of
+// consecutive failures and by wall-clock time.
+const FAILURE_ABORT_THRESHOLD = 8;
+const PRECACHE_DEADLINE_MS = 120000;
 
 /** Requests for article drawings and other pictures. */
 function isImageRequest(request) {
@@ -192,48 +204,93 @@ function noteRateLimit(response) {
   );
 }
 
-/** Fetches one drawing and returns it only if it is definitely an image. */
-async function downloadDrawing(url) {
+/**
+ * Fetches one drawing. Resolves to `{ response }` only when the result is
+ * definitely an image, otherwise to `{ kind }` describing why it failed so the
+ * caller can tell a missing drawing from a lost connection.
+ */
+async function downloadDrawing(url, deadline) {
   const target = corsCandidate(url) || url;
+  let networkFailures = 0;
 
   for (let attempt = 1; attempt <= MAX_DOWNLOAD_ATTEMPTS; attempt++) {
+    if (deadline && Date.now() > deadline) return { kind: "timeout" };
     await awaitRateLimit();
 
-    let transient = true;
     try {
       const response = await fetch(target, { mode: "cors", cache: "no-store" });
       const type = response.headers.get("Content-Type") || "";
-      if (response.ok && type.startsWith("image/")) return response;
+      if (response.ok && type.startsWith("image/")) return { response };
 
       if (response.status === 429) {
         noteRateLimit(response);
       } else if (response.status < 500) {
         // Any other 4xx means this drawing will not appear by asking again.
-        transient = false;
+        return { kind: "missing" };
       }
     } catch (err) {
-      // Network or CORS failure; worth another try.
+      networkFailures++;
+      if (networkFailures >= MAX_NETWORK_ATTEMPTS) return { kind: "network" };
     }
 
-    if (!transient) return null;
     if (attempt < MAX_DOWNLOAD_ATTEMPTS) await sleep(1500 * 2 ** (attempt - 1));
   }
 
-  return null;
+  return { kind: "missing" };
 }
 
 /**
- * Downloads every article drawing so the app is offline-ready before the
- * device loses connectivity. Re-running overwrites existing entries, which is
- * how a drawing corrected in the source data reaches already-synced devices.
+ * Downloads article drawings so the app is offline-ready before the device
+ * loses connectivity.
+ *
+ * Incremental by default: drawings already in the cache are left alone. The
+ * catalogue grows daily, and re-fetching the whole set on every sync is what
+ * makes a routine sync slow and provokes the host's rate limiting — the cost
+ * scales with the number of requests, not the few megabytes involved.
+ *
+ * Pass `force` to re-download everything, which is how a drawing corrected in
+ * the source data reaches terminals that already cached the old version.
  */
-async function precacheMedia(urls, port) {
+async function precacheMedia(urls, port, options) {
+  const force = Boolean(options && options.force);
   const cache = await caches.open(MEDIA_CACHE);
-  const unique = [...new Set((urls || []).filter(Boolean))];
+  const wanted = [...new Set((urls || []).filter(Boolean))];
+
+  // Drop entries no longer referenced by the database so a renamed or removed
+  // drawing cannot linger in the cache forever.
+  const keep = new Set(wanted);
+  let pruned = 0;
+  for (const request of await cache.keys()) {
+    if (!keep.has(request.url)) {
+      await cache.delete(request);
+      pruned++;
+    }
+  }
+
+  const pending = [];
+  let reused = 0;
+  for (const url of wanted) {
+    if (!force && (await cache.match(url))) {
+      reused++;
+    } else {
+      pending.push(url);
+    }
+  }
+
+  const unique = pending;
   const total = unique.length;
+  const deadline = Date.now() + PRECACHE_DEADLINE_MS;
   let done = 0;
   let cachedCount = 0;
-  let failed = 0;
+  let consecutiveNetworkErrors = 0;
+  let consecutiveFailures = 0;
+  let aborted = false;
+  let abortReason = null;
+
+  const abort = (reason) => {
+    aborted = true;
+    abortReason = abortReason || reason;
+  };
 
   const report = () => {
     if (port) port.postMessage({ type: "PRECACHE_PROGRESS", done, total });
@@ -242,20 +299,35 @@ async function precacheMedia(urls, port) {
 
   let cursor = 0;
   async function worker() {
-    while (cursor < unique.length) {
+    while (cursor < unique.length && !aborted) {
       const url = unique[cursor++];
       try {
-        const response = await downloadDrawing(url);
-        if (response) {
+        const result = await downloadDrawing(url, deadline);
+        if (result.response) {
           // Stored under the original URL so the <img> tags hit the cache.
-          await cache.put(url, response);
+          await cache.put(url, result.response);
           cachedCount++;
+          consecutiveNetworkErrors = 0;
+          consecutiveFailures = 0;
         } else {
-          failed++;
+          consecutiveFailures++;
+          if (result.kind === "network") {
+            consecutiveNetworkErrors++;
+            if (consecutiveNetworkErrors >= NETWORK_ABORT_THRESHOLD) {
+              abort("network");
+            }
+          } else {
+            consecutiveNetworkErrors = 0;
+          }
+          if (consecutiveFailures >= FAILURE_ABORT_THRESHOLD) {
+            abort("unavailable");
+          }
         }
       } catch (err) {
-        failed++;
+        consecutiveFailures++;
       }
+
+      if (Date.now() > deadline) abort("timeout");
       done++;
       report();
     }
@@ -266,11 +338,17 @@ async function precacheMedia(urls, port) {
   );
 
   if (port) {
+    const offline = reused + cachedCount;
     port.postMessage({
       type: "PRECACHE_DONE",
-      total,
-      cached: cachedCount,
-      failed,
+      total: wanted.length,
+      cached: offline,
+      failed: wanted.length - offline,
+      downloaded: cachedCount,
+      reused,
+      pruned,
+      aborted,
+      reason: abortReason,
     });
   }
 }
@@ -286,7 +364,7 @@ self.addEventListener("message", (event) => {
   const port = event.ports && event.ports[0];
 
   if (data.type === "PRECACHE_MEDIA") {
-    event.waitUntil(precacheMedia(data.urls, port));
+    event.waitUntil(precacheMedia(data.urls, port, { force: data.force }));
   } else if (data.type === "MEDIA_STATS") {
     event.waitUntil(mediaStats(port));
   } else if (data.type === "SKIP_WAITING") {
