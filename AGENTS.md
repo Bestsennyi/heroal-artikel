@@ -53,7 +53,11 @@ Do not trust the DevTools "Offline" checkbox alone; it has silently failed to ap
 127.0.0.1 docs.google.com
 ```
 
-Leaving throttling at "No throttling" makes the test stricter: the app still believes it is online, so anything that renders provably came from cache. Useful console checks:
+Leaving throttling at "No throttling" makes the test stricter: the app still believes it is online, so anything that renders provably came from cache.
+
+**Do not use a hard reload when checking cached drawings.** Chrome's Shift+F5 bypasses the service worker for that load, so images go straight to the network and every drawing falls back to the placeholder — it looks exactly like a broken cache. Confirm with `navigator.serviceWorker.controller`, which is null in that state, and re-check with a plain F5.
+
+Useful console checks:
 
 ```js
 caches.keys().then(async ks => { for (const k of ks) { const c = await caches.open(k); console.log(k, (await c.keys()).length); } })
