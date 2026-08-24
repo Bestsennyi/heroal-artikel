@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v9";
+const SHELL_VERSION = "v10";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.
@@ -166,20 +166,40 @@ async function handleImage(request) {
 
 async function handleShell(request) {
   const cache = await caches.open(SHELL_CACHE);
+  const url = new URL(request.url);
+  const isDocument =
+    request.mode === "navigate" ||
+    request.destination === "document" ||
+    url.pathname.endsWith("/") ||
+    url.pathname.endsWith("/index.html");
+
+  // HTML must revalidate so a deploy is visible on the next load. Drawings
+  // stay cache-first; going underground still has the last good shell.
+  if (isDocument) {
+    try {
+      const response = await fetch(request, { cache: "reload" });
+      if (response.ok && url.origin === self.location.origin) {
+        await cache.put(request, response.clone());
+      }
+      return response;
+    } catch (err) {
+      const cached =
+        (await cache.match(request, { ignoreSearch: true })) ||
+        (await cache.match("./index.html"));
+      return cached || offlineResponse();
+    }
+  }
+
   const cached = await cache.match(request, { ignoreSearch: true });
   if (cached) return cached;
 
   try {
     const response = await fetch(request);
-    if (response.ok && new URL(request.url).origin === self.location.origin) {
+    if (response.ok && url.origin === self.location.origin) {
       await cache.put(request, response.clone());
     }
     return response;
   } catch (err) {
-    if (request.mode === "navigate" || request.destination === "document") {
-      const fallback = await cache.match("./index.html");
-      if (fallback) return fallback;
-    }
     return offlineResponse();
   }
 }
@@ -190,6 +210,9 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.protocol !== "http:" && url.protocol !== "https:") return;
+
+  // The browser must fetch sw.js itself, or updates never install.
+  if (url.pathname.endsWith("/sw.js")) return;
 
   // Spreadsheet exports must always be fresh; they are the sync source.
   if (url.hostname === "docs.google.com") return;
