@@ -139,7 +139,7 @@
           0 0 0 1px rgba(255, 255, 255, 0.04);
       }
       .login-logo {
-        font-size: clamp(22px, 4.2vw, 26px);
+        font-size: clamp(28px, 5.6vw, 34px);
         font-weight: 700;
         color: #fff;
         letter-spacing: 0.2px;
@@ -148,12 +148,6 @@
       }
       .login-logo span {
         color: var(--heroal-light-blue);
-      }
-      .login-title {
-        font-size: clamp(16px, 3.4vw, 18px);
-        font-weight: 600;
-        color: #ffffff;
-        text-align: center;
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -273,7 +267,8 @@
         display: none;
       }
       .numpad-key {
-        min-height: 44px;
+        min-height: 56px;
+        height: 56px;
         border-radius: 10px;
         border: 1.5px solid #334155;
         background: #1e293b;
@@ -418,7 +413,8 @@
           font-size: 16px;
         }
         .numpad-key {
-          min-height: 48px;
+          min-height: 56px;
+          height: 56px;
         }
         .lang-trigger,
         .lang-option {
@@ -431,7 +427,8 @@
           gap: 8px;
         }
         .numpad-key {
-          min-height: 42px;
+          min-height: 50px;
+          height: 50px;
         }
       }
       @media (min-width: 900px) {
@@ -441,10 +438,7 @@
           gap: 8px;
         }
         .login-logo {
-          font-size: 22px;
-        }
-        .login-title {
-          font-size: 16px;
+          font-size: 30px;
         }
         .login-sub {
           font-size: 13px;
@@ -468,8 +462,9 @@
           gap: 6px;
         }
         .numpad-key {
-          min-height: 36px;
-          font-size: 18px;
+          min-height: 52px;
+          height: 52px;
+          font-size: 20px;
         }
         .lang-trigger {
           min-height: 32px;
@@ -490,11 +485,12 @@
           padding: 18px 20px;
         }
         .login-logo {
-          font-size: 20px;
+          font-size: 32px;
         }
         .numpad-key {
-          min-height: 34px;
-          font-size: 16px;
+          min-height: 52px;
+          height: 52px;
+          font-size: 20px;
         }
       }
       @media (min-width: 900px) and (pointer: coarse) {
@@ -508,8 +504,9 @@
           font-size: 15px;
         }
         .numpad-key {
-          min-height: 44px;
-          font-size: 20px;
+          min-height: 56px;
+          height: 56px;
+          font-size: 22px;
         }
         .lang-trigger,
         .lang-option {
@@ -1314,9 +1311,6 @@
     <div id="login-overlay">
       <div class="login-box">
         <div class="login-logo">heroal <span>LagerGuide</span></div>
-        <div class="login-title" id="login-title-txt" data-i18n="login_title">
-          Anmeldung
-        </div>
         <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
           Geben Sie Ihre Packnummer ein, um zu beginnen.
         </div>
