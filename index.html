@@ -326,6 +326,22 @@
         cursor: pointer;
         white-space: nowrap;
       }
+      .lang-flag {
+        display: inline-block;
+        width: 20px;
+        height: 14px;
+        flex-shrink: 0;
+        border-radius: 2px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+        background: #1e293b;
+        pointer-events: none;
+      }
+      .lang-flag svg {
+        display: block;
+        width: 20px;
+        height: 14px;
+      }
       .lang-caret {
         color: var(--text-sub);
         font-size: 14px;
@@ -1205,19 +1221,56 @@
           Anmelden
         </button>
         <div class="lang-dropdown" id="login-lang-dropdown">
-          <button type="button" class="lang-trigger" id="btn-lang-trigger" aria-expanded="false">
-            <span id="lang-trigger-label">🇩🇪 Deutsch</span>
+          <button
+            type="button"
+            class="lang-trigger"
+            id="btn-lang-trigger"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-controls="lang-menu"
+          >
+            <span class="lang-flag" id="lang-trigger-flag" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
+                <rect width="5" height="1" y="0" fill="#000000" />
+                <rect width="5" height="1" y="1" fill="#dd0000" />
+                <rect width="5" height="1" y="2" fill="#ffce00" />
+              </svg>
+            </span>
+            <span id="lang-trigger-label">Deutsch</span>
             <span class="lang-caret">▾</span>
           </button>
-          <div class="lang-menu" id="lang-menu" role="listbox">
-            <button type="button" class="lang-option" data-lang="de">
-              🇩🇪 <span data-i18n="lang_de">Deutsch</span>
+          <div class="lang-menu" id="lang-menu" role="listbox" aria-label="Language">
+            <button type="button" class="lang-option" data-lang="de" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
+                  <rect width="5" height="1" y="0" fill="#000000" />
+                  <rect width="5" height="1" y="1" fill="#dd0000" />
+                  <rect width="5" height="1" y="2" fill="#ffce00" />
+                </svg>
+              </span>
+              <span data-i18n="lang_de">Deutsch</span>
             </button>
-            <button type="button" class="lang-option" data-lang="en">
-              🇬🇧 <span data-i18n="lang_en">English</span>
+            <button type="button" class="lang-option" data-lang="en" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" focusable="false">
+                  <rect width="60" height="30" fill="#012169" />
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6" />
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="4" />
+                  <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10" />
+                  <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6" />
+                </svg>
+              </span>
+              <span data-i18n="lang_en">English</span>
             </button>
-            <button type="button" class="lang-option" data-lang="ru">
-              🇷🇺 <span data-i18n="lang_ru">Русский</span>
+            <button type="button" class="lang-option" data-lang="ru" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" focusable="false">
+                  <rect width="9" height="2" y="0" fill="#ffffff" />
+                  <rect width="9" height="2" y="2" fill="#0039a6" />
+                  <rect width="9" height="2" y="4" fill="#d52b1e" />
+                </svg>
+              </span>
+              <span data-i18n="lang_ru">Русский</span>
             </button>
           </div>
         </div>
@@ -1591,9 +1644,9 @@
       const PACK_STORAGE_KEY = "lagerguide_last_pack";
       const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
       const LANG_META = {
-        de: { flag: "🇩🇪", nameKey: "lang_de" },
-        en: { flag: "🇬🇧", nameKey: "lang_en" },
-        ru: { flag: "🇷🇺", nameKey: "lang_ru" },
+        de: { nameKey: "lang_de" },
+        en: { nameKey: "lang_en" },
+        ru: { nameKey: "lang_ru" },
       };
 
       const I18N_FALLBACK = {
@@ -2299,9 +2352,18 @@
       function syncLangDropdown() {
         const meta = LANG_META[appLang] || LANG_META.de;
         const label = document.getElementById("lang-trigger-label");
-        if (label) label.textContent = `${meta.flag} ${t(meta.nameKey)}`;
+        if (label) label.textContent = t(meta.nameKey);
+        const flagHost = document.getElementById("lang-trigger-flag");
+        const srcFlag = document.querySelector(
+          '.lang-option[data-lang="' + appLang + '"] .lang-flag',
+        );
+        if (flagHost && srcFlag) flagHost.innerHTML = srcFlag.innerHTML;
+        const trigger = document.getElementById("btn-lang-trigger");
+        if (trigger) trigger.setAttribute("aria-label", t(meta.nameKey));
         document.querySelectorAll(".lang-option").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.lang === appLang);
+          const on = btn.dataset.lang === appLang;
+          btn.classList.toggle("active", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
         });
       }
 
