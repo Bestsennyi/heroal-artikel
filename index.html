@@ -51,6 +51,16 @@
     <link rel="manifest" href="manifest.json" />
 
     <title>heroal LagerGuide</title>
+    <script>
+      /* Paint the right overlay immediately — no IndexedDB wait. */
+      try {
+        var __sess = localStorage.getItem("heroal_current_user");
+        if (__sess && __sess !== "null" && __sess !== "undefined") {
+          JSON.parse(__sess);
+          document.documentElement.classList.add("authed");
+        }
+      } catch (e) {}
+    </script>
 
     <style>
       :root {
@@ -92,6 +102,11 @@
         overflow: hidden;
       }
 
+      /* Hide the login overlay before JS runs when a session already exists. */
+      html.authed #login-overlay {
+        display: none;
+      }
+
       /* Login Modal */
       #login-overlay {
         position: fixed;
@@ -102,69 +117,265 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 16px;
+        overflow-y: auto;
       }
       .login-box {
         width: 100%;
-        max-width: 380px;
+        max-width: 460px;
         background: var(--card-bg);
-        border: 1px solid var(--border-color);
+        border: 1px solid rgba(36, 50, 71, 0.95);
         border-radius: 16px;
-        padding: 28px 24px;
+        padding: 32px 28px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
-        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+        gap: 14px;
+        box-shadow:
+          0 18px 48px rgba(0, 0, 0, 0.72),
+          0 0 0 1px rgba(255, 255, 255, 0.04);
       }
       .login-logo {
         font-size: 26px;
         font-weight: 700;
         color: #fff;
+        letter-spacing: 0.2px;
       }
       .login-logo span {
         color: var(--heroal-light-blue);
+      }
+      .login-title {
+        font-size: 18px;
+        font-weight: 650;
+        color: var(--text-main);
+        text-align: center;
       }
       .login-sub {
         font-size: 13px;
         color: var(--text-sub);
         text-align: center;
-        line-height: 1.4;
+        line-height: 1.45;
+        margin-bottom: 4px;
+      }
+      .login-field {
+        position: relative;
+        width: 100%;
       }
       .login-input {
         width: 100%;
-        height: 50px;
-        background: #070b10;
-        border: 2px solid var(--border-color);
+        min-height: 58px;
+        height: 58px;
+        padding: 0 52px 0 16px;
+        background: #1e293b;
+        border: 2px solid #475569;
         border-radius: 10px;
-        color: #fff;
-        font-size: 22px;
+        color: #ffffff;
+        font-size: 28px;
         font-weight: 700;
         text-align: center;
         letter-spacing: 4px;
         outline: none;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
-      .login-input:focus {
-        border-color: var(--heroal-blue);
+      .login-input:hover {
+        border-color: #64748b;
+      }
+      .login-input:focus,
+      .login-input:active {
+        border-color: #38bdf8;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+      }
+      .numpad-toggle {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+      }
+      .numpad-toggle svg {
+        display: block;
+        pointer-events: none;
+      }
+      .numpad-toggle.is-on {
+        border-color: #38bdf8;
+        color: #fff;
+        background: #1e3a5f;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .login-btn,
+      .lang-trigger,
+      .lang-option {
+        transition: all 0.15s ease-in-out;
+      }
+      .login-btn:hover,
+      .lang-trigger:hover,
+      .lang-option:hover {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+      }
+      .login-btn:active,
+      .lang-trigger:active,
+      .lang-option:active {
+        transform: scale(0.97);
+        filter: brightness(0.96);
+      }
+      .numpad-toggle:hover {
+        filter: brightness(1.12);
+        transform: translateY(calc(-50% - 1px));
+      }
+      .numpad-toggle:active {
+        transform: translateY(-50%) scale(0.97);
       }
       .login-btn {
         width: 100%;
-        height: 48px;
+        min-height: 52px;
+        height: 52px;
         background: var(--heroal-blue);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 650;
         cursor: pointer;
       }
-      .login-btn:active {
-        background: var(--heroal-dark-blue);
+      .login-numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+      .login-numpad.is-hidden {
+        display: none;
+      }
+      .numpad-key {
+        min-height: 52px;
+        border-radius: 10px;
+        border: 1.5px solid #334155;
+        background: #1e293b;
+        color: #f8fafc;
+        font-size: 22px;
+        font-weight: 600;
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+      }
+      .numpad-key:hover {
+        background: #243248;
+        border: 1.5px solid #60a5fa;
+        transform: translateY(-2px);
+      }
+      .numpad-key:active,
+      .numpad-key.is-pressed {
+        background: #1e293b;
+        border: 2px solid #38bdf8;
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+        transform: scale(0.96);
       }
       .login-msg {
         font-size: 12px;
         color: #f87171;
         min-height: 16px;
+        text-align: center;
+      }
+      .lang-dropdown {
+        position: relative;
+        width: 100%;
+      }
+      .lang-trigger {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: var(--card-inner);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .lang-caret {
+        color: var(--text-sub);
+        font-size: 12px;
+      }
+      .lang-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: calc(100% + 6px);
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: #0f172a;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        z-index: 5;
+      }
+      .lang-dropdown.is-open .lang-menu {
+        display: flex;
+      }
+      .lang-option {
+        width: 100%;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #e2e8f0;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+      }
+      .lang-option.active {
+        background: rgba(56, 189, 248, 0.16);
+        color: #fff;
+      }
+      .login-footer {
+        width: 100%;
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #64748b;
+        text-align: center;
+      }
+      @media (max-height: 700px) {
+        .login-box {
+          padding: 20px 20px;
+          gap: 10px;
+        }
+        .numpad-key {
+          min-height: 46px;
+        }
       }
 
       /* Top Header */
@@ -909,22 +1120,97 @@
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay">
       <div class="login-box">
-        <div class="login-logo">heroal <span>Guide</span></div>
-        <div class="login-sub" id="login-sub-txt">
-          Geben Sie Ihre <strong>Packnummer</strong> ein, um zu beginnen /
-          Введите ваш Packnummer:
+        <div class="login-logo">heroal <span>LagerGuide</span></div>
+        <div class="login-title" id="login-title-txt" data-i18n="login_title">
+          Anmeldung
         </div>
-        <input
-          type="number"
-          id="input-login-nr"
-          class="login-input"
-          placeholder="1234"
-          inputmode="numeric"
-        />
+        <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
+          Geben Sie Ihre Packnummer ein, um zu beginnen.
+        </div>
+        <div class="login-field">
+          <input
+            type="tel"
+            id="input-login-nr"
+            class="login-input"
+            placeholder="z. B. 1234"
+            inputmode="numeric"
+            autocomplete="off"
+            pattern="[0-9]*"
+            maxlength="12"
+            enterkeyhint="done"
+          />
+          <button
+            type="button"
+            class="numpad-toggle"
+            id="btn-numpad-toggle"
+            aria-label="Numpad"
+            aria-pressed="true"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <g fill="currentColor" stroke="none">
+                <rect x="5" y="7" width="2" height="2" rx="0.4" />
+                <rect x="8.5" y="7" width="2" height="2" rx="0.4" />
+                <rect x="12" y="7" width="2" height="2" rx="0.4" />
+                <rect x="15.5" y="7" width="2" height="2" rx="0.4" />
+                <rect x="5" y="10.5" width="2" height="2" rx="0.4" />
+                <rect x="8.5" y="10.5" width="2" height="2" rx="0.4" />
+                <rect x="12" y="10.5" width="2" height="2" rx="0.4" />
+                <rect x="15.5" y="10.5" width="2" height="2" rx="0.4" />
+                <rect x="7" y="14.5" width="10" height="2" rx="0.5" />
+              </g>
+            </svg>
+          </button>
+        </div>
         <div class="login-msg" id="login-error-msg"></div>
-        <button class="login-btn" onclick="handleLogin()" id="btn-login-submit">
-          Anmelden / Войти
+        <div class="login-numpad" id="login-numpad" role="group" aria-label="Numpad">
+          <button type="button" class="numpad-key" data-key="1">1</button>
+          <button type="button" class="numpad-key" data-key="2">2</button>
+          <button type="button" class="numpad-key" data-key="3">3</button>
+          <button type="button" class="numpad-key" data-key="4">4</button>
+          <button type="button" class="numpad-key" data-key="5">5</button>
+          <button type="button" class="numpad-key" data-key="6">6</button>
+          <button type="button" class="numpad-key" data-key="7">7</button>
+          <button type="button" class="numpad-key" data-key="8">8</button>
+          <button type="button" class="numpad-key" data-key="9">9</button>
+          <button type="button" class="numpad-key" data-key="clear" aria-label="Clear">C</button>
+          <button type="button" class="numpad-key" data-key="0">0</button>
+          <button type="button" class="numpad-key" data-key="back" aria-label="Backspace">⌫</button>
+        </div>
+        <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
+          Anmelden
         </button>
+        <div class="lang-dropdown" id="login-lang-dropdown">
+          <button type="button" class="lang-trigger" id="btn-lang-trigger" aria-expanded="false">
+            <span id="lang-trigger-label">🇩🇪 Deutsch</span>
+            <span class="lang-caret">▾</span>
+          </button>
+          <div class="lang-menu" id="lang-menu" role="listbox">
+            <button type="button" class="lang-option" data-lang="de">
+              🇩🇪 <span data-i18n="lang_de">Deutsch</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="en">
+              🇬🇧 <span data-i18n="lang_en">English</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="ru">
+              🇷🇺 <span data-i18n="lang_ru">Русский</span>
+            </button>
+          </div>
+        </div>
+        <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
+          v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi
+        </div>
       </div>
     </div>
 
@@ -943,19 +1229,19 @@
           class="desktop-nav-item active"
           onclick="navigate('view-suche', this)"
         >
-          🔍 Suche [/]
+          🔍 <span id="nav-desk-suche">Suche [/]</span>
         </button>
         <button
           class="desktop-nav-item"
           onclick="navigate('view-ausschuss', this)"
         >
-          ⚠️ Ausschuss
+          ⚠️ <span id="nav-desk-ausschuss">Ausschuss</span>
         </button>
         <button
           class="desktop-nav-item"
           onclick="navigate('view-auskunft', this)"
         >
-          📋 Auskunft
+          📋 <span id="nav-desk-auskunft">Auskunft</span>
         </button>
       </div>
 
@@ -1252,6 +1538,10 @@
           <div class="url-label">Users CSV URL</div>
           <input type="text" id="cfg-url-users" class="url-input" />
         </div>
+        <div>
+          <div class="url-label">Translations CSV URL</div>
+          <input type="text" id="cfg-url-translations" class="url-input" />
+        </div>
 
         <button
           class="btn-hdr"
@@ -1283,10 +1573,345 @@
 
     <!-- 8. APPLICATION LOGIC & INDEXEDDB INTEGRATION -->
     <script>
+      const LANGS = ["de", "en", "ru"];
+      const LANG_STORAGE_KEY = "lagerguide_lang";
+      const PACK_STORAGE_KEY = "lagerguide_last_pack";
+      const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
+      const LANG_META = {
+        de: { flag: "🇩🇪", nameKey: "lang_de" },
+        en: { flag: "🇬🇧", nameKey: "lang_en" },
+        ru: { flag: "🇷🇺", nameKey: "lang_ru" },
+      };
+
+      const I18N_FALLBACK = {
+        de: {
+          login_title: "Anmeldung",
+          login_prompt: "Geben Sie Ihre Packnummer ein, um zu beginnen.",
+          login_placeholder: "z. B. 1234",
+          login_btn: "Anmelden",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
+          login_error_empty: "Bitte Packnummer eingeben!",
+          login_error_blocked: "Benutzer ist gesperrt!",
+          lbl_profiles: "📐 Profile / Zubehör",
+          lbl_artnr: "Art.-Nr. [/]",
+          lbl_colors: "🎨 Farben",
+          nav_search: "Suche",
+          nav_search_hotkey: "Suche [/]",
+          nav_scrap: "Ausschuss",
+          nav_info: "Auskunft",
+          online: "Online",
+          offline: "Offline",
+          sync: "Sync",
+          sync_title: "Daten synchronisieren",
+          sync_offline: "Offline: Sync deaktiviert",
+          idle_logout: "Sitzung wegen Inaktivität beendet.",
+          copied: "✅ {label} kopiert!",
+          drawing_missing: "Zeichnung nicht hinterlegt",
+          sync_drawings_missing: "Sync: {n} Zeichnungen fehlen offline",
+          defect_desc: "Beschreibung:",
+          defect_action: "Vorgehen (Aktion):",
+          drawings_check: "Zeichnungen prüfen...",
+          drawings_load: "Neue Zeichnungen laden... {done}/{total}",
+          offline_no_net: "⚠️ Offline: Keine Internetverbindung!",
+          sync_load_profiles: "Lade Profile CSV...",
+          sync_load_colors: "Lade Farben CSV...",
+          sync_load_defects: "Lade Ausschuss & ERP...",
+          sync_load_users: "Lade Mitarbeiterdaten...",
+          sync_load_i18n: "Lade Übersetzungen...",
+          sync_save: "Speichere in IndexedDB...",
+          sync_done: "Abgeschlossen!",
+          sync_abort_net:
+            "⚠️ Verbindung verloren: {cached} von {total} Zeichnungen offline — Sync wiederholen",
+          sync_abort_throttle:
+            "⚠️ Zeichnungs-Server begrenzt Anfragen: {cached} von {total} offline — Sync später wiederholen",
+          sync_partial:
+            "⚠️ {base} Artikel, {cached} Zeichnungen offline — {missing} fehlen, Sync wiederholen",
+          sync_ok:
+            "✅ Sync ok: {base} Artikel, {cached} Zeichnungen offline{newly}",
+          sync_newly: ", {n} neu geladen",
+          sync_error: "⚠️ Fehler beim Synchronisieren.",
+          reload_drawings_confirm:
+            "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
+          urls_saved: "URLs gespeichert! Drücken Sie Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi",
+        },
+        en: {
+          login_title: "Sign in",
+          login_prompt: "Enter your pack number to continue.",
+          login_placeholder: "e.g. 1234",
+          login_btn: "Sign in",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
+          login_error_empty: "Please enter a pack number!",
+          login_error_blocked: "This user is blocked!",
+          lbl_profiles: "📐 Profiles / Accessories",
+          lbl_artnr: "Art. no. [/]",
+          lbl_colors: "🎨 Colours",
+          nav_search: "Search",
+          nav_search_hotkey: "Search [/]",
+          nav_scrap: "Scrap",
+          nav_info: "Info",
+          online: "Online",
+          offline: "Offline",
+          sync: "Sync",
+          sync_title: "Synchronise data",
+          sync_offline: "Offline: sync disabled",
+          idle_logout: "Signed out due to inactivity.",
+          copied: "✅ {label} copied!",
+          drawing_missing: "No drawing on file",
+          sync_drawings_missing: "Sync: {n} drawings missing offline",
+          defect_desc: "Description:",
+          defect_action: "Action:",
+          drawings_check: "Checking drawings...",
+          drawings_load: "Downloading new drawings... {done}/{total}",
+          offline_no_net: "⚠️ Offline: no internet connection!",
+          sync_load_profiles: "Loading profiles CSV...",
+          sync_load_colors: "Loading colours CSV...",
+          sync_load_defects: "Loading scrap & ERP...",
+          sync_load_users: "Loading staff list...",
+          sync_load_i18n: "Loading translations...",
+          sync_save: "Saving to IndexedDB...",
+          sync_done: "Done!",
+          sync_abort_net:
+            "⚠️ Connection lost: {cached} of {total} drawings offline — retry sync",
+          sync_abort_throttle:
+            "⚠️ Drawing server is rate-limiting: {cached} of {total} offline — retry later",
+          sync_partial:
+            "⚠️ {base} articles, {cached} drawings offline — {missing} missing, retry sync",
+          sync_ok:
+            "✅ Sync ok: {base} articles, {cached} drawings offline{newly}",
+          sync_newly: ", {n} newly downloaded",
+          sync_error: "⚠️ Synchronisation failed.",
+          reload_drawings_confirm:
+            "Re-download all {n} drawings? This takes longer than a normal sync.",
+          urls_saved: "URLs saved! Press Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Developed by Maksym Beztsinnyi",
+        },
+        ru: {
+          login_title: "Вход",
+          login_prompt: "Введите Packnummer, чтобы начать работу.",
+          login_placeholder: "напр. 1234",
+          login_btn: "Войти",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
+          login_error_empty: "Пожалуйста, введите Packnummer!",
+          login_error_blocked: "Доступ заблокирован администратором!",
+          lbl_profiles: "📐 Профили / Комплектующие",
+          lbl_artnr: "Артикул [/]",
+          lbl_colors: "🎨 Цвета RAL / SD",
+          nav_search: "Поиск",
+          nav_search_hotkey: "Поиск [/]",
+          nav_scrap: "Брак / Дефекты",
+          nav_info: "Справка ERP",
+          online: "Онлайн",
+          offline: "Офлайн",
+          sync: "Sync",
+          sync_title: "Синхронизировать данные",
+          sync_offline: "Офлайн: Sync отключён",
+          idle_logout: "Сессия завершена из-за неактивности.",
+          copied: "✅ {label} скопировано!",
+          drawing_missing: "Чертёж не задан",
+          sync_drawings_missing: "Sync: не хватает {n} чертежей для офлайна",
+          defect_desc: "Описание:",
+          defect_action: "Инструкция по действию:",
+          drawings_check: "Проверка чертежей...",
+          drawings_load: "Загрузка новых чертежей... {done}/{total}",
+          offline_no_net: "⚠️ Офлайн: нет подключения к интернету!",
+          sync_load_profiles: "Загрузка профилей...",
+          sync_load_colors: "Загрузка каталога цветов...",
+          sync_load_defects: "Загрузка дефектов и ERP...",
+          sync_load_users: "Загрузка списка сотрудников...",
+          sync_load_i18n: "Загрузка переводов...",
+          sync_save: "Сохранение в IndexedDB...",
+          sync_done: "Готово!",
+          sync_abort_net:
+            "⚠️ Соединение потеряно: {cached} из {total} чертежей офлайн — повторите Sync",
+          sync_abort_throttle:
+            "⚠️ Сервер чертежей ограничивает запросы: {cached} из {total} офлайн — повторите Sync позже",
+          sync_partial:
+            "⚠️ {base} артикулов, {cached} чертежей офлайн — {missing} не загружено, повторите Sync",
+          sync_ok:
+            "✅ Синхронизация ok: {base} артикулов, {cached} чертежей офлайн{newly}",
+          sync_newly: ", {n} новых загружено",
+          sync_error: "⚠️ Ошибка синхронизации данных.",
+          reload_drawings_confirm:
+            "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
+          urls_saved: "Ссылки сохранены! Нажмите Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Разработчик Максим Бесценный",
+        },
+      };
+
+      function cloneFallbackDict() {
+        const out = { de: {}, en: {}, ru: {} };
+        LANGS.forEach((lang) => {
+          out[lang] = Object.assign({}, I18N_FALLBACK[lang]);
+        });
+        return out;
+      }
+
+      function normalizeLang(raw) {
+        if (raw == null) return "de";
+        const v = String(raw).trim().toLowerCase();
+        if (v === "de" || v === "en" || v === "ru") return v;
+        if (v === "deutsch" || v === "ger" || v === "german") return "de";
+        if (v === "english") return "en";
+        if (v === "рус" || v === "russian") return "ru";
+        return "de";
+      }
+
+      function readSavedLang() {
+        try {
+          const next = localStorage.getItem(LANG_STORAGE_KEY);
+          if (next) return normalizeLang(next);
+          const legacy = localStorage.getItem("heroal_lang");
+          if (legacy) return normalizeLang(legacy);
+        } catch (e) {}
+        return "de";
+      }
+
+      let i18nDict = cloneFallbackDict();
+      let appLang = readSavedLang();
+
+      function t(key) {
+        const table = i18nDict[appLang] || i18nDict.de;
+        return (
+          (table && table[key]) ||
+          (i18nDict.de && i18nDict.de[key]) ||
+          (I18N_FALLBACK.de && I18N_FALLBACK.de[key]) ||
+          key
+        );
+      }
+
+      function tf(key, vars) {
+        let s = t(key);
+        Object.keys(vars || {}).forEach((k) => {
+          s = s.split("{" + k + "}").join(String(vars[k]));
+        });
+        return s;
+      }
+
+      function mergeTranslationBundle(bundle) {
+        if (!bundle || typeof bundle !== "object") return;
+        LANGS.forEach((lang) => {
+          if (bundle[lang] && typeof bundle[lang] === "object") {
+            Object.keys(bundle[lang]).forEach((key) => {
+              const val = bundle[lang][key];
+              if (val != null && String(val).trim() !== "") {
+                i18nDict[lang][key] = String(val);
+              }
+            });
+          }
+        });
+        Object.keys(bundle).forEach((key) => {
+          if (LANGS.indexOf(key) !== -1) return;
+          const row = bundle[key];
+          if (!row || typeof row !== "object") return;
+          LANGS.forEach((lang) => {
+            if (row[lang] != null && String(row[lang]).trim() !== "") {
+              i18nDict[lang][key] = String(row[lang]);
+            }
+          });
+        });
+      }
+
+      function isValidPack(val) {
+        return typeof val === "string" && /^\d{1,12}$/.test(val.trim());
+      }
+
+      function readLastPack() {
+        try {
+          let saved = localStorage.getItem(PACK_STORAGE_KEY);
+          if (saved === "null" || saved === "undefined") saved = "";
+          if (isValidPack(saved)) return saved.trim();
+        } catch (e) {}
+        return "";
+      }
+
+      function restoreLoginPack() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        const saved = readLastPack();
+        const fromUser =
+          currentUser && currentUser.pack != null
+            ? String(currentUser.pack)
+            : "";
+        const pack = isValidPack(saved)
+          ? saved
+          : isValidPack(fromUser)
+            ? fromUser.trim()
+            : "";
+        input.value = pack;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = appLang;
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          el.textContent = t(el.getAttribute("data-i18n"));
+        });
+        const loginInput = document.getElementById("input-login-nr");
+        if (loginInput) loginInput.placeholder = t("login_placeholder");
+        syncLangDropdown();
+        syncNumpadVisibility();
+        const btnLang = document.getElementById("btn-lang");
+        if (btnLang) btnLang.innerText = appLang.toUpperCase();
+        const setTxt = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.innerText = value;
+        };
+        setTxt("lbl-prof-head", t("lbl_profiles"));
+        setTxt("lbl-prof-badge", t("lbl_artnr"));
+        setTxt("lbl-color-head", t("lbl_colors"));
+        setTxt("nav-lbl-suche", t("nav_search"));
+        setTxt("nav-lbl-ausschuss", t("nav_scrap"));
+        setTxt("nav-lbl-auskunft", t("nav_info"));
+        setTxt("nav-desk-suche", t("nav_search_hotkey"));
+        setTxt("nav-desk-ausschuss", t("nav_scrap"));
+        setTxt("nav-desk-auskunft", t("nav_info"));
+        setTxt("btn-sync-txt", t("sync"));
+        updateOnlineStatus();
+      }
+
+      function setLanguage(lang) {
+        appLang = normalizeLang(lang);
+        try {
+          localStorage.setItem(LANG_STORAGE_KEY, appLang);
+          localStorage.setItem("heroal_lang", appLang.toUpperCase());
+        } catch (e) {}
+        closeLangDropdown();
+        applyLanguage();
+        const findProf = document.getElementById("find-prof");
+        const findColor = document.getElementById("find-color");
+        if (findProf) findProf.dispatchEvent(new Event("input"));
+        if (findColor) findColor.dispatchEvent(new Event("input"));
+        if (typeof renderDefects === "function") renderDefects();
+        if (typeof renderAuskunft === "function") renderAuskunft();
+      }
+
       // Service Worker Registration
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js").catch(console.warn);
+          navigator.serviceWorker
+            .register("./sw.js", { updateViaCache: "none" })
+            .then((reg) => {
+              reg.update();
+              if (reg.waiting) {
+                reg.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+            })
+            .catch(console.warn);
+          let reloading = false;
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (reloading) return;
+            reloading = true;
+            location.reload();
+          });
         });
       }
 
@@ -1369,14 +1994,14 @@
 
         if (navigator.onLine) {
           badge.className = "net-badge";
-          txt.innerText = "Online";
+          txt.innerText = t("online");
           btnSync.removeAttribute("disabled");
-          btnSync.title = "Daten synchronisieren";
+          btnSync.title = t("sync_title");
         } else {
           badge.className = "net-badge offline";
-          txt.innerText = "Offline";
+          txt.innerText = t("offline");
           btnSync.setAttribute("disabled", "true");
-          btnSync.title = "Offline: Sync deaktiviert";
+          btnSync.title = t("sync_offline");
         }
       }
       window.addEventListener("online", updateOnlineStatus);
@@ -1384,8 +2009,9 @@
 
       // IndexedDB Database Wrapper
       const DB_NAME = "heroal_warehouse_db";
-      const DB_VERSION = 1;
+      const DB_VERSION = 2;
       let dbInstance = null;
+      let dbReady = Promise.resolve();
 
       function openWarehouseDB() {
         return new Promise((resolve, reject) => {
@@ -1395,6 +2021,9 @@
             const db = e.target.result;
             if (!db.objectStoreNames.contains("store_data")) {
               db.createObjectStore("store_data");
+            }
+            if (!db.objectStoreNames.contains("translations")) {
+              db.createObjectStore("translations");
             }
           };
           req.onsuccess = (e) => {
@@ -1414,13 +2043,14 @@
         });
       }
 
-      function runTransaction(mode, work) {
+      function runTransaction(mode, work, storeName) {
+        const store = storeName || "store_data";
         return new Promise((resolve, reject) => {
           openWarehouseDB().then((db) => {
             let req;
             try {
-              const tx = db.transaction("store_data", mode);
-              req = work(tx.objectStore("store_data"));
+              const tx = db.transaction(store, mode);
+              req = work(tx.objectStore(store));
             } catch (err) {
               // Stale handle (e.g. storage cleared): forget it so the retry reopens.
               dbInstance = null;
@@ -1434,12 +2064,12 @@
       }
 
       /** Retries once with a fresh connection before giving up. */
-      async function idbRun(mode, work) {
+      async function idbRun(mode, work, storeName) {
         try {
-          return await runTransaction(mode, work);
+          return await runTransaction(mode, work, storeName);
         } catch (err) {
           dbInstance = null;
-          return runTransaction(mode, work);
+          return runTransaction(mode, work, storeName);
         }
       }
 
@@ -1449,6 +2079,18 @@
 
       function idbSet(key, val) {
         return idbRun("readwrite", (store) => store.put(val, key));
+      }
+
+      function idbGetTranslation(key) {
+        return idbRun("readonly", (store) => store.get(key), "translations");
+      }
+
+      function idbSetTranslation(key, val) {
+        return idbRun(
+          "readwrite",
+          (store) => store.put(val, key),
+          "translations",
+        );
       }
 
       // Default Seed Data
@@ -1537,10 +2179,8 @@
         ],
       };
 
-      let appLang = localStorage.getItem("heroal_lang") || "DE";
       let appDB = DEFAULT_DATA;
-      let currentUser =
-        JSON.parse(localStorage.getItem("heroal_current_user")) || null;
+      let currentUser = readStoredUser();
       let selectedCategory = "";
       let lastActiveArticle = "";
       let lastActiveColorCode = "";
@@ -1555,19 +2195,200 @@
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
         users:
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv",
+        translations: "",
       };
-      let appUrls =
-        JSON.parse(localStorage.getItem("heroal_urls")) || DEFAULT_URLS;
+      let appUrls = readStoredUrls();
 
-      window.addEventListener("DOMContentLoaded", async () => {
-        await initDatabase();
-        checkAuth();
+      function readStoredUser() {
+        try {
+          const raw = localStorage.getItem("heroal_current_user");
+          if (!raw || raw === "null" || raw === "undefined") return null;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return null;
+          return parsed;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function readStoredUrls() {
+        try {
+          const raw = localStorage.getItem("heroal_urls");
+          if (!raw || raw === "null" || raw === "undefined") return DEFAULT_URLS;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return DEFAULT_URLS;
+          return { ...DEFAULT_URLS, ...parsed };
+        } catch (e) {
+          return DEFAULT_URLS;
+        }
+      }
+
+      function sanitizePackInput() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        input.value = String(input.value || "")
+          .replace(/\D/g, "")
+          .slice(0, 12);
+      }
+
+      function appendPackDigit(digit) {
+        const input = document.getElementById("input-login-nr");
+        if (!input || input.value.length >= 12) return;
+        input.value += String(digit);
+        sanitizePackInput();
+      }
+
+      function backspacePack() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        input.value = input.value.slice(0, -1);
+      }
+
+      function isLoginVisible() {
+        if (document.documentElement.classList.contains("authed")) return false;
+        const overlay = document.getElementById("login-overlay");
+        return !!(overlay && overlay.style.display !== "none");
+      }
+
+      function clearPack() {
+        const input = document.getElementById("input-login-nr");
+        if (input) input.value = "";
+      }
+
+      function readNumpadVisible() {
+        try {
+          const saved = localStorage.getItem(NUMPAD_STORAGE_KEY);
+          if (saved === "0" || saved === "false") return false;
+          if (saved === "1" || saved === "true") return true;
+        } catch (e) {}
+        return true;
+      }
+
+      function syncNumpadVisibility() {
+        const visible = readNumpadVisible();
+        const pad = document.getElementById("login-numpad");
+        const btn = document.getElementById("btn-numpad-toggle");
+        if (pad) pad.classList.toggle("is-hidden", !visible);
+        if (btn) {
+          btn.classList.toggle("is-on", visible);
+          btn.setAttribute("aria-pressed", visible ? "true" : "false");
+        }
+      }
+
+      function toggleNumpad() {
+        const next = !readNumpadVisible();
+        try {
+          localStorage.setItem(NUMPAD_STORAGE_KEY, next ? "1" : "0");
+        } catch (e) {}
+        syncNumpadVisibility();
+      }
+
+      function syncLangDropdown() {
+        const meta = LANG_META[appLang] || LANG_META.de;
+        const label = document.getElementById("lang-trigger-label");
+        if (label) label.textContent = `${meta.flag} ${t(meta.nameKey)}`;
+        document.querySelectorAll(".lang-option").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.lang === appLang);
+        });
+      }
+
+      function closeLangDropdown() {
+        const dd = document.getElementById("login-lang-dropdown");
+        const trigger = document.getElementById("btn-lang-trigger");
+        if (dd) dd.classList.remove("is-open");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleLangDropdown() {
+        const dd = document.getElementById("login-lang-dropdown");
+        const trigger = document.getElementById("btn-lang-trigger");
+        if (!dd) return;
+        const open = !dd.classList.contains("is-open");
+        dd.classList.toggle("is-open", open);
+        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      function bindLoginUi() {
+        const input = document.getElementById("input-login-nr");
+        const submit = document.getElementById("btn-login-submit");
+        if (submit) submit.addEventListener("click", () => handleLogin());
+        if (input) {
+          input.addEventListener("input", sanitizePackInput);
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleLogin();
+            }
+          });
+        }
+        const numpadToggle = document.getElementById("btn-numpad-toggle");
+        if (numpadToggle) numpadToggle.addEventListener("click", toggleNumpad);
+        document.querySelectorAll(".numpad-key").forEach((btn) => {
+          const pressOn = () => btn.classList.add("is-pressed");
+          const pressOff = () => btn.classList.remove("is-pressed");
+          btn.addEventListener("pointerdown", pressOn);
+          btn.addEventListener("pointerup", pressOff);
+          btn.addEventListener("pointercancel", pressOff);
+          btn.addEventListener("pointerleave", pressOff);
+          btn.addEventListener("click", () => {
+            const key = btn.dataset.key;
+            if (key === "back") backspacePack();
+            else if (key === "clear") clearPack();
+            else appendPackDigit(key);
+          });
+        });
+        const langTrigger = document.getElementById("btn-lang-trigger");
+        if (langTrigger) {
+          langTrigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleLangDropdown();
+          });
+        }
+        document.querySelectorAll(".lang-option").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setLanguage(btn.dataset.lang);
+          });
+        });
+        document.addEventListener("click", (e) => {
+          const dd = document.getElementById("login-lang-dropdown");
+          if (dd && !dd.contains(e.target)) closeLangDropdown();
+        });
+        window.addEventListener("keydown", (e) => {
+          if (!isLoginVisible()) return;
+          if (e.key === "Escape") {
+            closeLangDropdown();
+            return;
+          }
+          if (e.key >= "0" && e.key <= "9") {
+            if (document.activeElement === input) return;
+            appendPackDigit(e.key);
+          } else if (e.key === "Backspace") {
+            if (document.activeElement === input) return;
+            e.preventDefault();
+            backspacePack();
+          } else if (e.key === "Enter") {
+            if (document.activeElement === input) return;
+            e.preventDefault();
+            handleLogin();
+          }
+        });
+        syncNumpadVisibility();
+      }
+
+      // First paint: login HTML/CSS is already on screen. IndexedDB runs after.
+      bindLoginUi();
+      restoreLoginPack();
+      checkAuth();
+      applyLanguage();
+      initSearchHandlers();
+      initHotkeys();
+      initAutoLogout();
+      updateOnlineStatus();
+      requestPersistentStorage();
+      dbReady = initDatabase().then(async () => {
+        await loadTranslationsFromIdb();
         applyLanguage();
-        initSearchHandlers();
-        initHotkeys();
-        initAutoLogout();
-        updateOnlineStatus();
-        requestPersistentStorage();
         reportOfflineReadiness();
       });
 
@@ -1580,10 +2401,10 @@
             `Zeichnungen im Cache: ${cached === null ? "?" : cached}/${expected}`,
         );
         if (cached !== null && expected > 0 && cached < expected) {
-          document.getElementById("btn-sync").title =
-            appLang === "DE"
-              ? `Sync: ${expected - cached} Zeichnungen fehlen offline`
-              : `Sync: не хватает ${expected - cached} чертежей для офлайна`;
+          document.getElementById("btn-sync").title = tf(
+            "sync_drawings_missing",
+            { n: expected - cached },
+          );
         }
       }
 
@@ -1604,6 +2425,17 @@
           }
         } catch (e) {
           console.warn("IndexedDB init fallback:", e);
+        }
+      }
+
+      async function loadTranslationsFromIdb() {
+        try {
+          const stored = await idbGetTranslation("bundle");
+          if (stored) {
+            mergeTranslationBundle(stored);
+          }
+        } catch (e) {
+          console.warn("translations store fallback:", e);
         }
       }
 
@@ -1653,11 +2485,7 @@
           clearTimeout(timeoutId);
           timeoutId = setTimeout(() => {
             if (currentUser) {
-              showToast(
-                appLang === "DE"
-                  ? "Sitzung wegen Inaktivität beendet."
-                  : "Сессия завершена из-за неактивности.",
-              );
+              showToast(t("idle_logout"));
               handleLogout();
             }
           }, TIMEOUT_MS);
@@ -1681,51 +2509,50 @@
       function copyToClipboard(text, label) {
         if (!text) return;
         navigator.clipboard.writeText(text).then(() => {
-          showToast(
-            appLang === "DE"
-              ? `✅ ${label || text} kopiert!`
-              : `✅ ${label || text} скопировано!`,
-          );
+          showToast(tf("copied", { label: label || text }));
         });
       }
 
       // Fallback SVG Drawing
       function getSvgPlaceholder(artNr) {
         const cleanArt = artNr || "heroal";
-        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">Zeichnung nicht hinterlegt</text></svg>`;
+        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
       }
 
       function checkAuth() {
         const overlay = document.getElementById("login-overlay");
-        if (currentUser) {
+        if (currentUser && isValidPack(String(currentUser.pack || ""))) {
+          document.documentElement.classList.add("authed");
           overlay.style.display = "none";
           document.getElementById("hdr-user-badge").innerText =
             `👤 #${currentUser.pack} (${currentUser.first})`;
         } else {
+          if (currentUser && !isValidPack(String(currentUser.pack || ""))) {
+            currentUser = null;
+          }
+          document.documentElement.classList.remove("authed");
           overlay.style.display = "flex";
         }
       }
 
-      function handleLogin() {
+      async function handleLogin() {
         const val = document.getElementById("input-login-nr").value.trim();
         const err = document.getElementById("login-error-msg");
         err.innerText = "";
 
-        if (!val) {
-          err.innerText =
-            appLang === "DE"
-              ? "Bitte Packnummer eingeben!"
-              : "Пожалуйста, введите Packnummer!";
+        if (!isValidPack(val)) {
+          err.innerText = t("login_error_empty");
           return;
         }
+
+        try {
+          await dbReady;
+        } catch (e) {}
 
         const user = appDB.users[val];
         if (user) {
           if (user.status && user.status.toLowerCase() === "gesperrt") {
-            err.innerText =
-              appLang === "DE"
-                ? "Benutzer ist gesperrt!"
-                : "Доступ заблокирован администратором!";
+            err.innerText = t("login_error_blocked");
             return;
           }
           currentUser = { pack: val, ...user };
@@ -1741,6 +2568,7 @@
           "heroal_current_user",
           JSON.stringify(currentUser),
         );
+        localStorage.setItem(PACK_STORAGE_KEY, val);
         checkAuth();
       }
 
@@ -1748,35 +2576,13 @@
         currentUser = null;
         localStorage.removeItem("heroal_current_user");
         closeSettings();
+        restoreLoginPack();
         checkAuth();
       }
 
       function toggleLanguage() {
-        appLang = appLang === "DE" ? "RU" : "DE";
-        localStorage.setItem("heroal_lang", appLang);
-        applyLanguage();
-        document.getElementById("find-prof").dispatchEvent(new Event("input"));
-        document.getElementById("find-color").dispatchEvent(new Event("input"));
-        renderDefects();
-        renderAuskunft();
-      }
-
-      function applyLanguage() {
-        document.getElementById("btn-lang").innerText = appLang;
-        document.getElementById("lbl-prof-head").innerText =
-          appLang === "DE"
-            ? "📐 Profile / Zubehör"
-            : "📐 Профили / Комплектующие";
-        document.getElementById("lbl-prof-badge").innerText =
-          appLang === "DE" ? "Art.-Nr. [/]" : "Артикул [/]";
-        document.getElementById("lbl-color-head").innerText =
-          appLang === "DE" ? "🎨 Farben" : "🎨 Цвета RAL / SD";
-        document.getElementById("nav-lbl-suche").innerText =
-          appLang === "DE" ? "Suche" : "Поиск";
-        document.getElementById("nav-lbl-ausschuss").innerText =
-          appLang === "DE" ? "Ausschuss" : "Брак / Дефекты";
-        document.getElementById("nav-lbl-auskunft").innerText =
-          appLang === "DE" ? "Auskunft" : "Справка ERP";
+        const idx = LANGS.indexOf(appLang);
+        setLanguage(LANGS[(idx + 1) % LANGS.length]);
       }
 
       function navigate(viewId, btn) {
@@ -1964,13 +2770,13 @@
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-defect">${d.code}</span>
-                  <div class="acc-title">${appLang === "DE" ? d.de : d.ru || d.de}</div>
+                  <div class="acc-title">${appLang === "ru" ? d.ru || d.de : d.de}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div><strong>${appLang === "DE" ? "Beschreibung:" : "Описание:"}</strong> ${appLang === "DE" ? d.de : d.ru || d.de}</div>
+                  <div><strong>${t("defect_desc")}</strong> ${appLang === "ru" ? d.ru || d.de : d.de}</div>
                   <div class="action-block">
-                    <strong>${appLang === "DE" ? "Vorgehen (Aktion):" : "Инструкция по действию:"}</strong><br>${d.act}
+                    <strong>${t("defect_action")}</strong><br>${d.act}
                   </div>
                 </div>
               </div>
@@ -1996,11 +2802,11 @@
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-guide">${a.kat}</span>
-                  <div class="acc-title">${appLang === "DE" ? a.de_t : a.ru_t || a.de_t}</div>
+                  <div class="acc-title">${appLang === "ru" ? a.ru_t || a.de_t : a.de_t}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div>${(appLang === "DE" ? a.de_txt : a.ru_txt || a.de_txt).replace(/\n/g, "<br>")}</div>
+                  <div>${(appLang === "ru" ? a.ru_txt || a.de_txt : a.de_txt).replace(/\n/g, "<br>")}</div>
                 </div>
               </div>
             `,
@@ -2040,23 +2846,32 @@
 
       /** Label for the drawing stage; `total` is only what still needs fetching. */
       function drawingProgressLabel(done, total) {
-        if (!total) {
-          return appLang === "DE"
-            ? "Zeichnungen prüfen..."
-            : "Проверка чертежей...";
+        if (!total) return t("drawings_check");
+        return tf("drawings_load", { done, total });
+      }
+
+      function rowsToTranslationBundle(rows) {
+        const bundle = { de: {}, en: {}, ru: {} };
+        if (!rows || rows.length < 2) return bundle;
+        const header = rows[0].map((h) => String(h || "").trim().toLowerCase());
+        const keyIdx = header.indexOf("key") !== -1 ? header.indexOf("key") : 0;
+        const deIdx = header.indexOf("de") !== -1 ? header.indexOf("de") : 1;
+        const enIdx = header.indexOf("en") !== -1 ? header.indexOf("en") : 2;
+        const ruIdx = header.indexOf("ru") !== -1 ? header.indexOf("ru") : 3;
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const key = (row[keyIdx] || "").trim();
+          if (!key || LANGS.indexOf(key) !== -1) continue;
+          if (row[deIdx]) bundle.de[key] = row[deIdx];
+          if (row[enIdx]) bundle.en[key] = row[enIdx];
+          if (row[ruIdx]) bundle.ru[key] = row[ruIdx];
         }
-        return appLang === "DE"
-          ? `Neue Zeichnungen laden... ${done}/${total}`
-          : `Загрузка новых чертежей... ${done}/${total}`;
+        return bundle;
       }
 
       async function triggerSync(force = false) {
         if (!navigator.onLine) {
-          alert(
-            appLang === "DE"
-              ? "⚠️ Offline: Keine Internetverbindung!"
-              : "⚠️ Офлайн: Нет подключения к интернету!",
-          );
+          alert(t("offline_no_net"));
           return;
         }
 
@@ -2079,10 +2894,7 @@
         const staged = {};
 
         try {
-          updateProgress(
-            10,
-            appLang === "DE" ? "Lade Profile CSV..." : "Загрузка профилей...",
-          );
+          updateProgress(10, t("sync_load_profiles"));
           if (appUrls.base) {
             const r = await fetch(appUrls.base);
             const rows = parseCSV(await r.text());
@@ -2104,12 +2916,7 @@
             staged.base = newBase;
           }
 
-          updateProgress(
-            25,
-            appLang === "DE"
-              ? "Lade Farben CSV..."
-              : "Загрузка каталога цветов...",
-          );
+          updateProgress(25, t("sync_load_colors"));
           if (appUrls.farben) {
             const r = await fetch(appUrls.farben);
             const rows = parseCSV(await r.text());
@@ -2127,12 +2934,7 @@
             staged.farben = newFarben;
           }
 
-          updateProgress(
-            35,
-            appLang === "DE"
-              ? "Lade Ausschuss & ERP..."
-              : "Загрузка дефектов и ERP...",
-          );
+          updateProgress(35, t("sync_load_defects"));
           if (appUrls.defects) {
             const r = await fetch(appUrls.defects);
             const rows = parseCSV(await r.text());
@@ -2170,12 +2972,7 @@
             if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
           }
 
-          updateProgress(
-            45,
-            appLang === "DE"
-              ? "Lade Mitarbeiterdaten..."
-              : "Загрузка списка сотрудников...",
-          );
+          updateProgress(45, t("sync_load_users"));
           if (appUrls.users) {
             const r = await fetch(appUrls.users);
             const rows = parseCSV(await r.text());
@@ -2195,12 +2992,16 @@
             staged.users = newUsers;
           }
 
-          updateProgress(
-            55,
-            appLang === "DE"
-              ? "Speichere in IndexedDB..."
-              : "Сохранение в IndexedDB...",
-          );
+          if (appUrls.translations) {
+            updateProgress(50, t("sync_load_i18n"));
+            const r = await fetch(appUrls.translations);
+            const bundle = rowsToTranslationBundle(parseCSV(await r.text()));
+            mergeTranslationBundle(bundle);
+            await idbSetTranslation("bundle", bundle);
+            applyLanguage();
+          }
+
+          updateProgress(55, t("sync_save"));
           appDB = { ...appDB, ...staged };
           await idbSet("heroal_db", appDB);
 
@@ -2220,7 +3021,7 @@
             );
           }
 
-          updateProgress(100, appLang === "DE" ? "Abgeschlossen!" : "Готово!");
+          updateProgress(100, t("sync_done"));
 
           setTimeout(() => {
             syncModal.classList.remove("active");
@@ -2234,44 +3035,26 @@
               const drawings = cached + missing;
               const lostConnection = mediaResult.reason === "network";
               showToast(
-                appLang === "DE"
-                  ? lostConnection
-                    ? `⚠️ Verbindung verloren: ${cached} von ${drawings} Zeichnungen offline — Sync wiederholen`
-                    : `⚠️ Zeichnungs-Server begrenzt Anfragen: ${cached} von ${drawings} offline — Sync später wiederholen`
-                  : lostConnection
-                    ? `⚠️ Соединение потеряно: ${cached} из ${drawings} чертежей офлайн — повторите Sync`
-                    : `⚠️ Сервер чертежей ограничивает запросы: ${cached} из ${drawings} офлайн — повторите Sync позже`,
+                lostConnection
+                  ? tf("sync_abort_net", { cached, total: drawings })
+                  : tf("sync_abort_throttle", { cached, total: drawings }),
               );
             } else if (missing > 0) {
               showToast(
-                appLang === "DE"
-                  ? `⚠️ ${base} Artikel, ${cached} Zeichnungen offline — ${missing} fehlen, Sync wiederholen`
-                  : `⚠️ ${base} артикулов, ${cached} чертежей офлайн — ${missing} не загружено, повторите Sync`,
+                tf("sync_partial", { base, cached, missing }),
               );
             } else {
               // Naming the newly fetched count makes it obvious that a routine
               // sync only pulls the day's additions.
-              const newlyAdded =
-                added > 0
-                  ? appLang === "DE"
-                    ? `, ${added} neu geladen`
-                    : `, ${added} новых загружено`
-                  : "";
-              showToast(
-                appLang === "DE"
-                  ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline${newlyAdded}`
-                  : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн${newlyAdded}`,
-              );
+              const newly =
+                added > 0 ? tf("sync_newly", { n: added }) : "";
+              showToast(tf("sync_ok", { base, cached, newly }));
             }
           }, 500);
         } catch (err) {
           console.error(err);
           syncModal.classList.remove("active");
-          alert(
-            appLang === "DE"
-              ? "⚠️ Fehler beim Synchronisieren."
-              : "⚠️ Ошибка синхронизации данных.",
-          );
+          alert(t("sync_error"));
         } finally {
           icon.style.animation = "none";
         }
@@ -2285,6 +3068,8 @@
         document.getElementById("cfg-url-auskunft").value =
           appUrls.auskunft || "";
         document.getElementById("cfg-url-users").value = appUrls.users || "";
+        document.getElementById("cfg-url-translations").value =
+          appUrls.translations || "";
         document.getElementById("settings-dialog").classList.add("active");
       }
       function closeSettings() {
@@ -2297,19 +3082,11 @@
        */
       function reloadAllDrawings() {
         if (!navigator.onLine) {
-          alert(
-            appLang === "DE"
-              ? "⚠️ Offline: Keine Internetverbindung!"
-              : "⚠️ Офлайн: Нет подключения к интернету!",
-          );
+          alert(t("offline_no_net"));
           return;
         }
         const count = collectDrawingUrls().length;
-        const confirmed = confirm(
-          appLang === "DE"
-            ? `${count} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.`
-            : `Перекачать все ${count} чертежей заново? Это заметно дольше обычной синхронизации.`,
-        );
+        const confirmed = confirm(tf("reload_drawings_confirm", { n: count }));
         if (!confirmed) return;
         closeSettings();
         triggerSync(true);
@@ -2322,14 +3099,13 @@
           defects: document.getElementById("cfg-url-defects").value.trim(),
           auskunft: document.getElementById("cfg-url-auskunft").value.trim(),
           users: document.getElementById("cfg-url-users").value.trim(),
+          translations: document
+            .getElementById("cfg-url-translations")
+            .value.trim(),
         };
         localStorage.setItem("heroal_urls", JSON.stringify(appUrls));
         closeSettings();
-        showToast(
-          appLang === "DE"
-            ? "URLs gespeichert! Drücken Sie Sync."
-            : "Ссылки сохранены! Нажмите Sync.",
-        );
+        showToast(t("urls_saved"));
       }
     </script>
   </body>
