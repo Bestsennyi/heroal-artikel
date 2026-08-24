@@ -117,15 +117,16 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 16px;
+        overflow-y: auto;
       }
       .login-box {
         width: 100%;
-        max-width: 380px;
+        max-width: 460px;
         background: var(--card-bg);
         border: 1px solid rgba(36, 50, 71, 0.95);
         border-radius: 16px;
-        padding: 32px 24px 24px;
+        padding: 32px 28px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -158,20 +159,26 @@
       }
       .login-input {
         width: 100%;
-        min-height: 52px;
-        height: 52px;
-        background: #070b10;
-        border: 2px solid var(--border-color);
+        min-height: 58px;
+        height: 58px;
+        background: #0f172a;
+        border: 1.5px solid #334155;
         border-radius: 10px;
         color: #fff;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 700;
         text-align: center;
         letter-spacing: 4px;
         outline: none;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
-      .login-input:focus {
-        border-color: var(--heroal-light-blue);
+      .login-input:hover {
+        border-color: #475569;
+      }
+      .login-input:focus,
+      .login-input:active {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
       }
       input[type="number"] {
         -moz-appearance: textfield;
@@ -180,6 +187,23 @@
       input::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
+      }
+      .login-btn,
+      .lang-chip,
+      .numpad-key {
+        transition: all 0.15s ease-in-out;
+      }
+      .login-btn:hover,
+      .lang-chip:hover,
+      .numpad-key:hover {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+      }
+      .login-btn:active,
+      .lang-chip:active,
+      .numpad-key:active {
+        transform: scale(0.97);
+        filter: brightness(0.96);
       }
       .login-btn {
         width: 100%;
@@ -193,8 +217,29 @@
         font-weight: 650;
         cursor: pointer;
       }
-      .login-btn:active {
-        background: var(--heroal-dark-blue);
+      .login-numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+      .numpad-key {
+        min-height: 52px;
+        border-radius: 10px;
+        border: 1.5px solid #334155;
+        background: #0f172a;
+        color: #f8fafc;
+        font-size: 22px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .numpad-key[data-key="enter"] {
+        background: var(--heroal-blue);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .numpad-key[data-key="back"] {
+        color: #cbd5e1;
+        font-size: 20px;
       }
       .login-msg {
         font-size: 12px;
@@ -225,6 +270,23 @@
         background: rgba(2, 132, 199, 0.22);
         border-color: var(--heroal-light-blue);
         box-shadow: 0 0 0 1px var(--heroal-light-blue);
+      }
+      .login-footer {
+        width: 100%;
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #64748b;
+        text-align: center;
+      }
+      @media (max-height: 700px) {
+        .login-box {
+          padding: 20px 20px;
+          gap: 10px;
+        }
+        .numpad-key {
+          min-height: 46px;
+        }
       }
 
       /* Top Header */
@@ -984,9 +1046,24 @@
           inputmode="numeric"
           autocomplete="off"
           pattern="[0-9]*"
+          maxlength="12"
           enterkeyhint="done"
         />
         <div class="login-msg" id="login-error-msg"></div>
+        <div class="login-numpad" id="login-numpad" role="group" aria-label="Numpad">
+          <button type="button" class="numpad-key" data-key="1">1</button>
+          <button type="button" class="numpad-key" data-key="2">2</button>
+          <button type="button" class="numpad-key" data-key="3">3</button>
+          <button type="button" class="numpad-key" data-key="4">4</button>
+          <button type="button" class="numpad-key" data-key="5">5</button>
+          <button type="button" class="numpad-key" data-key="6">6</button>
+          <button type="button" class="numpad-key" data-key="7">7</button>
+          <button type="button" class="numpad-key" data-key="8">8</button>
+          <button type="button" class="numpad-key" data-key="9">9</button>
+          <button type="button" class="numpad-key" data-key="back" aria-label="Backspace">⌫</button>
+          <button type="button" class="numpad-key" data-key="0">0</button>
+          <button type="button" class="numpad-key" data-key="enter" aria-label="Enter">↵</button>
+        </div>
         <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
           Anmelden
         </button>
@@ -1000,6 +1077,9 @@
           <button type="button" class="lang-chip" data-lang="ru" data-i18n="lang_ru">
             🇷🇺 RU
           </button>
+        </div>
+        <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
+          v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi
         </div>
       </div>
     </div>
@@ -1419,6 +1499,8 @@
           reload_drawings_confirm:
             "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
           urls_saved: "URLs gespeichert! Drücken Sie Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi",
         },
         en: {
           login_title: "Sign in",
@@ -1471,6 +1553,8 @@
           reload_drawings_confirm:
             "Re-download all {n} drawings? This takes longer than a normal sync.",
           urls_saved: "URLs saved! Press Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Developed by Maksym Beztsinnyi",
         },
         ru: {
           login_title: "Вход",
@@ -1523,6 +1607,8 @@
           reload_drawings_confirm:
             "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
           urls_saved: "Ссылки сохранены! Нажмите Sync.",
+          footer_text:
+            "v2.0 • heroal LagerGuide • Разработчик Максим Бесценный",
         },
       };
 
@@ -1987,11 +2073,39 @@
         }
       }
 
+      function sanitizePackInput() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        input.value = String(input.value || "")
+          .replace(/\D/g, "")
+          .slice(0, 12);
+      }
+
+      function appendPackDigit(digit) {
+        const input = document.getElementById("input-login-nr");
+        if (!input || input.value.length >= 12) return;
+        input.value += String(digit);
+        sanitizePackInput();
+      }
+
+      function backspacePack() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        input.value = input.value.slice(0, -1);
+      }
+
+      function isLoginVisible() {
+        if (document.documentElement.classList.contains("authed")) return false;
+        const overlay = document.getElementById("login-overlay");
+        return !!(overlay && overlay.style.display !== "none");
+      }
+
       function bindLoginUi() {
         const input = document.getElementById("input-login-nr");
         const submit = document.getElementById("btn-login-submit");
         if (submit) submit.addEventListener("click", () => handleLogin());
         if (input) {
+          input.addEventListener("input", sanitizePackInput);
           input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -2001,6 +2115,29 @@
         }
         document.querySelectorAll(".lang-chip").forEach((btn) => {
           btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+        });
+        document.querySelectorAll(".numpad-key").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const key = btn.dataset.key;
+            if (key === "back") backspacePack();
+            else if (key === "enter") handleLogin();
+            else appendPackDigit(key);
+          });
+        });
+        window.addEventListener("keydown", (e) => {
+          if (!isLoginVisible()) return;
+          if (e.key >= "0" && e.key <= "9") {
+            if (document.activeElement === input) return;
+            appendPackDigit(e.key);
+          } else if (e.key === "Backspace") {
+            if (document.activeElement === input) return;
+            e.preventDefault();
+            backspacePack();
+          } else if (e.key === "Enter") {
+            if (document.activeElement === input) return;
+            e.preventDefault();
+            handleLogin();
+          }
         });
       }
 
