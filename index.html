@@ -200,6 +200,10 @@
         cursor: pointer;
         transition: all 0.15s ease-in-out;
       }
+      .numpad-toggle svg {
+        display: block;
+        pointer-events: none;
+      }
       .numpad-toggle.is-on {
         border-color: #38bdf8;
         color: #fff;
@@ -270,14 +274,16 @@
         transition: all 0.15s ease-in-out;
       }
       .numpad-key:hover {
-        background: #334155;
-        border-color: #64748b;
+        background: #243248;
+        border: 1.5px solid #60a5fa;
         transform: translateY(-2px);
       }
       .numpad-key:active {
-        background: #2563eb;
-        color: #ffffff;
-        transform: scale(0.95);
+        background: #1e293b;
+        border: 2px solid #38bdf8;
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+        transform: scale(0.96);
       }
       .login-msg {
         font-size: 12px;
@@ -1133,7 +1139,23 @@
             aria-label="Numpad"
             aria-pressed="true"
           >
-            ⌨️
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10m-9-4h.01"
+              />
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+            </svg>
           </button>
         </div>
         <div class="login-msg" id="login-error-msg"></div>
