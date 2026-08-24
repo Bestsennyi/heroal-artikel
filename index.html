@@ -157,14 +157,19 @@
         line-height: 1.45;
         margin-bottom: 4px;
       }
+      .login-field {
+        position: relative;
+        width: 100%;
+      }
       .login-input {
         width: 100%;
         min-height: 58px;
         height: 58px;
-        background: #0f172a;
-        border: 1.5px solid #334155;
+        padding: 0 52px 0 16px;
+        background: #1e293b;
+        border: 2px solid #475569;
         border-radius: 10px;
-        color: #fff;
+        color: #ffffff;
         font-size: 28px;
         font-weight: 700;
         text-align: center;
@@ -173,12 +178,32 @@
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
       .login-input:hover {
-        border-color: #475569;
+        border-color: #64748b;
       }
       .login-input:focus,
       .login-input:active {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        border-color: #38bdf8;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+      }
+      .numpad-toggle {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e2e8f0;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+      }
+      .numpad-toggle.is-on {
+        border-color: #38bdf8;
+        color: #fff;
+        background: #1e3a5f;
       }
       input[type="number"] {
         -moz-appearance: textfield;
@@ -189,21 +214,28 @@
         margin: 0;
       }
       .login-btn,
-      .lang-chip,
-      .numpad-key {
+      .lang-trigger,
+      .lang-option {
         transition: all 0.15s ease-in-out;
       }
       .login-btn:hover,
-      .lang-chip:hover,
-      .numpad-key:hover {
+      .lang-trigger:hover,
+      .lang-option:hover {
         filter: brightness(1.12);
         transform: translateY(-1px);
       }
       .login-btn:active,
-      .lang-chip:active,
-      .numpad-key:active {
+      .lang-trigger:active,
+      .lang-option:active {
         transform: scale(0.97);
         filter: brightness(0.96);
+      }
+      .numpad-toggle:hover {
+        filter: brightness(1.12);
+        transform: translateY(calc(-50% - 1px));
+      }
+      .numpad-toggle:active {
+        transform: translateY(-50%) scale(0.97);
       }
       .login-btn {
         width: 100%;
@@ -223,23 +255,29 @@
         gap: 8px;
         width: 100%;
       }
+      .login-numpad.is-hidden {
+        display: none;
+      }
       .numpad-key {
         min-height: 52px;
         border-radius: 10px;
         border: 1.5px solid #334155;
-        background: #0f172a;
+        background: #1e293b;
         color: #f8fafc;
         font-size: 22px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
+        transition: all 0.15s ease-in-out;
       }
-      .numpad-key[data-key="enter"] {
-        background: var(--heroal-blue);
-        border-color: rgba(255, 255, 255, 0.15);
+      .numpad-key:hover {
+        background: #334155;
+        border-color: #64748b;
+        transform: translateY(-2px);
       }
-      .numpad-key[data-key="back"] {
-        color: #cbd5e1;
-        font-size: 20px;
+      .numpad-key:active {
+        background: #2563eb;
+        color: #ffffff;
+        transform: scale(0.95);
       }
       .login-msg {
         font-size: 12px;
@@ -247,29 +285,67 @@
         min-height: 16px;
         text-align: center;
       }
-      .lang-switch {
-        display: flex;
+      .lang-dropdown {
+        position: relative;
         width: 100%;
-        gap: 8px;
-        margin-top: 2px;
       }
-      .lang-chip {
-        flex: 1;
-        min-height: 40px;
-        border-radius: 999px;
+      .lang-trigger {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0 14px;
+        border-radius: 10px;
         border: 1px solid var(--border-color);
         background: var(--card-inner);
-        color: var(--text-sub);
-        font-size: 13px;
+        color: #fff;
+        font-size: 14px;
         font-weight: 650;
         cursor: pointer;
-        padding: 0 8px;
       }
-      .lang-chip.active {
+      .lang-caret {
+        color: var(--text-sub);
+        font-size: 12px;
+      }
+      .lang-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: calc(100% + 6px);
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        background: #0f172a;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        z-index: 5;
+      }
+      .lang-dropdown.is-open .lang-menu {
+        display: flex;
+      }
+      .lang-option {
+        width: 100%;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #e2e8f0;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+      }
+      .lang-option.active {
+        background: rgba(56, 189, 248, 0.16);
         color: #fff;
-        background: rgba(2, 132, 199, 0.22);
-        border-color: var(--heroal-light-blue);
-        box-shadow: 0 0 0 1px var(--heroal-light-blue);
       }
       .login-footer {
         width: 100%;
@@ -1038,17 +1114,28 @@
         <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
           Geben Sie Ihre Packnummer ein, um zu beginnen.
         </div>
-        <input
-          type="tel"
-          id="input-login-nr"
-          class="login-input"
-          placeholder="z. B. 1234"
-          inputmode="numeric"
-          autocomplete="off"
-          pattern="[0-9]*"
-          maxlength="12"
-          enterkeyhint="done"
-        />
+        <div class="login-field">
+          <input
+            type="tel"
+            id="input-login-nr"
+            class="login-input"
+            placeholder="z. B. 1234"
+            inputmode="numeric"
+            autocomplete="off"
+            pattern="[0-9]*"
+            maxlength="12"
+            enterkeyhint="done"
+          />
+          <button
+            type="button"
+            class="numpad-toggle"
+            id="btn-numpad-toggle"
+            aria-label="Numpad"
+            aria-pressed="true"
+          >
+            ⌨️
+          </button>
+        </div>
         <div class="login-msg" id="login-error-msg"></div>
         <div class="login-numpad" id="login-numpad" role="group" aria-label="Numpad">
           <button type="button" class="numpad-key" data-key="1">1</button>
@@ -1060,23 +1147,29 @@
           <button type="button" class="numpad-key" data-key="7">7</button>
           <button type="button" class="numpad-key" data-key="8">8</button>
           <button type="button" class="numpad-key" data-key="9">9</button>
-          <button type="button" class="numpad-key" data-key="back" aria-label="Backspace">⌫</button>
+          <button type="button" class="numpad-key" data-key="clear" aria-label="Clear">C</button>
           <button type="button" class="numpad-key" data-key="0">0</button>
-          <button type="button" class="numpad-key" data-key="enter" aria-label="Enter">↵</button>
+          <button type="button" class="numpad-key" data-key="back" aria-label="Backspace">⌫</button>
         </div>
         <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
           Anmelden
         </button>
-        <div class="lang-switch" id="login-lang-switch" role="group">
-          <button type="button" class="lang-chip" data-lang="de" data-i18n="lang_de">
-            🇩🇪 DE
+        <div class="lang-dropdown" id="login-lang-dropdown">
+          <button type="button" class="lang-trigger" id="btn-lang-trigger" aria-expanded="false">
+            <span id="lang-trigger-label">🇩🇪 Deutsch</span>
+            <span class="lang-caret">▾</span>
           </button>
-          <button type="button" class="lang-chip" data-lang="en" data-i18n="lang_en">
-            🇬🇧 EN
-          </button>
-          <button type="button" class="lang-chip" data-lang="ru" data-i18n="lang_ru">
-            🇷🇺 RU
-          </button>
+          <div class="lang-menu" id="lang-menu" role="listbox">
+            <button type="button" class="lang-option" data-lang="de">
+              🇩🇪 <span data-i18n="lang_de">Deutsch</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="en">
+              🇬🇧 <span data-i18n="lang_en">English</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="ru">
+              🇷🇺 <span data-i18n="lang_ru">Русский</span>
+            </button>
+          </div>
         </div>
         <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
           v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi
@@ -1446,6 +1539,12 @@
       const LANGS = ["de", "en", "ru"];
       const LANG_STORAGE_KEY = "lagerguide_lang";
       const PACK_STORAGE_KEY = "lagerguide_last_pack";
+      const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
+      const LANG_META = {
+        de: { flag: "🇩🇪", nameKey: "lang_de" },
+        en: { flag: "🇬🇧", nameKey: "lang_en" },
+        ru: { flag: "🇷🇺", nameKey: "lang_ru" },
+      };
 
       const I18N_FALLBACK = {
         de: {
@@ -1453,9 +1552,9 @@
           login_prompt: "Geben Sie Ihre Packnummer ein, um zu beginnen.",
           login_placeholder: "z. B. 1234",
           login_btn: "Anmelden",
-          lang_de: "🇩🇪 DE",
-          lang_en: "🇬🇧 EN",
-          lang_ru: "🇷🇺 RU",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
           login_error_empty: "Bitte Packnummer eingeben!",
           login_error_blocked: "Benutzer ist gesperrt!",
           lbl_profiles: "📐 Profile / Zubehör",
@@ -1507,9 +1606,9 @@
           login_prompt: "Enter your pack number to continue.",
           login_placeholder: "e.g. 1234",
           login_btn: "Sign in",
-          lang_de: "🇩🇪 DE",
-          lang_en: "🇬🇧 EN",
-          lang_ru: "🇷🇺 RU",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
           login_error_empty: "Please enter a pack number!",
           login_error_blocked: "This user is blocked!",
           lbl_profiles: "📐 Profiles / Accessories",
@@ -1561,9 +1660,9 @@
           login_prompt: "Введите Packnummer, чтобы начать работу.",
           login_placeholder: "напр. 1234",
           login_btn: "Войти",
-          lang_de: "🇩🇪 DE",
-          lang_en: "🇬🇧 EN",
-          lang_ru: "🇷🇺 RU",
+          lang_de: "Deutsch",
+          lang_en: "English",
+          lang_ru: "Русский",
           login_error_empty: "Пожалуйста, введите Packnummer!",
           login_error_blocked: "Доступ заблокирован администратором!",
           lbl_profiles: "📐 Профили / Комплектующие",
@@ -1721,9 +1820,8 @@
         });
         const loginInput = document.getElementById("input-login-nr");
         if (loginInput) loginInput.placeholder = t("login_placeholder");
-        document.querySelectorAll(".lang-chip").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.lang === appLang);
-        });
+        syncLangDropdown();
+        syncNumpadVisibility();
         const btnLang = document.getElementById("btn-lang");
         if (btnLang) btnLang.innerText = appLang.toUpperCase();
         const setTxt = (id, value) => {
@@ -1749,6 +1847,7 @@
           localStorage.setItem(LANG_STORAGE_KEY, appLang);
           localStorage.setItem("heroal_lang", appLang.toUpperCase());
         } catch (e) {}
+        closeLangDropdown();
         applyLanguage();
         const findProf = document.getElementById("find-prof");
         const findColor = document.getElementById("find-color");
@@ -2100,6 +2199,64 @@
         return !!(overlay && overlay.style.display !== "none");
       }
 
+      function clearPack() {
+        const input = document.getElementById("input-login-nr");
+        if (input) input.value = "";
+      }
+
+      function readNumpadVisible() {
+        try {
+          const saved = localStorage.getItem(NUMPAD_STORAGE_KEY);
+          if (saved === "0" || saved === "false") return false;
+          if (saved === "1" || saved === "true") return true;
+        } catch (e) {}
+        return true;
+      }
+
+      function syncNumpadVisibility() {
+        const visible = readNumpadVisible();
+        const pad = document.getElementById("login-numpad");
+        const btn = document.getElementById("btn-numpad-toggle");
+        if (pad) pad.classList.toggle("is-hidden", !visible);
+        if (btn) {
+          btn.classList.toggle("is-on", visible);
+          btn.setAttribute("aria-pressed", visible ? "true" : "false");
+        }
+      }
+
+      function toggleNumpad() {
+        const next = !readNumpadVisible();
+        try {
+          localStorage.setItem(NUMPAD_STORAGE_KEY, next ? "1" : "0");
+        } catch (e) {}
+        syncNumpadVisibility();
+      }
+
+      function syncLangDropdown() {
+        const meta = LANG_META[appLang] || LANG_META.de;
+        const label = document.getElementById("lang-trigger-label");
+        if (label) label.textContent = `${meta.flag} ${t(meta.nameKey)}`;
+        document.querySelectorAll(".lang-option").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.lang === appLang);
+        });
+      }
+
+      function closeLangDropdown() {
+        const dd = document.getElementById("login-lang-dropdown");
+        const trigger = document.getElementById("btn-lang-trigger");
+        if (dd) dd.classList.remove("is-open");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleLangDropdown() {
+        const dd = document.getElementById("login-lang-dropdown");
+        const trigger = document.getElementById("btn-lang-trigger");
+        if (!dd) return;
+        const open = !dd.classList.contains("is-open");
+        dd.classList.toggle("is-open", open);
+        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
       function bindLoginUi() {
         const input = document.getElementById("input-login-nr");
         const submit = document.getElementById("btn-login-submit");
@@ -2113,19 +2270,39 @@
             }
           });
         }
-        document.querySelectorAll(".lang-chip").forEach((btn) => {
-          btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
-        });
+        const numpadToggle = document.getElementById("btn-numpad-toggle");
+        if (numpadToggle) numpadToggle.addEventListener("click", toggleNumpad);
         document.querySelectorAll(".numpad-key").forEach((btn) => {
           btn.addEventListener("click", () => {
             const key = btn.dataset.key;
             if (key === "back") backspacePack();
-            else if (key === "enter") handleLogin();
+            else if (key === "clear") clearPack();
             else appendPackDigit(key);
           });
         });
+        const langTrigger = document.getElementById("btn-lang-trigger");
+        if (langTrigger) {
+          langTrigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleLangDropdown();
+          });
+        }
+        document.querySelectorAll(".lang-option").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setLanguage(btn.dataset.lang);
+          });
+        });
+        document.addEventListener("click", (e) => {
+          const dd = document.getElementById("login-lang-dropdown");
+          if (dd && !dd.contains(e.target)) closeLangDropdown();
+        });
         window.addEventListener("keydown", (e) => {
           if (!isLoginVisible()) return;
+          if (e.key === "Escape") {
+            closeLangDropdown();
+            return;
+          }
           if (e.key >= "0" && e.key <= "9") {
             if (document.activeElement === input) return;
             appendPackDigit(e.key);
@@ -2139,6 +2316,7 @@
             handleLogin();
           }
         });
+        syncNumpadVisibility();
       }
 
       // First paint: login HTML/CSS is already on screen. IndexedDB runs after.
