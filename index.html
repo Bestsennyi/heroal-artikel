@@ -51,6 +51,16 @@
     <link rel="manifest" href="manifest.json" />
 
     <title>heroal LagerGuide</title>
+    <script>
+      /* Paint the right overlay immediately — no IndexedDB wait. */
+      try {
+        var __sess = localStorage.getItem("heroal_current_user");
+        if (__sess && __sess !== "null" && __sess !== "undefined") {
+          JSON.parse(__sess);
+          document.documentElement.classList.add("authed");
+        }
+      } catch (e) {}
+    </script>
 
     <style>
       :root {
@@ -92,6 +102,11 @@
         overflow: hidden;
       }
 
+      /* Hide the login overlay before JS runs when a session already exists. */
+      html.authed #login-overlay {
+        display: none;
+      }
+
       /* Login Modal */
       #login-overlay {
         position: fixed;
@@ -108,54 +123,74 @@
         width: 100%;
         max-width: 380px;
         background: var(--card-bg);
-        border: 1px solid var(--border-color);
+        border: 1px solid rgba(36, 50, 71, 0.95);
         border-radius: 16px;
-        padding: 28px 24px;
+        padding: 32px 24px 24px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
-        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+        gap: 14px;
+        box-shadow:
+          0 18px 48px rgba(0, 0, 0, 0.72),
+          0 0 0 1px rgba(255, 255, 255, 0.04);
       }
       .login-logo {
         font-size: 26px;
         font-weight: 700;
         color: #fff;
+        letter-spacing: 0.2px;
       }
       .login-logo span {
         color: var(--heroal-light-blue);
+      }
+      .login-title {
+        font-size: 18px;
+        font-weight: 650;
+        color: var(--text-main);
+        text-align: center;
       }
       .login-sub {
         font-size: 13px;
         color: var(--text-sub);
         text-align: center;
-        line-height: 1.4;
+        line-height: 1.45;
+        margin-bottom: 4px;
       }
       .login-input {
         width: 100%;
-        height: 50px;
+        min-height: 52px;
+        height: 52px;
         background: #070b10;
         border: 2px solid var(--border-color);
         border-radius: 10px;
         color: #fff;
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 700;
         text-align: center;
         letter-spacing: 4px;
         outline: none;
       }
       .login-input:focus {
-        border-color: var(--heroal-blue);
+        border-color: var(--heroal-light-blue);
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
       .login-btn {
         width: 100%;
-        height: 48px;
+        min-height: 52px;
+        height: 52px;
         background: var(--heroal-blue);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 650;
         cursor: pointer;
       }
       .login-btn:active {
@@ -165,6 +200,31 @@
         font-size: 12px;
         color: #f87171;
         min-height: 16px;
+        text-align: center;
+      }
+      .lang-switch {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .lang-chip {
+        flex: 1;
+        min-height: 40px;
+        border-radius: 999px;
+        border: 1px solid var(--border-color);
+        background: var(--card-inner);
+        color: var(--text-sub);
+        font-size: 13px;
+        font-weight: 650;
+        cursor: pointer;
+        padding: 0 8px;
+      }
+      .lang-chip.active {
+        color: #fff;
+        background: rgba(2, 132, 199, 0.22);
+        border-color: var(--heroal-light-blue);
+        box-shadow: 0 0 0 1px var(--heroal-light-blue);
       }
 
       /* Top Header */
@@ -909,22 +969,38 @@
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay">
       <div class="login-box">
-        <div class="login-logo">heroal <span>Guide</span></div>
-        <div class="login-sub" id="login-sub-txt">
-          Geben Sie Ihre <strong>Packnummer</strong> ein, um zu beginnen /
-          Введите ваш Packnummer:
+        <div class="login-logo">heroal <span>LagerGuide</span></div>
+        <div class="login-title" id="login-title-txt" data-i18n="login_title">
+          Anmeldung
+        </div>
+        <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
+          Geben Sie Ihre Packnummer ein, um zu beginnen.
         </div>
         <input
-          type="number"
+          type="tel"
           id="input-login-nr"
           class="login-input"
-          placeholder="1234"
+          placeholder="z. B. 1234"
           inputmode="numeric"
+          autocomplete="off"
+          pattern="[0-9]*"
+          enterkeyhint="done"
         />
         <div class="login-msg" id="login-error-msg"></div>
-        <button class="login-btn" onclick="handleLogin()" id="btn-login-submit">
-          Anmelden / Войти
+        <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
+          Anmelden
         </button>
+        <div class="lang-switch" id="login-lang-switch" role="group">
+          <button type="button" class="lang-chip" data-lang="de" data-i18n="lang_de">
+            🇩🇪 DE
+          </button>
+          <button type="button" class="lang-chip" data-lang="en" data-i18n="lang_en">
+            🇬🇧 EN
+          </button>
+          <button type="button" class="lang-chip" data-lang="ru" data-i18n="lang_ru">
+            🇷🇺 RU
+          </button>
+        </div>
       </div>
     </div>
 
@@ -943,19 +1019,19 @@
           class="desktop-nav-item active"
           onclick="navigate('view-suche', this)"
         >
-          🔍 Suche [/]
+          🔍 <span id="nav-desk-suche">Suche [/]</span>
         </button>
         <button
           class="desktop-nav-item"
           onclick="navigate('view-ausschuss', this)"
         >
-          ⚠️ Ausschuss
+          ⚠️ <span id="nav-desk-ausschuss">Ausschuss</span>
         </button>
         <button
           class="desktop-nav-item"
           onclick="navigate('view-auskunft', this)"
         >
-          📋 Auskunft
+          📋 <span id="nav-desk-auskunft">Auskunft</span>
         </button>
       </div>
 
@@ -1252,6 +1328,10 @@
           <div class="url-label">Users CSV URL</div>
           <input type="text" id="cfg-url-users" class="url-input" />
         </div>
+        <div>
+          <div class="url-label">Translations CSV URL</div>
+          <input type="text" id="cfg-url-translations" class="url-input" />
+        </div>
 
         <button
           class="btn-hdr"
@@ -1283,6 +1363,315 @@
 
     <!-- 8. APPLICATION LOGIC & INDEXEDDB INTEGRATION -->
     <script>
+      const LANGS = ["de", "en", "ru"];
+      const LANG_STORAGE_KEY = "lagerguide_lang";
+      const PACK_STORAGE_KEY = "lagerguide_last_pack";
+
+      const I18N_FALLBACK = {
+        de: {
+          login_title: "Anmeldung",
+          login_prompt: "Geben Sie Ihre Packnummer ein, um zu beginnen.",
+          login_placeholder: "z. B. 1234",
+          login_btn: "Anmelden",
+          lang_de: "🇩🇪 DE",
+          lang_en: "🇬🇧 EN",
+          lang_ru: "🇷🇺 RU",
+          login_error_empty: "Bitte Packnummer eingeben!",
+          login_error_blocked: "Benutzer ist gesperrt!",
+          lbl_profiles: "📐 Profile / Zubehör",
+          lbl_artnr: "Art.-Nr. [/]",
+          lbl_colors: "🎨 Farben",
+          nav_search: "Suche",
+          nav_search_hotkey: "Suche [/]",
+          nav_scrap: "Ausschuss",
+          nav_info: "Auskunft",
+          online: "Online",
+          offline: "Offline",
+          sync: "Sync",
+          sync_title: "Daten synchronisieren",
+          sync_offline: "Offline: Sync deaktiviert",
+          idle_logout: "Sitzung wegen Inaktivität beendet.",
+          copied: "✅ {label} kopiert!",
+          drawing_missing: "Zeichnung nicht hinterlegt",
+          sync_drawings_missing: "Sync: {n} Zeichnungen fehlen offline",
+          defect_desc: "Beschreibung:",
+          defect_action: "Vorgehen (Aktion):",
+          drawings_check: "Zeichnungen prüfen...",
+          drawings_load: "Neue Zeichnungen laden... {done}/{total}",
+          offline_no_net: "⚠️ Offline: Keine Internetverbindung!",
+          sync_load_profiles: "Lade Profile CSV...",
+          sync_load_colors: "Lade Farben CSV...",
+          sync_load_defects: "Lade Ausschuss & ERP...",
+          sync_load_users: "Lade Mitarbeiterdaten...",
+          sync_load_i18n: "Lade Übersetzungen...",
+          sync_save: "Speichere in IndexedDB...",
+          sync_done: "Abgeschlossen!",
+          sync_abort_net:
+            "⚠️ Verbindung verloren: {cached} von {total} Zeichnungen offline — Sync wiederholen",
+          sync_abort_throttle:
+            "⚠️ Zeichnungs-Server begrenzt Anfragen: {cached} von {total} offline — Sync später wiederholen",
+          sync_partial:
+            "⚠️ {base} Artikel, {cached} Zeichnungen offline — {missing} fehlen, Sync wiederholen",
+          sync_ok:
+            "✅ Sync ok: {base} Artikel, {cached} Zeichnungen offline{newly}",
+          sync_newly: ", {n} neu geladen",
+          sync_error: "⚠️ Fehler beim Synchronisieren.",
+          reload_drawings_confirm:
+            "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
+          urls_saved: "URLs gespeichert! Drücken Sie Sync.",
+        },
+        en: {
+          login_title: "Sign in",
+          login_prompt: "Enter your pack number to continue.",
+          login_placeholder: "e.g. 1234",
+          login_btn: "Sign in",
+          lang_de: "🇩🇪 DE",
+          lang_en: "🇬🇧 EN",
+          lang_ru: "🇷🇺 RU",
+          login_error_empty: "Please enter a pack number!",
+          login_error_blocked: "This user is blocked!",
+          lbl_profiles: "📐 Profiles / Accessories",
+          lbl_artnr: "Art. no. [/]",
+          lbl_colors: "🎨 Colours",
+          nav_search: "Search",
+          nav_search_hotkey: "Search [/]",
+          nav_scrap: "Scrap",
+          nav_info: "Info",
+          online: "Online",
+          offline: "Offline",
+          sync: "Sync",
+          sync_title: "Synchronise data",
+          sync_offline: "Offline: sync disabled",
+          idle_logout: "Signed out due to inactivity.",
+          copied: "✅ {label} copied!",
+          drawing_missing: "No drawing on file",
+          sync_drawings_missing: "Sync: {n} drawings missing offline",
+          defect_desc: "Description:",
+          defect_action: "Action:",
+          drawings_check: "Checking drawings...",
+          drawings_load: "Downloading new drawings... {done}/{total}",
+          offline_no_net: "⚠️ Offline: no internet connection!",
+          sync_load_profiles: "Loading profiles CSV...",
+          sync_load_colors: "Loading colours CSV...",
+          sync_load_defects: "Loading scrap & ERP...",
+          sync_load_users: "Loading staff list...",
+          sync_load_i18n: "Loading translations...",
+          sync_save: "Saving to IndexedDB...",
+          sync_done: "Done!",
+          sync_abort_net:
+            "⚠️ Connection lost: {cached} of {total} drawings offline — retry sync",
+          sync_abort_throttle:
+            "⚠️ Drawing server is rate-limiting: {cached} of {total} offline — retry later",
+          sync_partial:
+            "⚠️ {base} articles, {cached} drawings offline — {missing} missing, retry sync",
+          sync_ok:
+            "✅ Sync ok: {base} articles, {cached} drawings offline{newly}",
+          sync_newly: ", {n} newly downloaded",
+          sync_error: "⚠️ Synchronisation failed.",
+          reload_drawings_confirm:
+            "Re-download all {n} drawings? This takes longer than a normal sync.",
+          urls_saved: "URLs saved! Press Sync.",
+        },
+        ru: {
+          login_title: "Вход",
+          login_prompt: "Введите Packnummer, чтобы начать работу.",
+          login_placeholder: "напр. 1234",
+          login_btn: "Войти",
+          lang_de: "🇩🇪 DE",
+          lang_en: "🇬🇧 EN",
+          lang_ru: "🇷🇺 RU",
+          login_error_empty: "Пожалуйста, введите Packnummer!",
+          login_error_blocked: "Доступ заблокирован администратором!",
+          lbl_profiles: "📐 Профили / Комплектующие",
+          lbl_artnr: "Артикул [/]",
+          lbl_colors: "🎨 Цвета RAL / SD",
+          nav_search: "Поиск",
+          nav_search_hotkey: "Поиск [/]",
+          nav_scrap: "Брак / Дефекты",
+          nav_info: "Справка ERP",
+          online: "Онлайн",
+          offline: "Офлайн",
+          sync: "Sync",
+          sync_title: "Синхронизировать данные",
+          sync_offline: "Офлайн: Sync отключён",
+          idle_logout: "Сессия завершена из-за неактивности.",
+          copied: "✅ {label} скопировано!",
+          drawing_missing: "Чертёж не задан",
+          sync_drawings_missing: "Sync: не хватает {n} чертежей для офлайна",
+          defect_desc: "Описание:",
+          defect_action: "Инструкция по действию:",
+          drawings_check: "Проверка чертежей...",
+          drawings_load: "Загрузка новых чертежей... {done}/{total}",
+          offline_no_net: "⚠️ Офлайн: нет подключения к интернету!",
+          sync_load_profiles: "Загрузка профилей...",
+          sync_load_colors: "Загрузка каталога цветов...",
+          sync_load_defects: "Загрузка дефектов и ERP...",
+          sync_load_users: "Загрузка списка сотрудников...",
+          sync_load_i18n: "Загрузка переводов...",
+          sync_save: "Сохранение в IndexedDB...",
+          sync_done: "Готово!",
+          sync_abort_net:
+            "⚠️ Соединение потеряно: {cached} из {total} чертежей офлайн — повторите Sync",
+          sync_abort_throttle:
+            "⚠️ Сервер чертежей ограничивает запросы: {cached} из {total} офлайн — повторите Sync позже",
+          sync_partial:
+            "⚠️ {base} артикулов, {cached} чертежей офлайн — {missing} не загружено, повторите Sync",
+          sync_ok:
+            "✅ Синхронизация ok: {base} артикулов, {cached} чертежей офлайн{newly}",
+          sync_newly: ", {n} новых загружено",
+          sync_error: "⚠️ Ошибка синхронизации данных.",
+          reload_drawings_confirm:
+            "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
+          urls_saved: "Ссылки сохранены! Нажмите Sync.",
+        },
+      };
+
+      function cloneFallbackDict() {
+        const out = { de: {}, en: {}, ru: {} };
+        LANGS.forEach((lang) => {
+          out[lang] = Object.assign({}, I18N_FALLBACK[lang]);
+        });
+        return out;
+      }
+
+      function normalizeLang(raw) {
+        if (raw == null) return "de";
+        const v = String(raw).trim().toLowerCase();
+        if (v === "de" || v === "en" || v === "ru") return v;
+        if (v === "deutsch" || v === "ger" || v === "german") return "de";
+        if (v === "english") return "en";
+        if (v === "рус" || v === "russian") return "ru";
+        return "de";
+      }
+
+      function readSavedLang() {
+        try {
+          const next = localStorage.getItem(LANG_STORAGE_KEY);
+          if (next) return normalizeLang(next);
+          const legacy = localStorage.getItem("heroal_lang");
+          if (legacy) return normalizeLang(legacy);
+        } catch (e) {}
+        return "de";
+      }
+
+      let i18nDict = cloneFallbackDict();
+      let appLang = readSavedLang();
+
+      function t(key) {
+        const table = i18nDict[appLang] || i18nDict.de;
+        return (
+          (table && table[key]) ||
+          (i18nDict.de && i18nDict.de[key]) ||
+          (I18N_FALLBACK.de && I18N_FALLBACK.de[key]) ||
+          key
+        );
+      }
+
+      function tf(key, vars) {
+        let s = t(key);
+        Object.keys(vars || {}).forEach((k) => {
+          s = s.split("{" + k + "}").join(String(vars[k]));
+        });
+        return s;
+      }
+
+      function mergeTranslationBundle(bundle) {
+        if (!bundle || typeof bundle !== "object") return;
+        LANGS.forEach((lang) => {
+          if (bundle[lang] && typeof bundle[lang] === "object") {
+            Object.keys(bundle[lang]).forEach((key) => {
+              const val = bundle[lang][key];
+              if (val != null && String(val).trim() !== "") {
+                i18nDict[lang][key] = String(val);
+              }
+            });
+          }
+        });
+        Object.keys(bundle).forEach((key) => {
+          if (LANGS.indexOf(key) !== -1) return;
+          const row = bundle[key];
+          if (!row || typeof row !== "object") return;
+          LANGS.forEach((lang) => {
+            if (row[lang] != null && String(row[lang]).trim() !== "") {
+              i18nDict[lang][key] = String(row[lang]);
+            }
+          });
+        });
+      }
+
+      function isValidPack(val) {
+        return typeof val === "string" && /^\d{1,12}$/.test(val.trim());
+      }
+
+      function readLastPack() {
+        try {
+          let saved = localStorage.getItem(PACK_STORAGE_KEY);
+          if (saved === "null" || saved === "undefined") saved = "";
+          if (isValidPack(saved)) return saved.trim();
+        } catch (e) {}
+        return "";
+      }
+
+      function restoreLoginPack() {
+        const input = document.getElementById("input-login-nr");
+        if (!input) return;
+        const saved = readLastPack();
+        const fromUser =
+          currentUser && currentUser.pack != null
+            ? String(currentUser.pack)
+            : "";
+        const pack = isValidPack(saved)
+          ? saved
+          : isValidPack(fromUser)
+            ? fromUser.trim()
+            : "";
+        input.value = pack;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = appLang;
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          el.textContent = t(el.getAttribute("data-i18n"));
+        });
+        const loginInput = document.getElementById("input-login-nr");
+        if (loginInput) loginInput.placeholder = t("login_placeholder");
+        document.querySelectorAll(".lang-chip").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.lang === appLang);
+        });
+        const btnLang = document.getElementById("btn-lang");
+        if (btnLang) btnLang.innerText = appLang.toUpperCase();
+        const setTxt = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.innerText = value;
+        };
+        setTxt("lbl-prof-head", t("lbl_profiles"));
+        setTxt("lbl-prof-badge", t("lbl_artnr"));
+        setTxt("lbl-color-head", t("lbl_colors"));
+        setTxt("nav-lbl-suche", t("nav_search"));
+        setTxt("nav-lbl-ausschuss", t("nav_scrap"));
+        setTxt("nav-lbl-auskunft", t("nav_info"));
+        setTxt("nav-desk-suche", t("nav_search_hotkey"));
+        setTxt("nav-desk-ausschuss", t("nav_scrap"));
+        setTxt("nav-desk-auskunft", t("nav_info"));
+        setTxt("btn-sync-txt", t("sync"));
+        updateOnlineStatus();
+      }
+
+      function setLanguage(lang) {
+        appLang = normalizeLang(lang);
+        try {
+          localStorage.setItem(LANG_STORAGE_KEY, appLang);
+          localStorage.setItem("heroal_lang", appLang.toUpperCase());
+        } catch (e) {}
+        applyLanguage();
+        const findProf = document.getElementById("find-prof");
+        const findColor = document.getElementById("find-color");
+        if (findProf) findProf.dispatchEvent(new Event("input"));
+        if (findColor) findColor.dispatchEvent(new Event("input"));
+        if (typeof renderDefects === "function") renderDefects();
+        if (typeof renderAuskunft === "function") renderAuskunft();
+      }
+
       // Service Worker Registration
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
@@ -1369,14 +1758,14 @@
 
         if (navigator.onLine) {
           badge.className = "net-badge";
-          txt.innerText = "Online";
+          txt.innerText = t("online");
           btnSync.removeAttribute("disabled");
-          btnSync.title = "Daten synchronisieren";
+          btnSync.title = t("sync_title");
         } else {
           badge.className = "net-badge offline";
-          txt.innerText = "Offline";
+          txt.innerText = t("offline");
           btnSync.setAttribute("disabled", "true");
-          btnSync.title = "Offline: Sync deaktiviert";
+          btnSync.title = t("sync_offline");
         }
       }
       window.addEventListener("online", updateOnlineStatus);
@@ -1384,8 +1773,9 @@
 
       // IndexedDB Database Wrapper
       const DB_NAME = "heroal_warehouse_db";
-      const DB_VERSION = 1;
+      const DB_VERSION = 2;
       let dbInstance = null;
+      let dbReady = Promise.resolve();
 
       function openWarehouseDB() {
         return new Promise((resolve, reject) => {
@@ -1395,6 +1785,9 @@
             const db = e.target.result;
             if (!db.objectStoreNames.contains("store_data")) {
               db.createObjectStore("store_data");
+            }
+            if (!db.objectStoreNames.contains("translations")) {
+              db.createObjectStore("translations");
             }
           };
           req.onsuccess = (e) => {
@@ -1414,13 +1807,14 @@
         });
       }
 
-      function runTransaction(mode, work) {
+      function runTransaction(mode, work, storeName) {
+        const store = storeName || "store_data";
         return new Promise((resolve, reject) => {
           openWarehouseDB().then((db) => {
             let req;
             try {
-              const tx = db.transaction("store_data", mode);
-              req = work(tx.objectStore("store_data"));
+              const tx = db.transaction(store, mode);
+              req = work(tx.objectStore(store));
             } catch (err) {
               // Stale handle (e.g. storage cleared): forget it so the retry reopens.
               dbInstance = null;
@@ -1434,12 +1828,12 @@
       }
 
       /** Retries once with a fresh connection before giving up. */
-      async function idbRun(mode, work) {
+      async function idbRun(mode, work, storeName) {
         try {
-          return await runTransaction(mode, work);
+          return await runTransaction(mode, work, storeName);
         } catch (err) {
           dbInstance = null;
-          return runTransaction(mode, work);
+          return runTransaction(mode, work, storeName);
         }
       }
 
@@ -1449,6 +1843,18 @@
 
       function idbSet(key, val) {
         return idbRun("readwrite", (store) => store.put(val, key));
+      }
+
+      function idbGetTranslation(key) {
+        return idbRun("readonly", (store) => store.get(key), "translations");
+      }
+
+      function idbSetTranslation(key, val) {
+        return idbRun(
+          "readwrite",
+          (store) => store.put(val, key),
+          "translations",
+        );
       }
 
       // Default Seed Data
@@ -1537,10 +1943,8 @@
         ],
       };
 
-      let appLang = localStorage.getItem("heroal_lang") || "DE";
       let appDB = DEFAULT_DATA;
-      let currentUser =
-        JSON.parse(localStorage.getItem("heroal_current_user")) || null;
+      let currentUser = readStoredUser();
       let selectedCategory = "";
       let lastActiveArticle = "";
       let lastActiveColorCode = "";
@@ -1555,19 +1959,64 @@
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
         users:
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv",
+        translations: "",
       };
-      let appUrls =
-        JSON.parse(localStorage.getItem("heroal_urls")) || DEFAULT_URLS;
+      let appUrls = readStoredUrls();
 
-      window.addEventListener("DOMContentLoaded", async () => {
-        await initDatabase();
-        checkAuth();
+      function readStoredUser() {
+        try {
+          const raw = localStorage.getItem("heroal_current_user");
+          if (!raw || raw === "null" || raw === "undefined") return null;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return null;
+          return parsed;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function readStoredUrls() {
+        try {
+          const raw = localStorage.getItem("heroal_urls");
+          if (!raw || raw === "null" || raw === "undefined") return DEFAULT_URLS;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return DEFAULT_URLS;
+          return { ...DEFAULT_URLS, ...parsed };
+        } catch (e) {
+          return DEFAULT_URLS;
+        }
+      }
+
+      function bindLoginUi() {
+        const input = document.getElementById("input-login-nr");
+        const submit = document.getElementById("btn-login-submit");
+        if (submit) submit.addEventListener("click", () => handleLogin());
+        if (input) {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleLogin();
+            }
+          });
+        }
+        document.querySelectorAll(".lang-chip").forEach((btn) => {
+          btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+        });
+      }
+
+      // First paint: login HTML/CSS is already on screen. IndexedDB runs after.
+      bindLoginUi();
+      restoreLoginPack();
+      checkAuth();
+      applyLanguage();
+      initSearchHandlers();
+      initHotkeys();
+      initAutoLogout();
+      updateOnlineStatus();
+      requestPersistentStorage();
+      dbReady = initDatabase().then(async () => {
+        await loadTranslationsFromIdb();
         applyLanguage();
-        initSearchHandlers();
-        initHotkeys();
-        initAutoLogout();
-        updateOnlineStatus();
-        requestPersistentStorage();
         reportOfflineReadiness();
       });
 
@@ -1580,10 +2029,10 @@
             `Zeichnungen im Cache: ${cached === null ? "?" : cached}/${expected}`,
         );
         if (cached !== null && expected > 0 && cached < expected) {
-          document.getElementById("btn-sync").title =
-            appLang === "DE"
-              ? `Sync: ${expected - cached} Zeichnungen fehlen offline`
-              : `Sync: не хватает ${expected - cached} чертежей для офлайна`;
+          document.getElementById("btn-sync").title = tf(
+            "sync_drawings_missing",
+            { n: expected - cached },
+          );
         }
       }
 
@@ -1604,6 +2053,17 @@
           }
         } catch (e) {
           console.warn("IndexedDB init fallback:", e);
+        }
+      }
+
+      async function loadTranslationsFromIdb() {
+        try {
+          const stored = await idbGetTranslation("bundle");
+          if (stored) {
+            mergeTranslationBundle(stored);
+          }
+        } catch (e) {
+          console.warn("translations store fallback:", e);
         }
       }
 
@@ -1653,11 +2113,7 @@
           clearTimeout(timeoutId);
           timeoutId = setTimeout(() => {
             if (currentUser) {
-              showToast(
-                appLang === "DE"
-                  ? "Sitzung wegen Inaktivität beendet."
-                  : "Сессия завершена из-за неактивности.",
-              );
+              showToast(t("idle_logout"));
               handleLogout();
             }
           }, TIMEOUT_MS);
@@ -1681,51 +2137,50 @@
       function copyToClipboard(text, label) {
         if (!text) return;
         navigator.clipboard.writeText(text).then(() => {
-          showToast(
-            appLang === "DE"
-              ? `✅ ${label || text} kopiert!`
-              : `✅ ${label || text} скопировано!`,
-          );
+          showToast(tf("copied", { label: label || text }));
         });
       }
 
       // Fallback SVG Drawing
       function getSvgPlaceholder(artNr) {
         const cleanArt = artNr || "heroal";
-        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">Zeichnung nicht hinterlegt</text></svg>`;
+        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
       }
 
       function checkAuth() {
         const overlay = document.getElementById("login-overlay");
-        if (currentUser) {
+        if (currentUser && isValidPack(String(currentUser.pack || ""))) {
+          document.documentElement.classList.add("authed");
           overlay.style.display = "none";
           document.getElementById("hdr-user-badge").innerText =
             `👤 #${currentUser.pack} (${currentUser.first})`;
         } else {
+          if (currentUser && !isValidPack(String(currentUser.pack || ""))) {
+            currentUser = null;
+          }
+          document.documentElement.classList.remove("authed");
           overlay.style.display = "flex";
         }
       }
 
-      function handleLogin() {
+      async function handleLogin() {
         const val = document.getElementById("input-login-nr").value.trim();
         const err = document.getElementById("login-error-msg");
         err.innerText = "";
 
-        if (!val) {
-          err.innerText =
-            appLang === "DE"
-              ? "Bitte Packnummer eingeben!"
-              : "Пожалуйста, введите Packnummer!";
+        if (!isValidPack(val)) {
+          err.innerText = t("login_error_empty");
           return;
         }
+
+        try {
+          await dbReady;
+        } catch (e) {}
 
         const user = appDB.users[val];
         if (user) {
           if (user.status && user.status.toLowerCase() === "gesperrt") {
-            err.innerText =
-              appLang === "DE"
-                ? "Benutzer ist gesperrt!"
-                : "Доступ заблокирован администратором!";
+            err.innerText = t("login_error_blocked");
             return;
           }
           currentUser = { pack: val, ...user };
@@ -1741,6 +2196,7 @@
           "heroal_current_user",
           JSON.stringify(currentUser),
         );
+        localStorage.setItem(PACK_STORAGE_KEY, val);
         checkAuth();
       }
 
@@ -1748,35 +2204,13 @@
         currentUser = null;
         localStorage.removeItem("heroal_current_user");
         closeSettings();
+        restoreLoginPack();
         checkAuth();
       }
 
       function toggleLanguage() {
-        appLang = appLang === "DE" ? "RU" : "DE";
-        localStorage.setItem("heroal_lang", appLang);
-        applyLanguage();
-        document.getElementById("find-prof").dispatchEvent(new Event("input"));
-        document.getElementById("find-color").dispatchEvent(new Event("input"));
-        renderDefects();
-        renderAuskunft();
-      }
-
-      function applyLanguage() {
-        document.getElementById("btn-lang").innerText = appLang;
-        document.getElementById("lbl-prof-head").innerText =
-          appLang === "DE"
-            ? "📐 Profile / Zubehör"
-            : "📐 Профили / Комплектующие";
-        document.getElementById("lbl-prof-badge").innerText =
-          appLang === "DE" ? "Art.-Nr. [/]" : "Артикул [/]";
-        document.getElementById("lbl-color-head").innerText =
-          appLang === "DE" ? "🎨 Farben" : "🎨 Цвета RAL / SD";
-        document.getElementById("nav-lbl-suche").innerText =
-          appLang === "DE" ? "Suche" : "Поиск";
-        document.getElementById("nav-lbl-ausschuss").innerText =
-          appLang === "DE" ? "Ausschuss" : "Брак / Дефекты";
-        document.getElementById("nav-lbl-auskunft").innerText =
-          appLang === "DE" ? "Auskunft" : "Справка ERP";
+        const idx = LANGS.indexOf(appLang);
+        setLanguage(LANGS[(idx + 1) % LANGS.length]);
       }
 
       function navigate(viewId, btn) {
@@ -1964,13 +2398,13 @@
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-defect">${d.code}</span>
-                  <div class="acc-title">${appLang === "DE" ? d.de : d.ru || d.de}</div>
+                  <div class="acc-title">${appLang === "ru" ? d.ru || d.de : d.de}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div><strong>${appLang === "DE" ? "Beschreibung:" : "Описание:"}</strong> ${appLang === "DE" ? d.de : d.ru || d.de}</div>
+                  <div><strong>${t("defect_desc")}</strong> ${appLang === "ru" ? d.ru || d.de : d.de}</div>
                   <div class="action-block">
-                    <strong>${appLang === "DE" ? "Vorgehen (Aktion):" : "Инструкция по действию:"}</strong><br>${d.act}
+                    <strong>${t("defect_action")}</strong><br>${d.act}
                   </div>
                 </div>
               </div>
@@ -1996,11 +2430,11 @@
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
                   <span class="acc-badge badge-guide">${a.kat}</span>
-                  <div class="acc-title">${appLang === "DE" ? a.de_t : a.ru_t || a.de_t}</div>
+                  <div class="acc-title">${appLang === "ru" ? a.ru_t || a.de_t : a.de_t}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div>${(appLang === "DE" ? a.de_txt : a.ru_txt || a.de_txt).replace(/\n/g, "<br>")}</div>
+                  <div>${(appLang === "ru" ? a.ru_txt || a.de_txt : a.de_txt).replace(/\n/g, "<br>")}</div>
                 </div>
               </div>
             `,
@@ -2040,23 +2474,32 @@
 
       /** Label for the drawing stage; `total` is only what still needs fetching. */
       function drawingProgressLabel(done, total) {
-        if (!total) {
-          return appLang === "DE"
-            ? "Zeichnungen prüfen..."
-            : "Проверка чертежей...";
+        if (!total) return t("drawings_check");
+        return tf("drawings_load", { done, total });
+      }
+
+      function rowsToTranslationBundle(rows) {
+        const bundle = { de: {}, en: {}, ru: {} };
+        if (!rows || rows.length < 2) return bundle;
+        const header = rows[0].map((h) => String(h || "").trim().toLowerCase());
+        const keyIdx = header.indexOf("key") !== -1 ? header.indexOf("key") : 0;
+        const deIdx = header.indexOf("de") !== -1 ? header.indexOf("de") : 1;
+        const enIdx = header.indexOf("en") !== -1 ? header.indexOf("en") : 2;
+        const ruIdx = header.indexOf("ru") !== -1 ? header.indexOf("ru") : 3;
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const key = (row[keyIdx] || "").trim();
+          if (!key || LANGS.indexOf(key) !== -1) continue;
+          if (row[deIdx]) bundle.de[key] = row[deIdx];
+          if (row[enIdx]) bundle.en[key] = row[enIdx];
+          if (row[ruIdx]) bundle.ru[key] = row[ruIdx];
         }
-        return appLang === "DE"
-          ? `Neue Zeichnungen laden... ${done}/${total}`
-          : `Загрузка новых чертежей... ${done}/${total}`;
+        return bundle;
       }
 
       async function triggerSync(force = false) {
         if (!navigator.onLine) {
-          alert(
-            appLang === "DE"
-              ? "⚠️ Offline: Keine Internetverbindung!"
-              : "⚠️ Офлайн: Нет подключения к интернету!",
-          );
+          alert(t("offline_no_net"));
           return;
         }
 
@@ -2079,10 +2522,7 @@
         const staged = {};
 
         try {
-          updateProgress(
-            10,
-            appLang === "DE" ? "Lade Profile CSV..." : "Загрузка профилей...",
-          );
+          updateProgress(10, t("sync_load_profiles"));
           if (appUrls.base) {
             const r = await fetch(appUrls.base);
             const rows = parseCSV(await r.text());
@@ -2104,12 +2544,7 @@
             staged.base = newBase;
           }
 
-          updateProgress(
-            25,
-            appLang === "DE"
-              ? "Lade Farben CSV..."
-              : "Загрузка каталога цветов...",
-          );
+          updateProgress(25, t("sync_load_colors"));
           if (appUrls.farben) {
             const r = await fetch(appUrls.farben);
             const rows = parseCSV(await r.text());
@@ -2127,12 +2562,7 @@
             staged.farben = newFarben;
           }
 
-          updateProgress(
-            35,
-            appLang === "DE"
-              ? "Lade Ausschuss & ERP..."
-              : "Загрузка дефектов и ERP...",
-          );
+          updateProgress(35, t("sync_load_defects"));
           if (appUrls.defects) {
             const r = await fetch(appUrls.defects);
             const rows = parseCSV(await r.text());
@@ -2170,12 +2600,7 @@
             if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
           }
 
-          updateProgress(
-            45,
-            appLang === "DE"
-              ? "Lade Mitarbeiterdaten..."
-              : "Загрузка списка сотрудников...",
-          );
+          updateProgress(45, t("sync_load_users"));
           if (appUrls.users) {
             const r = await fetch(appUrls.users);
             const rows = parseCSV(await r.text());
@@ -2195,12 +2620,16 @@
             staged.users = newUsers;
           }
 
-          updateProgress(
-            55,
-            appLang === "DE"
-              ? "Speichere in IndexedDB..."
-              : "Сохранение в IndexedDB...",
-          );
+          if (appUrls.translations) {
+            updateProgress(50, t("sync_load_i18n"));
+            const r = await fetch(appUrls.translations);
+            const bundle = rowsToTranslationBundle(parseCSV(await r.text()));
+            mergeTranslationBundle(bundle);
+            await idbSetTranslation("bundle", bundle);
+            applyLanguage();
+          }
+
+          updateProgress(55, t("sync_save"));
           appDB = { ...appDB, ...staged };
           await idbSet("heroal_db", appDB);
 
@@ -2220,7 +2649,7 @@
             );
           }
 
-          updateProgress(100, appLang === "DE" ? "Abgeschlossen!" : "Готово!");
+          updateProgress(100, t("sync_done"));
 
           setTimeout(() => {
             syncModal.classList.remove("active");
@@ -2234,44 +2663,26 @@
               const drawings = cached + missing;
               const lostConnection = mediaResult.reason === "network";
               showToast(
-                appLang === "DE"
-                  ? lostConnection
-                    ? `⚠️ Verbindung verloren: ${cached} von ${drawings} Zeichnungen offline — Sync wiederholen`
-                    : `⚠️ Zeichnungs-Server begrenzt Anfragen: ${cached} von ${drawings} offline — Sync später wiederholen`
-                  : lostConnection
-                    ? `⚠️ Соединение потеряно: ${cached} из ${drawings} чертежей офлайн — повторите Sync`
-                    : `⚠️ Сервер чертежей ограничивает запросы: ${cached} из ${drawings} офлайн — повторите Sync позже`,
+                lostConnection
+                  ? tf("sync_abort_net", { cached, total: drawings })
+                  : tf("sync_abort_throttle", { cached, total: drawings }),
               );
             } else if (missing > 0) {
               showToast(
-                appLang === "DE"
-                  ? `⚠️ ${base} Artikel, ${cached} Zeichnungen offline — ${missing} fehlen, Sync wiederholen`
-                  : `⚠️ ${base} артикулов, ${cached} чертежей офлайн — ${missing} не загружено, повторите Sync`,
+                tf("sync_partial", { base, cached, missing }),
               );
             } else {
               // Naming the newly fetched count makes it obvious that a routine
               // sync only pulls the day's additions.
-              const newlyAdded =
-                added > 0
-                  ? appLang === "DE"
-                    ? `, ${added} neu geladen`
-                    : `, ${added} новых загружено`
-                  : "";
-              showToast(
-                appLang === "DE"
-                  ? `✅ Sync ok: ${base} Artikel, ${cached} Zeichnungen offline${newlyAdded}`
-                  : `✅ Синхронизация ok: ${base} артикулов, ${cached} чертежей офлайн${newlyAdded}`,
-              );
+              const newly =
+                added > 0 ? tf("sync_newly", { n: added }) : "";
+              showToast(tf("sync_ok", { base, cached, newly }));
             }
           }, 500);
         } catch (err) {
           console.error(err);
           syncModal.classList.remove("active");
-          alert(
-            appLang === "DE"
-              ? "⚠️ Fehler beim Synchronisieren."
-              : "⚠️ Ошибка синхронизации данных.",
-          );
+          alert(t("sync_error"));
         } finally {
           icon.style.animation = "none";
         }
@@ -2285,6 +2696,8 @@
         document.getElementById("cfg-url-auskunft").value =
           appUrls.auskunft || "";
         document.getElementById("cfg-url-users").value = appUrls.users || "";
+        document.getElementById("cfg-url-translations").value =
+          appUrls.translations || "";
         document.getElementById("settings-dialog").classList.add("active");
       }
       function closeSettings() {
@@ -2297,19 +2710,11 @@
        */
       function reloadAllDrawings() {
         if (!navigator.onLine) {
-          alert(
-            appLang === "DE"
-              ? "⚠️ Offline: Keine Internetverbindung!"
-              : "⚠️ Офлайн: Нет подключения к интернету!",
-          );
+          alert(t("offline_no_net"));
           return;
         }
         const count = collectDrawingUrls().length;
-        const confirmed = confirm(
-          appLang === "DE"
-            ? `${count} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.`
-            : `Перекачать все ${count} чертежей заново? Это заметно дольше обычной синхронизации.`,
-        );
+        const confirmed = confirm(tf("reload_drawings_confirm", { n: count }));
         if (!confirmed) return;
         closeSettings();
         triggerSync(true);
@@ -2322,14 +2727,13 @@
           defects: document.getElementById("cfg-url-defects").value.trim(),
           auskunft: document.getElementById("cfg-url-auskunft").value.trim(),
           users: document.getElementById("cfg-url-users").value.trim(),
+          translations: document
+            .getElementById("cfg-url-translations")
+            .value.trim(),
         };
         localStorage.setItem("heroal_urls", JSON.stringify(appUrls));
         closeSettings();
-        showToast(
-          appLang === "DE"
-            ? "URLs gespeichert! Drücken Sie Sync."
-            : "Ссылки сохранены! Нажмите Sync.",
-        );
+        showToast(t("urls_saved"));
       }
     </script>
   </body>
