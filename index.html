@@ -136,23 +136,26 @@
           0 0 0 1px rgba(255, 255, 255, 0.04);
       }
       .login-logo {
-        font-size: 26px;
-        font-weight: 700;
+        font-size: 34px;
+        font-weight: 800;
         color: #fff;
         letter-spacing: 0.2px;
+        text-align: center;
+        line-height: 1.15;
       }
       .login-logo span {
         color: var(--heroal-light-blue);
       }
       .login-title {
-        font-size: 18px;
-        font-weight: 650;
-        color: var(--text-main);
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff;
         text-align: center;
       }
       .login-sub {
-        font-size: 13px;
-        color: var(--text-sub);
+        font-size: 16px;
+        font-weight: 500;
+        color: #cbd5e1;
         text-align: center;
         line-height: 1.45;
         margin-bottom: 4px;
@@ -246,14 +249,14 @@
       }
       .login-btn {
         width: 100%;
-        min-height: 52px;
-        height: 52px;
+        min-height: 56px;
+        height: 56px;
         background: var(--heroal-blue);
         color: #fff;
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
-        font-size: 16px;
-        font-weight: 650;
+        font-size: 20px;
+        font-weight: 700;
         cursor: pointer;
       }
       .login-numpad {
@@ -271,8 +274,8 @@
         border: 1.5px solid #334155;
         background: #1e293b;
         color: #f8fafc;
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 28px;
+        font-weight: 700;
         cursor: pointer;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
@@ -300,33 +303,41 @@
       }
       .lang-dropdown {
         position: relative;
-        width: 100%;
+        width: fit-content;
+        max-width: 100%;
+        align-self: center;
       }
       .lang-trigger {
-        width: 100%;
-        min-height: 44px;
-        display: flex;
+        width: auto;
+        min-width: fit-content;
+        min-height: 48px;
+        display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        padding: 0 14px;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 18px;
         border-radius: 10px;
         border: 1px solid var(--border-color);
         background: var(--card-inner);
         color: #fff;
-        font-size: 14px;
+        font-size: 17px;
         font-weight: 650;
+        line-height: 1.2;
         cursor: pointer;
+        white-space: nowrap;
       }
       .lang-caret {
         color: var(--text-sub);
-        font-size: 12px;
+        font-size: 14px;
       }
       .lang-menu {
         position: absolute;
-        left: 0;
-        right: 0;
+        left: 50%;
+        right: auto;
         bottom: calc(100% + 6px);
+        transform: translateX(-50%);
+        width: max-content;
+        min-width: 100%;
         display: none;
         flex-direction: column;
         gap: 4px;
@@ -342,19 +353,20 @@
       }
       .lang-option {
         width: 100%;
-        min-height: 40px;
+        min-height: 46px;
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 0 12px;
+        gap: 10px;
+        padding: 8px 14px;
         border: 0;
         border-radius: 8px;
         background: transparent;
         color: #e2e8f0;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
         cursor: pointer;
         text-align: left;
+        white-space: nowrap;
       }
       .lang-option.active {
         background: rgba(56, 189, 248, 0.16);
@@ -363,9 +375,10 @@
       .login-footer {
         width: 100%;
         margin-top: 4px;
-        font-size: 12px;
-        line-height: 1.45;
-        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #94a3b8;
         text-align: center;
       }
       @media (max-height: 700px) {
