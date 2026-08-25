@@ -19,7 +19,8 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta name="apple-mobile-web-app-title" content="heroal Guide" />
+    <meta name="apple-mobile-web-app-title" content="heroal Artikel" />
+    <meta name="application-name" content="heroal Artikel" />
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="icons/favicon.ico" />
@@ -50,7 +51,7 @@
     />
     <link rel="manifest" href="manifest.json" />
 
-    <title>heroal LagerGuide</title>
+    <title>heroal Artikel</title>
     <script>
       /* Paint the right overlay immediately — no IndexedDB wait. */
       try {
@@ -1329,7 +1330,7 @@
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay">
       <div class="login-box">
-        <div class="login-logo">heroal <span>LagerGuide</span></div>
+        <div class="login-logo">heroal <span>Artikel</span></div>
         <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
           Geben Sie Ihre Packnummer ein, um zu beginnen.
         </div>
@@ -1452,7 +1453,7 @@
           </div>
         </div>
         <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
-          v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi
+          v2.0 • heroal Artikel • Entwickelt von Maksym Beztsinnyi
         </div>
       </div>
     </div>
@@ -1460,7 +1461,7 @@
     <!-- 2. MAIN HEADER -->
     <header>
       <div class="brand-wrap">
-        <div class="brand-title">heroal <span>LagerGuide</span></div>
+        <div class="brand-title">heroal <span>Artikel</span></div>
         <div class="brand-user">
           <span id="hdr-user-badge">👤 #----</span>
         </div>
@@ -1817,9 +1818,9 @@
     <!-- 8. APPLICATION LOGIC & INDEXEDDB INTEGRATION -->
     <script>
       const LANGS = ["de", "en", "ru"];
-      const LANG_STORAGE_KEY = "lagerguide_lang";
-      const PACK_STORAGE_KEY = "lagerguide_last_pack";
-      const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
+      const LANG_STORAGE_KEY = "artikel_lang";
+      const PACK_STORAGE_KEY = "artikel_last_pack";
+      const NUMPAD_STORAGE_KEY = "artikel_numpad_visible";
       const LANG_META = {
         de: { nameKey: "lang_de" },
         en: { nameKey: "lang_en" },
@@ -1879,7 +1880,7 @@
             "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
           urls_saved: "URLs gespeichert! Drücken Sie Sync.",
           footer_text:
-            "v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi",
+            "v2.0 • heroal Artikel • Entwickelt von Maksym Beztsinnyi",
         },
         en: {
           login_title: "Sign in",
@@ -1933,7 +1934,7 @@
             "Re-download all {n} drawings? This takes longer than a normal sync.",
           urls_saved: "URLs saved! Press Sync.",
           footer_text:
-            "v2.0 • heroal LagerGuide • Developed by Maksym Beztsinnyi",
+            "v2.0 • heroal Artikel • Developed by Maksym Beztsinnyi",
         },
         ru: {
           login_title: "Вход",
@@ -1987,7 +1988,7 @@
             "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
           urls_saved: "Ссылки сохранены! Нажмите Sync.",
           footer_text:
-            "v2.0 • heroal LagerGuide • Разработчик Максим Бесценный",
+            "v2.0 • heroal Artikel • Разработчик Максим Бесценный",
         },
       };
 
@@ -2251,7 +2252,7 @@
       window.addEventListener("offline", updateOnlineStatus);
 
       // IndexedDB Database Wrapper
-      const DB_NAME = "heroal_warehouse_db";
+      const DB_NAME = "heroal_artikel_db";
       const DB_VERSION = 2;
       let dbInstance = null;
       let dbReady = Promise.resolve();

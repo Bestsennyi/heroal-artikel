@@ -1,4 +1,4 @@
-# heroal LagerGuide
+# heroal Artikel
 
 A static, offline-capable Progressive Web App (PWA) — a warehouse/packing assistant for heroal logistics. The entire app is client-side: `index.html` holds all UI, CSS, and JavaScript; `sw.js` is the service worker; `manifest.json` is the PWA manifest; `icons/` holds icons; `links_base.txt` documents the published Google Sheets CSV export URLs used for data sync.
 
@@ -18,7 +18,7 @@ A static, offline-capable Progressive Web App (PWA) — a warehouse/packing assi
 
 - Vanilla HTML5 / CSS3 / ES6+ only. No frameworks or bundlers, for speed and autonomy.
 - PWA offline via `sw.js` (cache-first, plus dynamic interception/caching of images).
-- IndexedDB (`heroal_warehouse_db`) stores all tables and cached data.
+- IndexedDB (`heroal_artikel_db`) stores all tables and cached data.
 - Data source: published Google Sheets CSV exports; URLs are configurable at runtime through the settings modal (⚙️).
 - Styling follows the official heroal dark-blue theme (`#003a79`).
 
@@ -39,7 +39,7 @@ Consequences that are easy to get wrong:
 - **The precache must stay bounded, and every failure mode is time-capped.** Two separate incidents produced a progress dialog frozen for 6-9 minutes: first by applying rate-limit patience to hard network errors, then by having no ceiling on that patience at all. The run now gives up on a drawing after 2 network errors, abandons the whole run after 6 consecutive network errors or 8 consecutive failures of any kind, and stops at a 120s deadline. Measured settling times: unreachable host 6s, sustained 429 92s, all-404 immediate, healthy run unchanged. Scattered individual failures deliberately do *not* abort the run.
 - **An aborted sync is normal and recoverable — do not treat it as a bug.** When the drawing host throttles, the first sync can legitimately stop early (it reports `Zeichnungs-Server begrenzt Anfragen` / `Сервер чертежей ограничивает запросы`) and a second sync a short while later usually completes 185/185. This was observed repeatedly against the live host. A failed run never deletes drawings already cached, so the terminal keeps working while the operator retries.
 - **A partially cached terminal must not look ready.** When drawings are missing the sync result warns with the count instead of reporting success, and startup logs `[offline] Artikel: N, Zeichnungen im Cache: X/Y`.
-- **Two caches, on purpose.** `heroal-shell-v*` is versioned and replaced on deploy; `heroal-media-v*` holds drawings and deliberately survives shell updates. Bumping the media cache name forces every terminal to re-download, so only do it to discard entries that may be corrupt. Verified by releasing a shell version change: the old shell cache is dropped, a new one is built, and all 185 drawings remain.
+- **Two caches, on purpose.** `heroal-artikel-shell-v*` is versioned and replaced on deploy; `heroal-media-v*` holds drawings and deliberately survives shell updates. Bumping the media cache name forces every terminal to re-download, so only do it to discard entries that may be corrupt. Verified by releasing a shell version change: the old shell cache is dropped, a new one is built, and all 185 drawings remain.
 - **Service worker image lookups must search all caches.** App icons live in the shell cache while drawings live in the media cache, so `handleImage` uses `caches.match` rather than opening one cache.
 - **Icons are precached from `manifest.json`.** Listing an icon in the manifest is enough for it to be available offline; `sw.js` reads the list at install time. Only icons referenced *solely* from the HTML (currently `favicon.ico` and `apple-touch-icon.png`) need adding to `SHELL_ASSETS` by hand. Google picks a search-result favicon only from a square icon whose size is a multiple of 48px, which is why `icon-192.png` is declared with `rel="icon"` — 16x16, 32x32 and even 512x512 do not qualify.
 - **`navigator.storage.persist()` is requested at startup** so the cache is not evicted under storage pressure. Chrome grants this only for installed PWAs or sites with engagement, so it returns false on a plain localhost tab — expect `PERSISTED=false` in development. Real terminals should install the PWA.
