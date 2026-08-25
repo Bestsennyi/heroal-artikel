@@ -72,7 +72,7 @@ navigator.storage.estimate().then(e => console.log((e.usage/1048576).toFixed(1) 
 
 ## Communication
 
-The maintainer (Maksym) communicates in Russian — reply in Russian unless asked otherwise. Code, identifiers and commit messages stay in English; user-facing UI strings stay German/Russian.
+The maintainer communicates in Russian — reply in Russian unless asked otherwise. Code, identifiers and commit messages stay in English; user-facing UI strings stay German/Russian.
 
 ## Cursor Cloud specific instructions
 

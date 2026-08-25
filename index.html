@@ -1452,7 +1452,7 @@
           </div>
         </div>
         <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
-          v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi
+          heroal Artikel • v1.0.0 • © 2026
         </div>
       </div>
     </div>
@@ -1878,8 +1878,7 @@
           reload_drawings_confirm:
             "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
           urls_saved: "URLs gespeichert! Drücken Sie Sync.",
-          footer_text:
-            "v2.0 • heroal LagerGuide • Entwickelt von Maksym Beztsinnyi",
+          footer_text: "heroal Artikel • v1.0.0 • © 2026",
         },
         en: {
           login_title: "Sign in",
@@ -1932,8 +1931,7 @@
           reload_drawings_confirm:
             "Re-download all {n} drawings? This takes longer than a normal sync.",
           urls_saved: "URLs saved! Press Sync.",
-          footer_text:
-            "v2.0 • heroal LagerGuide • Developed by Maksym Beztsinnyi",
+          footer_text: "heroal Artikel • v1.0.0 • © 2026",
         },
         ru: {
           login_title: "Вход",
@@ -1986,8 +1984,7 @@
           reload_drawings_confirm:
             "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
           urls_saved: "Ссылки сохранены! Нажмите Sync.",
-          footer_text:
-            "v2.0 • heroal LagerGuide • Разработчик Максим Бесценный",
+          footer_text: "heroal Artikel • v1.0.0 • © 2026",
         },
       };
 
@@ -2098,6 +2095,8 @@
         document.querySelectorAll("[data-i18n]").forEach((el) => {
           el.textContent = t(el.getAttribute("data-i18n"));
         });
+        const footerEl = document.getElementById("login-footer-txt");
+        if (footerEl) footerEl.textContent = I18N_FALLBACK.de.footer_text;
         const loginInput = document.getElementById("input-login-nr");
         if (loginInput) loginInput.placeholder = t("login_placeholder");
         syncLangDropdown();

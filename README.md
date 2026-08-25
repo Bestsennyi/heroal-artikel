@@ -17,6 +17,3 @@
 - **Speicher:** IndexedDB (`heroal_artikel_db`), LocalStorage, Cache API
 - **Live-Demo:** https://bestsennyi.github.io/heroal-artikel/
 
-## 👨‍💻 Entwickler
-
-- **Entwickelt von:** Maksym Beztsinnyi
