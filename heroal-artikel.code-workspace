@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "name": "heroal-artikel",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "window.title": "heroal-artikel${separator}${activeEditorShort}"
+  }
+}

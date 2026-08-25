@@ -2,7 +2,7 @@
   "id": "./",
   "name": "heroal Artikel",
   "short_name": "Artikel",
-  "description": "Artikel- & Verpackungsassistent für heroal Systeme (Offline-fähig)",
+  "description": "Schnelle Offline-Artikelsuche, Profilvisualisierung und Farbcode-Referenz für heroal Aluminiumsysteme (PWA)",
   "lang": "de",
   "start_url": "./index.html",
   "scope": "./",

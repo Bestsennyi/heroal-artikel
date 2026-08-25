@@ -1,4 +1,6 @@
-# heroal Artikel (PWA)
+# heroal Artikel
+
+Schnelle Offline-Artikelsuche, Profilvisualisierung und Farbcode-Referenz für heroal Aluminiumsysteme (PWA)
 
 Интерактивный цифровой ассистент упаковщика и складского учета для логистических центров и производственных линий heroal. Приложение работает как автономное Web App (PWA) с поддержкой офлайн-режима и синхронизацией с Google Таблицами.
 

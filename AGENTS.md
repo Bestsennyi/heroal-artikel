@@ -1,6 +1,8 @@
 # heroal Artikel
 
-A static, offline-capable Progressive Web App (PWA) — a warehouse/packing assistant for heroal logistics. The entire app is client-side: `index.html` holds all UI, CSS, and JavaScript; `sw.js` is the service worker; `manifest.json` is the PWA manifest; `icons/` holds icons; `links_base.txt` documents the published Google Sheets CSV export URLs used for data sync.
+Schnelle Offline-Artikelsuche, Profilvisualisierung und Farbcode-Referenz für heroal Aluminiumsysteme (PWA)
+
+A static, offline-capable Progressive Web App (PWA). The entire app is client-side: `index.html` holds all UI, CSS, and JavaScript; `sw.js` is the service worker; `manifest.json` is the PWA manifest; `icons/` holds icons; `links_base.txt` documents the published Google Sheets CSV export URLs used for data sync.
 
 ## Project brief
 
