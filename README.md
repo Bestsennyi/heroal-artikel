@@ -6,7 +6,7 @@
 
 - **Schnellsuche & Artikelfilter:** Sofortiges Auffinden von heroal Profilen, Zubehör und technischen Daten.
 - **Offline-First & PWA:** Voll funktionsfähig ohne Internetverbindung dank IndexedDB-Caching und Service Worker.
-- **Profilvisualisierung:** Schneller Zugriff auf technische Zeichnungen und Querschnitte (`heroal-media-v2`).
+- **Profilvisualisierung:** Schneller Zugriff auf technische Zeichnungen und Querschnitte.
 - **Farbcodierung:** Übersichtliche Referenz für Standard-, RAL- und Sonderfarben.
 - **Mehrsprachig:** Vollständige Unterstützung für Deutsch (DE), Englisch (EN) und Russisch (RU).
 - **Touch- & Desktop-optimiert:** Angepasste Benutzeroberfläche für Industrie-Terminals und Mobilgeräte.
