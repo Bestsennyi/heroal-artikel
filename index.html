@@ -165,7 +165,7 @@
         text-transform: lowercase;
       }
       .login-logo-product {
-        color: #1d4ed8;
+        color: #38bdf8;
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -195,6 +195,12 @@
         letter-spacing: 3px;
         outline: none;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      .login-input::placeholder {
+        color: #94a3b8;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        opacity: 1;
       }
       .login-input:hover {
         border-color: #64748b;
@@ -1355,12 +1361,15 @@
         </div>
         <div class="login-field">
           <input
-            type="tel"
+            type="password"
             id="input-login-nr"
             class="login-input"
             placeholder="PIN"
+            value=""
             inputmode="numeric"
             autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
             pattern="[0-9]*"
             maxlength="12"
             enterkeyhint="done"
@@ -2085,29 +2094,12 @@
         return typeof val === "string" && /^\d{1,12}$/.test(val.trim());
       }
 
-      function readLastPack() {
-        try {
-          let saved = localStorage.getItem(PACK_STORAGE_KEY);
-          if (saved === "null" || saved === "undefined") saved = "";
-          if (isValidPack(saved)) return saved.trim();
-        } catch (e) {}
-        return "";
-      }
-
       function restoreLoginPack() {
         const input = document.getElementById("input-login-nr");
-        if (!input) return;
-        const saved = readLastPack();
-        const fromUser =
-          currentUser && currentUser.pack != null
-            ? String(currentUser.pack)
-            : "";
-        const pack = isValidPack(saved)
-          ? saved
-          : isValidPack(fromUser)
-            ? fromUser.trim()
-            : "";
-        input.value = pack;
+        if (input) input.value = "";
+        try {
+          localStorage.removeItem(PACK_STORAGE_KEY);
+        } catch (e) {}
       }
 
       function applyLanguage() {
@@ -2588,9 +2580,6 @@
         if (submit) submit.addEventListener("click", () => handleLogin());
         if (input) {
           input.addEventListener("input", sanitizePackInput);
-          input.addEventListener("pointerdown", () => {
-            if (!readNumpadVisible()) setNumpadVisible(true);
-          });
           input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -2845,7 +2834,6 @@
           "heroal_current_user",
           JSON.stringify(currentUser),
         );
-        localStorage.setItem(PACK_STORAGE_KEY, val);
         checkAuth();
       }
 
