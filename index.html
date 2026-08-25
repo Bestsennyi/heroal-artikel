@@ -68,6 +68,7 @@
         --heroal-blue: #003a79;
         --heroal-dark-blue: #00244d;
         --heroal-light-blue: #0284c7;
+        --heroal-accent: #38bdf8;
         --bg-dark: #090e15;
         --card-bg: #111823;
         --card-inner: #1a2332;
@@ -165,7 +166,7 @@
         text-transform: lowercase;
       }
       .login-logo-product {
-        color: #38bdf8;
+        color: var(--heroal-accent);
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -274,13 +275,27 @@
         min-height: 44px;
         height: 44px;
         margin: 16px 0 14px;
-        background: var(--heroal-blue);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: var(--heroal-accent);
+        color: #0f172a;
+        border: 1px solid rgba(56, 189, 248, 0.85);
         border-radius: 10px;
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.12);
+      }
+      button.login-btn:hover {
+        background: #0ea5e9;
+        color: #0f172a;
+        filter: none;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
+      }
+      button.login-btn:active {
+        background: #0284c7;
+        color: #0f172a;
+        filter: none;
+        transform: scale(0.97);
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.35);
       }
       .login-numpad {
         display: grid;
