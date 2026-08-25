@@ -11,6 +11,7 @@
       content="Lager- und Verpackungsassistent für heroal Profilsysteme: Artikelsuche mit Zeichnungen, Farbkatalog (RAL/SD), Ausschussgründe für ERP-Maske 15 und Verpackungsvorgaben. Offline-fähig."
     />
     <meta name="theme-color" content="#003a79" />
+    <meta name="robots" content="noindex, nofollow" />
     <!-- mobile-web-app-capable is the current standard; the apple- prefixed
          variant is kept for older iOS but is deprecated on its own. -->
     <meta name="mobile-web-app-capable" content="yes" />
@@ -139,16 +140,32 @@
           0 0 0 1px rgba(255, 255, 255, 0.04);
       }
       .login-logo {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 0.28em;
+        font-family:
+          Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: clamp(28px, 5.6vw, 34px);
-        font-weight: 700;
-        color: #fff;
-        letter-spacing: 0.2px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
         text-align: center;
-        line-height: 1.15;
-        margin-bottom: 8px;
+        line-height: 1.05;
+        margin-bottom: 10px;
       }
+      .login-logo,
       .login-logo span {
-        color: var(--heroal-light-blue);
+        font-family:
+          Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      .login-logo-brand {
+        color: #ffffff;
+        text-transform: lowercase;
+      }
+      .login-logo-product {
+        color: #1d4ed8;
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -1329,16 +1346,19 @@
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay">
       <div class="login-box">
-        <div class="login-logo">heroal <span>LagerGuide</span></div>
+        <div class="login-logo">
+          <span class="login-logo-brand">heroal</span>
+          <span class="login-logo-product">Artikel</span>
+        </div>
         <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
-          Geben Sie Ihre Packnummer ein, um zu beginnen.
+          PIN eingeben
         </div>
         <div class="login-field">
           <input
             type="tel"
             id="input-login-nr"
             class="login-input"
-            placeholder="z. B. 1234"
+            placeholder="PIN"
             inputmode="numeric"
             autocomplete="off"
             pattern="[0-9]*"
@@ -1350,7 +1370,7 @@
             class="numpad-toggle"
             id="btn-numpad-toggle"
             aria-label="Numpad"
-            aria-pressed="true"
+            aria-pressed="false"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -1380,7 +1400,7 @@
           </button>
         </div>
         <div class="login-msg" id="login-error-msg"></div>
-        <div class="login-numpad" id="login-numpad" role="group" aria-label="Numpad">
+        <div class="login-numpad is-hidden" id="login-numpad" role="group" aria-label="Numpad">
           <button type="button" class="numpad-key" data-key="1">1</button>
           <button type="button" class="numpad-key" data-key="2">2</button>
           <button type="button" class="numpad-key" data-key="3">3</button>
@@ -1828,14 +1848,14 @@
 
       const I18N_FALLBACK = {
         de: {
-          login_title: "Anmeldung",
-          login_prompt: "Geben Sie Ihre Packnummer ein, um zu beginnen.",
-          login_placeholder: "z. B. 1234",
+          login_title: "Artikel",
+          login_prompt: "PIN eingeben",
+          login_placeholder: "PIN",
           login_btn: "Anmelden",
           lang_de: "Deutsch",
           lang_en: "English",
           lang_ru: "Русский",
-          login_error_empty: "Bitte Packnummer eingeben!",
+          login_error_empty: "Bitte PIN eingeben!",
           login_error_blocked: "Benutzer ist gesperrt!",
           lbl_profiles: "📐 Profile / Zubehör",
           lbl_artnr: "Art.-Nr. [/]",
@@ -1881,14 +1901,14 @@
           footer_text: "heroal Artikel • v1.0.0 • © 2026",
         },
         en: {
-          login_title: "Sign in",
-          login_prompt: "Enter your pack number to continue.",
-          login_placeholder: "e.g. 1234",
+          login_title: "Artikel",
+          login_prompt: "Enter PIN",
+          login_placeholder: "PIN",
           login_btn: "Sign in",
           lang_de: "Deutsch",
           lang_en: "English",
           lang_ru: "Русский",
-          login_error_empty: "Please enter a pack number!",
+          login_error_empty: "Please enter a PIN!",
           login_error_blocked: "This user is blocked!",
           lbl_profiles: "📐 Profiles / Accessories",
           lbl_artnr: "Art. no. [/]",
@@ -1934,14 +1954,14 @@
           footer_text: "heroal Artikel • v1.0.0 • © 2026",
         },
         ru: {
-          login_title: "Вход",
-          login_prompt: "Введите Packnummer, чтобы начать работу.",
-          login_placeholder: "напр. 1234",
+          login_title: "Artikel",
+          login_prompt: "Введите PIN",
+          login_placeholder: "PIN",
           login_btn: "Войти",
           lang_de: "Deutsch",
           lang_en: "English",
           lang_ru: "Русский",
-          login_error_empty: "Пожалуйста, введите Packnummer!",
+          login_error_empty: "Пожалуйста, введите PIN!",
           login_error_blocked: "Доступ заблокирован администратором!",
           lbl_profiles: "📐 Профили / Комплектующие",
           lbl_artnr: "Артикул [/]",
@@ -2503,7 +2523,14 @@
           if (saved === "0" || saved === "false") return false;
           if (saved === "1" || saved === "true") return true;
         } catch (e) {}
-        return true;
+        return false;
+      }
+
+      function setNumpadVisible(visible) {
+        try {
+          localStorage.setItem(NUMPAD_STORAGE_KEY, visible ? "1" : "0");
+        } catch (e) {}
+        syncNumpadVisibility();
       }
 
       function syncNumpadVisibility() {
@@ -2518,11 +2545,7 @@
       }
 
       function toggleNumpad() {
-        const next = !readNumpadVisible();
-        try {
-          localStorage.setItem(NUMPAD_STORAGE_KEY, next ? "1" : "0");
-        } catch (e) {}
-        syncNumpadVisibility();
+        setNumpadVisible(!readNumpadVisible());
       }
 
       function syncLangDropdown() {
@@ -2565,6 +2588,9 @@
         if (submit) submit.addEventListener("click", () => handleLogin());
         if (input) {
           input.addEventListener("input", sanitizePackInput);
+          input.addEventListener("pointerdown", () => {
+            if (!readNumpadVisible()) setNumpadVisible(true);
+          });
           input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -2624,7 +2650,7 @@
             handleLogin();
           }
         });
-        syncNumpadVisibility();
+        setNumpadVisible(false);
       }
 
       // First paint: login HTML/CSS is already on screen. IndexedDB runs after.
@@ -2828,6 +2854,7 @@
         localStorage.removeItem("heroal_current_user");
         closeSettings();
         restoreLoginPack();
+        setNumpadVisible(false);
         checkAuth();
       }
 
