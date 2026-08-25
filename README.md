@@ -1,30 +1,22 @@
-# heroal LagerGuide (PWA)
+# heroal Artikel 📦
 
-Интерактивный цифровой ассистент упаковщика и складского учета для логистических центров и производственных линий heroal. Приложение работает как автономное Web App (PWA) с поддержкой офлайн-режима и синхронизацией с Google Таблицами.
+> Schnelle Offline-Artikelsuche, Profilvisualisierung und Farbcode-Referenz für heroal Aluminiumsysteme (PWA).
 
----
+## 🚀 Funktionen
 
-## 🚀 Основные возможности
+- **Schnellsuche & Artikelfilter:** Sofortiges Auffinden von heroal Profilen, Zubehör und technischen Daten.
+- **Offline-First & PWA:** Voll funktionsfähig ohne Internetverbindung dank IndexedDB-Caching und Service Worker.
+- **Profilvisualisierung:** Schneller Zugriff auf technische Zeichnungen und Querschnitte (`heroal-media-v2`).
+- **Farbcodierung:** Übersichtliche Referenz für Standard-, RAL- und Sonderfarben.
+- **Mehrsprachig:** Vollständige Unterstützung für Deutsch (DE), Englisch (EN) und Russisch (RU).
+- **Touch- & Desktop-optimiert:** Angepasste Benutzeroberfläche für Industrie-Terminals und Mobilgeräte.
 
-- **Авторизация по Packnummer:** Быстрый вход сотрудника по персональному номеру или мастер-коду (`9999`).
-- **Моментальный поиск артикулов:** Умный фильтр по артикулу, типу детали (Blenden, Führungen, Endleisten, Stäbe) и геометрическим размерам.
-- **Каталог дефектов и брака (Defects):** Фиксация несоответствий, фото-подсказки и стандарты качества.
-- **Цветовая палитра (Farben):** Поиск официальных декоров и RAL-оттенков heroal.
-- **Режим офлайн (PWA):** Кэширование всех баз данных и логики через Service Worker (`sw.js`) — приложение работает даже при отсутствии связи на складе.
-- **Интеграция с Google Sheets:** Обновление баз данных в один клик без повторного деплоя кода.
+## 🛠️ Tech-Stack
 
----
+- **Frontend:** Vanilla JavaScript (ES6+), HTML5, Tailwind CSS
+- **Speicher:** IndexedDB (`heroal_artikel_db`), LocalStorage, Cache API
+- **Live-Demo:** https://bestsennyi.github.io/heroal-artikel/
 
-## 🛠 Архитектура проекта
+## 👨‍💻 Entwickler
 
-```text
-heroal-lagerguide/
-├── index.html        # Основной интерфейс приложения и логика JavaScript
-├── manifest.json     # Манифест PWA (название, цвета, параметры запуска)
-├── sw.js             # Service Worker для кэширования и офлайн-доступа
-├── links_base.txt    # Ссылки на опубликованные CSV-экспорты Google Таблиц
-├── README.md         # Документация проекта
-└── icons/            # Иконки приложения
-    ├── icon-192.png  # Иконка 192x192 для мобильных устройств
-    └── icon-512.png  # Иконка 512x512 для Splash Screen и Retina
-```
+- **Entwickelt von:** Maksym Beztsinnyi
