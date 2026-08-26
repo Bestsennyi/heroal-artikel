@@ -1,5 +1,5 @@
 /**
- * heroal LagerGuide — Service Worker
+ * heroal Artikel — Service Worker
  *
  * Offline-first: the app must stay fully usable without any connectivity.
  *
@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v23";
+const SHELL_VERSION = "v24";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.

@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "heroal LagerGuide",
-  "short_name": "LagerGuide",
+  "name": "heroal Artikel",
+  "short_name": "heroal Artikel",
   "description": "Lager- & Verpackungsassistent für heroal Systeme (Offline-fähig)",
   "lang": "de",
   "start_url": "./index.html",
