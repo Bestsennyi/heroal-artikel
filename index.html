@@ -57,10 +57,14 @@
     <script>
       /* Paint the right overlay immediately — no IndexedDB wait. */
       try {
-        var __sess = localStorage.getItem("heroal_current_user");
+        var __sess =
+          sessionStorage.getItem("currentUser") ||
+          localStorage.getItem("currentUser");
         if (__sess && __sess !== "null" && __sess !== "undefined") {
-          JSON.parse(__sess);
-          document.documentElement.classList.add("authed");
+          var __user = JSON.parse(__sess);
+          if (__user && typeof __user === "object" && __user.nummer) {
+            document.documentElement.classList.add("authed");
+          }
         }
       } catch (e) {}
     </script>
@@ -112,6 +116,15 @@
       /* Hide the login overlay before JS runs when a session already exists. */
       html.authed #login-overlay {
         display: none;
+      }
+      html:not(.authed) header,
+      html:not(.authed) main,
+      html:not(.authed) nav,
+      html:not(.authed) #settings-dialog,
+      html:not(.authed) #sync-dialog,
+      html:not(.authed) #zoom-dialog {
+        visibility: hidden;
+        pointer-events: none;
       }
 
       /* Login Modal */
@@ -367,6 +380,31 @@
       .login-msg:not(:empty) {
         min-height: 16px;
         margin: 0 0 10px;
+      }
+      .login-input.is-error {
+        border-color: #f87171;
+        box-shadow: 0 0 16px rgba(248, 113, 113, 0.35);
+      }
+      .login-box.is-shake {
+        animation: login-shake 0.45s ease;
+      }
+      @keyframes login-shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-10px);
+        }
+        40% {
+          transform: translateX(10px);
+        }
+        60% {
+          transform: translateX(-6px);
+        }
+        80% {
+          transform: translateX(6px);
+        }
       }
       .lang-dropdown {
         position: relative;
@@ -628,7 +666,46 @@
         font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 4px;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 3px;
+      }
+      .hdr-user-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        line-height: 1.2;
+      }
+      .hdr-user-role {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: rgba(125, 211, 252, 0.18);
+        border: 1px solid rgba(125, 211, 252, 0.45);
+        color: #7dd3fc;
+        white-space: nowrap;
+        line-height: 1.3;
+      }
+      .hdr-user-role:empty {
+        display: none;
+      }
+      .hdr-logout {
+        background: rgba(239, 68, 68, 0.28);
+        border: 1px solid rgba(248, 113, 113, 0.55);
+        color: #fecaca;
+        border-radius: 6px;
+        padding: 2px 8px;
+        min-height: 22px;
+        font-size: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        line-height: 1.2;
+      }
+      .hdr-logout:hover {
+        background: rgba(239, 68, 68, 0.45);
+        color: #fff;
       }
       .header-actions {
         display: flex;
@@ -1456,7 +1533,7 @@
     <div id="app-toast"></div>
 
     <!-- 1. LOGIN SCREEN -->
-    <div id="login-overlay">
+    <div id="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-sub-txt">
       <div class="login-box">
         <div class="login-logo">
           <span class="login-logo-brand">heroal</span>
@@ -1480,7 +1557,7 @@
             data-1p-ignore="true"
             data-form-type="other"
             pattern="[0-9]*"
-            maxlength="12"
+            maxlength="4"
             enterkeyhint="done"
           />
           <button
@@ -1599,8 +1676,17 @@
     <header>
       <div class="brand-wrap">
         <div class="brand-title">heroal <span>Artikel</span></div>
-        <div class="brand-user">
-          <span id="hdr-user-badge">👤 #----</span>
+        <div class="brand-user" id="hdr-user">
+          <span class="hdr-user-name" id="hdr-user-name"></span>
+          <span class="hdr-user-role" id="hdr-user-role"></span>
+          <button
+            type="button"
+            class="hdr-logout"
+            id="btn-logout"
+            data-i18n="logout_btn"
+          >
+            Abmelden
+          </button>
         </div>
       </div>
 
@@ -1942,6 +2028,9 @@
       const LANGS = ["de", "en", "ru"];
       const LANG_STORAGE_KEY = "lagerguide_lang";
       const PACK_STORAGE_KEY = "lagerguide_last_pack";
+      const USER_STORAGE_KEY = "currentUser";
+      const USER_STORAGE_LEGACY_KEY = "heroal_current_user";
+      const PIN_LENGTH = 4;
       const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
       const LANG_META = {
         de: { nameKey: "lang_de" },
@@ -1959,7 +2048,10 @@
           lang_en: "English",
           lang_ru: "Русский",
           login_error_empty: "Bitte PIN eingeben!",
-          login_error_blocked: "Benutzer ist gesperrt!",
+          login_error_wrong: "Falsche PIN-Nummer",
+          login_error_inactive: "Benutzerkonto ist inaktiv",
+          login_error_blocked: "Benutzerkonto ist inaktiv",
+          logout_btn: "Abmelden",
           lbl_profiles: "📐 Profile / Zubehör",
           lbl_artnr: "Art.-Nr. [/]",
           lbl_colors: "🎨 Farben",
@@ -2013,7 +2105,10 @@
           lang_en: "English",
           lang_ru: "Русский",
           login_error_empty: "Please enter a PIN!",
-          login_error_blocked: "This user is blocked!",
+          login_error_wrong: "Falsche PIN-Nummer",
+          login_error_inactive: "Benutzerkonto ist inaktiv",
+          login_error_blocked: "Benutzerkonto ist inaktiv",
+          logout_btn: "Sign out",
           lbl_profiles: "📐 Profiles / Accessories",
           lbl_artnr: "Art. no. [/]",
           lbl_colors: "🎨 Colours",
@@ -2067,7 +2162,10 @@
           lang_en: "English",
           lang_ru: "Русский",
           login_error_empty: "Пожалуйста, введите PIN!",
-          login_error_blocked: "Доступ заблокирован администратором!",
+          login_error_wrong: "Falsche PIN-Nummer",
+          login_error_inactive: "Benutzerkonto ist inaktiv",
+          login_error_blocked: "Benutzerkonto ist inaktiv",
+          logout_btn: "Выйти",
           lbl_profiles: "📐 Профили / Комплектующие",
           lbl_artnr: "Артикул [/]",
           lbl_colors: "🎨 Цвета RAL / SD",
@@ -2187,8 +2285,8 @@
         });
       }
 
-      function isValidPack(val) {
-        return typeof val === "string" && /^\d{1,12}$/.test(val.trim());
+      function isValidPin(val) {
+        return typeof val === "string" && new RegExp("^\\d{" + PIN_LENGTH + "}$").test(val.trim());
       }
 
       function restoreLoginPack() {
@@ -2493,6 +2591,14 @@
             benutzer_de: "Test",
             status_de: "Aktiv",
           },
+          "0001": {
+            nummer: "0001",
+            pin: "0001",
+            vorname_de: "Inaktiv",
+            nachname_de: "Konto",
+            benutzer_de: "Mitarbeiter",
+            status_de: "Inaktiv",
+          },
         },
         artikel: {
           1371: {
@@ -2622,7 +2728,9 @@
       };
 
       let appDB = DEFAULT_DATA;
+      DEFAULT_DATA.benutzer = DEFAULT_DATA.users;
       let currentUser = readStoredUser();
+      let loginInFlight = false;
       let selectedCategory = "";
       let lastActiveArticle = "";
       let lastActiveColorCode = "";
@@ -2642,14 +2750,51 @@
 
       function readStoredUser() {
         try {
-          const raw = localStorage.getItem("heroal_current_user");
+          localStorage.removeItem(USER_STORAGE_LEGACY_KEY);
+        } catch (e) {}
+        try {
+          const raw =
+            sessionStorage.getItem(USER_STORAGE_KEY) ||
+            localStorage.getItem(USER_STORAGE_KEY);
           if (!raw || raw === "null" || raw === "undefined") return null;
           const parsed = JSON.parse(raw);
           if (!parsed || typeof parsed !== "object") return null;
-          return parsed;
+          if (!String(parsed.nummer || "").trim()) return null;
+          return {
+            nummer: String(parsed.nummer || ""),
+            vorname_de: parsed.vorname_de || "",
+            nachname_de: parsed.nachname_de || "",
+            benutzer_de: parsed.benutzer_de || "",
+          };
         } catch (e) {
           return null;
         }
+      }
+
+      function persistCurrentUser(user) {
+        const payload = JSON.stringify({
+          nummer: String(user.nummer || ""),
+          vorname_de: user.vorname_de || "",
+          nachname_de: user.nachname_de || "",
+          benutzer_de: user.benutzer_de || "",
+        });
+        try {
+          sessionStorage.setItem(USER_STORAGE_KEY, payload);
+          localStorage.setItem(USER_STORAGE_KEY, payload);
+        } catch (e) {}
+        try {
+          localStorage.removeItem(USER_STORAGE_LEGACY_KEY);
+        } catch (e) {}
+      }
+
+      function clearStoredUser() {
+        try {
+          sessionStorage.removeItem(USER_STORAGE_KEY);
+        } catch (e) {}
+        try {
+          localStorage.removeItem(USER_STORAGE_KEY);
+          localStorage.removeItem(USER_STORAGE_LEGACY_KEY);
+        } catch (e) {}
       }
 
       function readStoredUrls() {
@@ -2677,14 +2822,15 @@
         if (!input) return;
         input.value = String(input.value || "")
           .replace(/\D/g, "")
-          .slice(0, 12);
+          .slice(0, PIN_LENGTH);
       }
 
       function appendPackDigit(digit) {
         const input = document.getElementById("input-login-nr");
-        if (!input || input.value.length >= 12) return;
+        if (!input || input.value.length >= PIN_LENGTH) return;
         input.value += String(digit);
         sanitizePackInput();
+        if (isValidPin(input.value)) handleLogin();
       }
 
       function backspacePack() {
@@ -2772,9 +2918,14 @@
       function bindLoginUi() {
         const input = document.getElementById("input-login-nr");
         const submit = document.getElementById("btn-login-submit");
+        const logoutBtn = document.getElementById("btn-logout");
         if (submit) submit.addEventListener("click", () => handleLogin());
+        if (logoutBtn) logoutBtn.addEventListener("click", () => handleLogout());
         if (input) {
-          input.addEventListener("input", sanitizePackInput);
+          input.addEventListener("input", () => {
+            sanitizePackInput();
+            if (isValidPin(input.value)) handleLogin();
+          });
           input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -2850,6 +3001,7 @@
       dbReady = initDatabase().then(async () => {
         await loadTranslationsFromIdb();
         applyLanguage();
+        revalidateSession();
         reportOfflineReadiness();
       });
 
@@ -2959,6 +3111,7 @@
         if (!raw || typeof raw !== "object") return DEFAULT_DATA;
         const out = {
           users: {},
+          benutzer: {},
           artikel: {},
           farben: {},
           defects: Array.isArray(raw.defects)
@@ -2971,13 +3124,14 @@
           const row = migrateArticle(key, artikelSrc[key]);
           if (row && row.artnr) out.artikel[row.artnr] = row;
         });
-        const userSrc = raw.users || {};
+        const userSrc = raw.benutzer || raw.users || {};
         Object.keys(userSrc).forEach((key) => {
           const row = migrateUser(key, userSrc[key]);
           if (!row) return;
-          const id = row.pin || String(key);
+          const id = row.pin || row.nummer || String(key);
           out.users[id] = row;
         });
+        out.benutzer = out.users;
         const farbenSrc = raw.farben || {};
         Object.keys(farbenSrc).forEach((key) => {
           const row = migrateFarbe(key, farbenSrc[key]);
@@ -2988,7 +3142,10 @@
         if (!Object.keys(out.artikel).length) out.artikel = DEFAULT_DATA.artikel;
         if (!Object.keys(out.farben).length) out.farben = DEFAULT_DATA.farben;
         if (!out.auskunft.length) out.auskunft = DEFAULT_DATA.auskunft;
-        if (!Object.keys(out.users).length) out.users = DEFAULT_DATA.users;
+        if (!Object.keys(out.users).length) {
+          out.users = DEFAULT_DATA.users;
+          out.benutzer = out.users;
+        }
         return out;
       }
 
@@ -3029,6 +3186,7 @@
       // Hotkeys Handler
       function initHotkeys() {
         window.addEventListener("keydown", (e) => {
+          if (isLoginVisible() || !currentUser) return;
           if (e.key === "Escape") {
             closeZoom();
             closeSettings();
@@ -3108,96 +3266,184 @@
 
       function userDisplayName(user) {
         if (!user) return "";
-        return (
-          user.vorname_de ||
-          user.first ||
-          user.benutzer_de ||
-          "Mitarbeiter"
-        );
+        const name = [user.vorname_de, user.nachname_de]
+          .map((p) => String(p || "").trim())
+          .filter(Boolean)
+          .join(" ");
+        return name || user.benutzer_de || String(user.nummer || "");
       }
 
-      function userIsBlocked(user) {
-        const s = String(
-          (user && (user.status_de || user.status)) || "",
-        ).toLowerCase();
-        return (
-          s === "inaktiv" ||
-          s === "gesperrt" ||
-          s === "inactive" ||
-          s === "blocked"
-        );
+      function usersTable() {
+        return (appDB && (appDB.benutzer || appDB.users)) || {};
+      }
+
+      function sessionRecord(user) {
+        return {
+          nummer: String(user.nummer || ""),
+          vorname_de: user.vorname_de || "",
+          nachname_de: user.nachname_de || "",
+          benutzer_de: user.benutzer_de || "",
+        };
+      }
+
+      function isUserActive(user) {
+        return String((user && user.status_de) || "").trim() === "Aktiv";
       }
 
       function findUserByPin(val) {
-        const users = appDB.users || {};
-        if (users[val]) return users[val];
-        return Object.keys(users)
-          .map((k) => users[k])
-          .find(
-            (u) =>
-              String(u.pin || "") === val || String(u.nummer || "") === val,
-          );
+        const pin = String(val || "");
+        if (!pin) return null;
+        return (
+          Object.keys(usersTable())
+            .map((k) => usersTable()[k])
+            .find((u) => u && String(u.pin || "") === pin) || null
+        );
+      }
+
+      function findUserByNummer(nummer) {
+        const id = String(nummer || "");
+        if (!id) return null;
+        return (
+          Object.keys(usersTable())
+            .map((k) => usersTable()[k])
+            .find((u) => u && String(u.nummer || "") === id) || null
+        );
+      }
+
+      function setWorkspaceLocked(locked) {
+        document
+          .querySelectorAll(
+            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog",
+          )
+          .forEach((el) => {
+            if (locked) el.setAttribute("inert", "");
+            else el.removeAttribute("inert");
+          });
+      }
+
+      function renderHeaderUser() {
+        const nameEl = document.getElementById("hdr-user-name");
+        const roleEl = document.getElementById("hdr-user-role");
+        const wrap = document.getElementById("hdr-user");
+        if (!nameEl || !roleEl) return;
+        if (!currentUser) {
+          nameEl.textContent = "";
+          roleEl.textContent = "";
+          if (wrap) wrap.hidden = true;
+          return;
+        }
+        if (wrap) wrap.hidden = false;
+        nameEl.textContent = userDisplayName(currentUser);
+        roleEl.textContent = currentUser.benutzer_de || "";
+      }
+
+      function shakeLogin() {
+        const box = document.querySelector(".login-box");
+        const input = document.getElementById("input-login-nr");
+        if (input) input.classList.add("is-error");
+        if (!box) return;
+        box.classList.remove("is-shake");
+        void box.offsetWidth;
+        box.classList.add("is-shake");
+      }
+
+      function clearLoginFeedback() {
+        const err = document.getElementById("login-error-msg");
+        const box = document.querySelector(".login-box");
+        const input = document.getElementById("input-login-nr");
+        if (err) err.innerText = "";
+        if (box) box.classList.remove("is-shake");
+        if (input) input.classList.remove("is-error");
+      }
+
+      function rejectLogin(messageKey) {
+        const err = document.getElementById("login-error-msg");
+        if (err) err.innerText = t(messageKey);
+        shakeLogin();
+        clearPack();
       }
 
       function checkAuth() {
         const overlay = document.getElementById("login-overlay");
-        if (currentUser && isValidPack(String(currentUser.pack || ""))) {
+        const valid = !!(currentUser && String(currentUser.nummer || "").trim());
+        if (valid) {
           document.documentElement.classList.add("authed");
           overlay.style.display = "none";
-          document.getElementById("hdr-user-badge").innerText =
-            `👤 #${currentUser.pack} (${userDisplayName(currentUser)})`;
+          overlay.setAttribute("aria-hidden", "true");
+          setWorkspaceLocked(false);
+          renderHeaderUser();
         } else {
-          if (currentUser && !isValidPack(String(currentUser.pack || ""))) {
-            currentUser = null;
-          }
+          currentUser = null;
           document.documentElement.classList.remove("authed");
           overlay.style.display = "flex";
+          overlay.setAttribute("aria-hidden", "false");
+          setWorkspaceLocked(true);
+          renderHeaderUser();
+          const input = document.getElementById("input-login-nr");
+          if (input) setTimeout(() => input.focus(), 0);
         }
       }
 
-      async function handleLogin() {
-        const val = document.getElementById("input-login-nr").value.trim();
-        const err = document.getElementById("login-error-msg");
-        err.innerText = "";
+      function revalidateSession() {
+        if (!currentUser) {
+          checkAuth();
+          return;
+        }
+        const live = findUserByNummer(currentUser.nummer);
+        if (!live || !isUserActive(live)) {
+          currentUser = null;
+          clearStoredUser();
+          checkAuth();
+          return;
+        }
+        currentUser = sessionRecord(live);
+        persistCurrentUser(currentUser);
+        checkAuth();
+      }
 
-        if (!isValidPack(val)) {
-          err.innerText = t("login_error_empty");
+      async function handleLogin() {
+        if (loginInFlight) return;
+        const input = document.getElementById("input-login-nr");
+        const val = String((input && input.value) || "").trim();
+        clearLoginFeedback();
+
+        if (!isValidPin(val)) {
+          const err = document.getElementById("login-error-msg");
+          if (err) err.innerText = t("login_error_empty");
+          if (val) shakeLogin();
           return;
         }
 
+        loginInFlight = true;
         try {
-          await dbReady;
-        } catch (e) {}
+          try {
+            await dbReady;
+          } catch (e) {}
 
-        const user = findUserByPin(val);
-        if (user) {
-          if (userIsBlocked(user)) {
-            err.innerText = t("login_error_blocked");
+          const user = findUserByPin(val);
+          if (!user) {
+            rejectLogin("login_error_wrong");
             return;
           }
-          currentUser = { pack: val, ...user };
-        } else {
-          currentUser = {
-            pack: val,
-            pin: val,
-            vorname_de: "Mitarbeiter",
-            nachname_de: "",
-            benutzer_de: "Lager",
-            status_de: "Aktiv",
-          };
+          if (!isUserActive(user)) {
+            rejectLogin("login_error_inactive");
+            return;
+          }
+          currentUser = sessionRecord(user);
+          persistCurrentUser(currentUser);
+          clearPack();
+          checkAuth();
+        } finally {
+          loginInFlight = false;
         }
-        localStorage.setItem(
-          "heroal_current_user",
-          JSON.stringify(currentUser),
-        );
-        checkAuth();
       }
 
       function handleLogout() {
         currentUser = null;
-        localStorage.removeItem("heroal_current_user");
+        clearStoredUser();
         closeSettings();
         restoreLoginPack();
+        clearLoginFeedback();
         setNumpadVisible(false);
         checkAuth();
       }
@@ -3854,6 +4100,7 @@
           appDB = migrateAppDB({ ...appDB, ...staged });
           await idbSet("heroal_db", appDB);
           applyLanguage();
+          revalidateSession();
 
           // Drawings are the one thing the app cannot reconstruct offline, so
           // they are downloaded now rather than on first view. Only the ones
