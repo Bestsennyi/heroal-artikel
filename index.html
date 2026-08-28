@@ -892,6 +892,38 @@
         border-radius: 4px;
         pointer-events: none;
       }
+      .profile-thumbs {
+        display: none;
+        gap: 6px;
+        overflow-x: auto;
+        flex-shrink: 0;
+        padding: 2px 0;
+      }
+      .profile-thumbs.has-thumbs {
+        display: flex;
+      }
+      .profile-thumb {
+        width: 52px;
+        height: 52px;
+        padding: 2px;
+        background: #fff;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .profile-thumb img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        pointer-events: none;
+      }
+      .profile-thumb.active {
+        border-color: var(--heroal-light-blue);
+      }
 
       .info-details {
         display: flex;
@@ -1615,28 +1647,9 @@
                 class="cat-pill active"
                 onclick="filterByCat('')"
                 id="cat-all"
+                data-cat=""
               >
                 Alle
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Blenden')">
-                Blenden
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Führungen')">
-                Führungen
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Endleisten')">
-                Endleisten
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Einlagen')">
-                Einlagen
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Kästen')">Kästen</div>
-              <div class="cat-pill" onclick="filterByCat('Stäbe')">Stäbe</div>
-              <div class="cat-pill" onclick="filterByCat('Dichtungen')">
-                Dichtungen
-              </div>
-              <div class="cat-pill" onclick="filterByCat('Zubehör')">
-                Zubehör
               </div>
             </div>
 
@@ -1654,6 +1667,7 @@
                 />
                 <span class="btn-zoom-hint">🔍 Zoom</span>
               </div>
+              <div id="prof-thumbs" class="profile-thumbs"></div>
 
               <div class="info-details">
                 <div class="info-title-wrap">
@@ -1666,7 +1680,7 @@
                     📋 Copy
                   </button>
                 </div>
-                <div class="info-subtitle" id="prof-title-ru">--</div>
+                <div class="info-subtitle" id="prof-title-sub"></div>
                 <div class="info-tags-row">
                   <span class="tag-chip tag-size" id="prof-size">--</span>
                   <span class="tag-chip tag-kat" id="prof-kat">--</span>
@@ -1835,23 +1849,19 @@
         </div>
 
         <div>
-          <div class="url-label">Base CSV URL</div>
-          <input type="text" id="cfg-url-base" class="url-input" />
+          <div class="url-label">Artikel CSV URL</div>
+          <input type="text" id="cfg-url-artikel" class="url-input" />
         </div>
         <div>
           <div class="url-label">Farben CSV URL</div>
           <input type="text" id="cfg-url-farben" class="url-input" />
         </div>
         <div>
-          <div class="url-label">Ausschuss CSV URL</div>
-          <input type="text" id="cfg-url-defects" class="url-input" />
-        </div>
-        <div>
           <div class="url-label">Auskunft CSV URL</div>
           <input type="text" id="cfg-url-auskunft" class="url-input" />
         </div>
         <div>
-          <div class="url-label">Users CSV URL</div>
+          <div class="url-label">Benutzer CSV URL</div>
           <input type="text" id="cfg-url-users" class="url-input" />
         </div>
         <div>
@@ -1913,6 +1923,7 @@
           lbl_profiles: "📐 Profile / Zubehör",
           lbl_artnr: "Art.-Nr. [/]",
           lbl_colors: "🎨 Farben",
+          cat_all: "Alle",
           nav_search: "Suche",
           nav_search_hotkey: "Suche [/]",
           nav_scrap: "Ausschuss",
@@ -1931,10 +1942,10 @@
           drawings_check: "Zeichnungen prüfen...",
           drawings_load: "Neue Zeichnungen laden... {done}/{total}",
           offline_no_net: "⚠️ Offline: Keine Internetverbindung!",
-          sync_load_profiles: "Lade Profile CSV...",
+          sync_load_profiles: "Lade Artikel CSV...",
           sync_load_colors: "Lade Farben CSV...",
-          sync_load_defects: "Lade Ausschuss & ERP...",
-          sync_load_users: "Lade Mitarbeiterdaten...",
+          sync_load_auskunft: "Lade Auskunft CSV...",
+          sync_load_users: "Lade Benutzerdaten...",
           sync_load_i18n: "Lade Übersetzungen...",
           sync_save: "Speichere in IndexedDB...",
           sync_done: "Abgeschlossen!",
@@ -1943,9 +1954,9 @@
           sync_abort_throttle:
             "⚠️ Zeichnungs-Server begrenzt Anfragen: {cached} von {total} offline — Sync später wiederholen",
           sync_partial:
-            "⚠️ {base} Artikel, {cached} Zeichnungen offline — {missing} fehlen, Sync wiederholen",
+            "⚠️ {artikel} Artikel, {cached} Zeichnungen offline — {missing} fehlen, Sync wiederholen",
           sync_ok:
-            "✅ Sync ok: {base} Artikel, {cached} Zeichnungen offline{newly}",
+            "✅ Sync ok: {artikel} Artikel, {cached} Zeichnungen offline{newly}",
           sync_newly: ", {n} neu geladen",
           sync_error: "⚠️ Fehler beim Synchronisieren.",
           reload_drawings_confirm:
@@ -1966,6 +1977,7 @@
           lbl_profiles: "📐 Profiles / Accessories",
           lbl_artnr: "Art. no. [/]",
           lbl_colors: "🎨 Colours",
+          cat_all: "All",
           nav_search: "Search",
           nav_search_hotkey: "Search [/]",
           nav_scrap: "Scrap",
@@ -1984,10 +1996,10 @@
           drawings_check: "Checking drawings...",
           drawings_load: "Downloading new drawings... {done}/{total}",
           offline_no_net: "⚠️ Offline: no internet connection!",
-          sync_load_profiles: "Loading profiles CSV...",
+          sync_load_profiles: "Loading articles CSV...",
           sync_load_colors: "Loading colours CSV...",
-          sync_load_defects: "Loading scrap & ERP...",
-          sync_load_users: "Loading staff list...",
+          sync_load_auskunft: "Loading info CSV...",
+          sync_load_users: "Loading user list...",
           sync_load_i18n: "Loading translations...",
           sync_save: "Saving to IndexedDB...",
           sync_done: "Done!",
@@ -1996,9 +2008,9 @@
           sync_abort_throttle:
             "⚠️ Drawing server is rate-limiting: {cached} of {total} offline — retry later",
           sync_partial:
-            "⚠️ {base} articles, {cached} drawings offline — {missing} missing, retry sync",
+            "⚠️ {artikel} articles, {cached} drawings offline — {missing} missing, retry sync",
           sync_ok:
-            "✅ Sync ok: {base} articles, {cached} drawings offline{newly}",
+            "✅ Sync ok: {artikel} articles, {cached} drawings offline{newly}",
           sync_newly: ", {n} newly downloaded",
           sync_error: "⚠️ Synchronisation failed.",
           reload_drawings_confirm:
@@ -2019,6 +2031,7 @@
           lbl_profiles: "📐 Профили / Комплектующие",
           lbl_artnr: "Артикул [/]",
           lbl_colors: "🎨 Цвета RAL / SD",
+          cat_all: "Все",
           nav_search: "Поиск",
           nav_search_hotkey: "Поиск [/]",
           nav_scrap: "Брак / Дефекты",
@@ -2037,10 +2050,10 @@
           drawings_check: "Проверка чертежей...",
           drawings_load: "Загрузка новых чертежей... {done}/{total}",
           offline_no_net: "⚠️ Офлайн: нет подключения к интернету!",
-          sync_load_profiles: "Загрузка профилей...",
+          sync_load_profiles: "Загрузка артикулов...",
           sync_load_colors: "Загрузка каталога цветов...",
-          sync_load_defects: "Загрузка дефектов и ERP...",
-          sync_load_users: "Загрузка списка сотрудников...",
+          sync_load_auskunft: "Загрузка справки...",
+          sync_load_users: "Загрузка пользователей...",
           sync_load_i18n: "Загрузка переводов...",
           sync_save: "Сохранение в IndexedDB...",
           sync_done: "Готово!",
@@ -2049,9 +2062,9 @@
           sync_abort_throttle:
             "⚠️ Сервер чертежей ограничивает запросы: {cached} из {total} офлайн — повторите Sync позже",
           sync_partial:
-            "⚠️ {base} артикулов, {cached} чертежей офлайн — {missing} не загружено, повторите Sync",
+            "⚠️ {artikel} артикулов, {cached} чертежей офлайн — {missing} не загружено, повторите Sync",
           sync_ok:
-            "✅ Синхронизация ok: {base} артикулов, {cached} чертежей офлайн{newly}",
+            "✅ Синхронизация ok: {artikel} артикулов, {cached} чертежей офлайн{newly}",
           sync_newly: ", {n} новых загружено",
           sync_error: "⚠️ Ошибка синхронизации данных.",
           reload_drawings_confirm:
@@ -2173,6 +2186,7 @@
         setTxt("nav-desk-ausschuss", t("nav_scrap"));
         setTxt("nav-desk-auskunft", t("nav_info"));
         setTxt("btn-sync-txt", t("sync"));
+        rebuildCategoryPills();
         updateOnlineStatus();
       }
 
@@ -2266,14 +2280,37 @@
         }
       }
 
+      /** Localized field with fallback to the German `_de` column. */
+      function locField(obj, stem, lang) {
+        if (!obj) return "";
+        const code = lang || appLang;
+        const chosen = obj[stem + "_" + code];
+        if (chosen != null && String(chosen).trim() !== "") {
+          return String(chosen).trim();
+        }
+        const de = obj[stem + "_de"];
+        return de != null ? String(de).trim() : "";
+      }
+
+      function articleImageList(item) {
+        if (!item) return [];
+        const out = [];
+        ["img_url", "img_1", "img_2", "img_3", "img_4"].forEach((key) => {
+          const url = String(item[key] || "").trim();
+          if (url && out.indexOf(url) === -1) out.push(url);
+        });
+        return out;
+      }
+
       /** Every distinct drawing URL referenced by the article database. */
       function collectDrawingUrls() {
         const urls = new Set();
-        Object.values(appDB.base || {}).forEach((item) => {
-          if (item.img) urls.add(item.img);
-          (item.extra || []).forEach((extra) => {
-            if (extra && /^https?:\/\//i.test(extra)) urls.add(extra);
-          });
+        Object.values(appDB.artikel || {}).forEach((item) => {
+          articleImageList(item).forEach((url) => urls.add(url));
+        });
+        Object.values(appDB.farben || {}).forEach((col) => {
+          const bild = String((col && col.bild_de) || "").trim();
+          if (bild) urls.add(bild);
         });
         return [...urls];
       }
@@ -2307,7 +2344,7 @@
 
       // IndexedDB Database Wrapper
       const DB_NAME = "heroal_warehouse_db";
-      const DB_VERSION = 2;
+      const DB_VERSION = 3;
       let dbInstance = null;
       let dbReady = Promise.resolve();
 
@@ -2395,45 +2432,87 @@
       const DEFAULT_DATA = {
         users: {
           1234: {
-            nr: "2020",
-            first: "Max",
-            last: "Best",
-            dept: "Test",
-            status: "Aktiv",
+            nummer: "2020",
+            pin: "1234",
+            vorname_de: "Max",
+            nachname_de: "Best",
+            benutzer_de: "Test",
+            status_de: "Aktiv",
           },
         },
-        base: {
+        artikel: {
           1371: {
-            de: "Blende FMR HC oben",
-            ru: "Крышка FMR HC верхняя",
-            size: "137 мм",
-            kat: "Blenden",
-            img: "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
-            extra: [],
-            note: "",
+            artnr: "1371",
+            name_de: "Blende FMR HC oben",
+            masse_de: "137 mm",
+            kategorie_de: "Blenden",
+            hinweis_de: "",
+            masse_en: "",
+            kategorie_en: "",
+            hinweis_en: "",
+            masse_ru: "137 мм",
+            kategorie_ru: "",
+            hinweis_ru: "",
+            img_url:
+              "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
+            img_1: "",
+            img_2: "",
+            img_3: "",
+            img_4: "",
           },
           5044: {
-            de: "F-HTF-IS DRP (Insektenschutz)",
-            ru: "Направляющая москитной сетки",
-            size: "22 x 93 mm (Rollladen + ISG)",
-            kat: "Führungen",
-            img: "",
-            extra: [],
-            note: "Achtung: Bürste 3108 montieren",
+            artnr: "5044",
+            name_de: "F-HTF-IS DRP (Insektenschutz)",
+            masse_de: "22 x 93 mm (Rollladen + ISG)",
+            kategorie_de: "Führungen",
+            hinweis_de: "Achtung: Bürste 3108 montieren",
+            masse_en: "",
+            kategorie_en: "",
+            hinweis_en: "",
+            masse_ru: "",
+            kategorie_ru: "",
+            hinweis_ru: "Внимание: установить щётку 3108",
+            img_url: "",
+            img_1: "",
+            img_2: "",
+            img_3: "",
+            img_4: "",
           },
         },
         farben: {
           7016: {
-            name: "Anthrazitgrau",
+            code: "7016",
             hex: "#383E42",
-            desc: "RAL 7016 Matt / Glanz",
+            bild_de: "",
+            name_de: "Anthrazitgrau",
+            oberflaeche_de: "RAL 7016 Matt / Glanz",
+            name_en: "Anthracite grey",
+            oberflaeche_en: "",
+            name_ru: "Антрацитово-серый",
+            oberflaeche_ru: "",
           },
           9016: {
-            name: "Verkehrsweiß",
+            code: "9016",
             hex: "#F1F0EA",
-            desc: "RAL 9016 Standard",
+            bild_de: "",
+            name_de: "Verkehrsweiß",
+            oberflaeche_de: "RAL 9016 Standard",
+            name_en: "Traffic white",
+            oberflaeche_en: "",
+            name_ru: "Транспортный белый",
+            oberflaeche_ru: "",
           },
-          8000: { name: "Grünbraun", hex: "#826C34", desc: "heroal Standard" },
+          8000: {
+            code: "8000",
+            hex: "#826C34",
+            bild_de: "",
+            name_de: "Grünbraun",
+            oberflaeche_de: "heroal Standard",
+            name_en: "Green brown",
+            oberflaeche_en: "",
+            name_ru: "Зелёно-коричневый",
+            oberflaeche_ru: "",
+          },
         },
         defects: [
           {
@@ -2457,21 +2536,29 @@
         ],
         auskunft: [
           {
-            kat: "ERP 15",
-            de_t: "Ausschuss richtig buchen",
-            ru_t: "Списание брака в ERP 15",
-            de_txt:
+            kategorie_de: "ERP 15",
+            name_de: "Ausschuss richtig buchen",
+            beschreibung_de:
               "1. ERP Maske 15 öffnen.\n2. Packnummer scannen.\n3. Ausschussgrund-Code eingeben.\n4. Anzahl bestätigen.",
-            ru_txt:
+            kategorie_en: "",
+            name_en: "",
+            beschreibung_en: "",
+            kategorie_ru: "",
+            name_ru: "Списание брака в ERP 15",
+            beschreibung_ru:
               "1. Открыть меню ERP 15.\n2. Сканировать номер упаковки (Packnummer).\n3. Указать код причины дефекта.\n4. Подтвердить списание.",
           },
           {
-            kat: "Verpackung",
-            de_t: "Verpackungsrichtlinie Blenden",
-            ru_t: "Правила упаковки коробов и бленд",
-            de_txt:
+            kategorie_de: "Verpackung",
+            name_de: "Verpackungsrichtlinie Blenden",
+            beschreibung_de:
               "Schutzfolie prüfen, Eckschützer anbringen und mit Stretchfolie fixieren.",
-            ru_txt:
+            kategorie_en: "",
+            name_en: "",
+            beschreibung_en: "",
+            kategorie_ru: "",
+            name_ru: "Правила упаковки коробов и бленд",
+            beschreibung_ru:
               "Проверить защитную пленку, установить угловые протекторы и зафиксировать стрейч-пленкой.",
           },
         ],
@@ -2484,11 +2571,10 @@
       let lastActiveColorCode = "";
 
       const DEFAULT_URLS = {
-        base: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
+        artikel:
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1037791966&single=true&output=csv",
         farben:
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=0&single=true&output=csv",
-        defects:
-          "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=131063811&single=true&output=csv",
         auskunft:
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1277909396&single=true&output=csv",
         users:
@@ -2515,7 +2601,15 @@
           if (!raw || raw === "null" || raw === "undefined") return DEFAULT_URLS;
           const parsed = JSON.parse(raw);
           if (!parsed || typeof parsed !== "object") return DEFAULT_URLS;
-          return { ...DEFAULT_URLS, ...parsed };
+          const merged = { ...DEFAULT_URLS, ...parsed };
+          if (!parsed.artikel && parsed.base) merged.artikel = parsed.base;
+          return {
+            artikel: merged.artikel || DEFAULT_URLS.artikel,
+            farben: merged.farben || DEFAULT_URLS.farben,
+            auskunft: merged.auskunft || DEFAULT_URLS.auskunft,
+            users: merged.users || DEFAULT_URLS.users,
+            translations: merged.translations || "",
+          };
         } catch (e) {
           return DEFAULT_URLS;
         }
@@ -2707,7 +2801,7 @@
         const expected = collectDrawingUrls().length;
         const cached = await getCachedDrawingCount();
         console.info(
-          `[offline] Artikel: ${Object.keys(appDB.base || {}).length}, ` +
+          `[offline] Artikel: ${Object.keys(appDB.artikel || {}).length}, ` +
             `Zeichnungen im Cache: ${cached === null ? "?" : cached}/${expected}`,
         );
         if (cached !== null && expected > 0 && cached < expected) {
@@ -2718,23 +2812,148 @@
         }
       }
 
+      function migrateArticle(key, it) {
+        if (!it || typeof it !== "object") return null;
+        if (it.artnr || it.name_de || it.img_url) {
+          return {
+            artnr: it.artnr || String(key),
+            name_de: it.name_de || it.de || "",
+            masse_de: it.masse_de || it.size || "",
+            kategorie_de: it.kategorie_de || it.kat || "",
+            hinweis_de: it.hinweis_de || it.note || "",
+            masse_en: it.masse_en || "",
+            kategorie_en: it.kategorie_en || "",
+            hinweis_en: it.hinweis_en || "",
+            masse_ru: it.masse_ru || "",
+            kategorie_ru: it.kategorie_ru || "",
+            hinweis_ru: it.hinweis_ru || "",
+            img_url: it.img_url || it.img || "",
+            img_1: it.img_1 || (it.extra && it.extra[0]) || "",
+            img_2: it.img_2 || (it.extra && it.extra[1]) || "",
+            img_3: it.img_3 || (it.extra && it.extra[2]) || "",
+            img_4: it.img_4 || (it.extra && it.extra[3]) || "",
+          };
+        }
+        const extra = Array.isArray(it.extra) ? it.extra : [];
+        return {
+          artnr: String(key),
+          name_de: it.de || "",
+          masse_de: it.size || "",
+          kategorie_de: it.kat || "",
+          hinweis_de: it.note || "",
+          masse_en: "",
+          kategorie_en: "",
+          hinweis_en: "",
+          masse_ru: "",
+          kategorie_ru: "",
+          hinweis_ru: "",
+          img_url: it.img || "",
+          img_1: extra[0] || "",
+          img_2: extra[1] || "",
+          img_3: extra[2] || "",
+          img_4: extra[3] || "",
+        };
+      }
+
+      function migrateUser(key, it) {
+        if (!it || typeof it !== "object") return null;
+        return {
+          nummer: String(it.nummer || it.nr || ""),
+          pin: String(it.pin || key || ""),
+          vorname_de: it.vorname_de || it.first || "",
+          nachname_de: it.nachname_de || it.last || "",
+          benutzer_de: it.benutzer_de || it.dept || "",
+          status_de: it.status_de || it.status || "Aktiv",
+        };
+      }
+
+      function migrateFarbe(key, it) {
+        if (!it || typeof it !== "object") return null;
+        return {
+          code: String(it.code || key || ""),
+          hex: it.hex || "#ffffff",
+          bild_de: it.bild_de || "",
+          name_de: it.name_de || it.name || "",
+          oberflaeche_de: it.oberflaeche_de || it.desc || "",
+          name_en: it.name_en || "",
+          oberflaeche_en: it.oberflaeche_en || "",
+          name_ru: it.name_ru || "",
+          oberflaeche_ru: it.oberflaeche_ru || "",
+        };
+      }
+
+      function migrateAuskunftRow(it) {
+        if (!it || typeof it !== "object") return null;
+        return {
+          kategorie_de: it.kategorie_de || it.kat || "",
+          name_de: it.name_de || it.de_t || "",
+          beschreibung_de: it.beschreibung_de || it.de_txt || "",
+          kategorie_en: it.kategorie_en || "",
+          name_en: it.name_en || "",
+          beschreibung_en: it.beschreibung_en || "",
+          kategorie_ru: it.kategorie_ru || "",
+          name_ru: it.name_ru || it.ru_t || "",
+          beschreibung_ru: it.beschreibung_ru || it.ru_txt || "",
+        };
+      }
+
+      function migrateAppDB(raw) {
+        if (!raw || typeof raw !== "object") return DEFAULT_DATA;
+        const out = {
+          users: {},
+          artikel: {},
+          farben: {},
+          defects: Array.isArray(raw.defects)
+            ? raw.defects
+            : DEFAULT_DATA.defects,
+          auskunft: [],
+        };
+        const artikelSrc = raw.artikel || raw.base || {};
+        Object.keys(artikelSrc).forEach((key) => {
+          const row = migrateArticle(key, artikelSrc[key]);
+          if (row && row.artnr) out.artikel[row.artnr] = row;
+        });
+        const userSrc = raw.users || {};
+        Object.keys(userSrc).forEach((key) => {
+          const row = migrateUser(key, userSrc[key]);
+          if (!row) return;
+          const id = row.pin || String(key);
+          out.users[id] = row;
+        });
+        const farbenSrc = raw.farben || {};
+        Object.keys(farbenSrc).forEach((key) => {
+          const row = migrateFarbe(key, farbenSrc[key]);
+          if (row && row.code) out.farben[row.code] = row;
+        });
+        const auskunftSrc = Array.isArray(raw.auskunft) ? raw.auskunft : [];
+        out.auskunft = auskunftSrc.map(migrateAuskunftRow).filter(Boolean);
+        if (!Object.keys(out.artikel).length) out.artikel = DEFAULT_DATA.artikel;
+        if (!Object.keys(out.farben).length) out.farben = DEFAULT_DATA.farben;
+        if (!out.auskunft.length) out.auskunft = DEFAULT_DATA.auskunft;
+        if (!Object.keys(out.users).length) out.users = DEFAULT_DATA.users;
+        return out;
+      }
+
       async function initDatabase() {
         try {
           const cachedDB = await idbGet("heroal_db");
           if (cachedDB) {
-            appDB = cachedDB;
+            appDB = migrateAppDB(cachedDB);
+            await idbSet("heroal_db", appDB);
           } else {
             const legacy = localStorage.getItem("heroal_db_v2");
             if (legacy) {
-              appDB = JSON.parse(legacy);
+              appDB = migrateAppDB(JSON.parse(legacy));
               await idbSet("heroal_db", appDB);
               localStorage.removeItem("heroal_db_v2");
             } else {
-              await idbSet("heroal_db", DEFAULT_DATA);
+              appDB = DEFAULT_DATA;
+              await idbSet("heroal_db", appDB);
             }
           }
         } catch (e) {
           console.warn("IndexedDB init fallback:", e);
+          appDB = DEFAULT_DATA;
         }
       }
 
@@ -2829,13 +3048,46 @@
         return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
       }
 
+      function userDisplayName(user) {
+        if (!user) return "";
+        return (
+          user.vorname_de ||
+          user.first ||
+          user.benutzer_de ||
+          "Mitarbeiter"
+        );
+      }
+
+      function userIsBlocked(user) {
+        const s = String(
+          (user && (user.status_de || user.status)) || "",
+        ).toLowerCase();
+        return (
+          s === "inaktiv" ||
+          s === "gesperrt" ||
+          s === "inactive" ||
+          s === "blocked"
+        );
+      }
+
+      function findUserByPin(val) {
+        const users = appDB.users || {};
+        if (users[val]) return users[val];
+        return Object.keys(users)
+          .map((k) => users[k])
+          .find(
+            (u) =>
+              String(u.pin || "") === val || String(u.nummer || "") === val,
+          );
+      }
+
       function checkAuth() {
         const overlay = document.getElementById("login-overlay");
         if (currentUser && isValidPack(String(currentUser.pack || ""))) {
           document.documentElement.classList.add("authed");
           overlay.style.display = "none";
           document.getElementById("hdr-user-badge").innerText =
-            `👤 #${currentUser.pack} (${currentUser.first})`;
+            `👤 #${currentUser.pack} (${userDisplayName(currentUser)})`;
         } else {
           if (currentUser && !isValidPack(String(currentUser.pack || ""))) {
             currentUser = null;
@@ -2859,9 +3111,9 @@
           await dbReady;
         } catch (e) {}
 
-        const user = appDB.users[val];
+        const user = findUserByPin(val);
         if (user) {
-          if (user.status && user.status.toLowerCase() === "gesperrt") {
+          if (userIsBlocked(user)) {
             err.innerText = t("login_error_blocked");
             return;
           }
@@ -2869,9 +3121,11 @@
         } else {
           currentUser = {
             pack: val,
-            first: "Mitarbeiter",
-            last: "",
-            dept: "Lager",
+            pin: val,
+            vorname_de: "Mitarbeiter",
+            nachname_de: "",
+            benutzer_de: "Lager",
+            status_de: "Aktiv",
           };
         }
         localStorage.setItem(
@@ -2943,47 +3197,39 @@
             return;
           }
 
-          let matchKey = Object.keys(appDB.base).find((key) => {
-            const item = appDB.base[key];
+          const catalog = appDB.artikel || {};
+          let matchKey = Object.keys(catalog).find((key) => {
+            const item = catalog[key];
+            const catDe = (item.kategorie_de || "").toLowerCase();
             const catOk =
-              !selectedCategory ||
-              (item.kat &&
-                item.kat.toLowerCase() === selectedCategory.toLowerCase());
+              !selectedCategory || catDe === selectedCategory.toLowerCase();
             if (!catOk) return false;
             if (!query) return true;
-            return (
-              key.toLowerCase().includes(query) ||
-              (item.de && item.de.toLowerCase().includes(query)) ||
-              (item.ru && item.ru.toLowerCase().includes(query))
-            );
+            const hay = [
+              key,
+              item.artnr,
+              item.name_de,
+              locField(item, "masse", appLang),
+              locField(item, "kategorie", appLang),
+              locField(item, "hinweis", appLang),
+              item.masse_de,
+              item.kategorie_de,
+              item.hinweis_de,
+              item.masse_en,
+              item.kategorie_en,
+              item.hinweis_en,
+              item.masse_ru,
+              item.kategorie_ru,
+              item.hinweis_ru,
+            ]
+              .join(" ")
+              .toLowerCase();
+            return hay.includes(query);
           });
 
           if (matchKey) {
             lastActiveArticle = matchKey;
-            const it = appDB.base[matchKey];
-            document.getElementById("prof-title-de").innerText =
-              `${matchKey} — ${it.de || ""}`;
-            document.getElementById("prof-title-ru").innerText = it.ru || "";
-            document.getElementById("prof-size").innerText = it.size
-              ? `📏 ${it.size}`
-              : "Standard";
-            document.getElementById("prof-kat").innerText = it.kat || "heroal";
-
-            const imgEl = document.getElementById("prof-img");
-            imgEl.onerror = () => {
-              imgEl.onerror = null;
-              imgEl.src = getSvgPlaceholder(matchKey);
-            };
-            imgEl.src = it.img || getSvgPlaceholder(matchKey);
-
-            const noteEl = document.getElementById("prof-note");
-            if (it.note) {
-              noteEl.innerText = `💡 ${it.note}`;
-              noteEl.style.display = "block";
-            } else {
-              noteEl.style.display = "none";
-            }
-
+            renderProfileCard(matchKey);
             pCard.style.display = "flex";
           } else {
             pCard.style.display = "none";
@@ -3003,20 +3249,31 @@
             return;
           }
 
-          const matchKey = Object.keys(appDB.farben).find(
-            (k) =>
-              k.toLowerCase().includes(query) ||
-              (appDB.farben[k].name &&
-                appDB.farben[k].name.toLowerCase().includes(query)),
-          );
+          const catalog = appDB.farben || {};
+          const matchKey = Object.keys(catalog).find((k) => {
+            const col = catalog[k];
+            const hay = [
+              k,
+              col.code,
+              locField(col, "name", appLang),
+              locField(col, "oberflaeche", appLang),
+              col.name_de,
+              col.name_en,
+              col.name_ru,
+            ]
+              .join(" ")
+              .toLowerCase();
+            return hay.includes(query);
+          });
 
           if (matchKey) {
             lastActiveColorCode = matchKey;
-            const col = appDB.farben[matchKey];
+            const col = catalog[matchKey];
+            const name = locField(col, "name", appLang);
             document.getElementById("col-name").innerText =
-              `${matchKey} — ${col.name}`;
+              `${matchKey} — ${name}`;
             document.getElementById("col-desc").innerText =
-              col.desc || "heroal Beschichtung";
+              locField(col, "oberflaeche", appLang) || "heroal Beschichtung";
             document.getElementById("col-hex").innerText = col.hex;
 
             const swatch = document.getElementById("col-swatch");
@@ -3033,13 +3290,106 @@
         });
       }
 
+      function renderProfileCard(artnr) {
+        const it = (appDB.artikel || {})[artnr];
+        if (!it) return;
+        document.getElementById("prof-title-de").innerText =
+          `${artnr} — ${it.name_de || ""}`;
+        const subEl = document.getElementById("prof-title-sub");
+        if (subEl) {
+          subEl.innerText = "";
+          subEl.style.display = "none";
+        }
+        const masse = locField(it, "masse", appLang);
+        document.getElementById("prof-size").innerText = masse
+          ? `📏 ${masse}`
+          : "Standard";
+        document.getElementById("prof-kat").innerText =
+          locField(it, "kategorie", appLang) || "heroal";
+
+        renderProfileGallery(it, artnr);
+
+        const noteEl = document.getElementById("prof-note");
+        const hinweis = locField(it, "hinweis", appLang);
+        if (hinweis) {
+          noteEl.innerText = `💡 ${hinweis}`;
+          noteEl.style.display = "block";
+        } else {
+          noteEl.style.display = "none";
+        }
+      }
+
+      function renderProfileGallery(it, artnr) {
+        const urls = articleImageList(it);
+        const imgEl = document.getElementById("prof-img");
+        const thumbs = document.getElementById("prof-thumbs");
+        imgEl.onerror = () => {
+          imgEl.onerror = null;
+          imgEl.src = getSvgPlaceholder(artnr);
+        };
+        imgEl.src = urls[0] || getSvgPlaceholder(artnr);
+        thumbs.innerHTML = "";
+        thumbs.classList.toggle("has-thumbs", urls.length > 1);
+        if (urls.length <= 1) return;
+        urls.forEach((url, i) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "profile-thumb" + (i === 0 ? " active" : "");
+          const thumbImg = document.createElement("img");
+          thumbImg.src = url;
+          thumbImg.alt = "";
+          btn.appendChild(thumbImg);
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            imgEl.onerror = () => {
+              imgEl.onerror = null;
+              imgEl.src = getSvgPlaceholder(artnr);
+            };
+            imgEl.src = url;
+            thumbs.querySelectorAll(".profile-thumb").forEach((el) => {
+              el.classList.remove("active");
+            });
+            btn.classList.add("active");
+          });
+          thumbs.appendChild(btn);
+        });
+      }
+
+      function rebuildCategoryPills() {
+        const container = document.getElementById("cat-pill-container");
+        if (!container) return;
+        const allBtn = document.getElementById("cat-all");
+        if (allBtn) allBtn.innerText = t("cat_all");
+        container.querySelectorAll(".cat-pill:not(#cat-all)").forEach((el) => {
+          el.remove();
+        });
+        const seen = new Map();
+        Object.values(appDB.artikel || {}).forEach((item) => {
+          const de = String(item.kategorie_de || "").trim();
+          if (!de || seen.has(de)) return;
+          seen.set(de, locField(item, "kategorie", appLang) || de);
+        });
+        [...seen.entries()]
+          .sort((a, b) => a[1].localeCompare(b[1], appLang || "de"))
+          .forEach(([de, label]) => {
+            const pill = document.createElement("div");
+            pill.className = "cat-pill";
+            pill.setAttribute("data-cat", de);
+            pill.textContent = label;
+            pill.addEventListener("click", () => filterByCat(de));
+            container.appendChild(pill);
+          });
+        document.querySelectorAll(".cat-pill").forEach((p) => {
+          const cat = p.getAttribute("data-cat") || "";
+          p.classList.toggle("active", cat === selectedCategory);
+        });
+      }
+
       function filterByCat(catName) {
         selectedCategory = catName;
         document.querySelectorAll(".cat-pill").forEach((p) => {
-          p.classList.toggle(
-            "active",
-            (catName === "" && p.id === "cat-all") || p.innerText === catName,
-          );
+          const cat = p.getAttribute("data-cat") || "";
+          p.classList.toggle("active", cat === catName);
         });
         document.getElementById("find-prof").dispatchEvent(new Event("input"));
       }
@@ -3099,28 +3449,44 @@
         const q = (
           document.getElementById("find-guide").value || ""
         ).toLowerCase();
-        const list = appDB.auskunft.filter(
-          (a) =>
-            (a.kat && a.kat.toLowerCase().includes(q)) ||
-            (a.de_t && a.de_t.toLowerCase().includes(q)) ||
-            (a.ru_t && a.ru_t.toLowerCase().includes(q)),
-        );
+        const list = (appDB.auskunft || []).filter((a) => {
+          const hay = [
+            locField(a, "kategorie", appLang),
+            locField(a, "name", appLang),
+            locField(a, "beschreibung", appLang),
+            a.kategorie_de,
+            a.name_de,
+            a.kategorie_en,
+            a.name_en,
+            a.kategorie_ru,
+            a.name_ru,
+          ]
+            .join(" ")
+            .toLowerCase();
+          return hay.includes(q);
+        });
         const cont = document.getElementById("auskunft-container");
         cont.innerHTML = list
-          .map(
-            (a) => `
+          .map((a) => {
+            const kat = locField(a, "kategorie", appLang);
+            const title = locField(a, "name", appLang);
+            const body = locField(a, "beschreibung", appLang).replace(
+              /\n/g,
+              "<br>",
+            );
+            return `
               <div class="acc-item" onclick="this.classList.toggle('open')">
                 <div class="acc-top">
-                  <span class="acc-badge badge-guide">${a.kat}</span>
-                  <div class="acc-title">${appLang === "ru" ? a.ru_t || a.de_t : a.de_t}</div>
+                  <span class="acc-badge badge-guide">${kat}</span>
+                  <div class="acc-title">${title}</div>
                   <span>▾</span>
                 </div>
                 <div class="acc-body">
-                  <div>${(appLang === "ru" ? a.ru_txt || a.de_txt : a.de_txt).replace(/\n/g, "<br>")}</div>
+                  <div>${body}</div>
                 </div>
               </div>
-            `,
-          )
+            `;
+          })
           .join("");
       }
 
@@ -3152,6 +3518,136 @@
           row.push(cell.trim());
           return row;
         });
+      }
+
+      function isSkippedCsvHeader(h) {
+        const s = String(h || "").trim();
+        if (!s) return true;
+        return /^unnamed(\s*:|\.|$)/i.test(s);
+      }
+
+      function csvHeaderMap(headerRow) {
+        const map = {};
+        const seen = {};
+        (headerRow || []).forEach((raw, i) => {
+          if (isSkippedCsvHeader(raw)) return;
+          const name = String(raw).trim();
+          const n = seen[name] || 0;
+          seen[name] = n + 1;
+          const key = n === 0 ? name : name + "." + n;
+          map[key] = i;
+          map[key.toLowerCase()] = i;
+        });
+        return map;
+      }
+
+      function csvCell(row, map, name) {
+        if (!row || !map || !name) return "";
+        let i = map[name];
+        if (i == null) i = map[String(name).toLowerCase()];
+        if (i == null) return "";
+        return String(row[i] == null ? "" : row[i]).trim();
+      }
+
+      function parseCsvTable(text) {
+        const rows = parseCSV(String(text || "").replace(/^\uFEFF/, ""));
+        if (!rows.length) return { map: {}, rows: [] };
+        return { map: csvHeaderMap(rows[0]), rows: rows.slice(1) };
+      }
+
+      function parseArtikelCsv(text) {
+        const { map, rows } = parseCsvTable(text);
+        const out = {};
+        rows.forEach((row) => {
+          const artnr = csvCell(row, map, "artnr");
+          if (!artnr) return;
+          out[artnr] = {
+            artnr,
+            name_de: csvCell(row, map, "name_de"),
+            masse_de: csvCell(row, map, "masse_de"),
+            kategorie_de: csvCell(row, map, "kategorie_de"),
+            hinweis_de: csvCell(row, map, "hinweis_de"),
+            masse_en: csvCell(row, map, "masse_en"),
+            kategorie_en: csvCell(row, map, "kategorie_en"),
+            hinweis_en: csvCell(row, map, "hinweis_en"),
+            masse_ru: csvCell(row, map, "masse_ru"),
+            kategorie_ru: csvCell(row, map, "kategorie_ru"),
+            hinweis_ru: csvCell(row, map, "hinweis_ru"),
+            img_url: csvCell(row, map, "img_url"),
+            img_1: csvCell(row, map, "img_1"),
+            img_2: csvCell(row, map, "img_2"),
+            img_3: csvCell(row, map, "img_3"),
+            img_4: csvCell(row, map, "img_4"),
+          };
+        });
+        return out;
+      }
+
+      function parseFarbenCsv(text) {
+        const { map, rows } = parseCsvTable(text);
+        const out = {};
+        rows.forEach((row) => {
+          const code = csvCell(row, map, "code");
+          if (!code) return;
+          out[code] = {
+            code,
+            hex: (function (h) {
+              h = String(h || "").trim();
+              if (!h) return "#ffffff";
+              return h.charAt(0) === "#" ? h : "#" + h;
+            })(csvCell(row, map, "hex")),
+            bild_de: csvCell(row, map, "bild_de"),
+            name_de: csvCell(row, map, "name_de"),
+            oberflaeche_de: csvCell(row, map, "oberflaeche_de"),
+            name_en: csvCell(row, map, "name_en"),
+            oberflaeche_en: csvCell(row, map, "oberflaeche_en"),
+            name_ru: csvCell(row, map, "name_ru"),
+            oberflaeche_ru: csvCell(row, map, "oberflaeche_ru"),
+          };
+        });
+        return out;
+      }
+
+      function parseAuskunftCsv(text) {
+        const { map, rows } = parseCsvTable(text);
+        const out = [];
+        rows.forEach((row) => {
+          const item = {
+            kategorie_de: csvCell(row, map, "kategorie_de"),
+            name_de: csvCell(row, map, "name_de"),
+            beschreibung_de: csvCell(row, map, "beschreibung_de"),
+            kategorie_en: csvCell(row, map, "kategorie_en"),
+            name_en: csvCell(row, map, "name_en"),
+            beschreibung_en: csvCell(row, map, "beschreibung_en"),
+            kategorie_ru:
+              csvCell(row, map, "kategorie_ru") ||
+              csvCell(row, map, "kategorie_de.1"),
+            name_ru: csvCell(row, map, "name_ru"),
+            beschreibung_ru: csvCell(row, map, "beschreibung_ru"),
+          };
+          if (item.kategorie_de || item.name_de) out.push(item);
+        });
+        return out;
+      }
+
+      function parseBenutzerCsv(text) {
+        const { map, rows } = parseCsvTable(text);
+        const out = {};
+        rows.forEach((row) => {
+          const pin = csvCell(row, map, "pin");
+          const nummer = csvCell(row, map, "nummer");
+          const key = pin || nummer;
+          if (!key) return;
+          out[key] = {
+            nummer,
+            pin: pin || key,
+            vorname_de: csvCell(row, map, "vorname_de"),
+            nachname_de: csvCell(row, map, "nachname_de"),
+            benutzer_de: csvCell(row, map, "benutzer_de"),
+            status_de: csvCell(row, map, "status_de") || "Aktiv",
+          };
+        });
+        return out;
       }
 
       /** Label for the drawing stage; `total` is only what still needs fetching. */
@@ -3205,101 +3701,31 @@
 
         try {
           updateProgress(10, t("sync_load_profiles"));
-          if (appUrls.base) {
-            const r = await fetch(appUrls.base);
-            const rows = parseCSV(await r.text());
-            const newBase = {};
-            for (let i = 1; i < rows.length; i++) {
-              const [artnr, de, ru, size, kat, img, extra, note] = rows[i];
-              if (artnr) {
-                newBase[artnr.trim()] = {
-                  de: de || "",
-                  ru: ru || "",
-                  size: size || "",
-                  kat: kat || "",
-                  img: img || "",
-                  extra: extra ? extra.split(",").map((s) => s.trim()) : [],
-                  note: note || "",
-                };
-              }
-            }
-            staged.base = newBase;
+          if (appUrls.artikel) {
+            const r = await fetch(appUrls.artikel);
+            const parsed = parseArtikelCsv(await r.text());
+            if (Object.keys(parsed).length) staged.artikel = parsed;
           }
 
           updateProgress(25, t("sync_load_colors"));
           if (appUrls.farben) {
             const r = await fetch(appUrls.farben);
-            const rows = parseCSV(await r.text());
-            const newFarben = {};
-            for (let i = 1; i < rows.length; i++) {
-              const [code, name, desc, hex] = rows[i];
-              if (code) {
-                newFarben[code.trim()] = {
-                  name: name || "",
-                  desc: desc || "",
-                  hex: hex || "#ffffff",
-                };
-              }
-            }
-            staged.farben = newFarben;
+            const parsed = parseFarbenCsv(await r.text());
+            if (Object.keys(parsed).length) staged.farben = parsed;
           }
 
-          updateProgress(35, t("sync_load_defects"));
-          if (appUrls.defects) {
-            const r = await fetch(appUrls.defects);
-            const rows = parseCSV(await r.text());
-            const newDefects = [];
-            for (let i = 1; i < rows.length; i++) {
-              const [code, de, ru, act] = rows[i];
-              if (code) {
-                newDefects.push({
-                  code: code.trim(),
-                  de: de || "",
-                  ru: ru || "",
-                  act: act || "",
-                });
-              }
-            }
-            if (newDefects.length > 0) staged.defects = newDefects;
-          }
-
+          updateProgress(35, t("sync_load_auskunft"));
           if (appUrls.auskunft) {
             const r = await fetch(appUrls.auskunft);
-            const rows = parseCSV(await r.text());
-            const newAuskunft = [];
-            for (let i = 1; i < rows.length; i++) {
-              const [kat, de_t, ru_t, de_txt, ru_txt] = rows[i];
-              if (kat || de_t) {
-                newAuskunft.push({
-                  kat: kat || "",
-                  de_t: de_t || "",
-                  ru_t: ru_t || "",
-                  de_txt: de_txt || "",
-                  ru_txt: ru_txt || "",
-                });
-              }
-            }
+            const newAuskunft = parseAuskunftCsv(await r.text());
             if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
           }
 
           updateProgress(45, t("sync_load_users"));
           if (appUrls.users) {
             const r = await fetch(appUrls.users);
-            const rows = parseCSV(await r.text());
-            const newUsers = {};
-            for (let i = 1; i < rows.length; i++) {
-              const [pack, pnr, first, last, dept, stat] = rows[i];
-              if (pack) {
-                newUsers[pack.trim()] = {
-                  nr: pnr || "",
-                  first: first || "",
-                  last: last || "",
-                  dept: dept || "",
-                  status: stat || "Aktiv",
-                };
-              }
-            }
-            staged.users = newUsers;
+            const parsed = parseBenutzerCsv(await r.text());
+            if (Object.keys(parsed).length) staged.users = parsed;
           }
 
           if (appUrls.translations) {
@@ -3312,8 +3738,9 @@
           }
 
           updateProgress(55, t("sync_save"));
-          appDB = { ...appDB, ...staged };
+          appDB = migrateAppDB({ ...appDB, ...staged });
           await idbSet("heroal_db", appDB);
+          applyLanguage();
 
           // Drawings are the one thing the app cannot reconstruct offline, so
           // they are downloaded now rather than on first view. Only the ones
@@ -3338,7 +3765,7 @@
             const cached = mediaResult ? mediaResult.cached : 0;
             const missing = mediaResult ? mediaResult.failed : 0;
             const added = mediaResult ? mediaResult.downloaded || 0 : 0;
-            const base = Object.keys(appDB.base || {}).length;
+            const artikel = Object.keys(appDB.artikel || {}).length;
 
             // A partially cached terminal must not look fully offline-ready.
             if (mediaResult && mediaResult.aborted) {
@@ -3351,14 +3778,14 @@
               );
             } else if (missing > 0) {
               showToast(
-                tf("sync_partial", { base, cached, missing }),
+                tf("sync_partial", { artikel, cached, missing }),
               );
             } else {
               // Naming the newly fetched count makes it obvious that a routine
               // sync only pulls the day's additions.
               const newly =
                 added > 0 ? tf("sync_newly", { n: added }) : "";
-              showToast(tf("sync_ok", { base, cached, newly }));
+              showToast(tf("sync_ok", { artikel, cached, newly }));
             }
           }, 500);
         } catch (err) {
@@ -3371,10 +3798,9 @@
       }
 
       function openSettings() {
-        document.getElementById("cfg-url-base").value = appUrls.base || "";
+        document.getElementById("cfg-url-artikel").value =
+          appUrls.artikel || "";
         document.getElementById("cfg-url-farben").value = appUrls.farben || "";
-        document.getElementById("cfg-url-defects").value =
-          appUrls.defects || "";
         document.getElementById("cfg-url-auskunft").value =
           appUrls.auskunft || "";
         document.getElementById("cfg-url-users").value = appUrls.users || "";
@@ -3404,9 +3830,8 @@
 
       function saveSettings() {
         appUrls = {
-          base: document.getElementById("cfg-url-base").value.trim(),
+          artikel: document.getElementById("cfg-url-artikel").value.trim(),
           farben: document.getElementById("cfg-url-farben").value.trim(),
-          defects: document.getElementById("cfg-url-defects").value.trim(),
           auskunft: document.getElementById("cfg-url-auskunft").value.trim(),
           users: document.getElementById("cfg-url-users").value.trim(),
           translations: document
