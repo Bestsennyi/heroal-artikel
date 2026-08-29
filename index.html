@@ -680,7 +680,7 @@
       .header-right {
         justify-self: end;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 12px;
       }
       .brand-title {
         font-weight: 800;
@@ -732,17 +732,24 @@
       .hdr-user {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         justify-content: center;
-        gap: 1px;
+        gap: 0;
+        box-sizing: border-box;
+        height: 44px;
+        min-height: 44px;
         min-width: 0;
-        padding: 0 4px;
+        padding: 0 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         line-height: 1.2;
       }
       .hdr-user-name {
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
         color: #ffffff;
+        line-height: 1.15;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -759,7 +766,7 @@
         border: none;
         color: #94a3b8;
         white-space: nowrap;
-        line-height: 1.25;
+        line-height: 1.15;
       }
       .hdr-user-role.is-admin {
         background: none;
@@ -774,16 +781,17 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        box-sizing: border-box;
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #fca5a5;
-        border-radius: 8px;
-        min-height: 42px;
-        height: 42px;
-        padding: 8px 14px;
+        color: #fecaca;
+        border-radius: 12px;
+        min-height: 44px;
+        height: 44px;
+        padding: 0 16px;
         cursor: pointer;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         white-space: nowrap;
       }
       .hdr-logout .ico {
@@ -793,6 +801,9 @@
       .hdr-logout:hover {
         background: rgba(239, 68, 68, 0.25);
         color: #fecaca;
+      }
+      .hdr-logout:active {
+        transform: scale(0.95);
       }
 
       .btn-hdr {
@@ -828,35 +839,49 @@
       .net-cluster {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        padding: 2px 4px 2px 8px;
-        border-radius: 999px;
+        gap: 8px;
+        box-sizing: border-box;
+        height: 44px;
+        min-height: 44px;
+        padding: 0 14px;
+        border-radius: 12px;
         background: rgba(255, 255, 255, 0.1);
-      }
-      .net-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 0 4px 0 0;
-        font-size: 11px;
-        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: #86efac;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+      .net-cluster:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .net-cluster:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .net-cluster .ico {
+        width: 18px;
+        height: 18px;
+        color: #ffffff;
       }
       .net-dot {
         width: 8px;
         height: 8px;
+        flex-shrink: 0;
         border-radius: 50%;
         background-color: #22c55e;
         box-shadow: 0 0 8px #22c55e;
       }
-      .net-cluster.offline .net-badge {
+      .net-cluster.offline {
         color: #fcd34d;
       }
       .net-cluster.offline .net-dot {
         background-color: #f59e0b;
         box-shadow: 0 0 8px #f59e0b;
       }
-      .net-cluster.syncing .net-badge {
+      .net-cluster.syncing {
         color: #bfdbfe;
       }
       .net-cluster.syncing .net-dot {
@@ -867,16 +892,6 @@
       .net-cluster.synced .net-dot {
         background-color: #22c55e;
         box-shadow: 0 0 8px #22c55e;
-      }
-      .net-cluster .btn-hdr {
-        background: transparent;
-        height: 28px;
-        min-height: 28px;
-        width: 28px;
-        padding: 0;
-      }
-      .net-cluster .btn-hdr:hover {
-        background: rgba(255, 255, 255, 0.12);
       }
       #sync-icon.is-spinning {
         animation: spin 1s infinite linear;
@@ -899,31 +914,34 @@
       .hdr-lang-trigger {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        height: 34px;
-        padding: 0 10px;
+        gap: 8px;
+        box-sizing: border-box;
+        height: 44px;
+        min-height: 44px;
+        padding: 0 14px;
         background: rgba(255, 255, 255, 0.1);
-        border: none;
-        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
         color: #ffffff;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 700;
         letter-spacing: 0.04em;
         cursor: pointer;
+        font-family: inherit;
       }
       .hdr-lang-trigger:hover,
       .hdr-lang-dd.is-open .hdr-lang-trigger {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
       }
       .hdr-lang-trigger .lang-flag,
       .hdr-lang-trigger .lang-flag svg {
-        width: 16px;
-        height: 11px;
+        width: 20px;
+        height: 14px;
       }
       .hdr-lang-caret {
-        width: 14px;
-        height: 14px;
-        opacity: 0.85;
+        width: 18px;
+        height: 18px;
+        opacity: 0.95;
       }
       .hdr-lang-menu {
         display: none;
@@ -948,14 +966,15 @@
         align-items: center;
         gap: 8px;
         width: 100%;
+        min-height: 44px;
         background: transparent;
         border: none;
-        border-radius: 6px;
+        border-radius: 10px;
         color: #e2e8f0;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 700;
         letter-spacing: 0.04em;
-        padding: 8px 10px;
+        padding: 0 12px;
         cursor: pointer;
         text-align: left;
       }
@@ -1608,11 +1627,6 @@
           bottom: 24px;
         }
       }
-      @media (max-width: 1480px) {
-        .net-text {
-          display: none;
-        }
-      }
       @media (max-width: 860px) {
         .hdr-user-name {
           max-width: 120px;
@@ -2021,15 +2035,17 @@
       </div>
 
       <div class="header-right">
-        <div id="netStatus" class="net-cluster" title="Status: Online">
-          <div class="net-badge">
-            <span class="net-dot"></span>
-            <span class="net-text" id="netStatus-txt">Online</span>
-          </div>
-          <button class="btn-hdr btn-hdr-icon" type="button" onclick="triggerSync()" id="btn-sync" title="Sync">
-            <svg class="ico" id="sync-icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
-          </button>
-        </div>
+        <button
+          type="button"
+          id="netStatus"
+          class="net-cluster"
+          onclick="triggerSync()"
+          title="Sync"
+        >
+          <span class="net-dot" aria-hidden="true"></span>
+          <span class="net-text" id="netStatus-txt">Online</span>
+          <svg class="ico" id="sync-icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+        </button>
 
         <div class="hdr-lang-dd" id="hdr-lang-dropdown">
           <button
@@ -3026,20 +3042,19 @@
       function applyNetBadge() {
         const badge = document.getElementById("netStatus");
         const txt = document.getElementById("netStatus-txt");
-        const btnSync = document.getElementById("btn-sync");
-        if (!badge || !txt || !btnSync) return;
+        if (!badge || !txt) return;
 
         const online = navigator.onLine;
         if (!online) {
           badge.className = "net-cluster offline";
           txt.innerText = t("offline");
-          btnSync.setAttribute("disabled", "true");
-          btnSync.title = t("sync_offline");
+          badge.setAttribute("disabled", "true");
+          badge.title = t("sync_offline");
           return;
         }
 
-        btnSync.removeAttribute("disabled");
-        btnSync.title = t("sync_title");
+        badge.removeAttribute("disabled");
+        badge.title = t("sync_title");
         if (netBadgeMode === "syncing") {
           badge.className = "net-cluster syncing";
           txt.innerText = t("syncing");
@@ -3622,10 +3637,10 @@
             `Zeichnungen im Cache: ${cached === null ? "?" : cached}/${expected}`,
         );
         if (cached !== null && expected > 0 && cached < expected) {
-          document.getElementById("btn-sync").title = tf(
-            "sync_drawings_missing",
-            { n: expected - cached },
-          );
+          const syncBtn = document.getElementById("netStatus");
+          if (syncBtn) {
+            syncBtn.title = tf("sync_drawings_missing", { n: expected - cached });
+          }
         }
       }
 
