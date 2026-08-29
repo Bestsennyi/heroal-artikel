@@ -2802,13 +2802,23 @@
         return de != null ? String(de).trim() : "";
       }
 
+      function articleNr(item, fallback) {
+        return String((item && (item.art_nr || item.artnr)) || fallback || "").trim();
+      }
+
+      function articleCategory(item) {
+        return String((item && (item.category || item.kategorie_de)) || "").trim();
+      }
+
       function articleImageList(item) {
         if (!item) return [];
         const out = [];
-        ["img_url", "img_1", "img_2", "img_3", "img_4"].forEach((key) => {
-          const url = String(item[key] || "").trim();
-          if (url && out.indexOf(url) === -1) out.push(url);
-        });
+        ["image_url", "img_url", "img_1", "img_2", "img_3", "img_4"].forEach(
+          (key) => {
+            const url = String(item[key] || "").trim();
+            if (url && out.indexOf(url) === -1) out.push(url);
+          },
+        );
         return out;
       }
 
@@ -3022,41 +3032,23 @@
         },
         artikel: {
           1371: {
-            artnr: "1371",
+            id: "1",
+            art_nr: "1371",
             name_de: "Blende FMR HC oben",
-            masse_de: "137 mm",
-            kategorie_de: "Blenden",
-            hinweis_de: "",
-            masse_en: "",
-            kategorie_en: "",
-            hinweis_en: "",
-            masse_ru: "137 мм",
-            kategorie_ru: "",
-            hinweis_ru: "",
-            img_url:
+            category: "Blenden",
+            system: "FMR HC",
+            image_url:
               "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
-            img_1: "",
-            img_2: "",
-            img_3: "",
-            img_4: "",
+            drive_folder_id: "",
           },
           5044: {
-            artnr: "5044",
+            id: "2",
+            art_nr: "5044",
             name_de: "F-HTF-IS DRP (Insektenschutz)",
-            masse_de: "22 x 93 mm (Rollladen + ISG)",
-            kategorie_de: "Führungen",
-            hinweis_de: "Achtung: Bürste 3108 montieren",
-            masse_en: "",
-            kategorie_en: "",
-            hinweis_en: "",
-            masse_ru: "",
-            kategorie_ru: "",
-            hinweis_ru: "Внимание: установить щётку 3108",
-            img_url: "",
-            img_1: "",
-            img_2: "",
-            img_3: "",
-            img_4: "",
+            category: "Führungen",
+            system: "Rollladen + ISG",
+            image_url: "",
+            drive_folder_id: "",
           },
         },
         farben: {
@@ -3448,55 +3440,41 @@
 
       function migrateArticle(key, it) {
         if (!it || typeof it !== "object") return null;
-        if (it.artnr || it.name_de || it.img_url) {
-          return {
-            artnr: it.artnr || String(key),
-            name_de: it.name_de || it.de || "",
-            masse_de: it.masse_de || it.size || "",
-            kategorie_de: it.kategorie_de || it.kat || "",
-            hinweis_de: it.hinweis_de || it.note || "",
-            masse_en: it.masse_en || "",
-            kategorie_en: it.kategorie_en || "",
-            hinweis_en: it.hinweis_en || "",
-            masse_ru: it.masse_ru || "",
-            kategorie_ru: it.kategorie_ru || "",
-            hinweis_ru: it.hinweis_ru || "",
-            img_url: it.img_url || it.img || "",
-            img_1: it.img_1 || (it.extra && it.extra[0]) || "",
-            img_2: it.img_2 || (it.extra && it.extra[1]) || "",
-            img_3: it.img_3 || (it.extra && it.extra[2]) || "",
-            img_4: it.img_4 || (it.extra && it.extra[3]) || "",
-          };
-        }
         const extra = Array.isArray(it.extra) ? it.extra : [];
+        const artNr = articleNr(it, key);
+        if (!artNr && !it.name_de && !it.de) return null;
+        const image =
+          it.image_url ||
+          it.img_url ||
+          it.img ||
+          extra[0] ||
+          "";
         return {
-          artnr: String(key),
-          name_de: it.de || "",
-          masse_de: it.size || "",
-          kategorie_de: it.kat || "",
-          hinweis_de: it.note || "",
-          masse_en: "",
-          kategorie_en: "",
-          hinweis_en: "",
-          masse_ru: "",
-          kategorie_ru: "",
-          hinweis_ru: "",
-          img_url: it.img || "",
-          img_1: extra[0] || "",
-          img_2: extra[1] || "",
-          img_3: extra[2] || "",
-          img_4: extra[3] || "",
+          id: String(it.id || ""),
+          art_nr: artNr || String(key),
+          name_de: it.name_de || it.de || "",
+          category: it.category || it.kategorie_de || it.kat || "",
+          system: it.system || it.masse_de || it.size || "",
+          image_url: image,
+          drive_folder_id: String(it.drive_folder_id || ""),
         };
       }
 
       function migrateUser(key, it) {
         if (!it || typeof it !== "object") return null;
+        const role =
+          it.benutzer_de ||
+          it.rolle ||
+          it.role ||
+          it.benutzer ||
+          it.dept ||
+          "";
         return {
-          nummer: String(it.nummer || it.nr || ""),
+          nummer: String(it.nummer || it.nr || it.id || ""),
           pin: String(it.pin || key || ""),
-          vorname_de: it.vorname_de || it.first || "",
-          nachname_de: it.nachname_de || it.last || "",
-          benutzer_de: it.benutzer_de || it.dept || "",
+          vorname_de: it.vorname_de || it.vorname || it.first || "",
+          nachname_de: it.nachname_de || it.nachname || it.last || "",
+          benutzer_de: role,
           status_de: it.status_de || it.status || "Aktiv",
         };
       }
@@ -3547,9 +3525,24 @@
         const artikelSrc = raw.artikel || raw.base || {};
         Object.keys(artikelSrc).forEach((key) => {
           const row = migrateArticle(key, artikelSrc[key]);
-          if (row && row.artnr) out.artikel[row.artnr] = row;
+          if (row && row.art_nr) out.artikel[row.art_nr] = row;
         });
-        const userSrc = raw.benutzer || raw.users || {};
+        // Sync writes the fresh table to `users`. A leftover `benutzer` copy
+        // from the previous IndexedDB snapshot must not win, or names/roles
+        // from Google Sheets never replace the seed users.
+        const freshUsers =
+          raw.users &&
+          typeof raw.users === "object" &&
+          Object.keys(raw.users).length
+            ? raw.users
+            : null;
+        const staleBenutzer =
+          raw.benutzer &&
+          typeof raw.benutzer === "object" &&
+          Object.keys(raw.benutzer).length
+            ? raw.benutzer
+            : null;
+        const userSrc = freshUsers || staleBenutzer || {};
         Object.keys(userSrc).forEach((key) => {
           const row = migrateUser(key, userSrc[key]);
           if (!row) return;
@@ -4012,28 +4005,12 @@
       const RESULT_LIMIT = 80;
 
       function articleMatches(key, item, query) {
-        const catDe = (item.kategorie_de || "").toLowerCase();
+        const cat = articleCategory(item).toLowerCase();
         const catOk =
-          !selectedCategory || catDe === selectedCategory.toLowerCase();
+          !selectedCategory || cat === selectedCategory.toLowerCase();
         if (!catOk) return false;
         if (!query) return !!selectedCategory;
-        const hay = [
-          key,
-          item.artnr,
-          item.name_de,
-          locField(item, "masse", appLang),
-          locField(item, "kategorie", appLang),
-          locField(item, "hinweis", appLang),
-          item.masse_de,
-          item.kategorie_de,
-          item.hinweis_de,
-          item.masse_en,
-          item.kategorie_en,
-          item.hinweis_en,
-          item.masse_ru,
-          item.kategorie_ru,
-          item.hinweis_ru,
-        ]
+        const hay = [key, articleNr(item, key), item.name_de]
           .join(" ")
           .toLowerCase();
         return hay.includes(query);
@@ -4236,30 +4213,31 @@
       function renderProfileCard(artnr) {
         const it = (appDB.artikel || {})[artnr];
         if (!it) return;
+        const nr = articleNr(it, artnr);
         document.getElementById("prof-title-de").innerText =
-          `${artnr} — ${it.name_de || ""}`;
+          `${nr} — ${it.name_de || ""}`;
         const subEl = document.getElementById("prof-title-sub");
         if (subEl) {
           subEl.innerText = "";
           subEl.style.display = "none";
         }
-        const masse = locField(it, "masse", appLang);
-        document.getElementById("prof-size").innerText = masse
-          ? masse
-          : "Standard";
-        document.getElementById("prof-kat").innerText =
-          locField(it, "kategorie", appLang) || "heroal";
+        const sizeEl = document.getElementById("prof-size");
+        const system = String(it.system || "").trim();
+        if (system) {
+          sizeEl.innerText = system;
+          sizeEl.style.display = "";
+        } else {
+          sizeEl.innerText = "";
+          sizeEl.style.display = "none";
+        }
+        const katEl = document.getElementById("prof-kat");
+        const category = articleCategory(it);
+        katEl.innerText = category || "heroal";
 
-        renderProfileGallery(it, artnr);
+        renderProfileGallery(it, nr);
 
         const noteEl = document.getElementById("prof-note");
-        const hinweis = locField(it, "hinweis", appLang);
-        if (hinweis) {
-          noteEl.innerText = hinweis;
-          noteEl.style.display = "block";
-        } else {
-          noteEl.style.display = "none";
-        }
+        if (noteEl) noteEl.style.display = "none";
       }
 
       function renderProfileGallery(it, artnr) {
@@ -4308,9 +4286,9 @@
         });
         const seen = new Map();
         Object.values(appDB.artikel || {}).forEach((item) => {
-          const de = String(item.kategorie_de || "").trim();
-          if (!de || seen.has(de)) return;
-          seen.set(de, locField(item, "kategorie", appLang) || de);
+          const cat = articleCategory(item);
+          if (!cat || seen.has(cat)) return;
+          seen.set(cat, cat);
         });
         [...seen.entries()]
           .sort((a, b) => a[1].localeCompare(b[1], appLang || "de"))
@@ -4507,29 +4485,28 @@
         return { map: csvHeaderMap(rows[0]), rows: rows.slice(1) };
       }
 
+      function csvCellAny(row, map, names) {
+        for (let i = 0; i < names.length; i++) {
+          const v = csvCell(row, map, names[i]);
+          if (v) return v;
+        }
+        return "";
+      }
+
       function parseArtikelCsv(text) {
         const { map, rows } = parseCsvTable(text);
         const out = {};
         rows.forEach((row) => {
-          const artnr = csvCell(row, map, "artnr");
-          if (!artnr) return;
-          out[artnr] = {
-            artnr,
+          const artNr = csvCellAny(row, map, ["art_nr", "artnr"]);
+          if (!artNr) return;
+          out[artNr] = {
+            id: csvCell(row, map, "id"),
+            art_nr: artNr,
             name_de: csvCell(row, map, "name_de"),
-            masse_de: csvCell(row, map, "masse_de"),
-            kategorie_de: csvCell(row, map, "kategorie_de"),
-            hinweis_de: csvCell(row, map, "hinweis_de"),
-            masse_en: csvCell(row, map, "masse_en"),
-            kategorie_en: csvCell(row, map, "kategorie_en"),
-            hinweis_en: csvCell(row, map, "hinweis_en"),
-            masse_ru: csvCell(row, map, "masse_ru"),
-            kategorie_ru: csvCell(row, map, "kategorie_ru"),
-            hinweis_ru: csvCell(row, map, "hinweis_ru"),
-            img_url: csvCell(row, map, "img_url"),
-            img_1: csvCell(row, map, "img_1"),
-            img_2: csvCell(row, map, "img_2"),
-            img_3: csvCell(row, map, "img_3"),
-            img_4: csvCell(row, map, "img_4"),
+            category: csvCellAny(row, map, ["category", "kategorie_de"]),
+            system: csvCellAny(row, map, ["system", "masse_de"]),
+            image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+            drive_folder_id: csvCell(row, map, "drive_folder_id"),
           };
         });
         return out;
@@ -4589,17 +4566,31 @@
         const { map, rows } = parseCsvTable(text);
         const out = {};
         rows.forEach((row) => {
-          const pin = csvCell(row, map, "pin");
-          const nummer = csvCell(row, map, "nummer");
+          const pin = csvCellAny(row, map, ["pin"]);
+          const nummer = csvCellAny(row, map, ["nummer", "nr", "id"]);
           const key = pin || nummer;
           if (!key) return;
           out[key] = {
-            nummer,
+            nummer: nummer || key,
             pin: pin || key,
-            vorname_de: csvCell(row, map, "vorname_de"),
-            nachname_de: csvCell(row, map, "nachname_de"),
-            benutzer_de: csvCell(row, map, "benutzer_de"),
-            status_de: csvCell(row, map, "status_de") || "Aktiv",
+            vorname_de: csvCellAny(row, map, [
+              "vorname_de",
+              "vorname",
+              "first",
+            ]),
+            nachname_de: csvCellAny(row, map, [
+              "nachname_de",
+              "nachname",
+              "last",
+            ]),
+            benutzer_de: csvCellAny(row, map, [
+              "benutzer_de",
+              "rolle",
+              "role",
+              "benutzer",
+            ]),
+            status_de:
+              csvCellAny(row, map, ["status_de", "status"]) || "Aktiv",
           };
         });
         return out;
@@ -4785,7 +4776,10 @@
                 const parsed = parseBenutzerCsv(
                   await fetchCsvText(appUrls.users, syncCtl.silent),
                 );
-                if (Object.keys(parsed).length) staged.users = parsed;
+                if (Object.keys(parsed).length) {
+                  staged.users = parsed;
+                  staged.benutzer = parsed;
+                }
               }
 
               if (appUrls.translations) {
