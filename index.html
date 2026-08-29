@@ -746,7 +746,7 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
-        gap: 0;
+        gap: 1px;
         box-sizing: border-box;
         height: 44px;
         min-height: 44px;
@@ -771,7 +771,6 @@
         font-size: 12px;
         font-weight: 500;
         letter-spacing: 0;
-        text-transform: none;
         padding: 0;
         border-radius: 0;
         background: none;
@@ -781,12 +780,13 @@
         line-height: 1.15;
       }
       .hdr-user-role.is-admin {
-        background: none;
-        border: none;
-        color: #93c5fd;
+        color: #f88f8f;
+      }
+      .hdr-user-role.is-staff {
+        color: #7ecfeb;
       }
       .hdr-user-role.is-customer {
-        color: #c4b5fd;
+        color: #e771b5;
       }
       .hdr-user-role:empty {
         display: none;
@@ -1064,8 +1064,7 @@
       .zone-scroll {
         flex: 1;
         min-height: 0;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden;
         padding: 0 12px 12px;
         display: flex;
         flex-direction: column;
@@ -1082,6 +1081,11 @@
         display: flex;
         flex-direction: column;
         gap: 6px;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .result-row {
         display: flex;
@@ -1126,7 +1130,7 @@
 
       .zone-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         flex-shrink: 0;
       }
@@ -1137,16 +1141,15 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
-      .zone-badge {
-        font-size: 10px;
-        background: var(--card-inner);
-        color: var(--text-sub);
-        padding: 2px 6px;
-        border-radius: 4px;
-        border: 1px solid var(--border-color);
-        font-weight: 600;
-      }
 
+      .search-stack {
+        width: 100%;
+        max-width: 420px;
+        flex-shrink: 0;
+      }
+      .search-stack .input-box {
+        --search-icon-slot: 88px;
+      }
       .input-box {
         position: relative;
         width: 100%;
@@ -1154,62 +1157,158 @@
       }
       .search-field {
         width: 100%;
-        height: 38px;
-        background: #080d14;
-        border: 1.5px solid var(--border-color);
-        border-radius: 8px;
-        color: #fff;
-        padding: 0 36px 0 10px;
-        font-size: 15px;
+        min-height: 48px;
+        height: 48px;
+        padding: 0 14px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: 16px;
         font-weight: 600;
         outline: none;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
-      .search-field:focus {
-        border-color: var(--heroal-light-blue);
+      .search-stack .search-field {
+        padding: 0 var(--search-icon-slot) 0 14px;
+      }
+      .search-field::-ms-clear,
+      .search-field::-webkit-search-cancel-button {
+        display: none;
       }
       .search-field::placeholder {
-        color: #475569;
-        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 500;
+        font-size: 14px;
+        opacity: 1;
       }
-      .btn-clear {
+      .search-field:hover {
+        border-color: #64748b;
+      }
+      .search-field:focus,
+      .search-field:active {
+        border-color: var(--heroal-accent);
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+      }
+      .search-field-actions {
         position: absolute;
-        right: 8px;
+        right: 6px;
         top: 50%;
         transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #64748b;
-        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .search-icon-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e2e8f0;
         cursor: pointer;
+        transition: all 0.15s ease-in-out;
+      }
+      .search-icon-btn .ico {
+        width: 18px;
+        height: 18px;
+      }
+      .search-icon-btn:hover {
+        filter: brightness(1.12);
+      }
+      .search-icon-btn:active {
+        transform: scale(0.95);
+        filter: brightness(0.96);
+      }
+      .search-icon-btn.is-on {
+        border-color: var(--heroal-accent);
+        color: #fff;
+        background: #1e3a5f;
+      }
+      .btn-clear {
         display: none;
+      }
+      .btn-clear.is-on {
+        display: flex;
       }
 
-      .category-scroll {
-        display: flex;
-        gap: 5px;
-        overflow-x: auto;
-        padding-bottom: 2px;
-        flex-shrink: 0;
-        scrollbar-width: none;
+      .osk {
+        margin-top: 8px;
+        width: 100%;
+        user-select: none;
       }
-      .category-scroll::-webkit-scrollbar {
+      .osk.is-hidden {
         display: none;
       }
-      .cat-pill {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 16px;
-        background: var(--card-inner);
-        color: var(--text-sub);
-        border: 1px solid var(--border-color);
-        white-space: nowrap;
-        cursor: pointer;
+      .osk-num {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(56px, 1fr));
+        gap: 6px;
       }
-      .cat-pill.active {
-        background: var(--heroal-blue);
-        color: #fff;
-        border-color: var(--heroal-light-blue);
+      .osk-num .osk-key {
+        min-height: 56px;
+        height: 56px;
+      }
+      .osk-alpha {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .osk-alpha.is-hidden,
+      .osk-num.is-hidden {
+        display: none;
+      }
+      .osk-row {
+        display: flex;
+        gap: 4px;
+      }
+      .osk-key {
+        min-width: 56px;
+        min-height: 48px;
+        height: 48px;
+        border-radius: 10px;
+        border: 1.5px solid #334155;
+        background: #1e293b;
+        color: #f8fafc;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+      }
+      .osk-key:hover {
+        background: #243248;
+        border-color: #60a5fa;
+      }
+      .osk-key:active,
+      .osk-key.is-pressed {
+        background: #1e293b;
+        border: 2px solid var(--heroal-accent);
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
+        transform: scale(0.95);
+      }
+      .osk-key-enter {
+        grid-column: span 2;
+      }
+      .osk-row .osk-key {
+        flex: 1;
+        min-width: 0;
+      }
+      .osk-key-space {
+        flex: 3.2;
+      }
+      .osk-key-fn {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #cbd5e1;
       }
 
       /* Profile Result Card */
@@ -1583,11 +1682,11 @@
           border-right: 1px solid var(--split-line);
         }
         .search-field {
-          height: 38px;
-          font-size: 14px;
+          height: 48px;
+          font-size: 16px;
         }
         .search-field::placeholder {
-          font-size: 12px;
+          font-size: 14px;
         }
         .display-card-prof,
         .display-card-color {
@@ -1970,6 +2069,20 @@
         <line x1="18" y1="6" x2="6" y2="18"/>
         <line x1="6" y1="6" x2="18" y2="18"/>
       </symbol>
+      <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="20" height="16" x="2" y="4" rx="2"/>
+        <g fill="currentColor" stroke="none">
+          <rect x="5" y="7" width="2" height="2" rx="0.4"/>
+          <rect x="8.5" y="7" width="2" height="2" rx="0.4"/>
+          <rect x="12" y="7" width="2" height="2" rx="0.4"/>
+          <rect x="15.5" y="7" width="2" height="2" rx="0.4"/>
+          <rect x="5" y="10.5" width="2" height="2" rx="0.4"/>
+          <rect x="8.5" y="10.5" width="2" height="2" rx="0.4"/>
+          <rect x="12" y="10.5" width="2" height="2" rx="0.4"/>
+          <rect x="15.5" y="10.5" width="2" height="2" rx="0.4"/>
+          <rect x="7" y="14.5" width="10" height="2" rx="0.5"/>
+        </g>
+      </symbol>
       <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9"/>
       </symbol>
@@ -2244,38 +2357,45 @@
             <div class="zone-toolbar">
               <div class="zone-header">
                 <span class="zone-label" id="lbl-prof-head">Artikel</span>
-                <span class="zone-badge" id="lbl-prof-badge">Art.-Nr. [/]</span>
               </div>
 
-              <div class="input-box">
-                <input
-                  type="text"
-                  id="find-prof"
-                  class="search-field"
-                  placeholder="z. B. 1371, 5044, 2042... [/]"
-                  data-i18n-placeholder="ph_artikel"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="off"
-                />
-                <button
-                  class="btn-clear"
-                  id="clr-prof"
-                  onclick="clearInput('find-prof')"
-                >
-                  <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                </button>
-              </div>
-
-              <div class="category-scroll" id="cat-pill-container">
-                <div
-                  class="cat-pill active"
-                  onclick="filterByCat('')"
-                  id="cat-all"
-                  data-cat=""
-                >
-                  Alle
+              <div class="search-stack">
+                <div class="input-box">
+                  <input
+                    type="text"
+                    id="find-prof"
+                    class="search-field"
+                    placeholder="z. B. 1371, 5044, 2042..."
+                    data-i18n-placeholder="ph_artikel"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    inputmode="numeric"
+                    enterkeyhint="search"
+                  />
+                  <div class="search-field-actions">
+                    <button
+                      type="button"
+                      class="search-icon-btn btn-clear"
+                      id="clr-prof"
+                      aria-label="Clear"
+                    >
+                      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="search-icon-btn osk-toggle"
+                      id="btn-osk-prof"
+                      data-osk="osk-prof"
+                      aria-label="Numpad"
+                      aria-pressed="false"
+                    >
+                      <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                    </button>
+                  </div>
                 </div>
+                <div class="osk is-hidden" id="osk-prof" data-target="find-prof"></div>
               </div>
             </div>
 
@@ -2334,31 +2454,43 @@
             <div class="zone-toolbar">
               <div class="zone-header">
                 <span class="zone-label" id="lbl-color-head">Farben</span>
-                <span class="zone-badge" id="lbl-color-badge">RAL / SD [Alt+C]</span>
               </div>
 
-              <div class="input-box">
-                <input
-                  type="text"
-                  id="find-color"
-                  class="search-field"
-                  placeholder="z. B. 7016, 9016, 0108... [Alt+C]"
-                  data-i18n-placeholder="ph_farben"
-                  autocomplete="off"
-                />
-                <button
-                  class="btn-clear"
-                  id="clr-col"
-                  onclick="clearInput('find-color')"
-                >
-                  <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                </button>
-              </div>
-
-              <div class="category-scroll" id="color-pill-container">
-                <button type="button" class="cat-pill active" data-cfam="" id="cfam-all">Alle</button>
-                <button type="button" class="cat-pill" data-cfam="ral" id="cfam-ral">RAL</button>
-                <button type="button" class="cat-pill" data-cfam="sd" id="cfam-sd">SD</button>
+              <div class="search-stack">
+                <div class="input-box">
+                  <input
+                    type="text"
+                    id="find-color"
+                    class="search-field"
+                    placeholder="z. B. 7016, 9016, 0108..."
+                    data-i18n-placeholder="ph_farben"
+                    autocomplete="off"
+                    spellcheck="false"
+                    inputmode="numeric"
+                    enterkeyhint="search"
+                  />
+                  <div class="search-field-actions">
+                    <button
+                      type="button"
+                      class="search-icon-btn btn-clear"
+                      id="clr-col"
+                      aria-label="Clear"
+                    >
+                      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="search-icon-btn osk-toggle"
+                      id="btn-osk-color"
+                      data-osk="osk-color"
+                      aria-label="Numpad"
+                      aria-pressed="false"
+                    >
+                      <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="osk is-hidden" id="osk-color" data-target="find-color"></div>
               </div>
             </div>
 
@@ -2625,8 +2757,8 @@
           role_customer: "Kunde",
           list_hint_artikel: "Artikelnummer oder Name suchen",
           list_hint_farben: "RAL- oder SD-Code suchen",
-          ph_artikel: "z. B. 1371, 5044, 2042... [/]",
-          ph_farben: "z. B. 7016, 9016, 0108... [Alt+C]",
+          ph_artikel: "z. B. 1371, 5044, 2042...",
+          ph_farben: "z. B. 7016, 9016, 0108...",
           ph_defect: "Fehler suchen...",
           ph_guide: "Thema suchen...",
           copy_btn: "Copy",
@@ -2707,8 +2839,8 @@
           role_customer: "Customer",
           list_hint_artikel: "Search article number or name",
           list_hint_farben: "Search RAL or SD code",
-          ph_artikel: "e.g. 1371, 5044, 2042... [/]",
-          ph_farben: "e.g. 7016, 9016, 0108... [Alt+C]",
+          ph_artikel: "e.g. 1371, 5044, 2042...",
+          ph_farben: "e.g. 7016, 9016, 0108...",
           ph_defect: "Search defect...",
           ph_guide: "Search topic...",
           copy_btn: "Copy",
@@ -2789,8 +2921,8 @@
           role_customer: "Клиент",
           list_hint_artikel: "Искать артикул или название",
           list_hint_farben: "Искать код RAL или SD",
-          ph_artikel: "напр. 1371, 5044, 2042... [/]",
-          ph_farben: "напр. 7016, 9016, 0108... [Alt+C]",
+          ph_artikel: "напр. 1371, 5044, 2042...",
+          ph_farben: "напр. 7016, 9016, 0108...",
           ph_defect: "Искать дефект...",
           ph_guide: "Искать тему...",
           copy_btn: "Копировать",
@@ -2962,19 +3094,10 @@
           if (el) el.innerText = value;
         };
         setTxt("lbl-prof-head", t("lbl_profiles"));
-        setTxt("lbl-prof-badge", t("lbl_artnr"));
         setTxt("lbl-color-head", t("lbl_colors"));
-        setTxt("lbl-color-badge", t("lbl_color_badge"));
         setTxt("nav-lbl-suche", t("nav_search"));
         setTxt("nav-lbl-ausschuss", t("nav_scrap"));
         setTxt("nav-lbl-auskunft", t("nav_info"));
-        const cfamAll = document.getElementById("cfam-all");
-        const cfamRal = document.getElementById("cfam-ral");
-        const cfamSd = document.getElementById("cfam-sd");
-        if (cfamAll) cfamAll.textContent = t("cat_all");
-        if (cfamRal) cfamRal.textContent = t("cat_ral");
-        if (cfamSd) cfamSd.textContent = t("cat_sd");
-        rebuildCategoryPills();
         updateOnlineStatus();
         renderHeaderUser();
         const logoutBtn = document.getElementById("btn-logout");
@@ -3427,8 +3550,6 @@
       DEFAULT_DATA.benutzer = DEFAULT_DATA.users;
       let currentUser = readStoredUser();
       let loginInFlight = false;
-      let selectedCategory = "";
-      let selectedColorFamily = "";
       let lastActiveArticle = "";
       let lastActiveColorCode = "";
 
@@ -3665,7 +3786,7 @@
         }
         const numpadToggle = document.getElementById("btn-numpad-toggle");
         if (numpadToggle) numpadToggle.addEventListener("click", toggleNumpad);
-        document.querySelectorAll(".numpad-key").forEach((btn) => {
+        document.querySelectorAll("#login-numpad .numpad-key").forEach((btn) => {
           const pressOn = () => btn.classList.add("is-pressed");
           const pressOff = () => btn.classList.remove("is-pressed");
           btn.addEventListener("pointerdown", pressOn);
@@ -3930,6 +4051,7 @@
             closeSettings();
             closePhotoCapture();
             closeHdrLangDropdown();
+            hideAllSearchOsk();
             clearInput("find-prof");
             clearInput("find-color");
             return;
@@ -4062,9 +4184,23 @@
         return role === "administrator" || role === "admin";
       }
 
+      function isStaff(user) {
+        const role = normalizeRoleKey(user && user.benutzer_de);
+        return role === "mitarbeiter" || role === "staff";
+      }
+
       function isCustomer(user) {
         const role = normalizeRoleKey(user && user.benutzer_de);
         return role === "kunde" || role === "customer" || role === "client";
+      }
+
+      function applyRoleBadgeClass(el, user) {
+        if (!el) return;
+        el.classList.remove("is-admin", "is-staff", "is-customer");
+        if (!user) return;
+        if (isAdministrator(user)) el.classList.add("is-admin");
+        else if (isCustomer(user)) el.classList.add("is-customer");
+        else if (isStaff(user)) el.classList.add("is-staff");
       }
 
       function roleLabel(user) {
@@ -4132,7 +4268,7 @@
         if (!currentUser) {
           nameEl.textContent = "";
           roleEl.textContent = "";
-          roleEl.classList.remove("is-admin", "is-customer");
+          applyRoleBadgeClass(roleEl, null);
           if (wrap) wrap.hidden = true;
           if (photoBtn) photoBtn.hidden = true;
           return;
@@ -4141,8 +4277,7 @@
         nameEl.textContent = userDisplayName(currentUser);
         const admin = isAdministrator(currentUser);
         roleEl.textContent = roleLabel(currentUser);
-        roleEl.classList.toggle("is-admin", admin);
-        roleEl.classList.toggle("is-customer", isCustomer(currentUser));
+        applyRoleBadgeClass(roleEl, currentUser);
         if (photoBtn) photoBtn.hidden = !admin;
       }
 
@@ -4269,6 +4404,7 @@
 
       function navigate(viewId, btn) {
         closePhotoCapture();
+        hideAllSearchOsk();
         document
           .querySelectorAll(".tab-view")
           .forEach((v) => v.classList.remove("active"));
@@ -4364,11 +4500,6 @@
             setLanguage(btn.dataset.lang);
           });
         });
-        document.querySelectorAll("#color-pill-container .cat-pill").forEach((pill) => {
-          pill.addEventListener("click", () =>
-            filterByColorFamily(pill.getAttribute("data-cfam") || ""),
-          );
-        });
         const photoInput = document.getElementById("photo-input");
         if (photoInput) {
           photoInput.addEventListener("change", (e) => {
@@ -4424,42 +4555,223 @@
         document
           .getElementById("find-color")
           .addEventListener("input", refreshColorResults);
+        document.getElementById("clr-prof").addEventListener("click", () => {
+          clearInput("find-prof");
+        });
+        document.getElementById("clr-col").addEventListener("click", () => {
+          clearInput("find-color");
+        });
+        mountSearchKeypads();
       }
 
       const RESULT_LIMIT = 80;
 
+      function oskKeyHtml(item) {
+        if (typeof item === "string") {
+          return (
+            '<button type="button" class="osk-key" data-osk-char="' +
+            item +
+            '" tabindex="-1">' +
+            item.toUpperCase() +
+            "</button>"
+          );
+        }
+        const cls = "osk-key" + (item.cls ? " " + item.cls : "");
+        return (
+          '<button type="button" class="' +
+          cls +
+          '" data-osk-act="' +
+          item.act +
+          '" tabindex="-1">' +
+          item.label +
+          "</button>"
+        );
+      }
+
+      function oskRowHtml(items) {
+        return '<div class="osk-row">' + items.map(oskKeyHtml).join("") + "</div>";
+      }
+
+      function searchOskInnerHtml() {
+        const numKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+          .map(oskKeyHtml)
+          .join("");
+        const numBottom =
+          oskKeyHtml({ act: "clear", label: "C", cls: "osk-key-fn" }) +
+          oskKeyHtml("0") +
+          oskKeyHtml({ act: "back", label: "⌫", cls: "osk-key-fn" }) +
+          oskKeyHtml({ act: "abc", label: "ABC", cls: "osk-key-fn" }) +
+          oskKeyHtml({ act: "enter", label: "↵", cls: "osk-key-enter osk-key-fn" });
+        const alpha =
+          oskRowHtml("qwertyuiop".split("")) +
+          oskRowHtml("asdfghjkl".split("")) +
+          oskRowHtml([
+            "z",
+            "x",
+            "c",
+            "v",
+            "b",
+            "n",
+            "m",
+            { act: "back", label: "⌫", cls: "osk-key-fn" },
+          ]) +
+          oskRowHtml([
+            { act: "num", label: "123", cls: "osk-key-fn" },
+            { act: "space", label: "␣", cls: "osk-key-space osk-key-fn" },
+            { act: "enter", label: "↵", cls: "osk-key-fn" },
+          ]);
+        return (
+          '<div class="osk-num">' +
+          numKeys +
+          numBottom +
+          "</div>" +
+          '<div class="osk-alpha is-hidden">' +
+          alpha +
+          "</div>"
+        );
+      }
+
+      function mountSearchKeypads() {
+        document.querySelectorAll(".osk[data-target]").forEach((pad) => {
+          pad.innerHTML = searchOskInnerHtml();
+          pad.addEventListener("mousedown", (e) => {
+            if (e.target.closest(".osk-key")) e.preventDefault();
+          });
+          pad.querySelectorAll(".osk-key").forEach((btn) => {
+            const pressOn = () => btn.classList.add("is-pressed");
+            const pressOff = () => btn.classList.remove("is-pressed");
+            btn.addEventListener("pointerdown", pressOn);
+            btn.addEventListener("pointerup", pressOff);
+            btn.addEventListener("pointercancel", pressOff);
+            btn.addEventListener("pointerleave", pressOff);
+            btn.addEventListener("click", () => handleOskKey(pad, btn));
+          });
+        });
+        document.querySelectorAll(".osk-toggle").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-osk");
+            toggleSearchOsk(id);
+          });
+        });
+      }
+
+      function setSearchOskVisible(oskId, visible) {
+        const pad = document.getElementById(oskId);
+        const btn = document.querySelector('.osk-toggle[data-osk="' + oskId + '"]');
+        if (!pad) return;
+        pad.classList.toggle("is-hidden", !visible);
+        if (btn) {
+          btn.classList.toggle("is-on", visible);
+          btn.setAttribute("aria-pressed", visible ? "true" : "false");
+        }
+        const input = document.getElementById(pad.getAttribute("data-target"));
+        if (input) {
+          input.setAttribute("inputmode", visible ? "none" : "numeric");
+          if (visible) input.focus();
+        }
+        if (visible) setOskLayout(pad, "num");
+      }
+
+      function hideAllSearchOsk() {
+        document.querySelectorAll(".osk[data-target]").forEach((pad) => {
+          setSearchOskVisible(pad.id, false);
+        });
+      }
+
+      function toggleSearchOsk(oskId) {
+        const pad = document.getElementById(oskId);
+        if (!pad) return;
+        const opening = pad.classList.contains("is-hidden");
+        document.querySelectorAll(".osk[data-target]").forEach((other) => {
+          if (other.id !== oskId) setSearchOskVisible(other.id, false);
+        });
+        setSearchOskVisible(oskId, opening);
+      }
+
+      function setOskLayout(pad, layout) {
+        const num = pad.querySelector(".osk-num");
+        const alpha = pad.querySelector(".osk-alpha");
+        if (num) num.classList.toggle("is-hidden", layout !== "num");
+        if (alpha) alpha.classList.toggle("is-hidden", layout !== "alpha");
+      }
+
+      function handleOskKey(pad, btn) {
+        const input = document.getElementById(pad.getAttribute("data-target"));
+        if (!input) return;
+        const act = btn.getAttribute("data-osk-act");
+        const ch = btn.getAttribute("data-osk-char");
+        if (act === "abc") {
+          setOskLayout(pad, "alpha");
+          input.focus();
+          return;
+        }
+        if (act === "num") {
+          setOskLayout(pad, "num");
+          input.focus();
+          return;
+        }
+        if (act === "enter") {
+          setSearchOskVisible(pad.id, false);
+          input.focus();
+          return;
+        }
+        if (act === "clear") {
+          input.value = "";
+          input.dispatchEvent(new Event("input"));
+          input.focus();
+          return;
+        }
+        if (act === "back") {
+          oskDelete(input);
+          return;
+        }
+        if (act === "space") {
+          oskInsert(input, " ");
+          return;
+        }
+        if (ch) oskInsert(input, ch);
+      }
+
+      function oskInsert(input, text) {
+        const start = input.selectionStart == null ? input.value.length : input.selectionStart;
+        const end = input.selectionEnd == null ? start : input.selectionEnd;
+        input.value = input.value.slice(0, start) + text + input.value.slice(end);
+        const pos = start + text.length;
+        try {
+          input.setSelectionRange(pos, pos);
+        } catch (e) {}
+        input.dispatchEvent(new Event("input"));
+        input.focus();
+      }
+
+      function oskDelete(input) {
+        const start = input.selectionStart == null ? input.value.length : input.selectionStart;
+        const end = input.selectionEnd == null ? start : input.selectionEnd;
+        if (start !== end) {
+          input.value = input.value.slice(0, start) + input.value.slice(end);
+          try {
+            input.setSelectionRange(start, start);
+          } catch (e) {}
+        } else if (start > 0) {
+          input.value = input.value.slice(0, start - 1) + input.value.slice(start);
+          try {
+            input.setSelectionRange(start - 1, start - 1);
+          } catch (e) {}
+        }
+        input.dispatchEvent(new Event("input"));
+        input.focus();
+      }
+
       function articleMatches(key, item, query) {
-        const cat = articleCategory(item).toLowerCase();
-        const catOk =
-          !selectedCategory || cat === selectedCategory.toLowerCase();
-        if (!catOk) return false;
-        if (!query) return !!selectedCategory;
+        if (!query) return false;
         const hay = [key, articleNr(item, key), item.name_de]
           .join(" ")
           .toLowerCase();
         return hay.includes(query);
       }
 
-      function colorFamilyOf(col) {
-        const hay = [
-          col && col.code,
-          locField(col, "oberflaeche", "de"),
-          locField(col, "name", "de"),
-          col && col.oberflaeche_de,
-        ]
-          .join(" ")
-          .toLowerCase();
-        if (/\bsd\b|sonderlack|sonderfarbe/.test(hay) || /^sd/i.test(String((col && col.code) || ""))) {
-          return "sd";
-        }
-        return "ral";
-      }
-
       function colorMatches(key, col, query) {
-        if (selectedColorFamily && colorFamilyOf(col) !== selectedColorFamily) {
-          return false;
-        }
-        if (!query) return !!selectedColorFamily;
+        if (!query) return false;
         const hay = [
           key,
           col.code,
@@ -4481,7 +4793,7 @@
         const listEl = document.getElementById("prof-list");
         const emptyEl = document.getElementById("prof-empty");
         const query = (pIn.value || "").trim().toLowerCase();
-        pClr.style.display = query ? "flex" : "none";
+        if (pClr) pClr.classList.toggle("is-on", !!query);
 
         const catalog = appDB.artikel || {};
         const keys = Object.keys(catalog).filter((key) =>
@@ -4499,7 +4811,7 @@
           row.addEventListener("click", () => selectArticle(row.dataset.art));
         });
 
-        const hasQuery = !!(query || selectedCategory);
+        const hasQuery = !!query;
         emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
         if (!shown.length) {
           pCard.style.display = "none";
@@ -4527,7 +4839,7 @@
         const listEl = document.getElementById("col-list");
         const emptyEl = document.getElementById("col-empty");
         const query = (cIn.value || "").trim().toLowerCase();
-        cClr.style.display = query ? "flex" : "none";
+        if (cClr) cClr.classList.toggle("is-on", !!query);
 
         const catalog = appDB.farben || {};
         const keys = Object.keys(catalog).filter((k) =>
@@ -4547,7 +4859,7 @@
           row.addEventListener("click", () => selectColor(row.dataset.col));
         });
 
-        const hasQuery = !!(query || selectedColorFamily);
+        const hasQuery = !!query;
         emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
         if (!shown.length) {
           cCard.style.display = "none";
@@ -4700,58 +5012,12 @@
         });
       }
 
-      function rebuildCategoryPills() {
-        const container = document.getElementById("cat-pill-container");
-        if (!container) return;
-        const allBtn = document.getElementById("cat-all");
-        if (allBtn) allBtn.innerText = t("cat_all");
-        container.querySelectorAll(".cat-pill:not(#cat-all)").forEach((el) => {
-          el.remove();
-        });
-        const seen = new Map();
-        Object.values(appDB.artikel || {}).forEach((item) => {
-          const cat = articleCategory(item);
-          if (!cat || seen.has(cat)) return;
-          seen.set(cat, cat);
-        });
-        [...seen.entries()]
-          .sort((a, b) => a[1].localeCompare(b[1], appLang || "de"))
-          .forEach(([de, label]) => {
-            const pill = document.createElement("div");
-            pill.className = "cat-pill";
-            pill.setAttribute("data-cat", de);
-            pill.textContent = label;
-            pill.addEventListener("click", () => filterByCat(de));
-            container.appendChild(pill);
-          });
-        container.querySelectorAll(".cat-pill").forEach((p) => {
-          const cat = p.getAttribute("data-cat") || "";
-          p.classList.toggle("active", cat === selectedCategory);
-        });
-      }
-
-      function filterByCat(catName) {
-        selectedCategory = catName;
-        document.querySelectorAll("#cat-pill-container .cat-pill").forEach((p) => {
-          const cat = p.getAttribute("data-cat") || "";
-          p.classList.toggle("active", cat === catName);
-        });
-        document.getElementById("find-prof").dispatchEvent(new Event("input"));
-      }
-
-      function filterByColorFamily(fam) {
-        selectedColorFamily = fam;
-        document.querySelectorAll("#color-pill-container .cat-pill").forEach((p) => {
-          const val = p.getAttribute("data-cfam") || "";
-          p.classList.toggle("active", val === fam);
-        });
-        document.getElementById("find-color").dispatchEvent(new Event("input"));
-      }
-
       function clearInput(id) {
         const el = document.getElementById(id);
+        if (!el) return;
         el.value = "";
         el.dispatchEvent(new Event("input"));
+        el.focus();
       }
 
       function getLuminance(hex) {
@@ -5065,7 +5331,6 @@
       }
 
       function refreshLiveViews() {
-        rebuildCategoryPills();
         const pIn = document.getElementById("find-prof");
         if (pIn) pIn.dispatchEvent(new Event("input"));
         const cIn = document.getElementById("find-color");
