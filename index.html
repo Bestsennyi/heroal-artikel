@@ -785,6 +785,9 @@
         border: none;
         color: #93c5fd;
       }
+      .hdr-user-role.is-customer {
+        color: #c4b5fd;
+      }
       .hdr-user-role:empty {
         display: none;
       }
@@ -2619,6 +2622,7 @@
           photo_saved: "Foto erfasst (nur lokal).",
           role_admin: "Administrator",
           role_staff: "Mitarbeiter",
+          role_customer: "Kunde",
           list_hint_artikel: "Artikelnummer oder Name suchen",
           list_hint_farben: "RAL- oder SD-Code suchen",
           ph_artikel: "z. B. 1371, 5044, 2042... [/]",
@@ -2700,6 +2704,7 @@
           photo_saved: "Photo captured (local only).",
           role_admin: "Administrator",
           role_staff: "Staff",
+          role_customer: "Customer",
           list_hint_artikel: "Search article number or name",
           list_hint_farben: "Search RAL or SD code",
           ph_artikel: "e.g. 1371, 5044, 2042... [/]",
@@ -2781,6 +2786,7 @@
           photo_saved: "Фото сохранено локально.",
           role_admin: "Администратор",
           role_staff: "Сотрудник",
+          role_customer: "Клиент",
           list_hint_artikel: "Искать артикул или название",
           list_hint_farben: "Искать код RAL или SD",
           ph_artikel: "напр. 1371, 5044, 2042... [/]",
@@ -3453,6 +3459,7 @@
           if (!String(parsed.nummer || "").trim()) return null;
           return {
             nummer: String(parsed.nummer || ""),
+            pin: String(parsed.pin || ""),
             vorname_de: parsed.vorname_de || "",
             nachname_de: parsed.nachname_de || "",
             benutzer_de: parsed.benutzer_de || "",
@@ -3465,6 +3472,7 @@
       function persistCurrentUser(user) {
         const payload = JSON.stringify({
           nummer: String(user.nummer || ""),
+          pin: String(user.pin || ""),
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
           benutzer_de: user.benutzer_de || "",
@@ -4025,16 +4033,59 @@
       }
 
       function usersTable() {
-        return (appDB && (appDB.benutzer || appDB.users)) || {};
+        const users = appDB && appDB.users;
+        const benutzer = appDB && appDB.benutzer;
+        if (users && typeof users === "object" && Object.keys(users).length) {
+          return users;
+        }
+        return benutzer || {};
       }
 
       function sessionRecord(user) {
         return {
           nummer: String(user.nummer || ""),
+          pin: String(user.pin || ""),
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
           benutzer_de: user.benutzer_de || "",
         };
+      }
+
+      function normalizeRoleKey(role) {
+        return String(role || "")
+          .trim()
+          .toLowerCase();
+      }
+
+      function isAdministrator(user) {
+        const role = normalizeRoleKey(user && user.benutzer_de);
+        return role === "administrator" || role === "admin";
+      }
+
+      function isCustomer(user) {
+        const role = normalizeRoleKey(user && user.benutzer_de);
+        return role === "kunde" || role === "customer" || role === "client";
+      }
+
+      function roleLabel(user) {
+        const raw = String((user && user.benutzer_de) || "").trim();
+        const role = normalizeRoleKey(raw);
+        if (role === "administrator" || role === "admin") return t("role_admin");
+        if (role === "mitarbeiter" || role === "staff") return t("role_staff");
+        if (role === "kunde" || role === "customer" || role === "client") {
+          return t("role_customer");
+        }
+        return raw;
+      }
+
+      function findLiveUser(session) {
+        if (!session) return null;
+        return (
+          findUserByNummer(session.nummer) ||
+          findUserByPin(session.pin) ||
+          findUserByPin(session.nummer) ||
+          null
+        );
       }
 
       function isUserActive(user) {
@@ -4072,13 +4123,6 @@
           });
       }
 
-      function isAdministrator(user) {
-        const role = String((user && user.benutzer_de) || "")
-          .trim()
-          .toLowerCase();
-        return role === "administrator" || role === "admin";
-      }
-
       function renderHeaderUser() {
         const nameEl = document.getElementById("hdr-user-name");
         const roleEl = document.getElementById("hdr-user-role");
@@ -4088,7 +4132,7 @@
         if (!currentUser) {
           nameEl.textContent = "";
           roleEl.textContent = "";
-          roleEl.classList.remove("is-admin");
+          roleEl.classList.remove("is-admin", "is-customer");
           if (wrap) wrap.hidden = true;
           if (photoBtn) photoBtn.hidden = true;
           return;
@@ -4096,8 +4140,9 @@
         if (wrap) wrap.hidden = false;
         nameEl.textContent = userDisplayName(currentUser);
         const admin = isAdministrator(currentUser);
-        roleEl.textContent = admin ? t("role_admin") : t("role_staff");
+        roleEl.textContent = roleLabel(currentUser);
         roleEl.classList.toggle("is-admin", admin);
+        roleEl.classList.toggle("is-customer", isCustomer(currentUser));
         if (photoBtn) photoBtn.hidden = !admin;
       }
 
@@ -4153,7 +4198,7 @@
           checkAuth();
           return { ok: true, loggedOut: false };
         }
-        const live = findUserByNummer(currentUser.nummer);
+        const live = findLiveUser(currentUser);
         if (!live || !isUserActive(live)) {
           handleLogout({ messageKey: "login_error_deactivated" });
           return { ok: false, loggedOut: true };
