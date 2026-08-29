@@ -650,67 +650,91 @@
 
       /* Top Header */
       header {
-        background-color: #0f172a;
-        padding: 0 14px;
-        display: flex;
-        justify-content: space-between;
+        background-color: #003366;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
         align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid var(--split-line);
+        column-gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         z-index: 10;
         flex-shrink: 0;
-        height: 58px;
-        min-height: 58px;
-        overflow-x: auto;
+        height: 60px;
+        min-height: 60px;
       }
       .header-left,
+      .header-center,
       .header-right {
         display: flex;
         align-items: center;
-        gap: 8px;
         min-width: 0;
       }
       .header-left {
-        flex: 0 1 auto;
+        justify-self: start;
       }
       .header-center {
-        flex: 1 1 auto;
-        min-width: 12px;
+        justify-self: center;
+        gap: 8px;
       }
       .header-right {
-        flex: 0 1 auto;
+        justify-self: end;
         justify-content: flex-end;
+        gap: 10px;
       }
       .brand-title {
         font-weight: 800;
-        font-size: 17px;
+        font-size: 23px;
         letter-spacing: -0.03em;
         line-height: 1;
         background: none;
         border: none;
         color: #fff;
         cursor: pointer;
-        padding: 0 4px 0 0;
+        padding: 0;
         white-space: nowrap;
         font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
       .brand-title .brand-heroal {
-        color: var(--heroal-accent);
+        color: #ffffff;
       }
       .brand-title .brand-product {
+        color: #3b82f6;
+      }
+      .btn-quick {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
         color: #ffffff;
+        border-radius: 8px;
+        padding: 6px 12px;
+        height: 34px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .btn-quick:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .btn-quick.active {
+        background: rgba(255, 255, 255, 0.22);
+      }
+      .btn-quick.admin-only[hidden] {
+        display: none !important;
       }
       .hdr-user {
         display: flex;
         align-items: center;
         gap: 8px;
         min-width: 0;
-        padding: 0 4px;
+        padding: 0 2px;
       }
       .hdr-user-name {
         font-size: 13px;
         font-weight: 600;
-        color: #e2e8f0;
+        color: #ffffff;
         line-height: 1.2;
         white-space: nowrap;
         overflow: hidden;
@@ -719,21 +743,21 @@
       }
       .hdr-user-role {
         font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
+        font-weight: 800;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         padding: 3px 8px;
         border-radius: 999px;
-        background: rgba(148, 163, 184, 0.14);
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        color: #cbd5e1;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        color: #e2e8f0;
         white-space: nowrap;
         line-height: 1.3;
       }
       .hdr-user-role.is-admin {
-        background: rgba(59, 130, 246, 0.16);
-        border-color: rgba(59, 130, 246, 0.45);
-        color: #93c5fd;
+        background: rgba(59, 130, 246, 0.28);
+        border-color: rgba(147, 197, 253, 0.55);
+        color: #dbeafe;
       }
       .hdr-user-role:empty {
         display: none;
@@ -741,31 +765,25 @@
       .hdr-logout {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        background: transparent;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        color: #cbd5e1;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #ffffff;
         border-radius: 8px;
-        padding: 0 10px;
+        width: 34px;
         height: 34px;
-        font-size: 12px;
-        font-weight: 600;
+        padding: 0;
         cursor: pointer;
-        line-height: 1;
       }
       .hdr-logout:hover {
-        border-color: rgba(248, 113, 113, 0.55);
+        background: rgba(255, 255, 255, 0.2);
         color: #fecaca;
-        background: rgba(239, 68, 68, 0.12);
-      }
-      .hdr-logout-label {
-        display: none;
       }
 
       .btn-hdr {
-        background: transparent;
-        border: 1px solid rgba(148, 163, 184, 0.28);
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #ffffff;
         border-radius: 8px;
         padding: 0 10px;
         height: 34px;
@@ -779,13 +797,7 @@
         white-space: nowrap;
       }
       .btn-hdr:hover {
-        border-color: rgba(59, 130, 246, 0.55);
-        color: #fff;
-        background: rgba(59, 130, 246, 0.12);
-      }
-      .btn-hdr.active {
-        background: rgba(59, 130, 246, 0.18);
-        border-color: rgba(59, 130, 246, 0.55);
+        background: rgba(255, 255, 255, 0.2);
         color: #fff;
       }
       .btn-hdr:disabled {
@@ -797,9 +809,6 @@
         width: 34px;
         justify-content: center;
       }
-      .btn-hdr.admin-only[hidden] {
-        display: none !important;
-      }
 
       .net-cluster {
         display: inline-flex;
@@ -807,8 +816,7 @@
         gap: 4px;
         padding: 2px 4px 2px 8px;
         border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.28);
-        background: rgba(15, 23, 42, 0.6);
+        background: rgba(255, 255, 255, 0.1);
       }
       .net-badge {
         display: inline-flex;
@@ -826,21 +834,15 @@
         background-color: #22c55e;
         box-shadow: 0 0 8px #22c55e;
       }
-      .net-cluster.offline {
-        border-color: rgba(239, 68, 68, 0.45);
-      }
       .net-cluster.offline .net-badge {
-        color: #fca5a5;
+        color: #fcd34d;
       }
       .net-cluster.offline .net-dot {
-        background-color: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-      }
-      .net-cluster.syncing {
-        border-color: rgba(56, 189, 248, 0.45);
+        background-color: #f59e0b;
+        box-shadow: 0 0 8px #f59e0b;
       }
       .net-cluster.syncing .net-badge {
-        color: #7dd3fc;
+        color: #bfdbfe;
       }
       .net-cluster.syncing .net-dot {
         background-color: #38bdf8;
@@ -852,12 +854,14 @@
         box-shadow: 0 0 8px #22c55e;
       }
       .net-cluster .btn-hdr {
-        border: none;
         background: transparent;
         height: 28px;
         min-height: 28px;
         width: 28px;
         padding: 0;
+      }
+      .net-cluster .btn-hdr:hover {
+        background: rgba(255, 255, 255, 0.12);
       }
       #sync-icon.is-spinning {
         animation: spin 1s infinite linear;
@@ -874,40 +878,81 @@
         }
       }
 
-      .hdr-lang {
-        display: inline-flex;
-        align-items: center;
-        border: 1px solid rgba(148, 163, 184, 0.28);
-        border-radius: 8px;
-        overflow: hidden;
-        height: 34px;
+      .hdr-lang-dd {
+        position: relative;
       }
-      .hdr-lang-btn {
+      .hdr-lang-trigger {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        height: 100%;
-        padding: 0 8px;
-        background: transparent;
+        gap: 6px;
+        height: 34px;
+        padding: 0 10px;
+        background: rgba(255, 255, 255, 0.1);
         border: none;
-        border-right: 1px solid rgba(148, 163, 184, 0.22);
-        color: #94a3b8;
-        font-size: 11px;
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 12px;
         font-weight: 700;
         letter-spacing: 0.04em;
         cursor: pointer;
       }
-      .hdr-lang-btn:last-child {
-        border-right: none;
+      .hdr-lang-trigger:hover,
+      .hdr-lang-dd.is-open .hdr-lang-trigger {
+        background: rgba(255, 255, 255, 0.2);
       }
-      .hdr-lang-btn.active {
-        background: rgba(59, 130, 246, 0.18);
-        color: #fff;
-      }
-      .hdr-lang-btn .lang-flag {
+      .hdr-lang-trigger .lang-flag,
+      .hdr-lang-trigger .lang-flag svg {
         width: 16px;
         height: 11px;
-        border-radius: 2px;
+      }
+      .hdr-lang-caret {
+        width: 14px;
+        height: 14px;
+        opacity: 0.85;
+      }
+      .hdr-lang-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        min-width: 132px;
+        flex-direction: column;
+        gap: 2px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: #00264d;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        z-index: 40;
+      }
+      .hdr-lang-dd.is-open .hdr-lang-menu {
+        display: flex;
+      }
+      .hdr-lang-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        color: #e2e8f0;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 8px 10px;
+        cursor: pointer;
+        text-align: left;
+      }
+      .hdr-lang-option:hover,
+      .hdr-lang-option.active {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+      }
+      .hdr-lang-option .lang-flag,
+      .hdr-lang-option .lang-flag svg {
+        width: 16px;
+        height: 11px;
       }
 
       /* Main Workspace */
@@ -1465,9 +1510,6 @@
         nav {
           display: none;
         }
-        .hdr-logout-label {
-          display: inline;
-        }
         main {
           padding: 0;
           height: auto;
@@ -1552,19 +1594,19 @@
         }
       }
       @media (max-width: 1100px) {
-        .hdr-lang-btn span:not(.lang-flag) {
-          display: none;
-        }
         .net-text {
           display: none;
         }
       }
       @media (max-width: 860px) {
-        .btn-hdr-label {
+        .btn-quick-label {
           display: none;
         }
         .hdr-user-name {
           max-width: 90px;
+        }
+        .brand-title {
+          font-size: 20px;
         }
       }
       @media (min-width: 1280px) {
@@ -1789,6 +1831,9 @@
         <line x1="18" y1="6" x2="6" y2="18"/>
         <line x1="6" y1="6" x2="18" y2="18"/>
       </symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </symbol>
     </svg>
 
     <!-- Toast Message Container -->
@@ -1941,22 +1986,27 @@
           <span class="brand-heroal">heroal</span>
           <span class="brand-product">Artikel</span>
         </button>
-        <button type="button" class="btn-hdr" id="btn-hdr-auskunft">
+      </div>
+
+      <div class="header-center">
+        <button type="button" class="btn-quick" id="btn-hdr-suche">
+          <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+          <span class="btn-quick-label" data-i18n="nav_search">Suche</span>
+        </button>
+        <button type="button" class="btn-quick" id="btn-hdr-auskunft">
           <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
-          <span class="btn-hdr-label" data-i18n="nav_info">Auskunft</span>
+          <span class="btn-quick-label" data-i18n="nav_info">Auskunft</span>
         </button>
         <button
           type="button"
-          class="btn-hdr admin-only"
+          class="btn-quick admin-only"
           id="btn-hdr-photo"
           hidden
         >
           <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
-          <span class="btn-hdr-label" data-i18n="photo_capture">Foto erfassen</span>
+          <span class="btn-quick-label" data-i18n="photo_capture">Foto erfassen</span>
         </button>
       </div>
-
-      <div class="header-center" aria-hidden="true"></div>
 
       <div class="header-right">
         <div id="netStatus" class="net-cluster" title="Status: Online">
@@ -1969,48 +2019,67 @@
           </button>
         </div>
 
-        <div class="hdr-lang" role="group" aria-label="Language">
-          <button type="button" class="hdr-lang-btn" data-lang="de" title="Deutsch">
-            <span class="lang-flag" aria-hidden="true">
+        <div class="hdr-lang-dd" id="hdr-lang-dropdown">
+          <button
+            type="button"
+            class="hdr-lang-trigger"
+            id="btn-hdr-lang"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-controls="hdr-lang-menu"
+          >
+            <span class="lang-flag" id="hdr-lang-flag" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
                 <rect width="5" height="1" y="0" fill="#000000" />
                 <rect width="5" height="1" y="1" fill="#dd0000" />
                 <rect width="5" height="1" y="2" fill="#ffce00" />
               </svg>
             </span>
-            <span>DE</span>
+            <span id="hdr-lang-code">DE</span>
+            <svg class="ico hdr-lang-caret" aria-hidden="true"><use href="#i-chevron-down"></use></svg>
           </button>
-          <button type="button" class="hdr-lang-btn" data-lang="ru" title="Русский">
-            <span class="lang-flag" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" focusable="false">
-                <rect width="9" height="2" y="0" fill="#ffffff" />
-                <rect width="9" height="2" y="2" fill="#0039a6" />
-                <rect width="9" height="2" y="4" fill="#d52b1e" />
-              </svg>
-            </span>
-            <span>RU</span>
-          </button>
-          <button type="button" class="hdr-lang-btn" data-lang="en" title="English">
-            <span class="lang-flag" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" focusable="false">
-                <rect width="60" height="30" fill="#012169" />
-                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6" />
-                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="4" />
-                <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10" />
-                <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6" />
-              </svg>
-            </span>
-            <span>EN</span>
-          </button>
+          <div class="hdr-lang-menu" id="hdr-lang-menu" role="listbox" aria-label="Language">
+            <button type="button" class="hdr-lang-option" data-lang="de" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
+                  <rect width="5" height="1" y="0" fill="#000000" />
+                  <rect width="5" height="1" y="1" fill="#dd0000" />
+                  <rect width="5" height="1" y="2" fill="#ffce00" />
+                </svg>
+              </span>
+              <span>DE</span>
+            </button>
+            <button type="button" class="hdr-lang-option" data-lang="ru" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" focusable="false">
+                  <rect width="9" height="2" y="0" fill="#ffffff" />
+                  <rect width="9" height="2" y="2" fill="#0039a6" />
+                  <rect width="9" height="2" y="4" fill="#d52b1e" />
+                </svg>
+              </span>
+              <span>RU</span>
+            </button>
+            <button type="button" class="hdr-lang-option" data-lang="en" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" focusable="false">
+                  <rect width="60" height="30" fill="#012169" />
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6" />
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="4" />
+                  <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10" />
+                  <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6" />
+                </svg>
+              </span>
+              <span>EN</span>
+            </button>
+          </div>
         </div>
 
         <div class="hdr-user" id="hdr-user">
           <span class="hdr-user-name" id="hdr-user-name"></span>
           <span class="hdr-user-role" id="hdr-user-role"></span>
         </div>
-        <button type="button" class="hdr-logout" id="btn-logout">
+        <button type="button" class="hdr-logout" id="btn-logout" title="Abmelden" aria-label="Abmelden">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
-          <span class="hdr-logout-label" data-i18n="logout_btn">Abmelden</span>
         </button>
       </div>
     </header>
@@ -2397,7 +2466,7 @@
           photo_hint: "Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.",
           photo_pick: "Kamera öffnen",
           photo_saved: "Foto erfasst (nur lokal).",
-          role_admin: "Admin",
+          role_admin: "ADMIN",
           role_staff: "Mitarbeiter",
           list_hint_artikel: "Artikelnummer oder Name suchen",
           list_hint_farben: "RAL- oder SD-Code suchen",
@@ -2468,7 +2537,7 @@
           photo_hint: "Capture a photo on this device. It is not uploaded.",
           photo_pick: "Open camera",
           photo_saved: "Photo captured (local only).",
-          role_admin: "Admin",
+          role_admin: "ADMIN",
           role_staff: "Staff",
           list_hint_artikel: "Search article number or name",
           list_hint_farben: "Search RAL or SD code",
@@ -2539,7 +2608,7 @@
           photo_hint: "Снимок только на этом устройстве. Не загружается на сервер.",
           photo_pick: "Открыть камеру",
           photo_saved: "Фото сохранено локально.",
-          role_admin: "Admin",
+          role_admin: "ADMIN",
           role_staff: "Mitarbeiter",
           list_hint_artikel: "Искать артикул или название",
           list_hint_farben: "Искать код RAL или SD",
@@ -2698,6 +2767,12 @@
         rebuildCategoryPills();
         updateOnlineStatus();
         renderHeaderUser();
+        const logoutBtn = document.getElementById("btn-logout");
+        if (logoutBtn) {
+          const label = t("logout_btn");
+          logoutBtn.setAttribute("title", label);
+          logoutBtn.setAttribute("aria-label", label);
+        }
       }
 
       function setLanguage(lang) {
@@ -3310,8 +3385,19 @@
           btn.classList.toggle("active", on);
           btn.setAttribute("aria-selected", on ? "true" : "false");
         });
-        document.querySelectorAll(".hdr-lang-btn").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.lang === appLang);
+        const hdrCode = document.getElementById("hdr-lang-code");
+        if (hdrCode) hdrCode.textContent = appLang.toUpperCase();
+        const hdrFlag = document.getElementById("hdr-lang-flag");
+        const hdrSrc = document.querySelector(
+          '.hdr-lang-option[data-lang="' + appLang + '"] .lang-flag',
+        );
+        if (hdrFlag && hdrSrc) hdrFlag.innerHTML = hdrSrc.innerHTML;
+        const hdrTrigger = document.getElementById("btn-hdr-lang");
+        if (hdrTrigger) hdrTrigger.setAttribute("aria-label", t(meta.nameKey));
+        document.querySelectorAll(".hdr-lang-option").forEach((btn) => {
+          const on = btn.dataset.lang === appLang;
+          btn.classList.toggle("active", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
         });
       }
 
@@ -3320,6 +3406,23 @@
         const trigger = document.getElementById("btn-lang-trigger");
         if (dd) dd.classList.remove("is-open");
         if (trigger) trigger.setAttribute("aria-expanded", "false");
+        closeHdrLangDropdown();
+      }
+
+      function closeHdrLangDropdown() {
+        const dd = document.getElementById("hdr-lang-dropdown");
+        const trigger = document.getElementById("btn-hdr-lang");
+        if (dd) dd.classList.remove("is-open");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleHdrLangDropdown() {
+        const dd = document.getElementById("hdr-lang-dropdown");
+        const trigger = document.getElementById("btn-hdr-lang");
+        if (!dd) return;
+        const open = !dd.classList.contains("is-open");
+        dd.classList.toggle("is-open", open);
+        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
       }
 
       function toggleLangDropdown() {
@@ -3379,8 +3482,14 @@
           });
         });
         document.addEventListener("click", (e) => {
-          const dd = document.getElementById("login-lang-dropdown");
-          if (dd && !dd.contains(e.target)) closeLangDropdown();
+          const loginDd = document.getElementById("login-lang-dropdown");
+          if (loginDd && !loginDd.contains(e.target)) {
+            loginDd.classList.remove("is-open");
+            const trigger = document.getElementById("btn-lang-trigger");
+            if (trigger) trigger.setAttribute("aria-expanded", "false");
+          }
+          const hdrDd = document.getElementById("hdr-lang-dropdown");
+          if (hdrDd && !hdrDd.contains(e.target)) closeHdrLangDropdown();
         });
         window.addEventListener("keydown", (e) => {
           if (!isLoginVisible()) return;
@@ -3609,6 +3718,7 @@
             closeZoom();
             closeSettings();
             closePhotoCapture();
+            closeHdrLangDropdown();
             clearInput("find-prof");
             clearInput("find-color");
             return;
@@ -3916,6 +4026,10 @@
         if (auskunftBtn) {
           auskunftBtn.classList.toggle("active", viewId === "view-auskunft");
         }
+        const sucheBtn = document.getElementById("btn-hdr-suche");
+        if (sucheBtn) {
+          sucheBtn.classList.toggle("active", viewId === "view-suche");
+        }
 
         if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") renderAuskunft();
@@ -3929,6 +4043,17 @@
             if (isAdministrator(currentUser)) openSettings();
           });
         }
+        const sucheBtn = document.getElementById("btn-hdr-suche");
+        if (sucheBtn) {
+          sucheBtn.addEventListener("click", () => {
+            navigate("view-suche");
+            const p = document.getElementById("find-prof");
+            if (p) {
+              p.focus();
+              p.select();
+            }
+          });
+        }
         const auskunftBtn = document.getElementById("btn-hdr-auskunft");
         if (auskunftBtn) {
           auskunftBtn.addEventListener("click", () => {
@@ -3940,8 +4065,18 @@
         }
         const photoBtn = document.getElementById("btn-hdr-photo");
         if (photoBtn) photoBtn.addEventListener("click", openPhotoCapture);
-        document.querySelectorAll(".hdr-lang-btn").forEach((btn) => {
-          btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+        const hdrLangBtn = document.getElementById("btn-hdr-lang");
+        if (hdrLangBtn) {
+          hdrLangBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleHdrLangDropdown();
+          });
+        }
+        document.querySelectorAll(".hdr-lang-option").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setLanguage(btn.dataset.lang);
+          });
         });
         document.querySelectorAll("#color-pill-container .cat-pill").forEach((pill) => {
           pill.addEventListener("click", () =>
@@ -3960,6 +4095,11 @@
             }
             showToast(t("photo_saved"));
           });
+        }
+        const sucheView = document.getElementById("view-suche");
+        const sBtn = document.getElementById("btn-hdr-suche");
+        if (sucheView && sucheView.classList.contains("active") && sBtn) {
+          sBtn.classList.add("active");
         }
       }
 
