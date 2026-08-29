@@ -1659,14 +1659,20 @@
         bottom: 70px;
         left: 50%;
         transform: translateX(-50%) translateY(100px);
-        background: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 52px;
+        max-width: min(540px, calc(100vw - 32px));
+        background: #131b2e;
         color: #f8fafc;
-        border: 1px solid var(--heroal-light-blue);
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 12px;
+        border: 1px solid rgba(96, 165, 250, 0.45);
+        padding: 14px 20px;
+        border-radius: 14px;
+        font-size: 14px;
         font-weight: 600;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        line-height: 1.35;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
         z-index: 3000;
         transition:
           transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28),
@@ -1678,48 +1684,140 @@
         transform: translateX(-50%) translateY(0);
         opacity: 1;
       }
+      #app-toast .toast-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #fff;
+      }
+      #app-toast .toast-mark .ico {
+        width: 16px;
+        height: 16px;
+      }
+      #app-toast.toast-ok,
+      #app-toast.toast-warn,
+      #app-toast.toast-error {
+        padding-left: 16px;
+      }
+      #app-toast.toast-ok .toast-mark,
+      #app-toast.toast-warn .toast-mark,
+      #app-toast.toast-error .toast-mark {
+        display: inline-flex;
+      }
+      #app-toast.toast-ok {
+        background: #13251c;
+        border-color: rgba(34, 197, 94, 0.55);
+      }
+      #app-toast.toast-ok .toast-mark {
+        background: #22c55e;
+      }
+      #app-toast.toast-warn {
+        background: #231c10;
+        border-color: rgba(245, 158, 11, 0.5);
+      }
+      #app-toast.toast-warn .toast-mark {
+        background: #f59e0b;
+        color: #111827;
+      }
+      #app-toast.toast-error {
+        background: #2a1414;
+        border-color: rgba(239, 68, 68, 0.5);
+      }
+      #app-toast.toast-error .toast-mark {
+        background: #ef4444;
+      }
 
       /* Sync Progress Modal */
       .sync-modal {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.72);
         z-index: 2500;
         justify-content: center;
         align-items: center;
-        padding: 16px;
+        padding: 20px;
       }
       .sync-modal.active {
         display: flex;
       }
       .sync-box {
         width: 100%;
-        max-width: 380px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 20px;
+        max-width: 480px;
+        background: #131b2e;
+        border: 1px solid rgba(96, 165, 250, 0.28);
+        border-radius: 18px;
+        padding: 28px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 20px;
+        box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55);
+      }
+      .sync-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .sync-icon-wrap {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: rgba(59, 130, 246, 0.16);
+        border: 1px solid rgba(96, 165, 250, 0.35);
+        color: #93c5fd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .sync-icon-wrap .ico {
+        width: 24px;
+        height: 24px;
+      }
+      .sync-spin {
+        animation: spin 1s infinite linear;
+      }
+      .sync-head-text {
+        flex: 1;
+        min-width: 0;
+      }
+      #sync-title {
+        font-weight: 700;
+        font-size: 20px;
+        color: #fff;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+      #sync-status-txt {
+        font-size: 14px;
+        color: #94a3b8;
+        margin-top: 4px;
+        line-height: 1.35;
+      }
+      .sync-pct {
+        font-size: 16px;
+        font-weight: 700;
+        color: #60a5fa;
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
       }
       .sync-progress-bar-bg {
         width: 100%;
-        height: 10px;
+        height: 12px;
         background: #080d14;
-        border-radius: 6px;
+        border-radius: 999px;
         overflow: hidden;
-        border: 1px solid var(--border-color);
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
       .sync-progress-bar-fill {
         width: 0%;
         height: 100%;
-        background: linear-gradient(
-          90deg,
-          var(--heroal-blue),
-          var(--heroal-light-blue)
-        );
+        border-radius: 999px;
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
         transition: width 0.3s ease;
       }
 
@@ -1872,10 +1970,18 @@
       <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9"/>
       </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </symbol>
     </svg>
 
     <!-- Toast Message Container -->
-    <div id="app-toast"></div>
+    <div id="app-toast" class="app-toast" role="status">
+      <span class="toast-mark" aria-hidden="true">
+        <svg class="ico"><use id="toast-icon-use" href="#i-check"></use></svg>
+      </span>
+      <span id="app-toast-msg"></span>
+    </div>
 
     <!-- 1. LOGIN SCREEN -->
     <div id="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-sub-txt">
@@ -2362,18 +2468,15 @@
     <!-- 6. SYNC PROGRESS MODAL -->
     <div id="sync-dialog" class="sync-modal">
       <div class="sync-box">
-        <div
-          style="font-weight: 700; font-size: 15px; color: #fff"
-          id="sync-title"
-          data-i18n="sync_dialog_title"
-        >
-          Synchronisation...
-        </div>
-        <div
-          style="font-size: 12px; color: var(--text-sub)"
-          id="sync-status-txt"
-        >
-          Tabellen werden geladen...
+        <div class="sync-head">
+          <div class="sync-icon-wrap" aria-hidden="true">
+            <svg class="ico sync-spin"><use href="#i-refresh"></use></svg>
+          </div>
+          <div class="sync-head-text">
+            <div id="sync-title" data-i18n="sync_dialog_title">Aktualisieren</div>
+            <div id="sync-status-txt">Katalog wird geladen…</div>
+          </div>
+          <div class="sync-pct" id="sync-pct">0%</div>
         </div>
         <div class="sync-progress-bar-bg">
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
@@ -2528,41 +2631,38 @@
           settings_save: "Speichern",
           settings_reload: "Alle Zeichnungen neu laden",
           settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Synchronisation...",
+          sync_dialog_title: "Aktualisieren",
           color_surface_fallback: "heroal Beschichtung",
           online: "Online",
           offline: "Offline",
-          syncing: "Aktualisiere…",
-          synced: "Synchronisiert",
+          syncing: "Aktualisieren…",
+          synced: "Aktuell",
           sync: "Sync",
-          sync_title: "Daten synchronisieren",
-          sync_offline: "Offline: Sync deaktiviert",
+          sync_title: "Daten aktualisieren",
+          sync_offline: "Offline — nicht verfügbar",
           idle_logout: "Sitzung wegen Inaktivität beendet.",
           copied: "{label} kopiert!",
           drawing_missing: "Zeichnung nicht hinterlegt",
-          sync_drawings_missing: "Sync: {n} Zeichnungen fehlen offline",
+          sync_drawings_missing: "{n} Zeichnungen fehlen",
           defect_desc: "Beschreibung:",
           defect_action: "Vorgehen (Aktion):",
-          drawings_check: "Zeichnungen prüfen...",
-          drawings_load: "Neue Zeichnungen laden... {done}/{total}",
-          offline_no_net: "⚠️ Offline: Keine Internetverbindung!",
-          sync_load_profiles: "Lade Artikel CSV...",
-          sync_load_colors: "Lade Farben CSV...",
-          sync_load_auskunft: "Lade Auskunft CSV...",
-          sync_load_users: "Lade Benutzerdaten...",
-          sync_load_i18n: "Lade Übersetzungen...",
-          sync_save: "Speichere in IndexedDB...",
-          sync_done: "Abgeschlossen!",
-          sync_abort_net:
-            "⚠️ Verbindung verloren: {cached} von {total} Zeichnungen offline — Sync wiederholen",
-          sync_abort_throttle:
-            "⚠️ Zeichnungs-Server begrenzt Anfragen: {cached} von {total} offline — Sync später wiederholen",
-          sync_partial:
-            "⚠️ {artikel} Artikel, {cached} Zeichnungen offline — {missing} fehlen, Sync wiederholen",
-          sync_ok:
-            "✅ Sync ok: {artikel} Artikel, {cached} Zeichnungen offline{newly}",
-          sync_newly: ", {n} neu geladen",
-          sync_error: "⚠️ Fehler beim Synchronisieren.",
+          drawings_check: "Zeichnungen prüfen…",
+          drawings_load: "Zeichnungen {done}/{total}",
+          offline_no_net: "Keine Verbindung",
+          sync_load_start: "Katalog wird geladen…",
+          sync_load_profiles: "Artikel…",
+          sync_load_colors: "Farben…",
+          sync_load_auskunft: "Auskunft…",
+          sync_load_users: "Benutzer…",
+          sync_load_i18n: "Sprache…",
+          sync_save: "Speichern…",
+          sync_done: "Fertig",
+          sync_abort_net: "Verbindung unterbrochen · {cached}/{total}",
+          sync_abort_throttle: "Server ausgelastet · {cached}/{total}",
+          sync_partial: "{artikel} Artikel · {missing} Zeichnungen fehlen",
+          sync_ok: "{artikel} Artikel · {cached} Zeichnungen{newly}",
+          sync_newly: " · {n} neu",
+          sync_error: "Aktualisierung fehlgeschlagen",
           reload_drawings_confirm:
             "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
           urls_saved: "URLs gespeichert! Drücken Sie Sync.",
@@ -2612,41 +2712,38 @@
           settings_save: "Save",
           settings_reload: "Reload all drawings",
           settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Synchronising...",
+          sync_dialog_title: "Updating",
           color_surface_fallback: "heroal coating",
           online: "Online",
           offline: "Offline",
           syncing: "Updating…",
-          synced: "Synced",
+          synced: "Up to date",
           sync: "Sync",
-          sync_title: "Synchronise data",
-          sync_offline: "Offline: sync disabled",
+          sync_title: "Update data",
+          sync_offline: "Offline — unavailable",
           idle_logout: "Signed out due to inactivity.",
           copied: "{label} copied!",
           drawing_missing: "No drawing on file",
-          sync_drawings_missing: "Sync: {n} drawings missing offline",
+          sync_drawings_missing: "{n} drawings missing",
           defect_desc: "Description:",
           defect_action: "Action:",
-          drawings_check: "Checking drawings...",
-          drawings_load: "Downloading new drawings... {done}/{total}",
-          offline_no_net: "⚠️ Offline: no internet connection!",
-          sync_load_profiles: "Loading articles CSV...",
-          sync_load_colors: "Loading colours CSV...",
-          sync_load_auskunft: "Loading info CSV...",
-          sync_load_users: "Loading user list...",
-          sync_load_i18n: "Loading translations...",
-          sync_save: "Saving to IndexedDB...",
-          sync_done: "Done!",
-          sync_abort_net:
-            "⚠️ Connection lost: {cached} of {total} drawings offline — retry sync",
-          sync_abort_throttle:
-            "⚠️ Drawing server is rate-limiting: {cached} of {total} offline — retry later",
-          sync_partial:
-            "⚠️ {artikel} articles, {cached} drawings offline — {missing} missing, retry sync",
-          sync_ok:
-            "✅ Sync ok: {artikel} articles, {cached} drawings offline{newly}",
-          sync_newly: ", {n} newly downloaded",
-          sync_error: "⚠️ Synchronisation failed.",
+          drawings_check: "Checking drawings…",
+          drawings_load: "Drawings {done}/{total}",
+          offline_no_net: "No connection",
+          sync_load_start: "Loading catalogue…",
+          sync_load_profiles: "Articles…",
+          sync_load_colors: "Colours…",
+          sync_load_auskunft: "Info…",
+          sync_load_users: "Users…",
+          sync_load_i18n: "Language…",
+          sync_save: "Saving…",
+          sync_done: "Done",
+          sync_abort_net: "Connection lost · {cached}/{total}",
+          sync_abort_throttle: "Server busy · {cached}/{total}",
+          sync_partial: "{artikel} articles · {missing} drawings missing",
+          sync_ok: "{artikel} articles · {cached} drawings{newly}",
+          sync_newly: " · {n} new",
+          sync_error: "Update failed",
           reload_drawings_confirm:
             "Re-download all {n} drawings? This takes longer than a normal sync.",
           urls_saved: "URLs saved! Press Sync.",
@@ -2696,41 +2793,38 @@
           settings_save: "Сохранить",
           settings_reload: "Загрузить все чертежи заново",
           settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Синхронизация...",
+          sync_dialog_title: "Обновление",
           color_surface_fallback: "Покрытие heroal",
           online: "Онлайн",
           offline: "Офлайн",
           syncing: "Обновление…",
-          synced: "Синхронизировано",
+          synced: "Актуально",
           sync: "Sync",
-          sync_title: "Синхронизировать данные",
-          sync_offline: "Офлайн: Sync отключён",
+          sync_title: "Обновить данные",
+          sync_offline: "Офлайн — недоступно",
           idle_logout: "Сессия завершена из-за неактивности.",
           copied: "{label} скопировано!",
           drawing_missing: "Чертёж не задан",
-          sync_drawings_missing: "Sync: не хватает {n} чертежей для офлайна",
+          sync_drawings_missing: "Нет {n} чертежей",
           defect_desc: "Описание:",
           defect_action: "Инструкция по действию:",
-          drawings_check: "Проверка чертежей...",
-          drawings_load: "Загрузка новых чертежей... {done}/{total}",
-          offline_no_net: "⚠️ Офлайн: нет подключения к интернету!",
-          sync_load_profiles: "Загрузка артикулов...",
-          sync_load_colors: "Загрузка каталога цветов...",
-          sync_load_auskunft: "Загрузка справки...",
-          sync_load_users: "Загрузка пользователей...",
-          sync_load_i18n: "Загрузка переводов...",
-          sync_save: "Сохранение в IndexedDB...",
-          sync_done: "Готово!",
-          sync_abort_net:
-            "⚠️ Соединение потеряно: {cached} из {total} чертежей офлайн — повторите Sync",
-          sync_abort_throttle:
-            "⚠️ Сервер чертежей ограничивает запросы: {cached} из {total} офлайн — повторите Sync позже",
-          sync_partial:
-            "⚠️ {artikel} артикулов, {cached} чертежей офлайн — {missing} не загружено, повторите Sync",
-          sync_ok:
-            "✅ Синхронизация ok: {artikel} артикулов, {cached} чертежей офлайн{newly}",
-          sync_newly: ", {n} новых загружено",
-          sync_error: "⚠️ Ошибка синхронизации данных.",
+          drawings_check: "Проверка чертежей…",
+          drawings_load: "Чертежи {done}/{total}",
+          offline_no_net: "Нет соединения",
+          sync_load_start: "Загрузка каталога…",
+          sync_load_profiles: "Артикулы…",
+          sync_load_colors: "Цвета…",
+          sync_load_auskunft: "Справка…",
+          sync_load_users: "Сотрудники…",
+          sync_load_i18n: "Язык…",
+          sync_save: "Сохранение…",
+          sync_done: "Готово",
+          sync_abort_net: "Нет связи · {cached}/{total}",
+          sync_abort_throttle: "Сервер занят · {cached}/{total}",
+          sync_partial: "{artikel} артикулов · нет {missing} чертежей",
+          sync_ok: "{artikel} артикулов · {cached} чертежей{newly}",
+          sync_newly: " · {n} новых",
+          sync_error: "Не удалось обновить",
           reload_drawings_confirm:
             "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
           urls_saved: "Ссылки сохранены! Нажмите Sync.",
@@ -3881,11 +3975,30 @@
       }
 
       // Toast Notification
-      function showToast(msg) {
-        const t = document.getElementById("app-toast");
-        t.innerText = msg;
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 2200);
+      let toastHideTimer = null;
+      function showToast(msg, kind) {
+        const box = document.getElementById("app-toast");
+        const msgEl = document.getElementById("app-toast-msg");
+        const iconUse = document.getElementById("toast-icon-use");
+        if (!box) return;
+        if (msgEl) msgEl.textContent = msg;
+        else box.textContent = msg;
+        box.classList.remove("show", "toast-ok", "toast-warn", "toast-error");
+        if (kind === "ok" || kind === "warn" || kind === "error") {
+          box.classList.add("toast-" + kind);
+        }
+        if (iconUse) {
+          const href =
+            kind === "warn" || kind === "error" ? "#i-alert" : "#i-check";
+          iconUse.setAttribute("href", href);
+        }
+        void box.offsetWidth;
+        box.classList.add("show");
+        if (toastHideTimer) clearTimeout(toastHideTimer);
+        toastHideTimer = setTimeout(() => {
+          box.classList.remove("show");
+          toastHideTimer = null;
+        }, kind ? 4200 : 2200);
       }
 
       // Copy Helper
@@ -4920,19 +5033,27 @@
       function showSyncModalUi() {
         const syncModal = document.getElementById("sync-dialog");
         if (syncModal) syncModal.classList.add("active");
+        updateSyncProgress(0, t("sync_load_start"));
       }
 
       function hideSyncModalUi() {
         const syncModal = document.getElementById("sync-dialog");
         if (syncModal) syncModal.classList.remove("active");
+        const fillBar = document.getElementById("sync-progress-fill");
+        if (fillBar) fillBar.style.width = "0%";
+        const pct = document.getElementById("sync-pct");
+        if (pct) pct.textContent = "0%";
       }
 
       function updateSyncProgress(pct, label) {
         if (syncCtl.silent) return;
         const statusTxt = document.getElementById("sync-status-txt");
         const fillBar = document.getElementById("sync-progress-fill");
-        if (fillBar) fillBar.style.width = `${pct}%`;
-        if (statusTxt) statusTxt.innerText = label;
+        const pctEl = document.getElementById("sync-pct");
+        const n = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+        if (fillBar) fillBar.style.width = `${n}%`;
+        if (pctEl) pctEl.textContent = `${n}%`;
+        if (statusTxt && label) statusTxt.innerText = label;
       }
 
       function abortAfter(ms) {
@@ -4972,12 +5093,13 @@
             lostConnection
               ? tf("sync_abort_net", { cached, total: drawings })
               : tf("sync_abort_throttle", { cached, total: drawings }),
+            "warn",
           );
         } else if (missing > 0) {
-          showToast(tf("sync_partial", { artikel, cached, missing }));
+          showToast(tf("sync_partial", { artikel, cached, missing }), "warn");
         } else {
           const newly = added > 0 ? tf("sync_newly", { n: added }) : "";
-          showToast(tf("sync_ok", { artikel, cached, newly }));
+          showToast(tf("sync_ok", { artikel, cached, newly }), "ok");
         }
       }
 
@@ -4997,7 +5119,7 @@
           }
 
           if (!navigator.onLine) {
-            if (!silent) alert(t("offline_no_net"));
+            if (!silent) showToast(t("offline_no_net"), "error");
             return;
           }
 
@@ -5109,7 +5231,7 @@
                 console.error(err);
                 hideSyncModalUi();
                 setNetBadgeMode(null);
-                alert(t("sync_error"));
+                showToast(t("sync_error"), "error");
               }
             } finally {
               setSyncIconSpinning(false);
@@ -5185,7 +5307,7 @@
        */
       function reloadAllDrawings() {
         if (!navigator.onLine) {
-          alert(t("offline_no_net"));
+          showToast(t("offline_no_net"), "error");
           return;
         }
         const count = collectDrawingUrls().length;
