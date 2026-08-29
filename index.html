@@ -1100,17 +1100,24 @@
       .result-list[hidden] {
         display: none;
       }
+      .zone-prof.is-kb-open #prof-card {
+        display: none !important;
+      }
+      .zone-prof.is-kb-open .zone-scroll {
+        overflow: hidden;
+      }
+      .zone-prof.is-kb-open .result-list {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: none;
+      }
       .zone-prof .zone-scroll:has(.display-card-prof:not(.is-solo)) .result-list {
         flex: 1 1 auto;
         min-height: 0;
         overflow-x: hidden;
         overflow-y: auto;
-      }
-      .zone-prof.is-kb-open .zone-scroll:has(.display-card-prof:not(.is-solo)) .result-list,
-      .zone-prof:has(#osk-prof:not(.is-hidden))
-        .zone-scroll:has(.display-card-prof:not(.is-solo))
-        .result-list {
-        max-height: 35vh;
       }
       .zone-prof .zone-scroll:has(.display-card-prof.is-solo) {
         overflow: hidden;
@@ -4253,6 +4260,9 @@
       let lastProfileHint = "";
       let lastActiveColorCode = "";
       let articlePickedByUser = false;
+      let lastExactClosedQuery = "";
+      let lastArticleHits = [];
+      let suppressProfOskOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
 
@@ -5113,6 +5123,7 @@
           persistCurrentUser(currentUser);
           clearPack();
           checkAuth();
+          setTimeout(openProfOskFromDefault, 0);
         } finally {
           loginInFlight = false;
         }
@@ -5333,16 +5344,13 @@
         });
 
         pIn.addEventListener("input", refreshArticleResults);
-        pIn.addEventListener("focus", syncProfKeyboardLayout);
-        pIn.addEventListener("blur", () => {
-          setTimeout(syncProfKeyboardLayout, 120);
+        pIn.addEventListener("focus", onProfSearchActivate);
+        pIn.addEventListener("pointerdown", onProfSearchActivate);
+        pIn.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          setProfOskOpen(false);
         });
-        const onViewportChange = () => syncProfKeyboardLayout();
-        window.addEventListener("resize", onViewportChange);
-        if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", onViewportChange);
-          window.visualViewport.addEventListener("scroll", onViewportChange);
-        }
         document
           .getElementById("find-color")
           .addEventListener("input", refreshColorResults);
@@ -5353,6 +5361,7 @@
           clearInput("find-color");
         });
         mountSearchKeypads();
+        if (currentUser) setTimeout(openProfOskFromDefault, 0);
       }
 
       const RESULT_LIMIT = 80;
@@ -5515,7 +5524,7 @@
           if (visible) input.focus();
         }
         if (visible) setOskLayout(pad, "num");
-        syncProfKeyboardLayout();
+        if (oskId === "osk-prof") applyArtikelWorkspace();
       }
 
       function hideAllSearchOsk() {
@@ -5555,7 +5564,12 @@
         }
         if (act === "enter") {
           if (isLogin) handleLogin();
-          else setSearchOskVisible(pad.id, false);
+          else if (pad.id === "osk-prof") {
+            setProfOskOpen(false);
+            return;
+          } else {
+            setSearchOskVisible(pad.id, false);
+          }
           input.focus();
           return;
         }
@@ -5637,20 +5651,70 @@
         return hay.includes(query);
       }
 
-      function isProfKeyboardOpen() {
-        const pad = document.getElementById("osk-prof");
-        if (pad && !pad.classList.contains("is-hidden")) return true;
-        const focused =
-          document.activeElement && document.activeElement.id === "find-prof";
-        if (!focused) return false;
-        const vv = window.visualViewport;
-        if (!vv) return false;
-        return window.innerHeight - vv.height > 140;
+      function findExactArticleKey(query) {
+        const q = String(query || "").trim().toLowerCase();
+        if (!q) return "";
+        const catalog = appDB.artikel || {};
+        for (const key of Object.keys(catalog)) {
+          const nr = articleNr(catalog[key], key).toLowerCase();
+          if (key.toLowerCase() === q || nr === q) return key;
+        }
+        return "";
       }
 
-      function syncProfKeyboardLayout() {
+      function isProfOskOpen() {
+        const pad = document.getElementById("osk-prof");
+        return !!(pad && !pad.classList.contains("is-hidden"));
+      }
+
+      function setProfOskOpen(open) {
+        if (!open) suppressProfOskOpen = true;
+        setSearchOskVisible("osk-prof", open);
+        if (!open) {
+          const pIn = document.getElementById("find-prof");
+          if (pIn && document.activeElement === pIn) pIn.blur();
+          setTimeout(() => {
+            suppressProfOskOpen = false;
+          }, 80);
+        }
+      }
+
+      function onProfSearchActivate() {
+        if (suppressProfOskOpen) return;
+        if (!isProfOskOpen()) setSearchOskVisible("osk-prof", true);
+        else applyArtikelWorkspace();
+      }
+
+      function openProfOskFromDefault() {
+        if (!currentUser) return;
+        const view = document.getElementById("view-suche");
+        if (!view || !view.classList.contains("active")) return;
+        setSearchOskVisible("osk-prof", true);
+      }
+
+      function applyArtikelWorkspace() {
+        const kbOpen = isProfOskOpen();
         const zone = document.querySelector(".zone-prof");
-        if (zone) zone.classList.toggle("is-kb-open", isProfKeyboardOpen());
+        if (zone) zone.classList.toggle("is-kb-open", kbOpen);
+        const pCard = document.getElementById("prof-card");
+        const listEl = document.getElementById("prof-list");
+        const pIn = document.getElementById("find-prof");
+        const catalog = appDB.artikel || {};
+        const hasItem = !!(lastActiveArticle && catalog[lastActiveArticle]);
+        const exact = findExactArticleKey(pIn && pIn.value);
+        const showCard =
+          !kbOpen &&
+          hasItem &&
+          (articlePickedByUser || !!exact || lastArticleHits.length === 1);
+        if (pCard) {
+          pCard.style.display = showCard ? "flex" : "none";
+          pCard.classList.toggle("is-solo", showCard);
+        }
+        if (listEl) {
+          const hasRows = !!listEl.querySelector(".result-row");
+          listEl.hidden = showCard || !hasRows;
+        }
+        if (showCard) requestAnimationFrame(updateNoteClamp);
       }
 
       function refreshArticleResults() {
@@ -5667,14 +5731,18 @@
           articleMatches(key, catalog[key], query),
         );
         const shown = keys.slice(0, RESULT_LIMIT);
-        const solo = shown.length === 1;
-        if (!solo) articlePickedByUser = false;
-        if (!shown.includes(lastActiveArticle)) {
-          lastActiveArticle = shown[0] || "";
+        lastArticleHits = shown.slice();
+        const exact = findExactArticleKey(query);
+        if (exact) {
+          lastActiveArticle = exact;
+        } else {
+          articlePickedByUser = false;
+          if (!shown.includes(lastActiveArticle)) {
+            lastActiveArticle = shown[0] || "";
+          }
         }
 
-        listEl.hidden = solo;
-        if (solo) {
+        if (!shown.length) {
           listEl.innerHTML = "";
         } else {
           listEl.innerHTML = shown
@@ -5695,39 +5763,44 @@
                 img.src = getSvgPlaceholder(row.dataset.art);
               });
             }
-            row.addEventListener("click", () =>
-              selectArticle(row.dataset.art, true),
-            );
+            row.addEventListener("click", () => selectArticle(row.dataset.art));
           });
         }
 
         const hasQuery = !!query;
         if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
         if (!shown.length) {
-          pCard.style.display = "none";
-          pCard.classList.remove("is-solo");
+          lastActiveArticle = "";
           articlePickedByUser = false;
-          syncProfKeyboardLayout();
+          lastExactClosedQuery = "";
+          if (pCard) {
+            pCard.style.display = "none";
+            pCard.classList.remove("is-solo");
+          }
+          applyArtikelWorkspace();
           return;
         }
-        selectArticle(lastActiveArticle, solo || articlePickedByUser);
+
+        if (exact && lastExactClosedQuery !== query) {
+          lastExactClosedQuery = query;
+          articlePickedByUser = true;
+          renderProfileCard(exact);
+          setProfOskOpen(false);
+          return;
+        }
+        if (!exact) lastExactClosedQuery = "";
+        if (lastActiveArticle) renderProfileCard(lastActiveArticle);
+        applyArtikelWorkspace();
       }
 
-      function selectArticle(key, expanded) {
+      function selectArticle(key) {
         lastActiveArticle = key;
-        if (expanded) articlePickedByUser = true;
+        articlePickedByUser = true;
         renderProfileCard(key);
-        const pCard = document.getElementById("prof-card");
-        const listEl = document.getElementById("prof-list");
-        pCard.style.display = "flex";
-        const fullView = !!expanded;
-        if (listEl) listEl.hidden = fullView;
-        pCard.classList.toggle("is-solo", fullView);
         document.querySelectorAll("#prof-list .result-row").forEach((row) => {
           row.classList.toggle("is-active", row.dataset.art === key);
         });
-        syncProfKeyboardLayout();
-        if (fullView) requestAnimationFrame(updateNoteClamp);
+        setProfOskOpen(false);
       }
 
       function refreshColorResults() {
