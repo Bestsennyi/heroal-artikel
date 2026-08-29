@@ -4260,9 +4260,9 @@
       let lastProfileHint = "";
       let lastActiveColorCode = "";
       let articlePickedByUser = false;
-      let lastExactClosedQuery = "";
       let lastArticleHits = [];
-      let suppressProfOskOpen = false;
+      let lastArtikelQuery = "";
+      let artikelDetailOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
 
@@ -5123,7 +5123,6 @@
           persistCurrentUser(currentUser);
           clearPack();
           checkAuth();
-          setTimeout(openProfOskFromDefault, 0);
         } finally {
           loginInFlight = false;
         }
@@ -5344,12 +5343,15 @@
         });
 
         pIn.addEventListener("input", refreshArticleResults);
-        pIn.addEventListener("focus", onProfSearchActivate);
-        pIn.addEventListener("pointerdown", onProfSearchActivate);
+        pIn.addEventListener("pointerdown", () => {
+          if (!artikelDetailOpen) return;
+          artikelDetailOpen = false;
+          applyArtikelWorkspace();
+        });
         pIn.addEventListener("keydown", (e) => {
           if (e.key !== "Enter") return;
           e.preventDefault();
-          setProfOskOpen(false);
+          confirmArtikelSelection();
         });
         document
           .getElementById("find-color")
@@ -5361,7 +5363,6 @@
           clearInput("find-color");
         });
         mountSearchKeypads();
-        if (currentUser) setTimeout(openProfOskFromDefault, 0);
       }
 
       const RESULT_LIMIT = 80;
@@ -5524,7 +5525,10 @@
           if (visible) input.focus();
         }
         if (visible) setOskLayout(pad, "num");
-        if (oskId === "osk-prof") applyArtikelWorkspace();
+        if (oskId === "osk-prof") {
+          if (visible) artikelDetailOpen = false;
+          applyArtikelWorkspace();
+        }
       }
 
       function hideAllSearchOsk() {
@@ -5565,7 +5569,7 @@
         if (act === "enter") {
           if (isLogin) handleLogin();
           else if (pad.id === "osk-prof") {
-            setProfOskOpen(false);
+            confirmArtikelSelection();
             return;
           } else {
             setSearchOskVisible(pad.id, false);
@@ -5668,28 +5672,31 @@
       }
 
       function setProfOskOpen(open) {
-        if (!open) suppressProfOskOpen = true;
         setSearchOskVisible("osk-prof", open);
         if (!open) {
           const pIn = document.getElementById("find-prof");
           if (pIn && document.activeElement === pIn) pIn.blur();
-          setTimeout(() => {
-            suppressProfOskOpen = false;
-          }, 80);
         }
       }
 
-      function onProfSearchActivate() {
-        if (suppressProfOskOpen) return;
-        if (!isProfOskOpen()) setSearchOskVisible("osk-prof", true);
-        else applyArtikelWorkspace();
-      }
-
-      function openProfOskFromDefault() {
-        if (!currentUser) return;
-        const view = document.getElementById("view-suche");
-        if (!view || !view.classList.contains("active")) return;
-        setSearchOskVisible("osk-prof", true);
+      function confirmArtikelSelection() {
+        const pIn = document.getElementById("find-prof");
+        const exact = findExactArticleKey(pIn && pIn.value);
+        const key = exact || lastArticleHits[0] || lastActiveArticle;
+        if (!key || !(appDB.artikel || {})[key]) {
+          artikelDetailOpen = false;
+          setProfOskOpen(false);
+          applyArtikelWorkspace();
+          return;
+        }
+        lastActiveArticle = key;
+        articlePickedByUser = true;
+        artikelDetailOpen = true;
+        renderProfileCard(key);
+        document.querySelectorAll("#prof-list .result-row").forEach((row) => {
+          row.classList.toggle("is-active", row.dataset.art === key);
+        });
+        setProfOskOpen(false);
       }
 
       function applyArtikelWorkspace() {
@@ -5698,14 +5705,9 @@
         if (zone) zone.classList.toggle("is-kb-open", kbOpen);
         const pCard = document.getElementById("prof-card");
         const listEl = document.getElementById("prof-list");
-        const pIn = document.getElementById("find-prof");
         const catalog = appDB.artikel || {};
         const hasItem = !!(lastActiveArticle && catalog[lastActiveArticle]);
-        const exact = findExactArticleKey(pIn && pIn.value);
-        const showCard =
-          !kbOpen &&
-          hasItem &&
-          (articlePickedByUser || !!exact || lastArticleHits.length === 1);
+        const showCard = !kbOpen && artikelDetailOpen && hasItem;
         if (pCard) {
           pCard.style.display = showCard ? "flex" : "none";
           pCard.classList.toggle("is-solo", showCard);
@@ -5725,6 +5727,10 @@
         const emptyEl = document.getElementById("prof-empty");
         const query = (pIn.value || "").trim().toLowerCase();
         if (pClr) pClr.classList.toggle("is-on", !!query);
+        if (query !== lastArtikelQuery) {
+          artikelDetailOpen = false;
+          lastArtikelQuery = query;
+        }
 
         const catalog = appDB.artikel || {};
         const keys = Object.keys(catalog).filter((key) =>
@@ -5772,7 +5778,6 @@
         if (!shown.length) {
           lastActiveArticle = "";
           articlePickedByUser = false;
-          lastExactClosedQuery = "";
           if (pCard) {
             pCard.style.display = "none";
             pCard.classList.remove("is-solo");
@@ -5781,14 +5786,6 @@
           return;
         }
 
-        if (exact && lastExactClosedQuery !== query) {
-          lastExactClosedQuery = query;
-          articlePickedByUser = true;
-          renderProfileCard(exact);
-          setProfOskOpen(false);
-          return;
-        }
-        if (!exact) lastExactClosedQuery = "";
         if (lastActiveArticle) renderProfileCard(lastActiveArticle);
         applyArtikelWorkspace();
       }
@@ -5796,6 +5793,7 @@
       function selectArticle(key) {
         lastActiveArticle = key;
         articlePickedByUser = true;
+        artikelDetailOpen = true;
         renderProfileCard(key);
         document.querySelectorAll("#prof-list .result-row").forEach((row) => {
           row.classList.toggle("is-active", row.dataset.art === key);
