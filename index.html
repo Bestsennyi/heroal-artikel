@@ -125,6 +125,7 @@
       html:not(.authed) #settings-dialog,
       html:not(.authed) #sync-dialog,
       html:not(.authed) #zoom-dialog,
+      html:not(.authed) #note-dialog,
       html:not(.authed) #photo-dialog {
         visibility: hidden;
         pointer-events: none;
@@ -134,7 +135,7 @@
       #login-overlay {
         position: fixed;
         inset: 0;
-        background: #05080c;
+        background: #0d1322;
         z-index: 1000;
         display: flex;
         flex-direction: column;
@@ -145,9 +146,9 @@
       }
       .login-box {
         width: 100%;
-        max-width: 400px;
-        background: var(--card-bg);
-        border: 1px solid rgba(36, 50, 71, 0.95);
+        max-width: 460px;
+        background: #131b2e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 14px;
         padding: 24px 22px 18px;
         display: flex;
@@ -184,7 +185,7 @@
         text-transform: lowercase;
       }
       .login-logo-product {
-        color: var(--heroal-accent);
+        color: #93c5fd;
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -267,8 +268,11 @@
         cursor: pointer;
         transition: all 0.15s ease-in-out;
       }
-      .numpad-toggle svg {
+      .numpad-toggle svg,
+      .numpad-toggle .ico {
         display: block;
+        width: 20px;
+        height: 20px;
         pointer-events: none;
       }
       .numpad-toggle.is-on {
@@ -292,7 +296,8 @@
       .login-btn:hover,
       .lang-trigger:hover,
       .lang-option:hover {
-        filter: brightness(1.12);
+        filter: none;
+        border-color: #60a5fa;
         transform: translateY(-1px);
       }
       .login-btn:active,
@@ -302,7 +307,9 @@
         filter: brightness(0.96);
       }
       .numpad-toggle:hover {
-        filter: brightness(1.12);
+        filter: none;
+        border: 1.5px solid #60a5fa;
+        background: #243248;
         transform: translateY(calc(-50% - 1px));
       }
       .numpad-toggle:active {
@@ -313,65 +320,36 @@
         min-height: 44px;
         height: 44px;
         margin: 16px 0 14px;
-        background: var(--heroal-accent);
-        color: #ffffff;
-        border: 1px solid rgba(59, 130, 246, 0.9);
+        background: #93c5fd;
+        color: #0d1322;
+        border: 1px solid #93c5fd;
         border-radius: 10px;
         font-size: 15px;
         font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.16);
+        box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.28);
       }
       button.login-btn:hover {
-        background: #2563eb;
-        color: #ffffff;
+        background: #bfdbfe;
+        color: #0d1322;
+        border-color: #bfdbfe;
         filter: none;
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.45);
+        box-shadow: 0 0 20px rgba(147, 197, 253, 0.45);
       }
       button.login-btn:active {
-        background: #1d4ed8;
-        color: #ffffff;
+        background: #7eb8f8;
+        color: #0d1322;
+        border-color: #7eb8f8;
         filter: none;
         transform: scale(0.97);
-        box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
       }
       .login-numpad {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
         width: 100%;
+        margin-bottom: 4px;
       }
-      .login-numpad.is-hidden,
       .login-numpad.is-hidden {
         display: none;
-      }
-      .numpad-key {
-        min-height: 56px;
-        height: 56px;
-        border-radius: 10px;
-        border: 1.5px solid #334155;
-        background: #1e293b;
-        color: #f8fafc;
-        font-size: clamp(18px, 4.2vw, 22px);
-        font-weight: 500;
-        cursor: pointer;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out,
-          box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
-      }
-      .numpad-key:hover {
-        background: #243248;
-        border: 1.5px solid #60a5fa;
-        transform: translateY(-2px);
-      }
-      .numpad-key:active,
-      .numpad-key.is-pressed {
-        background: #1e293b;
-        border: 2px solid var(--heroal-accent);
-        color: #f8fafc;
-        box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
-        transform: scale(0.96);
       }
       .login-msg {
         font-size: 12px;
@@ -522,9 +500,9 @@
           height: 48px;
           font-size: 16px;
         }
-        .numpad-key {
-          min-height: 56px;
-          height: 56px;
+        .login-box .osk-key {
+          min-height: 52px;
+          height: 52px;
         }
         .lang-trigger,
         .lang-option {
@@ -547,14 +525,22 @@
         .login-btn {
           margin: 12px 0 12px;
         }
-        .numpad-key {
-          min-height: 50px;
-          height: 50px;
+        .login-box .osk-key {
+          min-height: 42px;
+          height: 42px;
+          font-size: 14px;
+        }
+        .login-box .osk-num .osk-key[data-osk-char] {
+          font-size: 20px;
+        }
+        .login-box .osk-num .osk-key-enter,
+        .login-box .osk-row .osk-key-enter {
+          font-size: 22px;
         }
       }
       @media (min-width: 900px) {
         .login-box {
-          max-width: 360px;
+          max-width: 460px;
           padding: 24px 22px 16px;
         }
         .login-logo {
@@ -582,13 +568,9 @@
           height: 40px;
           font-size: 14px;
         }
-        .login-numpad {
-          gap: 6px;
-        }
-        .numpad-key {
-          min-height: 52px;
-          height: 52px;
-          font-size: 20px;
+        .login-box .osk-key {
+          min-height: 48px;
+          height: 48px;
         }
         .lang-trigger {
           min-height: 32px;
@@ -605,16 +587,11 @@
       }
       @media (min-width: 1280px) {
         .login-box {
-          max-width: 340px;
+          max-width: 460px;
           padding: 22px 20px 16px;
         }
         .login-logo {
           font-size: 32px;
-        }
-        .numpad-key {
-          min-height: 52px;
-          height: 52px;
-          font-size: 20px;
         }
       }
       @media (min-width: 900px) and (pointer: coarse) {
@@ -627,10 +604,9 @@
           height: 44px;
           font-size: 15px;
         }
-        .numpad-key {
-          min-height: 56px;
-          height: 56px;
-          font-size: 22px;
+        .login-box .osk-key {
+          min-height: 52px;
+          height: 52px;
         }
         .lang-trigger,
         .lang-option {
@@ -700,7 +676,7 @@
         color: #ffffff;
       }
       .brand-title .brand-product {
-        color: #60a5fa;
+        color: #93c5fd;
         text-shadow: none;
       }
       .btn-quick {
@@ -1026,6 +1002,11 @@
         flex: 1;
         min-height: 0;
       }
+      #view-ausschuss,
+      #view-auskunft {
+        overflow: hidden;
+        padding: 10px 12px 8px;
+      }
 
       /* Phone: stacked 60 / 40. Tablet+Desktop: 50 / 50 columns. */
       .suche-grid {
@@ -1068,11 +1049,38 @@
         min-height: 0;
         overflow-x: hidden;
         overflow-y: auto;
-        padding: 0 12px 48px;
+        padding: 0 12px 12px;
         display: flex;
         flex-direction: column;
         gap: 8px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .zone-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .zone-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .zone-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 9999px;
+      }
+      .zone-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Touch terminals scroll by panning content; 6px thumbs are mouse-only. */
+      .zone-scroll,
+      .profile-note-text,
+      .acc-list,
+      .note-modal-card,
+      .settings-card,
+      #login-overlay {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
       }
       .zone-empty {
         color: var(--text-sub);
@@ -1093,6 +1101,14 @@
         max-width: 680px;
         margin: 0 auto;
       }
+      .result-list[hidden] {
+        display: none;
+      }
+      .zone-prof .zone-scroll:has(.display-card-prof.is-solo) {
+        overflow: hidden;
+        padding-bottom: 12px;
+        gap: 0;
+      }
       .result-row {
         display: flex;
         align-items: center;
@@ -1111,14 +1127,41 @@
         border-color: rgba(59, 130, 246, 0.55);
         background: rgba(59, 130, 246, 0.08);
       }
+      .result-row-thumb {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        background: #0b0f19;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 3px;
+      }
+      .result-row-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        pointer-events: none;
+      }
+      .result-row-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+      }
       .result-row-code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
         font-size: 13px;
         font-weight: 700;
         color: #fff;
         min-width: 52px;
       }
       .result-row-name {
-        font-size: 12px;
+        font-size: 0.875rem;
         color: #cbd5e1;
         flex: 1;
         min-width: 0;
@@ -1242,7 +1285,9 @@
         height: 18px;
       }
       .search-icon-btn:hover {
-        filter: brightness(1.12);
+        filter: none;
+        border: 1.5px solid #60a5fa;
+        background: #243248;
       }
       .search-icon-btn:active {
         transform: scale(0.95);
@@ -1397,31 +1442,45 @@
         background: #131b2e;
         border: 1px solid #1e293b;
         border-radius: 16px;
-        padding: 10px;
+        padding: 8px 10px 12px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
         flex: 0 0 auto;
         min-height: 0;
         width: 100%;
         max-width: 680px;
         margin: 0 auto;
       }
+      .display-card-prof.is-solo {
+        flex: 1 1 0;
+        max-height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        padding-bottom: 8px;
+      }
 
       .profile-drawing-box {
         width: 100%;
-        height: 180px;
+        height: 140px;
         flex: 0 0 auto;
-        background: #ffffff;
-        border-radius: 6px;
+        background: #0b0f19;
+        border-radius: 12px;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 6px;
+        padding: 8px;
         position: relative;
         cursor: zoom-in;
       }
+      .display-card-prof.is-solo .profile-drawing-box {
+        flex: 1 1 0;
+        height: auto;
+        min-height: 160px;
+      }
       .profile-drawing-img {
+        width: 100%;
+        height: 100%;
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
@@ -1444,8 +1503,24 @@
         display: none;
         gap: 6px;
         overflow-x: auto;
+        overflow-y: hidden;
         flex-shrink: 0;
         padding: 2px 0;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        touch-action: pan-x;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .profile-thumbs::-webkit-scrollbar {
+        height: 6px;
+      }
+      .profile-thumbs::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .profile-thumbs::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 9999px;
       }
       .profile-thumbs.has-thumbs {
         display: flex;
@@ -1454,9 +1529,9 @@
         width: 52px;
         height: 52px;
         padding: 2px;
-        background: #fff;
+        background: #0b0f19;
         border: 2px solid var(--border-color);
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
         flex-shrink: 0;
         display: flex;
@@ -1480,11 +1555,32 @@
         text-align: center;
         flex-shrink: 0;
       }
+      .display-card-prof .info-details {
+        text-align: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
       .info-title-wrap {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
+      }
+      .info-heading {
+        display: block;
+        width: 100%;
+        margin: 0;
+        text-align: center;
+      }
+      .info-name {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.3;
+        letter-spacing: 0.025em;
       }
       .info-title {
         font-size: 14px;
@@ -1503,10 +1599,64 @@
         display: inline-flex;
         align-items: center;
         gap: 3px;
+        margin-left: 8px;
+        flex-shrink: 0;
       }
       .btn-copy:hover {
         color: #fff;
         border-color: var(--heroal-light-blue);
+      }
+      .display-card-prof .btn-copy:hover {
+        color: #60a5fa;
+        border-color: #60a5fa;
+      }
+      .btn-copy-action {
+        margin: 0;
+        padding: 6px 12px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease,
+          border-color 0.15s ease;
+      }
+      .btn-copy-action .ico {
+        width: 13px;
+        height: 13px;
+      }
+      .btn-copy-action:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+      .btn-copy-action:active {
+        transform: scale(0.95);
+      }
+      .btn-copy-action:disabled {
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
+      }
+      .btn-copy-action.is-copied {
+        color: #86efac;
+        border-color: rgba(74, 222, 128, 0.4);
+      }
+      .info-copy-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 8px;
+        width: 100%;
+        flex-shrink: 0;
       }
       .info-subtitle {
         font-size: 12px;
@@ -1520,11 +1670,53 @@
         flex-wrap: wrap;
         gap: 4px;
       }
+      .display-card-prof .info-tags-row {
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+      }
       .tag-chip {
         font-size: 10px;
         font-weight: 600;
         padding: 2px 8px;
         border-radius: 4px;
+      }
+      .display-card-prof .info-tags-row .tag-chip {
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 8px;
+      }
+      .display-card-prof .info-artnr-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+      }
+      .display-card-prof .tag-artnr {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+        color: #38bdf8;
+        background: transparent;
+        border: 1px solid rgba(56, 189, 248, 0.6);
+        padding: 2px 14px;
+        border-radius: 8px;
+        line-height: 1.4;
+        box-shadow: none;
+      }
+      .display-card-prof .info-tags-row .tag-size {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fcd34d;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .display-card-prof .info-tags-row .tag-kat {
+        background: rgba(168, 85, 247, 0.2);
+        color: #d8b4fe;
+        border: 1px solid rgba(168, 85, 247, 0.4);
       }
       .tag-size {
         background: #261f0c;
@@ -1545,14 +1737,109 @@
       }
 
       .profile-note {
-        font-size: 11px;
-        background: #231e13;
-        color: #fde047;
-        padding: 4px 8px;
-        border-radius: 5px;
-        border-left: 3px solid #eab308;
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 0;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(51, 65, 85, 0.6);
+        color: #e2e8f0;
+        padding: 10px 12px;
+        border-radius: 12px;
         text-align: left;
+        flex: 0 1 auto;
+      }
+      .profile-note.is-on {
+        display: flex;
+      }
+      .display-card-prof.is-solo .profile-note.is-on {
+        flex: 0 1 auto;
+        min-height: 0;
+        max-height: min(120px, 16vh);
+      }
+      .profile-note-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         flex-shrink: 0;
+      }
+      .profile-note-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+      .profile-note-title .ico {
+        width: 16px;
+        height: 16px;
+        color: #93c5fd;
+        flex-shrink: 0;
+      }
+      .btn-note-full {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        padding: 4px 10px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: #38bdf8;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      }
+      .btn-note-full.is-on {
+        display: inline-flex;
+      }
+      .btn-note-full:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #7dd3fc;
+      }
+      .btn-note-full .ico {
+        width: 13px;
+        height: 13px;
+      }
+      .profile-note-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .profile-note-text {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #e2e8f0;
+        white-space: pre-line;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 100%;
+        height: 100%;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .display-card-prof.is-solo .profile-note-text {
+        max-height: none;
+        height: 100%;
+      }
+      .profile-note-text::-webkit-scrollbar {
+        width: 6px;
+      }
+      .profile-note-text::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .profile-note-text::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 9999px;
+      }
+      .profile-note-text::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
 
       /* Color Mobile Card */
@@ -1632,9 +1919,23 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+        overflow-x: hidden;
         overflow-y: auto;
-        height: 100%;
-        padding-bottom: 60px;
+        flex: 1 1 0;
+        min-height: 0;
+        padding-bottom: 16px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .acc-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .acc-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .acc-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 9999px;
       }
       .acc-item {
         background: var(--card-bg);
@@ -1779,9 +2080,14 @@
         .display-card-color {
           flex: 0 0 auto;
           min-height: 0;
-          padding: 12px;
+          padding: 10px 12px 12px;
           gap: 8px;
           border-radius: 16px;
+        }
+        .display-card-prof.is-solo {
+          flex: 1 1 0;
+          max-height: 100%;
+          padding-bottom: 8px;
         }
         .display-card-color {
           display: flex;
@@ -1805,12 +2111,28 @@
         .info-title {
           font-size: 15px;
         }
+        .display-card-prof .info-name {
+          font-size: 1.25rem;
+        }
         .info-subtitle {
           font-size: 12px;
         }
         .tag-chip {
           font-size: 11px;
           padding: 2px 8px;
+        }
+        .display-card-prof .info-tags-row .tag-chip {
+          font-size: 0.875rem;
+          padding: 6px 14px;
+        }
+        .display-card-prof .tag-artnr {
+          font-size: 1.125rem;
+          padding: 2px 14px;
+        }
+        .display-card-prof.is-solo .profile-drawing-box {
+          flex: 1 1 0;
+          height: auto;
+          min-height: 180px;
         }
         .acc-list {
           padding-bottom: 8px;
@@ -2083,8 +2405,73 @@
       }
       .zoom-modal.active,
       .settings-modal.active,
-      .photo-modal.active {
+      .photo-modal.active,
+      .note-modal.active {
         display: flex;
+      }
+      .note-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.72);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+      }
+      .note-modal-card {
+        width: 100%;
+        max-width: 560px;
+        max-height: min(80vh, 640px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: #131b2e;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 16px;
+        padding: 18px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .note-modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #f8fafc;
+      }
+      .note-modal-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .note-modal-close {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .note-modal-close:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .note-modal-body {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.55;
+        color: #e2e8f0;
+        white-space: pre-wrap;
       }
       .zoom-img-view {
         max-width: 100%;
@@ -2112,6 +2499,9 @@
       .settings-card {
         width: 100%;
         max-width: 440px;
+        max-height: min(90vh, 720px);
+        overflow-x: hidden;
+        overflow-y: auto;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 14px;
@@ -2119,6 +2509,8 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
       }
       .settings-title {
         font-size: 16px;
@@ -2210,6 +2602,12 @@
         <line x1="11" y1="8" x2="11" y2="14"/>
         <line x1="8" y1="11" x2="14" y2="11"/>
       </symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 3 21 3 21 9"/>
+        <polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/>
+        <line x1="3" y1="21" x2="10" y2="14"/>
+      </symbol>
       <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"/>
         <line x1="6" y1="6" x2="18" y2="18"/>
@@ -2242,6 +2640,11 @@
         <circle cx="8.5" cy="7.5" r="0.6" fill="currentColor"/>
         <circle cx="6.5" cy="12.5" r="0.6" fill="currentColor"/>
         <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+      </symbol>
+      <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
       </symbol>
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"/>
@@ -2288,51 +2691,20 @@
             type="button"
             class="numpad-toggle"
             id="btn-numpad-toggle"
-            aria-label="Numpad"
+            aria-label="Keyboard"
             aria-pressed="false"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2" />
-              <g fill="currentColor" stroke="none">
-                <rect x="5" y="7" width="2" height="2" rx="0.4" />
-                <rect x="8.5" y="7" width="2" height="2" rx="0.4" />
-                <rect x="12" y="7" width="2" height="2" rx="0.4" />
-                <rect x="15.5" y="7" width="2" height="2" rx="0.4" />
-                <rect x="5" y="10.5" width="2" height="2" rx="0.4" />
-                <rect x="8.5" y="10.5" width="2" height="2" rx="0.4" />
-                <rect x="12" y="10.5" width="2" height="2" rx="0.4" />
-                <rect x="15.5" y="10.5" width="2" height="2" rx="0.4" />
-                <rect x="7" y="14.5" width="10" height="2" rx="0.5" />
-              </g>
-            </svg>
+            <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
           </button>
         </div>
         <div class="login-msg" id="login-error-msg"></div>
-        <div class="login-numpad is-hidden" id="login-numpad" role="group" aria-label="Numpad">
-          <button type="button" class="numpad-key" data-key="1">1</button>
-          <button type="button" class="numpad-key" data-key="2">2</button>
-          <button type="button" class="numpad-key" data-key="3">3</button>
-          <button type="button" class="numpad-key" data-key="4">4</button>
-          <button type="button" class="numpad-key" data-key="5">5</button>
-          <button type="button" class="numpad-key" data-key="6">6</button>
-          <button type="button" class="numpad-key" data-key="7">7</button>
-          <button type="button" class="numpad-key" data-key="8">8</button>
-          <button type="button" class="numpad-key" data-key="9">9</button>
-          <button type="button" class="numpad-key" data-key="clear" aria-label="Clear">C</button>
-          <button type="button" class="numpad-key" data-key="0">0</button>
-          <button type="button" class="numpad-key" data-key="back" aria-label="Backspace">⌫</button>
-        </div>
+        <div
+          class="osk login-numpad is-hidden"
+          id="login-numpad"
+          data-target="input-login-nr"
+          role="group"
+          aria-label="Keyboard"
+        ></div>
         <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
           Anmelden
         </button>
@@ -2414,6 +2786,9 @@
           <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
           <span class="btn-quick-label" data-i18n="nav_info">Auskunft</span>
         </button>
+      </div>
+
+      <div class="header-right">
         <button
           type="button"
           class="btn-quick admin-only"
@@ -2423,9 +2798,6 @@
           <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
           <span class="btn-quick-label" data-i18n="photo_capture">Foto erfassen</span>
         </button>
-      </div>
-
-      <div class="header-right">
         <button
           type="button"
           id="netStatus"
@@ -2576,29 +2948,76 @@
               <div id="prof-thumbs" class="profile-thumbs"></div>
 
               <div class="info-details">
-                <div class="info-title-wrap">
-                  <div class="info-title" id="prof-title-de">--</div>
-                  <button
-                    class="btn-copy"
-                    id="btn-copy-prof"
-                    title="Artikelnummer kopieren"
-                  >
-                    <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                    <span data-i18n="copy_btn">Copy</span>
-                  </button>
+                <div class="info-heading">
+                  <span class="info-name" id="prof-title-de">--</span>
                 </div>
-                <div class="info-subtitle" id="prof-title-sub"></div>
                 <div class="info-tags-row">
                   <span class="tag-chip tag-size" id="prof-size">--</span>
                   <span class="tag-chip tag-kat" id="prof-kat">--</span>
                 </div>
+                <div class="info-artnr-row">
+                  <span class="tag-artnr" id="prof-artnr">--</span>
+                </div>
               </div>
 
-              <div
-                id="prof-note"
-                class="profile-note"
-                style="display: none"
-              ></div>
+              <div id="prof-note" class="profile-note">
+                <div class="profile-note-head">
+                  <div class="profile-note-title">
+                    <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
+                    <span data-i18n="hint_title">Hinweis / Beschreibung</span>
+                  </div>
+                  <button
+                    type="button"
+                    id="prof-note-more"
+                    class="btn-note-full"
+                    data-i18n-title="hint_more"
+                    title="Vollansicht"
+                    aria-label="Vollansicht"
+                  >
+                    <svg class="ico" aria-hidden="true"><use href="#i-expand"></use></svg>
+                    <span data-i18n="hint_more">Vollansicht</span>
+                  </button>
+                </div>
+                <div class="profile-note-body">
+                  <p id="prof-note-text" class="profile-note-text"></p>
+                </div>
+              </div>
+
+              <div class="info-copy-bar">
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-prof"
+                  data-i18n-title="copy_artnr_title"
+                  title="Artikelnummer kopieren"
+                  aria-label="Artikelnummer kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_artnr_btn">Art.-Nr.</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-prof-name"
+                  data-i18n-title="copy_name_title"
+                  title="Bezeichnung kopieren"
+                  aria-label="Bezeichnung kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_name_btn">Name</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-prof-hint"
+                  data-i18n-title="copy_hint_title"
+                  title="Hinweis kopieren"
+                  aria-label="Hinweis kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_hint_btn">Hinweis</span>
+                </button>
+              </div>
             </div>
               <div id="prof-list" class="result-list"></div>
             </div>
@@ -2755,6 +3174,31 @@
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
       <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
+    </div>
+
+    <div id="note-dialog" class="note-modal" aria-hidden="true">
+      <div class="note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-dialog-title">
+        <div class="note-modal-head">
+          <span id="note-dialog-title" data-i18n="hint_title">Hinweis / Beschreibung</span>
+          <div class="note-modal-actions">
+            <button
+              type="button"
+              class="btn-copy-action"
+              id="note-dialog-copy"
+              data-i18n-title="copy_hint_title"
+              title="Hinweis kopieren"
+              aria-label="Hinweis kopieren"
+            >
+              <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+              <span data-i18n="copy_hint_btn">Hinweis</span>
+            </button>
+            <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close">
+              <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+            </button>
+          </div>
+        </div>
+        <p id="note-dialog-body" class="note-modal-body"></p>
+      </div>
     </div>
 
     <!-- 6. SYNC PROGRESS MODAL -->
@@ -2920,6 +3364,17 @@
           ph_guide: "Thema suchen...",
           copy_btn: "Copy",
           zoom_btn: "Zoom",
+          hint_title: "Hinweis / Beschreibung",
+          hint_system: "System",
+          hint_masse: "Masse",
+          hint_more: "Vollansicht",
+          copy_artnr_title: "Artikelnummer kopieren",
+          copy_name_title: "Bezeichnung kopieren",
+          copy_hint_title: "Hinweis kopieren",
+          copy_artnr_btn: "Art.-Nr.",
+          copy_name_btn: "Name",
+          copy_hint_btn: "Hinweis",
+          copied_short: "Kopiert!",
           settings_title: "Einstellungen",
           settings_save: "Speichern",
           settings_reload: "Alle Zeichnungen neu laden",
@@ -3005,6 +3460,17 @@
           ph_guide: "Search topic...",
           copy_btn: "Copy",
           zoom_btn: "Zoom",
+          hint_title: "Note / Description",
+          hint_system: "System",
+          hint_masse: "Dimensions",
+          hint_more: "Full View",
+          copy_artnr_title: "Copy article number",
+          copy_name_title: "Copy name",
+          copy_hint_title: "Copy note",
+          copy_artnr_btn: "Art. no.",
+          copy_name_btn: "Name",
+          copy_hint_btn: "Note",
+          copied_short: "Copied!",
           settings_title: "Settings",
           settings_save: "Save",
           settings_reload: "Reload all drawings",
@@ -3090,6 +3556,17 @@
           ph_guide: "Искать тему...",
           copy_btn: "Копировать",
           zoom_btn: "Zoom",
+          hint_title: "Примечание / Описание",
+          hint_system: "Система",
+          hint_masse: "Размеры",
+          hint_more: "Полный обзор",
+          copy_artnr_title: "Копировать артикул",
+          copy_name_title: "Копировать название",
+          copy_hint_title: "Копировать примечание",
+          copy_artnr_btn: "Art.-Nr.",
+          copy_name_btn: "Name",
+          copy_hint_btn: "Hinweis",
+          copied_short: "Kopiert!",
           settings_title: "Настройки",
           settings_save: "Сохранить",
           settings_reload: "Загрузить все чертежи заново",
@@ -3255,6 +3732,11 @@
         document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
           el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
         });
+        document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+          const label = t(el.getAttribute("data-i18n-title"));
+          el.title = label;
+          el.setAttribute("aria-label", label);
+        });
         const footerEl = document.getElementById("login-footer-txt");
         if (footerEl) footerEl.textContent = I18N_FALLBACK.de.footer_text;
         const loginInput = document.getElementById("input-login-nr");
@@ -3271,6 +3753,7 @@
         setTxt("nav-lbl-ausschuss", t("nav_scrap"));
         setTxt("nav-lbl-auskunft", t("nav_info"));
         remountSearchKeypads();
+        syncNumpadVisibility();
         const footerBrand = document.querySelector(".app-footer-left");
         if (footerBrand) footerBrand.textContent = t("footer_brand");
         setIdbFooter();
@@ -3385,12 +3868,32 @@
         return de != null ? String(de).trim() : "";
       }
 
+      function escapeHtml(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
       function articleNr(item, fallback) {
         return String((item && (item.art_nr || item.artnr)) || fallback || "").trim();
       }
 
       function articleCategory(item) {
         return locField(item, "kategorie", appLang) || String((item && item.category) || "").trim();
+      }
+
+      function articleMasse(item) {
+        return locField(item, "masse", appLang) || String((item && (item.masse || item.size)) || "").trim();
+      }
+
+      function articleSystem(item) {
+        return String((item && item.system) || "").trim();
+      }
+
+      function articleHint(item) {
+        return locField(item, "hinweis", appLang);
       }
 
       function articleImageList(item) {
@@ -3619,6 +4122,9 @@
             name_de: "Blende FMR HC oben",
             category: "Blenden",
             system: "FMR HC",
+            masse_de: "FMR HC",
+            hinweis_de:
+              "Blende oben für FMR HC. Bei Verpackung auf Kantenschutz achten. Zusätzlich Folie verwenden, wenn die Sichtseite lackiert ist. Nicht auf der Dichtungsfläche stapeln. Hinweis gilt auch für Varianten mit Sonderlänge und für Kommissionen mit gemischten Farbtönen.",
             image_url:
               "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
             drive_folder_id: "",
@@ -3629,6 +4135,8 @@
             name_de: "F-HTF-IS DRP (Insektenschutz)",
             category: "Führungen",
             system: "Rollladen + ISG",
+            masse_de: "Rollladen + ISG",
+            hinweis_de: "",
             image_url: "",
             drive_folder_id: "",
           },
@@ -3726,7 +4234,10 @@
       let currentUser = readStoredUser();
       let loginInFlight = false;
       let lastActiveArticle = "";
+      let lastActiveArticleName = "";
+      let lastProfileHint = "";
       let lastActiveColorCode = "";
+      let articlePickedByUser = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
 
@@ -3963,20 +4474,6 @@
         }
         const numpadToggle = document.getElementById("btn-numpad-toggle");
         if (numpadToggle) numpadToggle.addEventListener("click", toggleNumpad);
-        document.querySelectorAll("#login-numpad .numpad-key").forEach((btn) => {
-          const pressOn = () => btn.classList.add("is-pressed");
-          const pressOff = () => btn.classList.remove("is-pressed");
-          btn.addEventListener("pointerdown", pressOn);
-          btn.addEventListener("pointerup", pressOff);
-          btn.addEventListener("pointercancel", pressOff);
-          btn.addEventListener("pointerleave", pressOff);
-          btn.addEventListener("click", () => {
-            const key = btn.dataset.key;
-            if (key === "back") backspacePack();
-            else if (key === "clear") clearPack();
-            else appendPackDigit(key);
-          });
-        });
         const langTrigger = document.getElementById("btn-lang-trigger");
         if (langTrigger) {
           langTrigger.addEventListener("click", (e) => {
@@ -4072,8 +4569,14 @@
           id: String(it.id || ""),
           art_nr: artNr || String(key),
           name_de: it.name_de || it.de || "",
+          name_en: it.name_en || "",
+          name_ru: it.name_ru || "",
           category: it.category || it.kategorie_de || it.kat || "",
-          system: it.system || it.masse_de || it.size || "",
+          system: it.system || "",
+          masse_de: it.masse_de || it.size || "",
+          hinweis_de: it.hinweis_de || it.hinweis || "",
+          hinweis_en: it.hinweis_en || "",
+          hinweis_ru: it.hinweis_ru || "",
           image_url: image,
           drive_folder_id: String(it.drive_folder_id || ""),
         };
@@ -4226,6 +4729,7 @@
         window.addEventListener("keydown", (e) => {
           if (isLoginVisible() || !currentUser) return;
           if (e.key === "Escape") {
+            if (closeNoteModal()) return;
             closeZoom();
             closeSettings();
             closePhotoCapture();
@@ -4311,17 +4815,56 @@
       }
 
       // Copy Helper
-      function copyToClipboard(text, label) {
+      function copyToClipboard(text, label, toastMsg, onDone) {
         if (!text) return;
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(tf("copied", { label: label || text }));
-        });
+        const done = () => {
+          if (onDone) onDone();
+          else showToast(toastMsg || tf("copied", { label: label || text }));
+        };
+        const fallback = () => {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand("copy");
+          } catch (e) {}
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(() => {
+            fallback();
+            done();
+          });
+        } else {
+          fallback();
+          done();
+        }
+      }
+
+      function flashCopyButton(btn) {
+        if (!btn) return;
+        const label = btn.querySelector("[data-i18n]");
+        const useEl = btn.querySelector("use");
+        const key = label && label.getAttribute("data-i18n");
+        btn.classList.add("is-copied");
+        if (label) label.textContent = t("copied_short");
+        if (useEl) useEl.setAttribute("href", "#i-check");
+        clearTimeout(btn._copyFlash);
+        btn._copyFlash = setTimeout(() => {
+          btn.classList.remove("is-copied");
+          if (label && key) label.textContent = t(key);
+          if (useEl) useEl.setAttribute("href", "#i-copy");
+        }, 1500);
       }
 
       // Fallback SVG Drawing
       function getSvgPlaceholder(artNr) {
         const cleanArt = artNr || "heroal";
-        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%23f8fafc" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23cbd5e1" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23003a79" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2364748b" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
+        return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%230b0f19" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23334155" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%2393c5fd" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
       }
 
       function userDisplayName(user) {
@@ -4430,7 +4973,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog, #photo-dialog",
+            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -4712,13 +5255,57 @@
       function initSearchHandlers() {
         const pIn = document.getElementById("find-prof");
         const copyProfBtn = document.getElementById("btn-copy-prof");
+        const copyProfNameBtn = document.getElementById("btn-copy-prof-name");
+        const copyProfHintBtn = document.getElementById("btn-copy-prof-hint");
         const copyColBtn = document.getElementById("btn-copy-col");
         const hexChip = document.getElementById("col-hex");
+        const noteMore = document.getElementById("prof-note-more");
+        const noteDlg = document.getElementById("note-dialog");
+        const noteClose = document.getElementById("note-dialog-close");
+        const noteCopy = document.getElementById("note-dialog-copy");
 
         copyProfBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          copyToClipboard(lastActiveArticle, "Art.-Nr.");
+          if (!lastActiveArticle) return;
+          flashCopyButton(copyProfBtn);
+          copyToClipboard(lastActiveArticle, "Art.-Nr.", t("copied_short"), () => {});
         });
+        if (copyProfNameBtn) {
+          copyProfNameBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastActiveArticleName) return;
+            flashCopyButton(copyProfNameBtn);
+            copyToClipboard(lastActiveArticleName, "", t("copied_short"), () => {});
+          });
+        }
+        if (copyProfHintBtn) {
+          copyProfHintBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastProfileHint) return;
+            flashCopyButton(copyProfHintBtn);
+            copyToClipboard(lastProfileHint, "", t("copied_short"), () => {});
+          });
+        }
+        if (noteMore) {
+          noteMore.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openNoteModal();
+          });
+        }
+        if (noteClose) noteClose.addEventListener("click", closeNoteModal);
+        if (noteCopy) {
+          noteCopy.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastProfileHint) return;
+            flashCopyButton(noteCopy);
+            copyToClipboard(lastProfileHint, "", t("copied_short"), () => {});
+          });
+        }
+        if (noteDlg) {
+          noteDlg.addEventListener("click", (e) => {
+            if (e.target === noteDlg) closeNoteModal();
+          });
+        }
 
         copyColBtn.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -4906,7 +5493,7 @@
       }
 
       function hideAllSearchOsk() {
-        document.querySelectorAll(".osk[data-target]").forEach((pad) => {
+        document.querySelectorAll(".search-stack .osk[data-target]").forEach((pad) => {
           setSearchOskVisible(pad.id, false);
         });
       }
@@ -4927,6 +5514,7 @@
       function handleOskKey(pad, btn) {
         const input = document.getElementById(pad.getAttribute("data-target"));
         if (!input) return;
+        const isLogin = pad.id === "login-numpad";
         const act = btn.getAttribute("data-osk-act");
         const ch = btn.getAttribute("data-osk-char");
         if (act === "abc") {
@@ -4940,7 +5528,8 @@
           return;
         }
         if (act === "enter") {
-          setSearchOskVisible(pad.id, false);
+          if (isLogin) handleLogin();
+          else setSearchOskVisible(pad.id, false);
           input.focus();
           return;
         }
@@ -4993,7 +5582,14 @@
 
       function articleMatches(key, item, query) {
         if (!query) return false;
-        const hay = [key, articleNr(item, key), item.name_de]
+        const hay = [
+          key,
+          articleNr(item, key),
+          locField(item, "name", appLang),
+          item.name_de,
+          item.name_en,
+          item.name_ru,
+        ]
           .join(" ")
           .toLowerCase();
         return hay.includes(query);
@@ -5029,33 +5625,61 @@
           articleMatches(key, catalog[key], query),
         );
         const shown = keys.slice(0, RESULT_LIMIT);
-        listEl.innerHTML = shown
-          .map((key) => {
-            const item = catalog[key];
-            const active = key === lastActiveArticle ? " is-active" : "";
-            return `<button type="button" class="result-row${active}" data-art="${key}"><span class="result-row-code">${key}</span><span class="result-row-name">${locField(item, "name", appLang) || item.name_de || ""}</span></button>`;
-          })
-          .join("");
-        listEl.querySelectorAll(".result-row").forEach((row) => {
-          row.addEventListener("click", () => selectArticle(row.dataset.art));
-        });
+        const solo = shown.length === 1;
+        if (!solo) articlePickedByUser = false;
+        if (!shown.includes(lastActiveArticle)) {
+          lastActiveArticle = shown[0] || "";
+        }
+
+        listEl.hidden = solo;
+        if (solo) {
+          listEl.innerHTML = "";
+        } else {
+          listEl.innerHTML = shown
+            .map((key) => {
+              const item = catalog[key];
+              const active = key === lastActiveArticle ? " is-active" : "";
+              const name = locField(item, "name", appLang) || item.name_de || "";
+              const thumb =
+                articleImageList(item)[0] ||
+                getSvgPlaceholder(articleNr(item, key));
+              return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-code">${escapeHtml(key)}</span><span class="result-row-name">${escapeHtml(name)}</span></span></button>`;
+            })
+            .join("");
+          listEl.querySelectorAll(".result-row").forEach((row) => {
+            const img = row.querySelector("img");
+            if (img) {
+              img.addEventListener("error", () => {
+                img.src = getSvgPlaceholder(row.dataset.art);
+              });
+            }
+            row.addEventListener("click", () =>
+              selectArticle(row.dataset.art, true),
+            );
+          });
+        }
 
         const hasQuery = !!query;
         if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
         if (!shown.length) {
           pCard.style.display = "none";
+          pCard.classList.remove("is-solo");
+          articlePickedByUser = false;
           return;
         }
-        if (!shown.includes(lastActiveArticle)) {
-          lastActiveArticle = shown[0];
-        }
-        selectArticle(lastActiveArticle);
+        selectArticle(lastActiveArticle, solo || articlePickedByUser);
       }
 
-      function selectArticle(key) {
+      function selectArticle(key, expanded) {
         lastActiveArticle = key;
+        if (expanded) articlePickedByUser = true;
         renderProfileCard(key);
-        document.getElementById("prof-card").style.display = "flex";
+        const pCard = document.getElementById("prof-card");
+        const listEl = document.getElementById("prof-list");
+        pCard.style.display = "flex";
+        const listHidden =
+          !listEl || listEl.hidden || !listEl.querySelector(".result-row");
+        pCard.classList.toggle("is-solo", listHidden || !!expanded);
         document.querySelectorAll("#prof-list .result-row").forEach((row) => {
           row.classList.toggle("is-active", row.dataset.art === key);
         });
@@ -5179,17 +5803,17 @@
         const it = (appDB.artikel || {})[artnr];
         if (!it) return;
         const nr = articleNr(it, artnr);
-        document.getElementById("prof-title-de").innerText =
-          `${nr} — ${locField(it, "name", appLang) || it.name_de || ""}`;
-        const subEl = document.getElementById("prof-title-sub");
-        if (subEl) {
-          subEl.innerText = "";
-          subEl.style.display = "none";
-        }
+        const name = locField(it, "name", appLang) || it.name_de || "";
+        const artnrEl = document.getElementById("prof-artnr");
+        if (artnrEl) artnrEl.innerText = nr;
+        document.getElementById("prof-title-de").innerText = name;
+        lastActiveArticleName = name;
         const sizeEl = document.getElementById("prof-size");
-        const system = String(it.system || "").trim();
-        if (system) {
-          sizeEl.innerText = system;
+        const masse = articleMasse(it);
+        const system = articleSystem(it);
+        const sizeLabel = masse || system;
+        if (sizeLabel) {
+          sizeEl.innerText = sizeLabel;
           sizeEl.style.display = "";
         } else {
           sizeEl.innerText = "";
@@ -5200,9 +5824,52 @@
         katEl.innerText = category || "heroal";
 
         renderProfileGallery(it, nr);
+        renderProfileNote(it);
+      }
 
+      function renderProfileNote(it) {
         const noteEl = document.getElementById("prof-note");
-        if (noteEl) noteEl.style.display = "none";
+        const textEl = document.getElementById("prof-note-text");
+        const moreBtn = document.getElementById("prof-note-more");
+        const hintBtn = document.getElementById("btn-copy-prof-hint");
+        if (!noteEl) return;
+        const hint = articleHint(it);
+        lastProfileHint = hint;
+        noteEl.classList.add("is-on");
+        if (textEl) {
+          textEl.textContent = hint;
+          textEl.style.display = hint ? "" : "none";
+        }
+        if (moreBtn) moreBtn.classList.remove("is-on");
+        if (hintBtn) hintBtn.disabled = !hint;
+        requestAnimationFrame(updateNoteClamp);
+      }
+
+      function updateNoteClamp() {
+        const textEl = document.getElementById("prof-note-text");
+        const moreBtn = document.getElementById("prof-note-more");
+        if (!textEl || !moreBtn) return;
+        const visible = textEl.style.display !== "none" && !!textEl.textContent;
+        const overflow = visible && textEl.scrollHeight > textEl.clientHeight + 1;
+        moreBtn.classList.toggle("is-on", overflow);
+      }
+
+      function openNoteModal() {
+        if (!lastProfileHint) return;
+        const dlg = document.getElementById("note-dialog");
+        const body = document.getElementById("note-dialog-body");
+        if (!dlg || !body) return;
+        body.textContent = lastProfileHint;
+        dlg.classList.add("active");
+        dlg.setAttribute("aria-hidden", "false");
+      }
+
+      function closeNoteModal() {
+        const dlg = document.getElementById("note-dialog");
+        if (!dlg || !dlg.classList.contains("active")) return false;
+        dlg.classList.remove("active");
+        dlg.setAttribute("aria-hidden", "true");
+        return true;
       }
 
       function renderProfileGallery(it, artnr) {
@@ -5422,8 +6089,18 @@
             id: csvCell(row, map, "id"),
             art_nr: artNr,
             name_de: csvCell(row, map, "name_de"),
+            name_en: csvCell(row, map, "name_en"),
+            name_ru: csvCell(row, map, "name_ru"),
             category: csvCellAny(row, map, ["category", "kategorie_de"]),
-            system: csvCellAny(row, map, ["system", "masse_de"]),
+            system: csvCell(row, map, "system"),
+            masse_de: csvCellAny(row, map, ["masse_de", "masse", "size"]),
+            hinweis_de: csvCellAny(row, map, [
+              "hinweis_de",
+              "hinweis",
+              "beschreibung_de",
+            ]),
+            hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
+            hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
             image_url: csvCellAny(row, map, ["image_url", "img_url"]),
             drive_folder_id: csvCell(row, map, "drive_folder_id"),
           };
