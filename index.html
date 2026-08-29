@@ -75,10 +75,11 @@
         --heroal-dark-blue: #00244d;
         --heroal-light-blue: #0284c7;
         --heroal-accent: #3b82f6;
-        --bg-dark: #090e15;
-        --card-bg: #111823;
+        --bg-dark: #0b0f19;
+        --card-bg: #131b2e;
         --card-inner: #1a2332;
-        --border-color: #243247;
+        --border-color: #1e293b;
+        --split-line: #1e293b;
         --text-main: #f1f5f9;
         --text-sub: #94a3b8;
         --highlight: #facc15;
@@ -122,7 +123,8 @@
       html:not(.authed) nav,
       html:not(.authed) #settings-dialog,
       html:not(.authed) #sync-dialog,
-      html:not(.authed) #zoom-dialog {
+      html:not(.authed) #zoom-dialog,
+      html:not(.authed) #photo-dialog {
         visibility: hidden;
         pointer-events: none;
       }
@@ -635,116 +637,187 @@
         }
       }
 
+      .ico {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        display: block;
+      }
+      .ico-lg {
+        width: 18px;
+        height: 18px;
+      }
+
       /* Top Header */
       header {
-        background-color: var(--heroal-blue);
-        padding: 8px 16px;
+        background-color: #0f172a;
+        padding: 0 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+        gap: 12px;
+        border-bottom: 1px solid var(--split-line);
         z-index: 10;
         flex-shrink: 0;
-        min-height: 56px;
+        height: 58px;
+        min-height: 58px;
+        overflow-x: auto;
       }
-      .brand-wrap {
+      .header-left,
+      .header-right {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .header-left {
+        flex: 0 1 auto;
+      }
+      .header-center {
+        flex: 1 1 auto;
+        min-width: 12px;
+      }
+      .header-right {
+        flex: 0 1 auto;
+        justify-content: flex-end;
       }
       .brand-title {
         font-weight: 800;
-        font-size: 18px;
-        letter-spacing: 0.3px;
-        line-height: 1.1;
+        font-size: 17px;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 0 4px 0 0;
+        white-space: nowrap;
+        font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
-      .brand-title span {
-        color: #7dd3fc;
+      .brand-title .brand-heroal {
+        color: var(--heroal-accent);
       }
-      .brand-user {
-        font-size: 11px;
-        opacity: 0.9;
-        font-weight: 500;
+      .brand-title .brand-product {
+        color: #ffffff;
+      }
+      .hdr-user {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 3px;
+        gap: 8px;
+        min-width: 0;
+        padding: 0 4px;
       }
       .hdr-user-name {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
-        color: #fff;
+        color: #e2e8f0;
         line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
       }
       .hdr-user-role {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.02em;
-        padding: 2px 7px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 3px 8px;
         border-radius: 999px;
-        background: rgba(125, 211, 252, 0.18);
-        border: 1px solid rgba(125, 211, 252, 0.45);
-        color: #7dd3fc;
+        background: rgba(148, 163, 184, 0.14);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        color: #cbd5e1;
         white-space: nowrap;
         line-height: 1.3;
+      }
+      .hdr-user-role.is-admin {
+        background: rgba(59, 130, 246, 0.16);
+        border-color: rgba(59, 130, 246, 0.45);
+        color: #93c5fd;
       }
       .hdr-user-role:empty {
         display: none;
       }
       .hdr-logout {
-        background: rgba(239, 68, 68, 0.28);
-        border: 1px solid rgba(248, 113, 113, 0.55);
-        color: #fecaca;
-        border-radius: 6px;
-        padding: 2px 8px;
-        min-height: 22px;
-        font-size: 10px;
-        font-weight: 700;
-        cursor: pointer;
-        line-height: 1.2;
-      }
-      .hdr-logout:hover {
-        background: rgba(239, 68, 68, 0.45);
-        color: #fff;
-      }
-      .header-actions {
-        display: flex;
-        gap: 8px;
+        display: inline-flex;
         align-items: center;
-      }
-
-      .desktop-nav {
-        display: none;
         gap: 6px;
-      }
-      .desktop-nav-item {
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        border-radius: 6px;
-        padding: 7px 14px;
-        font-size: 13px;
+        background: transparent;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        color: #cbd5e1;
+        border-radius: 8px;
+        padding: 0 10px;
+        height: 34px;
+        font-size: 12px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        line-height: 1;
       }
-      .desktop-nav-item.active,
-      .desktop-nav-item:hover {
-        background: #fff;
-        color: var(--heroal-blue);
-        border-color: #fff;
+      .hdr-logout:hover {
+        border-color: rgba(248, 113, 113, 0.55);
+        color: #fecaca;
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .hdr-logout-label {
+        display: none;
       }
 
+      .btn-hdr {
+        background: transparent;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        color: #e2e8f0;
+        border-radius: 8px;
+        padding: 0 10px;
+        height: 34px;
+        min-height: 34px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .btn-hdr:hover {
+        border-color: rgba(59, 130, 246, 0.55);
+        color: #fff;
+        background: rgba(59, 130, 246, 0.12);
+      }
+      .btn-hdr.active {
+        background: rgba(59, 130, 246, 0.18);
+        border-color: rgba(59, 130, 246, 0.55);
+        color: #fff;
+      }
+      .btn-hdr:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .btn-hdr-icon {
+        padding: 0;
+        width: 34px;
+        justify-content: center;
+      }
+      .btn-hdr.admin-only[hidden] {
+        display: none !important;
+      }
+
+      .net-cluster {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 4px 2px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        background: rgba(15, 23, 42, 0.6);
+      }
       .net-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 5px 10px;
-        border-radius: 20px;
+        padding: 0 4px 0 0;
         font-size: 11px;
         font-weight: 600;
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #86efac;
       }
       .net-dot {
         width: 8px;
@@ -753,25 +826,41 @@
         background-color: #22c55e;
         box-shadow: 0 0 8px #22c55e;
       }
-      .net-badge.offline {
-        background: rgba(239, 68, 68, 0.3);
-        border-color: #ef4444;
+      .net-cluster.offline {
+        border-color: rgba(239, 68, 68, 0.45);
       }
-      .net-badge.offline .net-dot {
+      .net-cluster.offline .net-badge {
+        color: #fca5a5;
+      }
+      .net-cluster.offline .net-dot {
         background-color: #ef4444;
         box-shadow: 0 0 8px #ef4444;
       }
-      .net-badge.syncing {
-        border-color: rgba(56, 189, 248, 0.55);
+      .net-cluster.syncing {
+        border-color: rgba(56, 189, 248, 0.45);
       }
-      .net-badge.syncing .net-dot {
+      .net-cluster.syncing .net-badge {
+        color: #7dd3fc;
+      }
+      .net-cluster.syncing .net-dot {
         background-color: #38bdf8;
         box-shadow: 0 0 8px #38bdf8;
         animation: net-pulse 0.9s ease-in-out infinite;
       }
-      .net-badge.synced .net-dot {
+      .net-cluster.synced .net-dot {
         background-color: #22c55e;
         box-shadow: 0 0 8px #22c55e;
+      }
+      .net-cluster .btn-hdr {
+        border: none;
+        background: transparent;
+        height: 28px;
+        min-height: 28px;
+        width: 28px;
+        padding: 0;
+      }
+      #sync-icon.is-spinning {
+        animation: spin 1s infinite linear;
       }
       @keyframes net-pulse {
         0%,
@@ -785,23 +874,40 @@
         }
       }
 
-      .btn-hdr {
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #fff;
-        border-radius: 6px;
-        padding: 6px 10px;
-        min-height: 34px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
+      .hdr-lang {
+        display: inline-flex;
         align-items: center;
-        gap: 4px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 8px;
+        overflow: hidden;
+        height: 34px;
       }
-      .btn-hdr:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+      .hdr-lang-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 100%;
+        padding: 0 8px;
+        background: transparent;
+        border: none;
+        border-right: 1px solid rgba(148, 163, 184, 0.22);
+        color: #94a3b8;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+      }
+      .hdr-lang-btn:last-child {
+        border-right: none;
+      }
+      .hdr-lang-btn.active {
+        background: rgba(59, 130, 246, 0.18);
+        color: #fff;
+      }
+      .hdr-lang-btn .lang-flag {
+        width: 16px;
+        height: 11px;
+        border-radius: 2px;
       }
 
       /* Main Workspace */
@@ -809,7 +915,7 @@
         flex: 1;
         min-height: 0;
         overflow: hidden;
-        padding: 8px;
+        padding: 0;
         display: flex;
         flex-direction: column;
       }
@@ -826,39 +932,102 @@
         min-height: 0;
       }
 
-      /* Mobile 60 / 40 Split Layout */
+      /* Phone: stacked 60 / 40. Tablet+Desktop: 50 / 50 columns. */
       .suche-grid {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 0;
         width: 100%;
-        height: calc(100vh - 56px - 60px);
+        height: 100%;
+        min-height: 0;
       }
 
+      .zone-prof,
+      .zone-color {
+        display: flex;
+        flex-direction: column;
+        background: var(--card-bg);
+        overflow: hidden;
+        min-height: 0;
+      }
       .zone-prof {
         flex: 0 0 60%;
         height: 60%;
-        display: flex;
-        flex-direction: column;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        padding: 8px 10px;
-        gap: 6px;
-        overflow: hidden;
+        border-bottom: 1px solid var(--split-line);
       }
-
       .zone-color {
-        flex: 0 0 calc(40% - 8px);
-        height: calc(40% - 8px);
+        flex: 1 1 auto;
+        height: auto;
+      }
+      .zone-toolbar {
         display: flex;
         flex-direction: column;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 10px 12px 8px;
         background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        padding: 8px 10px;
+      }
+      .zone-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 12px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .zone-empty {
+        color: var(--text-sub);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 18px 8px;
+        text-align: center;
+      }
+      .result-list {
+        display: flex;
+        flex-direction: column;
         gap: 6px;
+      }
+      .result-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+        background: #0c121b;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px 10px;
+        color: inherit;
+        cursor: pointer;
+      }
+      .result-row:hover,
+      .result-row.is-active {
+        border-color: rgba(59, 130, 246, 0.55);
+        background: rgba(59, 130, 246, 0.08);
+      }
+      .result-row-code {
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        min-width: 52px;
+      }
+      .result-row-name {
+        font-size: 12px;
+        color: #cbd5e1;
+        flex: 1;
+        min-width: 0;
         overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .result-row-swatch {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
       }
 
       .zone-header {
@@ -958,15 +1127,14 @@
         display: flex;
         flex-direction: column;
         gap: 6px;
-        flex: 1;
+        flex: 0 0 auto;
         min-height: 0;
-        overflow: hidden;
       }
 
       .profile-drawing-box {
         width: 100%;
-        flex: 1;
-        min-height: 0;
+        height: 180px;
+        flex: 0 0 auto;
         background: #ffffff;
         border-radius: 6px;
         display: flex;
@@ -991,6 +1159,9 @@
         padding: 2px 6px;
         border-radius: 4px;
         pointer-events: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
       }
       .profile-thumbs {
         display: none;
@@ -1116,7 +1287,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        flex: 1;
+        flex: 0 0 auto;
         min-height: 0;
       }
       .color-showcase-box {
@@ -1278,53 +1449,47 @@
         color: #38bdf8;
       }
       .nav-icon {
-        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-icon .ico {
+        width: 18px;
+        height: 18px;
       }
 
-      /* Desktop Layout */
-      @media (min-width: 900px) {
+      /* Tablet + Desktop: exact 50/50 split, independent column scroll */
+      @media (min-width: 768px) {
         nav {
           display: none;
         }
-        header {
-          min-height: 48px;
-          padding: 6px 16px;
-        }
-        .brand-title {
-          font-size: 16px;
-        }
-        .desktop-nav-item {
-          padding: 6px 12px;
-          font-size: 12px;
-        }
-        .btn-hdr {
-          min-height: 32px;
-          padding: 4px 8px;
-          font-size: 12px;
+        .hdr-logout-label {
+          display: inline;
         }
         main {
-          padding: 12px 16px;
+          padding: 0;
           height: auto;
           flex: 1;
           min-height: 0;
         }
-        .desktop-nav {
-          display: flex;
-        }
         .suche-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
+          gap: 0;
           height: 100%;
           min-height: 0;
         }
         .zone-prof,
         .zone-color {
-          flex: 1;
+          flex: none;
           height: 100%;
           min-height: 0;
-          padding: 12px;
-          gap: 8px;
+          border-bottom: none;
+        }
+        .zone-prof {
+          border-right: 1px solid var(--split-line);
         }
         .search-field {
           height: 38px;
@@ -1335,7 +1500,7 @@
         }
         .display-card-prof,
         .display-card-color {
-          flex: 1;
+          flex: 0 0 auto;
           min-height: 0;
           padding: 10px;
           gap: 8px;
@@ -1347,9 +1512,9 @@
         }
         .color-showcase-box {
           width: 100%;
-          height: 100%;
-          max-height: none;
-          flex: 1;
+          height: 160px;
+          max-height: 160px;
+          flex: 0 0 160px;
           border-radius: 8px;
         }
         .color-showcase-code {
@@ -1378,21 +1543,31 @@
         .acc-title {
           font-size: 13px;
         }
+        #view-ausschuss,
+        #view-auskunft {
+          padding: 14px 16px;
+        }
         #app-toast {
           bottom: 24px;
         }
       }
+      @media (max-width: 1100px) {
+        .hdr-lang-btn span:not(.lang-flag) {
+          display: none;
+        }
+        .net-text {
+          display: none;
+        }
+      }
+      @media (max-width: 860px) {
+        .btn-hdr-label {
+          display: none;
+        }
+        .hdr-user-name {
+          max-width: 90px;
+        }
+      }
       @media (min-width: 1280px) {
-        main {
-          padding: 10px 14px;
-        }
-        .suche-grid {
-          gap: 10px;
-        }
-        .zone-prof,
-        .zone-color {
-          padding: 10px 12px;
-        }
         .color-showcase-code {
           font-size: 20px;
         }
@@ -1470,7 +1645,8 @@
 
       /* Modals */
       .zoom-modal,
-      .settings-modal {
+      .settings-modal,
+      .photo-modal {
         display: none;
         position: fixed;
         inset: 0;
@@ -1481,7 +1657,8 @@
         padding: 14px;
       }
       .zoom-modal.active,
-      .settings-modal.active {
+      .settings-modal.active,
+      .photo-modal.active {
         display: flex;
       }
       .zoom-img-view {
@@ -1502,9 +1679,10 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        font-size: 20px;
-        font-weight: bold;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .settings-card {
         width: 100%;
@@ -1541,6 +1719,20 @@
         outline: none;
       }
 
+      .photo-preview {
+        width: 100%;
+        min-height: 180px;
+        max-height: 280px;
+        object-fit: contain;
+        background: #0c121b;
+        border: 1px dashed var(--border-color);
+        border-radius: 8px;
+      }
+      .photo-actions {
+        display: flex;
+        gap: 8px;
+      }
+
       @keyframes spin {
         0% {
           transform: rotate(0deg);
@@ -1552,6 +1744,53 @@
     </style>
   </head>
   <body>
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+      <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <line x1="10" y1="9" x2="8" y2="9"/>
+      </symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10"/>
+        <polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </symbol>
+      <symbol id="i-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <line x1="11" y1="8" x2="11" y2="14"/>
+        <line x1="8" y1="11" x2="14" y2="11"/>
+      </symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </symbol>
+    </svg>
+
     <!-- Toast Message Container -->
     <div id="app-toast"></div>
 
@@ -1697,56 +1936,82 @@
 
     <!-- 2. MAIN HEADER -->
     <header>
-      <div class="brand-wrap">
-        <div class="brand-title">heroal <span>Artikel</span></div>
-        <div class="brand-user" id="hdr-user">
-          <span class="hdr-user-name" id="hdr-user-name"></span>
-          <span class="hdr-user-role" id="hdr-user-role"></span>
-          <button
-            type="button"
-            class="hdr-logout"
-            id="btn-logout"
-            data-i18n="logout_btn"
-          >
-            Abmelden
+      <div class="header-left">
+        <button type="button" class="brand-title" id="hdr-brand" title="heroal Artikel">
+          <span class="brand-heroal">heroal</span>
+          <span class="brand-product">Artikel</span>
+        </button>
+        <button type="button" class="btn-hdr" id="btn-hdr-auskunft">
+          <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+          <span class="btn-hdr-label" data-i18n="nav_info">Auskunft</span>
+        </button>
+        <button
+          type="button"
+          class="btn-hdr admin-only"
+          id="btn-hdr-photo"
+          hidden
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
+          <span class="btn-hdr-label" data-i18n="photo_capture">Foto erfassen</span>
+        </button>
+      </div>
+
+      <div class="header-center" aria-hidden="true"></div>
+
+      <div class="header-right">
+        <div id="netStatus" class="net-cluster" title="Status: Online">
+          <div class="net-badge">
+            <span class="net-dot"></span>
+            <span class="net-text" id="netStatus-txt">Online</span>
+          </div>
+          <button class="btn-hdr btn-hdr-icon" type="button" onclick="triggerSync()" id="btn-sync" title="Sync">
+            <svg class="ico" id="sync-icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
           </button>
         </div>
-      </div>
 
-      <!-- Desktop Navigation Links -->
-      <div class="desktop-nav">
-        <button
-          class="desktop-nav-item active"
-          onclick="navigate('view-suche', this)"
-        >
-          🔍 <span id="nav-desk-suche">Suche [/]</span>
-        </button>
-        <button
-          class="desktop-nav-item"
-          onclick="navigate('view-ausschuss', this)"
-        >
-          ⚠️ <span id="nav-desk-ausschuss">Ausschuss</span>
-        </button>
-        <button
-          class="desktop-nav-item"
-          onclick="navigate('view-auskunft', this)"
-        >
-          📋 <span id="nav-desk-auskunft">Auskunft</span>
-        </button>
-      </div>
-
-      <div class="header-actions">
-        <div id="netStatus" class="net-badge" title="Status: Online">
-          <span class="net-dot"></span>
-          <span class="net-text" id="netStatus-txt">Online</span>
+        <div class="hdr-lang" role="group" aria-label="Language">
+          <button type="button" class="hdr-lang-btn" data-lang="de" title="Deutsch">
+            <span class="lang-flag" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
+                <rect width="5" height="1" y="0" fill="#000000" />
+                <rect width="5" height="1" y="1" fill="#dd0000" />
+                <rect width="5" height="1" y="2" fill="#ffce00" />
+              </svg>
+            </span>
+            <span>DE</span>
+          </button>
+          <button type="button" class="hdr-lang-btn" data-lang="ru" title="Русский">
+            <span class="lang-flag" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" focusable="false">
+                <rect width="9" height="2" y="0" fill="#ffffff" />
+                <rect width="9" height="2" y="2" fill="#0039a6" />
+                <rect width="9" height="2" y="4" fill="#d52b1e" />
+              </svg>
+            </span>
+            <span>RU</span>
+          </button>
+          <button type="button" class="hdr-lang-btn" data-lang="en" title="English">
+            <span class="lang-flag" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" focusable="false">
+                <rect width="60" height="30" fill="#012169" />
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6" />
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="4" />
+                <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10" />
+                <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6" />
+              </svg>
+            </span>
+            <span>EN</span>
+          </button>
         </div>
-        <button class="btn-hdr" onclick="toggleLanguage()" id="btn-lang">
-          RU
+
+        <div class="hdr-user" id="hdr-user">
+          <span class="hdr-user-name" id="hdr-user-name"></span>
+          <span class="hdr-user-role" id="hdr-user-role"></span>
+        </div>
+        <button type="button" class="hdr-logout" id="btn-logout">
+          <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
+          <span class="hdr-logout-label" data-i18n="logout_btn">Abmelden</span>
         </button>
-        <button class="btn-hdr" onclick="triggerSync()" id="btn-sync">
-          <span id="sync-icon">🔄</span> <span id="btn-sync-txt">Sync</span>
-        </button>
-        <button class="btn-hdr" onclick="openSettings()">⚙️</button>
       </div>
     </header>
 
@@ -1757,46 +2022,48 @@
         <div class="suche-grid">
           <!-- Zone 1: Profile & Zubehör (60% on Mobile) -->
           <section class="zone-prof">
-            <div class="zone-header">
-              <span class="zone-label" id="lbl-prof-head"
-                >📐 Profile / Zubehör</span
-              >
-              <span class="zone-badge" id="lbl-prof-badge">Art.-Nr. [/]</span>
-            </div>
+            <div class="zone-toolbar">
+              <div class="zone-header">
+                <span class="zone-label" id="lbl-prof-head">Artikel</span>
+                <span class="zone-badge" id="lbl-prof-badge">Art.-Nr. [/]</span>
+              </div>
 
-            <div class="input-box">
-              <input
-                type="text"
-                id="find-prof"
-                class="search-field"
-                placeholder="z. B. 1371, 5044, 2042... [/]"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-              />
-              <button
-                class="btn-clear"
-                id="clr-prof"
-                onclick="clearInput('find-prof')"
-              >
-                ✕
-              </button>
-            </div>
+              <div class="input-box">
+                <input
+                  type="text"
+                  id="find-prof"
+                  class="search-field"
+                  placeholder="z. B. 1371, 5044, 2042... [/]"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                />
+                <button
+                  class="btn-clear"
+                  id="clr-prof"
+                  onclick="clearInput('find-prof')"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                </button>
+              </div>
 
-            <!-- Category Filter -->
-            <div class="category-scroll" id="cat-pill-container">
-              <div
-                class="cat-pill active"
-                onclick="filterByCat('')"
-                id="cat-all"
-                data-cat=""
-              >
-                Alle
+              <div class="category-scroll" id="cat-pill-container">
+                <div
+                  class="cat-pill active"
+                  onclick="filterByCat('')"
+                  id="cat-all"
+                  data-cat=""
+                >
+                  Alle
+                </div>
               </div>
             </div>
 
-            <!-- Profile Output Result Card -->
-            <div id="prof-card" class="display-card-prof" style="display: none">
+            <div class="zone-scroll">
+              <div id="prof-empty" class="zone-empty" data-i18n="list_hint_artikel">
+                Artikelnummer oder Name suchen
+              </div>
+              <div id="prof-card" class="display-card-prof" style="display: none">
               <div
                 class="profile-drawing-box"
                 onclick="showZoom(document.getElementById('prof-img').src)"
@@ -1807,7 +2074,10 @@
                   src=""
                   alt="Zeichnung"
                 />
-                <span class="btn-zoom-hint">🔍 Zoom</span>
+                <span class="btn-zoom-hint">
+                  <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
+                  Zoom
+                </span>
               </div>
               <div id="prof-thumbs" class="profile-thumbs"></div>
 
@@ -1819,7 +2089,8 @@
                     id="btn-copy-prof"
                     title="Artikelnummer kopieren"
                   >
-                    📋 Copy
+                    <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                    Copy
                   </button>
                 </div>
                 <div class="info-subtitle" id="prof-title-sub"></div>
@@ -1835,34 +2106,46 @@
                 style="display: none"
               ></div>
             </div>
+              <div id="prof-list" class="result-list"></div>
+            </div>
           </section>
 
-          <!-- Zone 2: Farben (40% on Mobile, Symmetrical on Desktop) -->
           <section class="zone-color">
-            <div class="zone-header">
-              <span class="zone-label" id="lbl-color-head">🎨 Farben</span>
-              <span class="zone-badge">RAL / SD [Alt+C]</span>
+            <div class="zone-toolbar">
+              <div class="zone-header">
+                <span class="zone-label" id="lbl-color-head">Farben</span>
+                <span class="zone-badge">RAL / SD [Alt+C]</span>
+              </div>
+
+              <div class="input-box">
+                <input
+                  type="text"
+                  id="find-color"
+                  class="search-field"
+                  placeholder="z. B. 7016, 9016, 0108... [Alt+C]"
+                  autocomplete="off"
+                />
+                <button
+                  class="btn-clear"
+                  id="clr-col"
+                  onclick="clearInput('find-color')"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                </button>
+              </div>
+
+              <div class="category-scroll" id="color-pill-container">
+                <button type="button" class="cat-pill active" data-cfam="" id="cfam-all">Alle</button>
+                <button type="button" class="cat-pill" data-cfam="ral" id="cfam-ral">RAL</button>
+                <button type="button" class="cat-pill" data-cfam="sd" id="cfam-sd">SD</button>
+              </div>
             </div>
 
-            <div class="input-box">
-              <input
-                type="text"
-                id="find-color"
-                class="search-field"
-                placeholder="z. B. 7016, 9016, 0108... [Alt+C]"
-                autocomplete="off"
-              />
-              <button
-                class="btn-clear"
-                id="clr-col"
-                onclick="clearInput('find-color')"
-              >
-                ✕
-              </button>
-            </div>
-
-            <!-- Color Output Result Card -->
-            <div id="col-card" class="display-card-color" style="display: none">
+            <div class="zone-scroll">
+              <div id="col-empty" class="zone-empty" data-i18n="list_hint_farben">
+                RAL- oder SD-Code suchen
+              </div>
+              <div id="col-card" class="display-card-color" style="display: none">
               <div class="color-showcase-box" id="col-swatch">
                 <img
                   id="col-swatch-img"
@@ -1873,7 +2156,10 @@
                 <span class="color-showcase-code" id="col-swatch-code"
                   >7016</span
                 >
-                <span class="btn-zoom-hint" id="col-zoom-hint">🔍 Zoom</span>
+                <span class="btn-zoom-hint" id="col-zoom-hint">
+                  <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
+                  Zoom
+                </span>
               </div>
 
               <div class="color-text-details">
@@ -1884,7 +2170,8 @@
                     id="btn-copy-col"
                     title="Farbcode kopieren"
                   >
-                    📋 Copy
+                    <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                    Copy
                   </button>
                 </div>
                 <div class="info-subtitle" id="col-desc">--</div>
@@ -1898,6 +2185,8 @@
                   <span class="tag-chip tag-kat">heroal Color</span>
                 </div>
               </div>
+            </div>
+              <div id="col-list" class="result-list"></div>
             </div>
           </section>
         </div>
@@ -1935,22 +2224,24 @@
     <!-- 4. BOTTOM NAVIGATION (Mobile Only) -->
     <nav id="bottom-nav">
       <button class="nav-item active" onclick="navigate('view-suche', this)">
-        <span class="nav-icon">🔍</span>
+        <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg></span>
         <span id="nav-lbl-suche">Suche</span>
       </button>
       <button class="nav-item" onclick="navigate('view-ausschuss', this)">
-        <span class="nav-icon">⚠️</span>
+        <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-alert"></use></svg></span>
         <span id="nav-lbl-ausschuss">Ausschuss</span>
       </button>
       <button class="nav-item" onclick="navigate('view-auskunft', this)">
-        <span class="nav-icon">📋</span>
+        <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg></span>
         <span id="nav-lbl-auskunft">Auskunft</span>
       </button>
     </nav>
 
     <!-- 5. ZOOM MODAL -->
     <div id="zoom-dialog" class="zoom-modal" onclick="closeZoom()">
-      <button class="zoom-close" onclick="closeZoom()">✕</button>
+      <button class="zoom-close" onclick="closeZoom()" aria-label="Close">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
     </div>
 
@@ -1961,7 +2252,7 @@
           style="font-weight: 700; font-size: 15px; color: #fff"
           id="sync-title"
         >
-          🔄 Synchronisation...
+          Synchronisation...
         </div>
         <div
           style="font-size: 12px; color: var(--text-sub)"
@@ -1979,7 +2270,7 @@
     <div id="settings-dialog" class="settings-modal">
       <div class="settings-card">
         <div class="settings-title">
-          <span>⚙️ Einstellungen</span>
+          <span>Einstellungen</span>
           <button
             style="
               background: none;
@@ -1988,10 +2279,11 @@
               font-size: 18px;
               cursor: pointer;
             "
-            onclick="closeSettings()"
-          >
-            ✕
-          </button>
+          onclick="closeSettings()"
+          aria-label="Close"
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
         </div>
         <div style="font-size: 11px; color: var(--text-sub)">
           Google Sheets CSV Publish URLs:
@@ -2024,7 +2316,7 @@
           onclick="reloadAllDrawings()"
           title="Nur nötig, wenn eine Zeichnung in der Quelle korrigiert wurde"
         >
-          🖼 Alle Zeichnungen neu laden
+          Alle Zeichnungen neu laden
         </button>
 
         <div style="display: flex; gap: 8px; margin-top: 6px">
@@ -2035,13 +2327,27 @@
           >
             Speichern
           </button>
-          <button
-            class="btn-hdr"
-            style="height: 40px; font-size: 12px; background: #ef4444"
-            onclick="handleLogout()"
-          >
-            Abmelden
+        </div>
+      </div>
+    </div>
+
+    <div id="photo-dialog" class="photo-modal" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
+      <div class="settings-card" onclick="event.stopPropagation()">
+        <div class="settings-title">
+          <span data-i18n="photo_title">Foto erfassen</span>
+          <button type="button" onclick="closePhotoCapture()" aria-label="Close" style="background:none;border:none;color:#fff;cursor:pointer">
+            <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
           </button>
+        </div>
+        <div style="font-size:12px;color:var(--text-sub)" data-i18n="photo_hint">
+          Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.
+        </div>
+        <img id="photo-preview" class="photo-preview" alt="" hidden />
+        <div class="photo-actions">
+          <label class="login-btn" style="flex:1;height:40px;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+            <span data-i18n="photo_pick">Kamera öffnen</span>
+          </label>
         </div>
       </div>
     </div>
@@ -2076,14 +2382,25 @@
           login_error_blocked: "Benutzerkonto ist inaktiv",
           login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Abmelden",
-          lbl_profiles: "📐 Profile / Zubehör",
+          lbl_profiles: "Artikel",
           lbl_artnr: "Art.-Nr. [/]",
-          lbl_colors: "🎨 Farben",
+          lbl_colors: "Farben",
           cat_all: "Alle",
+          cat_ral: "RAL",
+          cat_sd: "SD",
           nav_search: "Suche",
           nav_search_hotkey: "Suche [/]",
           nav_scrap: "Ausschuss",
           nav_info: "Auskunft",
+          photo_capture: "Foto erfassen",
+          photo_title: "Foto erfassen",
+          photo_hint: "Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.",
+          photo_pick: "Kamera öffnen",
+          photo_saved: "Foto erfasst (nur lokal).",
+          role_admin: "Admin",
+          role_staff: "Mitarbeiter",
+          list_hint_artikel: "Artikelnummer oder Name suchen",
+          list_hint_farben: "RAL- oder SD-Code suchen",
           online: "Online",
           offline: "Offline",
           syncing: "Aktualisiere…",
@@ -2092,7 +2409,7 @@
           sync_title: "Daten synchronisieren",
           sync_offline: "Offline: Sync deaktiviert",
           idle_logout: "Sitzung wegen Inaktivität beendet.",
-          copied: "✅ {label} kopiert!",
+          copied: "{label} kopiert!",
           drawing_missing: "Zeichnung nicht hinterlegt",
           sync_drawings_missing: "Sync: {n} Zeichnungen fehlen offline",
           defect_desc: "Beschreibung:",
@@ -2136,14 +2453,25 @@
           login_error_blocked: "Benutzerkonto ist inaktiv",
           login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Sign out",
-          lbl_profiles: "📐 Profiles / Accessories",
+          lbl_profiles: "Artikel",
           lbl_artnr: "Art. no. [/]",
-          lbl_colors: "🎨 Colours",
+          lbl_colors: "Colours",
           cat_all: "All",
+          cat_ral: "RAL",
+          cat_sd: "SD",
           nav_search: "Search",
           nav_search_hotkey: "Search [/]",
           nav_scrap: "Scrap",
           nav_info: "Info",
+          photo_capture: "Take photo",
+          photo_title: "Take photo",
+          photo_hint: "Capture a photo on this device. It is not uploaded.",
+          photo_pick: "Open camera",
+          photo_saved: "Photo captured (local only).",
+          role_admin: "Admin",
+          role_staff: "Staff",
+          list_hint_artikel: "Search article number or name",
+          list_hint_farben: "Search RAL or SD code",
           online: "Online",
           offline: "Offline",
           syncing: "Updating…",
@@ -2152,7 +2480,7 @@
           sync_title: "Synchronise data",
           sync_offline: "Offline: sync disabled",
           idle_logout: "Signed out due to inactivity.",
-          copied: "✅ {label} copied!",
+          copied: "{label} copied!",
           drawing_missing: "No drawing on file",
           sync_drawings_missing: "Sync: {n} drawings missing offline",
           defect_desc: "Description:",
@@ -2196,14 +2524,25 @@
           login_error_blocked: "Benutzerkonto ist inaktiv",
           login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Выйти",
-          lbl_profiles: "📐 Профили / Комплектующие",
+          lbl_profiles: "Artikel",
           lbl_artnr: "Артикул [/]",
-          lbl_colors: "🎨 Цвета RAL / SD",
+          lbl_colors: "Farben",
           cat_all: "Все",
+          cat_ral: "RAL",
+          cat_sd: "SD",
           nav_search: "Поиск",
           nav_search_hotkey: "Поиск [/]",
           nav_scrap: "Брак / Дефекты",
-          nav_info: "Справка ERP",
+          nav_info: "Auskunft",
+          photo_capture: "Сделать фото",
+          photo_title: "Сделать фото",
+          photo_hint: "Снимок только на этом устройстве. Не загружается на сервер.",
+          photo_pick: "Открыть камеру",
+          photo_saved: "Фото сохранено локально.",
+          role_admin: "Admin",
+          role_staff: "Mitarbeiter",
+          list_hint_artikel: "Искать артикул или название",
+          list_hint_farben: "Искать код RAL или SD",
           online: "Онлайн",
           offline: "Офлайн",
           syncing: "Обновление…",
@@ -2212,7 +2551,7 @@
           sync_title: "Синхронизировать данные",
           sync_offline: "Офлайн: Sync отключён",
           idle_logout: "Сессия завершена из-за неактивности.",
-          copied: "✅ {label} скопировано!",
+          copied: "{label} скопировано!",
           drawing_missing: "Чертёж не задан",
           sync_drawings_missing: "Sync: не хватает {n} чертежей для офлайна",
           defect_desc: "Описание:",
@@ -2340,8 +2679,6 @@
         if (loginInput) loginInput.placeholder = t("login_placeholder");
         syncLangDropdown();
         syncNumpadVisibility();
-        const btnLang = document.getElementById("btn-lang");
-        if (btnLang) btnLang.innerText = appLang.toUpperCase();
         const setTxt = (id, value) => {
           const el = document.getElementById(id);
           if (el) el.innerText = value;
@@ -2352,12 +2689,15 @@
         setTxt("nav-lbl-suche", t("nav_search"));
         setTxt("nav-lbl-ausschuss", t("nav_scrap"));
         setTxt("nav-lbl-auskunft", t("nav_info"));
-        setTxt("nav-desk-suche", t("nav_search_hotkey"));
-        setTxt("nav-desk-ausschuss", t("nav_scrap"));
-        setTxt("nav-desk-auskunft", t("nav_info"));
-        setTxt("btn-sync-txt", t("sync"));
+        const cfamAll = document.getElementById("cfam-all");
+        const cfamRal = document.getElementById("cfam-ral");
+        const cfamSd = document.getElementById("cfam-sd");
+        if (cfamAll) cfamAll.textContent = t("cat_all");
+        if (cfamRal) cfamRal.textContent = t("cat_ral");
+        if (cfamSd) cfamSd.textContent = t("cat_sd");
         rebuildCategoryPills();
         updateOnlineStatus();
+        renderHeaderUser();
       }
 
       function setLanguage(lang) {
@@ -2513,12 +2853,7 @@
       function setSyncIconSpinning(on) {
         const icon = document.getElementById("sync-icon");
         if (!icon) return;
-        if (on) {
-          icon.style.display = "inline-block";
-          icon.style.animation = "spin 1s infinite linear";
-        } else {
-          icon.style.animation = "none";
-        }
+        icon.classList.toggle("is-spinning", !!on);
       }
 
       function applyNetBadge() {
@@ -2529,7 +2864,7 @@
 
         const online = navigator.onLine;
         if (!online) {
-          badge.className = "net-badge offline";
+          badge.className = "net-cluster offline";
           txt.innerText = t("offline");
           btnSync.setAttribute("disabled", "true");
           btnSync.title = t("sync_offline");
@@ -2539,13 +2874,13 @@
         btnSync.removeAttribute("disabled");
         btnSync.title = t("sync_title");
         if (netBadgeMode === "syncing") {
-          badge.className = "net-badge syncing";
+          badge.className = "net-cluster syncing";
           txt.innerText = t("syncing");
         } else if (netBadgeMode === "synced") {
-          badge.className = "net-badge synced";
+          badge.className = "net-cluster synced";
           txt.innerText = t("synced");
         } else {
-          badge.className = "net-badge";
+          badge.className = "net-cluster";
           txt.innerText = t("online");
         }
       }
@@ -2665,7 +3000,15 @@
             pin: "1234",
             vorname_de: "Max",
             nachname_de: "Best",
-            benutzer_de: "Test",
+            benutzer_de: "Mitarbeiter",
+            status_de: "Aktiv",
+          },
+          1111: {
+            nummer: "1111",
+            pin: "1111",
+            vorname_de: "Admin",
+            nachname_de: "heroal",
+            benutzer_de: "Administrator",
             status_de: "Aktiv",
           },
           "0001": {
@@ -2809,6 +3152,7 @@
       let currentUser = readStoredUser();
       let loginInFlight = false;
       let selectedCategory = "";
+      let selectedColorFamily = "";
       let lastActiveArticle = "";
       let lastActiveColorCode = "";
 
@@ -2974,6 +3318,9 @@
           btn.classList.toggle("active", on);
           btn.setAttribute("aria-selected", on ? "true" : "false");
         });
+        document.querySelectorAll(".hdr-lang-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.lang === appLang);
+        });
       }
 
       function closeLangDropdown() {
@@ -3067,6 +3414,7 @@
 
       // First paint: login HTML/CSS is already on screen. IndexedDB runs after.
       bindLoginUi();
+      bindWorkspaceChrome();
       restoreLoginPack();
       checkAuth();
       applyLanguage();
@@ -3267,6 +3615,7 @@
           if (e.key === "Escape") {
             closeZoom();
             closeSettings();
+            closePhotoCapture();
             clearInput("find-prof");
             clearInput("find-color");
             return;
@@ -3390,7 +3739,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog",
+            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog, #photo-dialog",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -3398,20 +3747,33 @@
           });
       }
 
+      function isAdministrator(user) {
+        const role = String((user && user.benutzer_de) || "")
+          .trim()
+          .toLowerCase();
+        return role === "administrator" || role === "admin";
+      }
+
       function renderHeaderUser() {
         const nameEl = document.getElementById("hdr-user-name");
         const roleEl = document.getElementById("hdr-user-role");
         const wrap = document.getElementById("hdr-user");
+        const photoBtn = document.getElementById("btn-hdr-photo");
         if (!nameEl || !roleEl) return;
         if (!currentUser) {
           nameEl.textContent = "";
           roleEl.textContent = "";
+          roleEl.classList.remove("is-admin");
           if (wrap) wrap.hidden = true;
+          if (photoBtn) photoBtn.hidden = true;
           return;
         }
         if (wrap) wrap.hidden = false;
         nameEl.textContent = userDisplayName(currentUser);
-        roleEl.textContent = currentUser.benutzer_de || "";
+        const admin = isAdministrator(currentUser);
+        roleEl.textContent = admin ? t("role_admin") : t("role_staff");
+        roleEl.classList.toggle("is-admin", admin);
+        if (photoBtn) photoBtn.hidden = !admin;
       }
 
       function shakeLogin() {
@@ -3519,6 +3881,7 @@
         currentUser = null;
         clearStoredUser();
         closeSettings();
+        closePhotoCapture();
         restoreLoginPack();
         clearLoginFeedback();
         setNumpadVisible(false);
@@ -3539,21 +3902,88 @@
           .querySelectorAll(".tab-view")
           .forEach((v) => v.classList.remove("active"));
         document
-          .querySelectorAll(".nav-item, .desktop-nav-item")
+          .querySelectorAll(".nav-item")
           .forEach((b) => b.classList.remove("active"));
 
         const target = document.getElementById(viewId);
         if (target) target.classList.add("active");
         if (btn) btn.classList.add("active");
+        else {
+          const map = {
+            "view-suche": 0,
+            "view-ausschuss": 1,
+            "view-auskunft": 2,
+          };
+          const items = document.querySelectorAll("#bottom-nav .nav-item");
+          const idx = map[viewId];
+          if (items[idx]) items[idx].classList.add("active");
+        }
+
+        const auskunftBtn = document.getElementById("btn-hdr-auskunft");
+        if (auskunftBtn) {
+          auskunftBtn.classList.toggle("active", viewId === "view-auskunft");
+        }
 
         if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") renderAuskunft();
       }
 
+      function bindWorkspaceChrome() {
+        const brand = document.getElementById("hdr-brand");
+        if (brand) {
+          brand.addEventListener("click", () => navigate("view-suche"));
+          brand.addEventListener("dblclick", () => {
+            if (isAdministrator(currentUser)) openSettings();
+          });
+        }
+        const auskunftBtn = document.getElementById("btn-hdr-auskunft");
+        if (auskunftBtn) {
+          auskunftBtn.addEventListener("click", () => {
+            const open = document
+              .getElementById("view-auskunft")
+              .classList.contains("active");
+            navigate(open ? "view-suche" : "view-auskunft");
+          });
+        }
+        const photoBtn = document.getElementById("btn-hdr-photo");
+        if (photoBtn) photoBtn.addEventListener("click", openPhotoCapture);
+        document.querySelectorAll(".hdr-lang-btn").forEach((btn) => {
+          btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+        });
+        document.querySelectorAll("#color-pill-container .cat-pill").forEach((pill) => {
+          pill.addEventListener("click", () =>
+            filterByColorFamily(pill.getAttribute("data-cfam") || ""),
+          );
+        });
+        const photoInput = document.getElementById("photo-input");
+        if (photoInput) {
+          photoInput.addEventListener("change", (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const preview = document.getElementById("photo-preview");
+            if (preview) {
+              preview.src = URL.createObjectURL(file);
+              preview.hidden = false;
+            }
+            showToast(t("photo_saved"));
+          });
+        }
+      }
+
+      function openPhotoCapture() {
+        if (!isAdministrator(currentUser)) return;
+        const dlg = document.getElementById("photo-dialog");
+        dlg.classList.add("active");
+        dlg.setAttribute("aria-hidden", "false");
+      }
+      function closePhotoCapture() {
+        const dlg = document.getElementById("photo-dialog");
+        dlg.classList.remove("active");
+        dlg.setAttribute("aria-hidden", "true");
+      }
+
       function initSearchHandlers() {
         const pIn = document.getElementById("find-prof");
-        const pClr = document.getElementById("clr-prof");
-        const pCard = document.getElementById("prof-card");
         const copyProfBtn = document.getElementById("btn-copy-prof");
         const copyColBtn = document.getElementById("btn-copy-col");
         const hexChip = document.getElementById("col-hex");
@@ -3573,91 +4003,167 @@
           copyToClipboard(hexChip.innerText, "Hex-Code");
         });
 
-        pIn.addEventListener("input", (e) => {
-          const query = e.target.value.trim().toLowerCase();
-          pClr.style.display = query ? "block" : "none";
+        pIn.addEventListener("input", refreshArticleResults);
+        document
+          .getElementById("find-color")
+          .addEventListener("input", refreshColorResults);
+      }
 
-          if (!query && !selectedCategory) {
-            pCard.style.display = "none";
-            return;
-          }
+      const RESULT_LIMIT = 80;
 
-          const catalog = appDB.artikel || {};
-          let matchKey = Object.keys(catalog).find((key) => {
+      function articleMatches(key, item, query) {
+        const catDe = (item.kategorie_de || "").toLowerCase();
+        const catOk =
+          !selectedCategory || catDe === selectedCategory.toLowerCase();
+        if (!catOk) return false;
+        if (!query) return !!selectedCategory;
+        const hay = [
+          key,
+          item.artnr,
+          item.name_de,
+          locField(item, "masse", appLang),
+          locField(item, "kategorie", appLang),
+          locField(item, "hinweis", appLang),
+          item.masse_de,
+          item.kategorie_de,
+          item.hinweis_de,
+          item.masse_en,
+          item.kategorie_en,
+          item.hinweis_en,
+          item.masse_ru,
+          item.kategorie_ru,
+          item.hinweis_ru,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return hay.includes(query);
+      }
+
+      function colorFamilyOf(col) {
+        const hay = [
+          col && col.code,
+          locField(col, "oberflaeche", "de"),
+          locField(col, "name", "de"),
+          col && col.oberflaeche_de,
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (/\bsd\b|sonderlack|sonderfarbe/.test(hay) || /^sd/i.test(String((col && col.code) || ""))) {
+          return "sd";
+        }
+        return "ral";
+      }
+
+      function colorMatches(key, col, query) {
+        if (selectedColorFamily && colorFamilyOf(col) !== selectedColorFamily) {
+          return false;
+        }
+        if (!query) return !!selectedColorFamily;
+        const hay = [
+          key,
+          col.code,
+          locField(col, "name", appLang),
+          locField(col, "oberflaeche", appLang),
+          col.name_de,
+          col.name_en,
+          col.name_ru,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return hay.includes(query);
+      }
+
+      function refreshArticleResults() {
+        const pIn = document.getElementById("find-prof");
+        const pClr = document.getElementById("clr-prof");
+        const pCard = document.getElementById("prof-card");
+        const listEl = document.getElementById("prof-list");
+        const emptyEl = document.getElementById("prof-empty");
+        const query = (pIn.value || "").trim().toLowerCase();
+        pClr.style.display = query ? "flex" : "none";
+
+        const catalog = appDB.artikel || {};
+        const keys = Object.keys(catalog).filter((key) =>
+          articleMatches(key, catalog[key], query),
+        );
+        const shown = keys.slice(0, RESULT_LIMIT);
+        listEl.innerHTML = shown
+          .map((key) => {
             const item = catalog[key];
-            const catDe = (item.kategorie_de || "").toLowerCase();
-            const catOk =
-              !selectedCategory || catDe === selectedCategory.toLowerCase();
-            if (!catOk) return false;
-            if (!query) return true;
-            const hay = [
-              key,
-              item.artnr,
-              item.name_de,
-              locField(item, "masse", appLang),
-              locField(item, "kategorie", appLang),
-              locField(item, "hinweis", appLang),
-              item.masse_de,
-              item.kategorie_de,
-              item.hinweis_de,
-              item.masse_en,
-              item.kategorie_en,
-              item.hinweis_en,
-              item.masse_ru,
-              item.kategorie_ru,
-              item.hinweis_ru,
-            ]
-              .join(" ")
-              .toLowerCase();
-            return hay.includes(query);
-          });
-
-          if (matchKey) {
-            lastActiveArticle = matchKey;
-            renderProfileCard(matchKey);
-            pCard.style.display = "flex";
-          } else {
-            pCard.style.display = "none";
-          }
+            const active = key === lastActiveArticle ? " is-active" : "";
+            return `<button type="button" class="result-row${active}" data-art="${key}"><span class="result-row-code">${key}</span><span class="result-row-name">${item.name_de || ""}</span></button>`;
+          })
+          .join("");
+        listEl.querySelectorAll(".result-row").forEach((row) => {
+          row.addEventListener("click", () => selectArticle(row.dataset.art));
         });
 
+        const hasQuery = !!(query || selectedCategory);
+        emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
+        if (!shown.length) {
+          pCard.style.display = "none";
+          return;
+        }
+        if (!shown.includes(lastActiveArticle)) {
+          lastActiveArticle = shown[0];
+        }
+        selectArticle(lastActiveArticle);
+      }
+
+      function selectArticle(key) {
+        lastActiveArticle = key;
+        renderProfileCard(key);
+        document.getElementById("prof-card").style.display = "flex";
+        document.querySelectorAll("#prof-list .result-row").forEach((row) => {
+          row.classList.toggle("is-active", row.dataset.art === key);
+        });
+      }
+
+      function refreshColorResults() {
         const cIn = document.getElementById("find-color");
         const cClr = document.getElementById("clr-col");
         const cCard = document.getElementById("col-card");
+        const listEl = document.getElementById("col-list");
+        const emptyEl = document.getElementById("col-empty");
+        const query = (cIn.value || "").trim().toLowerCase();
+        cClr.style.display = query ? "flex" : "none";
 
-        cIn.addEventListener("input", (e) => {
-          const query = e.target.value.trim().toLowerCase();
-          cClr.style.display = query ? "block" : "none";
+        const catalog = appDB.farben || {};
+        const keys = Object.keys(catalog).filter((k) =>
+          colorMatches(k, catalog[k], query),
+        );
+        const shown = keys.slice(0, RESULT_LIMIT);
+        listEl.innerHTML = shown
+          .map((key) => {
+            const col = catalog[key];
+            const active = key === lastActiveColorCode ? " is-active" : "";
+            const hex = col.hex || "#64748b";
+            const name = locField(col, "name", appLang) || "";
+            return `<button type="button" class="result-row${active}" data-col="${key}"><span class="result-row-swatch" style="background:${hex}"></span><span class="result-row-code">${key}</span><span class="result-row-name">${name}</span></button>`;
+          })
+          .join("");
+        listEl.querySelectorAll(".result-row").forEach((row) => {
+          row.addEventListener("click", () => selectColor(row.dataset.col));
+        });
 
-          if (!query) {
-            cCard.style.display = "none";
-            return;
-          }
+        const hasQuery = !!(query || selectedColorFamily);
+        emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
+        if (!shown.length) {
+          cCard.style.display = "none";
+          return;
+        }
+        if (!shown.includes(lastActiveColorCode)) {
+          lastActiveColorCode = shown[0];
+        }
+        selectColor(lastActiveColorCode);
+      }
 
-          const catalog = appDB.farben || {};
-          const matchKey = Object.keys(catalog).find((k) => {
-            const col = catalog[k];
-            const hay = [
-              k,
-              col.code,
-              locField(col, "name", appLang),
-              locField(col, "oberflaeche", appLang),
-              col.name_de,
-              col.name_en,
-              col.name_ru,
-            ]
-              .join(" ")
-              .toLowerCase();
-            return hay.includes(query);
-          });
-
-          if (matchKey) {
-            lastActiveColorCode = matchKey;
-            renderColorCard(matchKey);
-            cCard.style.display = "flex";
-          } else {
-            cCard.style.display = "none";
-          }
+      function selectColor(code) {
+        lastActiveColorCode = code;
+        renderColorCard(code);
+        document.getElementById("col-card").style.display = "flex";
+        document.querySelectorAll("#col-list .result-row").forEach((row) => {
+          row.classList.toggle("is-active", row.dataset.col === code);
         });
       }
 
@@ -3739,7 +4245,7 @@
         }
         const masse = locField(it, "masse", appLang);
         document.getElementById("prof-size").innerText = masse
-          ? `📏 ${masse}`
+          ? masse
           : "Standard";
         document.getElementById("prof-kat").innerText =
           locField(it, "kategorie", appLang) || "heroal";
@@ -3749,7 +4255,7 @@
         const noteEl = document.getElementById("prof-note");
         const hinweis = locField(it, "hinweis", appLang);
         if (hinweis) {
-          noteEl.innerText = `💡 ${hinweis}`;
+          noteEl.innerText = hinweis;
           noteEl.style.display = "block";
         } else {
           noteEl.style.display = "none";
@@ -3816,7 +4322,7 @@
             pill.addEventListener("click", () => filterByCat(de));
             container.appendChild(pill);
           });
-        document.querySelectorAll(".cat-pill").forEach((p) => {
+        container.querySelectorAll(".cat-pill").forEach((p) => {
           const cat = p.getAttribute("data-cat") || "";
           p.classList.toggle("active", cat === selectedCategory);
         });
@@ -3824,11 +4330,20 @@
 
       function filterByCat(catName) {
         selectedCategory = catName;
-        document.querySelectorAll(".cat-pill").forEach((p) => {
+        document.querySelectorAll("#cat-pill-container .cat-pill").forEach((p) => {
           const cat = p.getAttribute("data-cat") || "";
           p.classList.toggle("active", cat === catName);
         });
         document.getElementById("find-prof").dispatchEvent(new Event("input"));
+      }
+
+      function filterByColorFamily(fam) {
+        selectedColorFamily = fam;
+        document.querySelectorAll("#color-pill-container .cat-pill").forEach((p) => {
+          const val = p.getAttribute("data-cfam") || "";
+          p.classList.toggle("active", val === fam);
+        });
+        document.getElementById("find-color").dispatchEvent(new Event("input"));
       }
 
       function clearInput(id) {
