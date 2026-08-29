@@ -2116,6 +2116,7 @@
                   id="find-prof"
                   class="search-field"
                   placeholder="z. B. 1371, 5044, 2042... [/]"
+                  data-i18n-placeholder="ph_artikel"
                   autocomplete="off"
                   autocorrect="off"
                   autocapitalize="off"
@@ -2158,7 +2159,7 @@
                 />
                 <span class="btn-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
-                  Zoom
+                  <span data-i18n="zoom_btn">Zoom</span>
                 </span>
               </div>
               <div id="prof-thumbs" class="profile-thumbs"></div>
@@ -2172,7 +2173,7 @@
                     title="Artikelnummer kopieren"
                   >
                     <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                    Copy
+                    <span data-i18n="copy_btn">Copy</span>
                   </button>
                 </div>
                 <div class="info-subtitle" id="prof-title-sub"></div>
@@ -2196,7 +2197,7 @@
             <div class="zone-toolbar">
               <div class="zone-header">
                 <span class="zone-label" id="lbl-color-head">Farben</span>
-                <span class="zone-badge">RAL / SD [Alt+C]</span>
+                <span class="zone-badge" id="lbl-color-badge">RAL / SD [Alt+C]</span>
               </div>
 
               <div class="input-box">
@@ -2205,6 +2206,7 @@
                   id="find-color"
                   class="search-field"
                   placeholder="z. B. 7016, 9016, 0108... [Alt+C]"
+                  data-i18n-placeholder="ph_farben"
                   autocomplete="off"
                 />
                 <button
@@ -2240,7 +2242,7 @@
                 >
                 <span class="btn-zoom-hint" id="col-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
-                  Zoom
+                  <span data-i18n="zoom_btn">Zoom</span>
                 </span>
               </div>
 
@@ -2253,7 +2255,7 @@
                     title="Farbcode kopieren"
                   >
                     <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                    Copy
+                    <span data-i18n="copy_btn">Copy</span>
                   </button>
                 </div>
                 <div class="info-subtitle" id="col-desc">--</div>
@@ -2281,7 +2283,8 @@
             type="text"
             id="find-defect"
             class="search-field"
-            placeholder="Fehler / Дефект suchen..."
+            placeholder="Fehler suchen..."
+            data-i18n-placeholder="ph_defect"
             oninput="renderDefects()"
           />
         </div>
@@ -2295,7 +2298,8 @@
             type="text"
             id="find-guide"
             class="search-field"
-            placeholder="Thema / Тема suchen..."
+            placeholder="Thema suchen..."
+            data-i18n-placeholder="ph_guide"
             oninput="renderAuskunft()"
           />
         </div>
@@ -2333,6 +2337,7 @@
         <div
           style="font-weight: 700; font-size: 15px; color: #fff"
           id="sync-title"
+          data-i18n="sync_dialog_title"
         >
           Synchronisation...
         </div>
@@ -2352,7 +2357,7 @@
     <div id="settings-dialog" class="settings-modal">
       <div class="settings-card">
         <div class="settings-title">
-          <span>Einstellungen</span>
+          <span data-i18n="settings_title">Einstellungen</span>
           <button
             style="
               background: none;
@@ -2367,7 +2372,7 @@
           <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
         </button>
         </div>
-        <div style="font-size: 11px; color: var(--text-sub)">
+        <div style="font-size: 11px; color: var(--text-sub)" data-i18n="settings_urls">
           Google Sheets CSV Publish URLs:
         </div>
 
@@ -2396,7 +2401,7 @@
           class="btn-hdr"
           style="height: 36px; font-size: 12px; margin-top: 6px"
           onclick="reloadAllDrawings()"
-          title="Nur nötig, wenn eine Zeichnung in der Quelle korrigiert wurde"
+          data-i18n="settings_reload"
         >
           Alle Zeichnungen neu laden
         </button>
@@ -2406,6 +2411,7 @@
             class="login-btn"
             style="flex: 1; height: 40px; font-size: 13px"
             onclick="saveSettings()"
+            data-i18n="settings_save"
           >
             Speichern
           </button>
@@ -2467,6 +2473,7 @@
           lbl_profiles: "Artikel",
           lbl_artnr: "Art.-Nr. [/]",
           lbl_colors: "Farben",
+          lbl_color_badge: "RAL / SD [Alt+C]",
           cat_all: "Alle",
           cat_ral: "RAL",
           cat_sd: "SD",
@@ -2483,6 +2490,18 @@
           role_staff: "Mitarbeiter",
           list_hint_artikel: "Artikelnummer oder Name suchen",
           list_hint_farben: "RAL- oder SD-Code suchen",
+          ph_artikel: "z. B. 1371, 5044, 2042... [/]",
+          ph_farben: "z. B. 7016, 9016, 0108... [Alt+C]",
+          ph_defect: "Fehler suchen...",
+          ph_guide: "Thema suchen...",
+          copy_btn: "Copy",
+          zoom_btn: "Zoom",
+          settings_title: "Einstellungen",
+          settings_save: "Speichern",
+          settings_reload: "Alle Zeichnungen neu laden",
+          settings_urls: "Google Sheets CSV Publish URLs:",
+          sync_dialog_title: "Synchronisation...",
+          color_surface_fallback: "heroal Beschichtung",
           online: "Online",
           offline: "Offline",
           syncing: "Aktualisiere…",
@@ -2530,14 +2549,15 @@
           lang_en: "English",
           lang_ru: "Русский",
           login_error_empty: "Please enter a PIN!",
-          login_error_wrong: "Falsche PIN-Nummer",
-          login_error_inactive: "Benutzerkonto ist inaktiv",
-          login_error_blocked: "Benutzerkonto ist inaktiv",
-          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
+          login_error_wrong: "Wrong PIN",
+          login_error_inactive: "Account is inactive",
+          login_error_blocked: "Account is inactive",
+          login_error_deactivated: "Account has been deactivated",
           logout_btn: "Sign out",
-          lbl_profiles: "Artikel",
+          lbl_profiles: "Articles",
           lbl_artnr: "Art. no. [/]",
           lbl_colors: "Colours",
+          lbl_color_badge: "RAL / SD [Alt+C]",
           cat_all: "All",
           cat_ral: "RAL",
           cat_sd: "SD",
@@ -2554,6 +2574,18 @@
           role_staff: "Staff",
           list_hint_artikel: "Search article number or name",
           list_hint_farben: "Search RAL or SD code",
+          ph_artikel: "e.g. 1371, 5044, 2042... [/]",
+          ph_farben: "e.g. 7016, 9016, 0108... [Alt+C]",
+          ph_defect: "Search defect...",
+          ph_guide: "Search topic...",
+          copy_btn: "Copy",
+          zoom_btn: "Zoom",
+          settings_title: "Settings",
+          settings_save: "Save",
+          settings_reload: "Reload all drawings",
+          settings_urls: "Google Sheets CSV Publish URLs:",
+          sync_dialog_title: "Synchronising...",
+          color_surface_fallback: "heroal coating",
           online: "Online",
           offline: "Offline",
           syncing: "Updating…",
@@ -2601,30 +2633,43 @@
           lang_en: "English",
           lang_ru: "Русский",
           login_error_empty: "Пожалуйста, введите PIN!",
-          login_error_wrong: "Falsche PIN-Nummer",
-          login_error_inactive: "Benutzerkonto ist inaktiv",
-          login_error_blocked: "Benutzerkonto ist inaktiv",
-          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
+          login_error_wrong: "Неверный PIN",
+          login_error_inactive: "Учётная запись неактивна",
+          login_error_blocked: "Учётная запись неактивна",
+          login_error_deactivated: "Учётная запись отключена",
           logout_btn: "Выйти",
-          lbl_profiles: "Artikel",
+          lbl_profiles: "Артикулы",
           lbl_artnr: "Артикул [/]",
-          lbl_colors: "Farben",
+          lbl_colors: "Цвета",
+          lbl_color_badge: "RAL / SD [Alt+C]",
           cat_all: "Все",
           cat_ral: "RAL",
           cat_sd: "SD",
           nav_search: "Поиск",
           nav_search_hotkey: "Поиск [/]",
-          nav_scrap: "Брак / Дефекты",
-          nav_info: "Auskunft",
+          nav_scrap: "Брак",
+          nav_info: "Справка",
           photo_capture: "Сделать фото",
           photo_title: "Сделать фото",
           photo_hint: "Снимок только на этом устройстве. Не загружается на сервер.",
           photo_pick: "Открыть камеру",
           photo_saved: "Фото сохранено локально.",
-          role_admin: "Administrator",
-          role_staff: "Mitarbeiter",
+          role_admin: "Администратор",
+          role_staff: "Сотрудник",
           list_hint_artikel: "Искать артикул или название",
           list_hint_farben: "Искать код RAL или SD",
+          ph_artikel: "напр. 1371, 5044, 2042... [/]",
+          ph_farben: "напр. 7016, 9016, 0108... [Alt+C]",
+          ph_defect: "Искать дефект...",
+          ph_guide: "Искать тему...",
+          copy_btn: "Копировать",
+          zoom_btn: "Zoom",
+          settings_title: "Настройки",
+          settings_save: "Сохранить",
+          settings_reload: "Загрузить все чертежи заново",
+          settings_urls: "Google Sheets CSV Publish URLs:",
+          sync_dialog_title: "Синхронизация...",
+          color_surface_fallback: "Покрытие heroal",
           online: "Онлайн",
           offline: "Офлайн",
           syncing: "Обновление…",
@@ -2698,12 +2743,20 @@
 
       function t(key) {
         const table = i18nDict[appLang] || i18nDict.de;
-        return (
-          (table && table[key]) ||
-          (i18nDict.de && i18nDict.de[key]) ||
-          (I18N_FALLBACK.de && I18N_FALLBACK.de[key]) ||
-          key
-        );
+        const fromDict = table && table[key];
+        const localFb = I18N_FALLBACK[appLang] && I18N_FALLBACK[appLang][key];
+        const deFb = I18N_FALLBACK.de && I18N_FALLBACK.de[key];
+        if (
+          appLang !== "de" &&
+          localFb &&
+          deFb &&
+          fromDict != null &&
+          String(fromDict) === String(deFb) &&
+          String(localFb) !== String(deFb)
+        ) {
+          return localFb;
+        }
+        return fromDict || (i18nDict.de && i18nDict.de[key]) || deFb || key;
       }
 
       function tf(key, vars) {
@@ -2714,14 +2767,26 @@
         return s;
       }
 
+      function acceptSheetTranslation(lang, key, incoming) {
+        const s = String(incoming).trim();
+        if (!s) return false;
+        if (lang === "de") return true;
+        const deVal = I18N_FALLBACK.de && I18N_FALLBACK.de[key];
+        const local = I18N_FALLBACK[lang] && I18N_FALLBACK[lang][key];
+        if (local && deVal && s === String(deVal) && String(local) !== String(deVal)) {
+          return false;
+        }
+        return true;
+      }
+
       function mergeTranslationBundle(bundle) {
         if (!bundle || typeof bundle !== "object") return;
         LANGS.forEach((lang) => {
           if (bundle[lang] && typeof bundle[lang] === "object") {
             Object.keys(bundle[lang]).forEach((key) => {
               const val = bundle[lang][key];
-              if (val != null && String(val).trim() !== "") {
-                i18nDict[lang][key] = String(val);
+              if (acceptSheetTranslation(lang, key, val)) {
+                i18nDict[lang][key] = String(val).trim();
               }
             });
           }
@@ -2731,8 +2796,8 @@
           const row = bundle[key];
           if (!row || typeof row !== "object") return;
           LANGS.forEach((lang) => {
-            if (row[lang] != null && String(row[lang]).trim() !== "") {
-              i18nDict[lang][key] = String(row[lang]);
+            if (acceptSheetTranslation(lang, key, row[lang])) {
+              i18nDict[lang][key] = String(row[lang]).trim();
             }
           });
         });
@@ -2755,6 +2820,9 @@
         document.querySelectorAll("[data-i18n]").forEach((el) => {
           el.textContent = t(el.getAttribute("data-i18n"));
         });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+          el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+        });
         const footerEl = document.getElementById("login-footer-txt");
         if (footerEl) footerEl.textContent = I18N_FALLBACK.de.footer_text;
         const loginInput = document.getElementById("input-login-nr");
@@ -2768,6 +2836,7 @@
         setTxt("lbl-prof-head", t("lbl_profiles"));
         setTxt("lbl-prof-badge", t("lbl_artnr"));
         setTxt("lbl-color-head", t("lbl_colors"));
+        setTxt("lbl-color-badge", t("lbl_color_badge"));
         setTxt("nav-lbl-suche", t("nav_search"));
         setTxt("nav-lbl-ausschuss", t("nav_scrap"));
         setTxt("nav-lbl-auskunft", t("nav_info"));
@@ -2895,7 +2964,7 @@
       }
 
       function articleCategory(item) {
-        return String((item && (item.category || item.kategorie_de)) || "").trim();
+        return locField(item, "kategorie", appLang) || String((item && item.category) || "").trim();
       }
 
       function articleImageList(item) {
@@ -4221,7 +4290,7 @@
           .map((key) => {
             const item = catalog[key];
             const active = key === lastActiveArticle ? " is-active" : "";
-            return `<button type="button" class="result-row${active}" data-art="${key}"><span class="result-row-code">${key}</span><span class="result-row-name">${item.name_de || ""}</span></button>`;
+            return `<button type="button" class="result-row${active}" data-art="${key}"><span class="result-row-code">${key}</span><span class="result-row-name">${locField(item, "name", appLang) || item.name_de || ""}</span></button>`;
           })
           .join("");
         listEl.querySelectorAll(".result-row").forEach((row) => {
@@ -4303,7 +4372,7 @@
         const name = locField(col, "name", appLang);
         document.getElementById("col-name").innerText = `${code} — ${name}`;
         document.getElementById("col-desc").innerText =
-          locField(col, "oberflaeche", appLang) || "heroal Beschichtung";
+          locField(col, "oberflaeche", appLang) || t("color_surface_fallback");
         document.getElementById("col-hex").innerText = col.hex || "";
 
         const swatch = document.getElementById("col-swatch");
@@ -4368,7 +4437,7 @@
         if (!it) return;
         const nr = articleNr(it, artnr);
         document.getElementById("prof-title-de").innerText =
-          `${nr} — ${it.name_de || ""}`;
+          `${nr} — ${locField(it, "name", appLang) || it.name_de || ""}`;
         const subEl = document.getElementById("prof-title-sub");
         if (subEl) {
           subEl.innerText = "";
