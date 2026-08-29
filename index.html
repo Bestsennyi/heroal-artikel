@@ -761,6 +761,29 @@
         background-color: #ef4444;
         box-shadow: 0 0 8px #ef4444;
       }
+      .net-badge.syncing {
+        border-color: rgba(56, 189, 248, 0.55);
+      }
+      .net-badge.syncing .net-dot {
+        background-color: #38bdf8;
+        box-shadow: 0 0 8px #38bdf8;
+        animation: net-pulse 0.9s ease-in-out infinite;
+      }
+      .net-badge.synced .net-dot {
+        background-color: #22c55e;
+        box-shadow: 0 0 8px #22c55e;
+      }
+      @keyframes net-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(0.65);
+          opacity: 0.45;
+        }
+      }
 
       .btn-hdr {
         background: rgba(0, 0, 0, 0.25);
@@ -2051,6 +2074,7 @@
           login_error_wrong: "Falsche PIN-Nummer",
           login_error_inactive: "Benutzerkonto ist inaktiv",
           login_error_blocked: "Benutzerkonto ist inaktiv",
+          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Abmelden",
           lbl_profiles: "📐 Profile / Zubehör",
           lbl_artnr: "Art.-Nr. [/]",
@@ -2062,6 +2086,8 @@
           nav_info: "Auskunft",
           online: "Online",
           offline: "Offline",
+          syncing: "Aktualisiere…",
+          synced: "Synchronisiert",
           sync: "Sync",
           sync_title: "Daten synchronisieren",
           sync_offline: "Offline: Sync deaktiviert",
@@ -2108,6 +2134,7 @@
           login_error_wrong: "Falsche PIN-Nummer",
           login_error_inactive: "Benutzerkonto ist inaktiv",
           login_error_blocked: "Benutzerkonto ist inaktiv",
+          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Sign out",
           lbl_profiles: "📐 Profiles / Accessories",
           lbl_artnr: "Art. no. [/]",
@@ -2119,6 +2146,8 @@
           nav_info: "Info",
           online: "Online",
           offline: "Offline",
+          syncing: "Updating…",
+          synced: "Synced",
           sync: "Sync",
           sync_title: "Synchronise data",
           sync_offline: "Offline: sync disabled",
@@ -2165,6 +2194,7 @@
           login_error_wrong: "Falsche PIN-Nummer",
           login_error_inactive: "Benutzerkonto ist inaktiv",
           login_error_blocked: "Benutzerkonto ist inaktiv",
+          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
           logout_btn: "Выйти",
           lbl_profiles: "📐 Профили / Комплектующие",
           lbl_artnr: "Артикул [/]",
@@ -2176,6 +2206,8 @@
           nav_info: "Справка ERP",
           online: "Онлайн",
           offline: "Офлайн",
+          syncing: "Обновление…",
+          synced: "Синхронизировано",
           sync: "Sync",
           sync_title: "Синхронизировать данные",
           sync_offline: "Офлайн: Sync отключён",
@@ -2473,26 +2505,71 @@
         return res && typeof res.count === "number" ? res.count : null;
       }
 
-      // Online/Offline Tracker
-      function updateOnlineStatus() {
+      // Online/Offline Tracker. `netBadgeMode` is a short-lived overlay
+      // ("syncing" / "synced") so a silent background run never blocks the UI.
+      let netBadgeMode = null;
+      let netBadgeSyncedTimer = null;
+
+      function setSyncIconSpinning(on) {
+        const icon = document.getElementById("sync-icon");
+        if (!icon) return;
+        if (on) {
+          icon.style.display = "inline-block";
+          icon.style.animation = "spin 1s infinite linear";
+        } else {
+          icon.style.animation = "none";
+        }
+      }
+
+      function applyNetBadge() {
         const badge = document.getElementById("netStatus");
         const txt = document.getElementById("netStatus-txt");
         const btnSync = document.getElementById("btn-sync");
+        if (!badge || !txt || !btnSync) return;
 
-        if (navigator.onLine) {
-          badge.className = "net-badge";
-          txt.innerText = t("online");
-          btnSync.removeAttribute("disabled");
-          btnSync.title = t("sync_title");
-        } else {
+        const online = navigator.onLine;
+        if (!online) {
           badge.className = "net-badge offline";
           txt.innerText = t("offline");
           btnSync.setAttribute("disabled", "true");
           btnSync.title = t("sync_offline");
+          return;
+        }
+
+        btnSync.removeAttribute("disabled");
+        btnSync.title = t("sync_title");
+        if (netBadgeMode === "syncing") {
+          badge.className = "net-badge syncing";
+          txt.innerText = t("syncing");
+        } else if (netBadgeMode === "synced") {
+          badge.className = "net-badge synced";
+          txt.innerText = t("synced");
+        } else {
+          badge.className = "net-badge";
+          txt.innerText = t("online");
         }
       }
-      window.addEventListener("online", updateOnlineStatus);
-      window.addEventListener("offline", updateOnlineStatus);
+
+      function setNetBadgeMode(mode) {
+        netBadgeMode = mode;
+        if (mode !== "synced" && netBadgeSyncedTimer) {
+          clearTimeout(netBadgeSyncedTimer);
+          netBadgeSyncedTimer = null;
+        }
+        applyNetBadge();
+      }
+
+      function flashSyncedBadge() {
+        setNetBadgeMode("synced");
+        netBadgeSyncedTimer = setTimeout(() => {
+          netBadgeSyncedTimer = null;
+          if (netBadgeMode === "synced") setNetBadgeMode(null);
+        }, 4000);
+      }
+
+      function updateOnlineStatus() {
+        applyNetBadge();
+      }
 
       // IndexedDB Database Wrapper
       const DB_NAME = "heroal_warehouse_db";
@@ -3387,18 +3464,17 @@
       function revalidateSession() {
         if (!currentUser) {
           checkAuth();
-          return;
+          return { ok: true, loggedOut: false };
         }
         const live = findUserByNummer(currentUser.nummer);
         if (!live || !isUserActive(live)) {
-          currentUser = null;
-          clearStoredUser();
-          checkAuth();
-          return;
+          handleLogout({ messageKey: "login_error_deactivated" });
+          return { ok: false, loggedOut: true };
         }
         currentUser = sessionRecord(live);
         persistCurrentUser(currentUser);
         checkAuth();
+        return { ok: true, loggedOut: false };
       }
 
       async function handleLogin() {
@@ -3438,7 +3514,8 @@
         }
       }
 
-      function handleLogout() {
+      function handleLogout(opts) {
+        const messageKey = opts && opts.messageKey;
         currentUser = null;
         clearStoredUser();
         closeSettings();
@@ -3446,6 +3523,10 @@
         clearLoginFeedback();
         setNumpadVisible(false);
         checkAuth();
+        if (messageKey) {
+          const err = document.getElementById("login-error-msg");
+          if (err) err.innerText = t(messageKey);
+        }
       }
 
       function toggleLanguage() {
@@ -4034,128 +4115,279 @@
         return bundle;
       }
 
-      async function triggerSync(force = false) {
-        if (!navigator.onLine) {
-          alert(t("offline_no_net"));
-          return;
-        }
+      const BACKGROUND_SYNC_DELAY_MS = 2500;
+      const BACKGROUND_SYNC_INTERVAL_MS = 12 * 60 * 1000;
+      const SILENT_FETCH_TIMEOUT_MS = 25000;
+      const MANUAL_FETCH_TIMEOUT_MS = 120000;
 
-        const icon = document.getElementById("sync-icon");
-        icon.style.display = "inline-block";
-        icon.style.animation = "spin 1s infinite linear";
+      const syncCtl = {
+        running: false,
+        silent: true,
+        promise: null,
+      };
 
-        const syncModal = document.getElementById("sync-dialog");
-        const statusTxt = document.getElementById("sync-status-txt");
-        const fillBar = document.getElementById("sync-progress-fill");
-        syncModal.classList.add("active");
-
-        const updateProgress = (pct, label) => {
-          fillBar.style.width = `${pct}%`;
-          statusTxt.innerText = label;
-        };
-
-        // Staged so a failure halfway through cannot leave the in-memory
-        // database holding a mix of new and old tables.
-        const staged = {};
-
+      function fingerprintTable(value) {
         try {
-          updateProgress(10, t("sync_load_profiles"));
-          if (appUrls.artikel) {
-            const r = await fetch(appUrls.artikel);
-            const parsed = parseArtikelCsv(await r.text());
-            if (Object.keys(parsed).length) staged.artikel = parsed;
-          }
-
-          updateProgress(25, t("sync_load_colors"));
-          if (appUrls.farben) {
-            const r = await fetch(appUrls.farben);
-            const parsed = parseFarbenCsv(await r.text());
-            if (Object.keys(parsed).length) staged.farben = parsed;
-          }
-
-          updateProgress(35, t("sync_load_auskunft"));
-          if (appUrls.auskunft) {
-            const r = await fetch(appUrls.auskunft);
-            const newAuskunft = parseAuskunftCsv(await r.text());
-            if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
-          }
-
-          updateProgress(45, t("sync_load_users"));
-          if (appUrls.users) {
-            const r = await fetch(appUrls.users);
-            const parsed = parseBenutzerCsv(await r.text());
-            if (Object.keys(parsed).length) staged.users = parsed;
-          }
-
-          if (appUrls.translations) {
-            updateProgress(50, t("sync_load_i18n"));
-            const r = await fetch(appUrls.translations);
-            const bundle = rowsToTranslationBundle(parseCSV(await r.text()));
-            mergeTranslationBundle(bundle);
-            await idbSetTranslation("bundle", bundle);
-            applyLanguage();
-          }
-
-          updateProgress(55, t("sync_save"));
-          appDB = migrateAppDB({ ...appDB, ...staged });
-          await idbSet("heroal_db", appDB);
-          applyLanguage();
-          revalidateSession();
-
-          // Drawings are the one thing the app cannot reconstruct offline, so
-          // they are downloaded now rather than on first view. Only the ones
-          // missing from the cache are fetched, which keeps a daily sync short.
-          const drawings = collectDrawingUrls();
-          let mediaResult = null;
-          if (drawings.length > 0) {
-            updateProgress(60, drawingProgressLabel(0, 0));
-            mediaResult = await swRequest(
-              { type: "PRECACHE_MEDIA", urls: drawings, force },
-              ({ done, total }) => {
-                const pct = total ? 60 + Math.round((done / total) * 38) : 98;
-                updateProgress(pct, drawingProgressLabel(done, total));
-              },
-            );
-          }
-
-          updateProgress(100, t("sync_done"));
-
-          setTimeout(() => {
-            syncModal.classList.remove("active");
-            const cached = mediaResult ? mediaResult.cached : 0;
-            const missing = mediaResult ? mediaResult.failed : 0;
-            const added = mediaResult ? mediaResult.downloaded || 0 : 0;
-            const artikel = Object.keys(appDB.artikel || {}).length;
-
-            // A partially cached terminal must not look fully offline-ready.
-            if (mediaResult && mediaResult.aborted) {
-              const drawings = cached + missing;
-              const lostConnection = mediaResult.reason === "network";
-              showToast(
-                lostConnection
-                  ? tf("sync_abort_net", { cached, total: drawings })
-                  : tf("sync_abort_throttle", { cached, total: drawings }),
-              );
-            } else if (missing > 0) {
-              showToast(
-                tf("sync_partial", { artikel, cached, missing }),
-              );
-            } else {
-              // Naming the newly fetched count makes it obvious that a routine
-              // sync only pulls the day's additions.
-              const newly =
-                added > 0 ? tf("sync_newly", { n: added }) : "";
-              showToast(tf("sync_ok", { artikel, cached, newly }));
-            }
-          }, 500);
-        } catch (err) {
-          console.error(err);
-          syncModal.classList.remove("active");
-          alert(t("sync_error"));
-        } finally {
-          icon.style.animation = "none";
+          return JSON.stringify(value || null);
+        } catch (e) {
+          return "";
         }
       }
+
+      function refreshLiveViews() {
+        rebuildCategoryPills();
+        const pIn = document.getElementById("find-prof");
+        if (pIn) pIn.dispatchEvent(new Event("input"));
+        const cIn = document.getElementById("find-color");
+        if (cIn) cIn.dispatchEvent(new Event("input"));
+        const active = document.querySelector(".tab-view.active");
+        if (active && active.id === "view-ausschuss") renderDefects();
+        if (active && active.id === "view-auskunft") renderAuskunft();
+      }
+
+      function showSyncModalUi() {
+        const syncModal = document.getElementById("sync-dialog");
+        if (syncModal) syncModal.classList.add("active");
+      }
+
+      function hideSyncModalUi() {
+        const syncModal = document.getElementById("sync-dialog");
+        if (syncModal) syncModal.classList.remove("active");
+      }
+
+      function updateSyncProgress(pct, label) {
+        if (syncCtl.silent) return;
+        const statusTxt = document.getElementById("sync-status-txt");
+        const fillBar = document.getElementById("sync-progress-fill");
+        if (fillBar) fillBar.style.width = `${pct}%`;
+        if (statusTxt) statusTxt.innerText = label;
+      }
+
+      function abortAfter(ms) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), ms);
+        return {
+          signal: ctrl.signal,
+          cancel() {
+            clearTimeout(timer);
+          },
+        };
+      }
+
+      async function fetchCsvText(url, silent) {
+        if (!url) return "";
+        const timeout = silent ? SILENT_FETCH_TIMEOUT_MS : MANUAL_FETCH_TIMEOUT_MS;
+        const gate = abortAfter(timeout);
+        try {
+          const r = await fetch(url, { signal: gate.signal, cache: "no-store" });
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return await r.text();
+        } finally {
+          gate.cancel();
+        }
+      }
+
+      function reportManualSyncResult(mediaResult) {
+        const cached = mediaResult ? mediaResult.cached : 0;
+        const missing = mediaResult ? mediaResult.failed : 0;
+        const added = mediaResult ? mediaResult.downloaded || 0 : 0;
+        const artikel = Object.keys(appDB.artikel || {}).length;
+
+        if (mediaResult && mediaResult.aborted) {
+          const drawings = cached + missing;
+          const lostConnection = mediaResult.reason === "network";
+          showToast(
+            lostConnection
+              ? tf("sync_abort_net", { cached, total: drawings })
+              : tf("sync_abort_throttle", { cached, total: drawings }),
+          );
+        } else if (missing > 0) {
+          showToast(tf("sync_partial", { artikel, cached, missing }));
+        } else {
+          const newly = added > 0 ? tf("sync_newly", { n: added }) : "";
+          showToast(tf("sync_ok", { artikel, cached, newly }));
+        }
+      }
+
+      const syncService = {
+        async syncAll({ silent = false, force = false } = {}) {
+          if (silent && document.visibilityState !== "visible") return;
+          if (silent && !navigator.onLine) return;
+
+          while (syncCtl.running) {
+            if (silent) return syncCtl.promise;
+            if (!force) {
+              syncCtl.silent = false;
+              showSyncModalUi();
+              return syncCtl.promise;
+            }
+            await syncCtl.promise;
+          }
+
+          if (!navigator.onLine) {
+            if (!silent) alert(t("offline_no_net"));
+            return;
+          }
+
+          syncCtl.running = true;
+          syncCtl.silent = silent;
+          const run = (async () => {
+            setSyncIconSpinning(true);
+            setNetBadgeMode("syncing");
+            if (!silent) showSyncModalUi();
+
+            const staged = {};
+            const beforeArtikel = fingerprintTable(appDB.artikel);
+            const beforeFarben = fingerprintTable(appDB.farben);
+
+            try {
+              updateSyncProgress(10, t("sync_load_profiles"));
+              if (appUrls.artikel) {
+                const parsed = parseArtikelCsv(
+                  await fetchCsvText(appUrls.artikel, syncCtl.silent),
+                );
+                if (Object.keys(parsed).length) staged.artikel = parsed;
+              }
+
+              updateSyncProgress(25, t("sync_load_colors"));
+              if (appUrls.farben) {
+                const parsed = parseFarbenCsv(
+                  await fetchCsvText(appUrls.farben, syncCtl.silent),
+                );
+                if (Object.keys(parsed).length) staged.farben = parsed;
+              }
+
+              updateSyncProgress(35, t("sync_load_auskunft"));
+              if (appUrls.auskunft) {
+                const newAuskunft = parseAuskunftCsv(
+                  await fetchCsvText(appUrls.auskunft, syncCtl.silent),
+                );
+                if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
+              }
+
+              updateSyncProgress(45, t("sync_load_users"));
+              if (appUrls.users) {
+                const parsed = parseBenutzerCsv(
+                  await fetchCsvText(appUrls.users, syncCtl.silent),
+                );
+                if (Object.keys(parsed).length) staged.users = parsed;
+              }
+
+              if (appUrls.translations) {
+                updateSyncProgress(50, t("sync_load_i18n"));
+                const bundle = rowsToTranslationBundle(
+                  parseCSV(
+                    await fetchCsvText(appUrls.translations, syncCtl.silent),
+                  ),
+                );
+                mergeTranslationBundle(bundle);
+                await idbSetTranslation("bundle", bundle);
+                applyLanguage();
+              }
+
+              updateSyncProgress(55, t("sync_save"));
+              appDB = migrateAppDB({ ...appDB, ...staged });
+              await idbSet("heroal_db", appDB);
+              applyLanguage();
+              revalidateSession();
+
+              const catalogChanged =
+                fingerprintTable(appDB.artikel) !== beforeArtikel ||
+                fingerprintTable(appDB.farben) !== beforeFarben;
+              if (catalogChanged || staged.auskunft) refreshLiveViews();
+
+              const drawings = collectDrawingUrls();
+              let mediaResult = null;
+              if (drawings.length > 0) {
+                updateSyncProgress(60, drawingProgressLabel(0, 0));
+                mediaResult = await swRequest(
+                  { type: "PRECACHE_MEDIA", urls: drawings, force },
+                  ({ done, total }) => {
+                    const pct = total
+                      ? 60 + Math.round((done / total) * 38)
+                      : 98;
+                    updateSyncProgress(
+                      pct,
+                      drawingProgressLabel(done, total),
+                    );
+                  },
+                );
+              }
+
+              updateSyncProgress(100, t("sync_done"));
+
+              if (syncCtl.silent) {
+                if (mediaResult && mediaResult.aborted) setNetBadgeMode(null);
+                else flashSyncedBadge();
+              } else {
+                setTimeout(() => {
+                  hideSyncModalUi();
+                  reportManualSyncResult(mediaResult);
+                  setNetBadgeMode(null);
+                }, 500);
+              }
+            } catch (err) {
+              if (syncCtl.silent) {
+                console.warn("[sync] silent run ignored", err);
+                setNetBadgeMode(null);
+              } else {
+                console.error(err);
+                hideSyncModalUi();
+                setNetBadgeMode(null);
+                alert(t("sync_error"));
+              }
+            } finally {
+              setSyncIconSpinning(false);
+            }
+          })();
+
+          syncCtl.promise = run.finally(() => {
+            syncCtl.running = false;
+            syncCtl.promise = null;
+          });
+          return syncCtl.promise;
+        },
+      };
+
+      async function triggerSync(force = false) {
+        return syncService.syncAll({ silent: false, force: !!force });
+      }
+
+      function initBackgroundSync() {
+        const kickSilent = () => {
+          if (!navigator.onLine) return;
+          if (document.visibilityState !== "visible") return;
+          syncService.syncAll({ silent: true });
+        };
+
+        dbReady
+          .then(() => {
+            const arm = () =>
+              setTimeout(kickSilent, BACKGROUND_SYNC_DELAY_MS);
+            if (document.visibilityState === "visible") arm();
+            else {
+              document.addEventListener("visibilitychange", function once() {
+                if (document.visibilityState !== "visible") return;
+                document.removeEventListener("visibilitychange", once);
+                arm();
+              });
+            }
+          })
+          .catch(() => {});
+
+        window.addEventListener("online", () => {
+          updateOnlineStatus();
+          setTimeout(kickSilent, 800);
+        });
+        window.addEventListener("offline", () => {
+          setNetBadgeMode(null);
+          updateOnlineStatus();
+        });
+
+        setInterval(kickSilent, BACKGROUND_SYNC_INTERVAL_MS);
+      }
+
+      initBackgroundSync();
 
       function openSettings() {
         document.getElementById("cfg-url-artikel").value =
