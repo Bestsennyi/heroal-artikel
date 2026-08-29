@@ -684,7 +684,7 @@
       }
       .brand-title {
         font-weight: 800;
-        font-size: 27px;
+        font-size: 32px;
         letter-spacing: -0.03em;
         line-height: 1;
         background: none;
@@ -699,15 +699,18 @@
         color: #ffffff;
       }
       .brand-title .brand-product {
-        color: #3b82f6;
+        color: #60a5fa;
+        text-shadow: none;
       }
       .btn-quick {
+        box-sizing: border-box;
         background: rgba(255, 255, 255, 0.1);
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: #ffffff;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 10px 16px;
-        min-height: 42px;
+        height: 44px;
+        min-height: 44px;
         font-size: 15px;
         font-weight: 600;
         cursor: pointer;
@@ -721,10 +724,19 @@
         height: 20px;
       }
       .btn-quick:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
       }
       .btn-quick.active {
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.28);
+        color: #ffffff;
+        font-weight: 600;
+        border: 2px solid #60a5fa;
+        box-shadow: none;
+      }
+      .btn-quick.active:hover {
+        background: rgba(255, 255, 255, 0.28);
+        color: #ffffff;
       }
       .btn-quick.admin-only[hidden] {
         display: none !important;
@@ -1632,7 +1644,7 @@
           max-width: 120px;
         }
         .brand-title {
-          font-size: 22px;
+          font-size: 26px;
         }
       }
       @media (min-width: 1280px) {
@@ -2015,7 +2027,7 @@
       </div>
 
       <div class="header-center">
-        <button type="button" class="btn-quick" id="btn-hdr-suche">
+        <button type="button" class="btn-quick active" id="btn-hdr-suche">
           <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
           <span class="btn-quick-label" data-i18n="nav_search">Suche</span>
         </button>
@@ -4098,6 +4110,7 @@
       }
 
       function navigate(viewId, btn) {
+        closePhotoCapture();
         document
           .querySelectorAll(".tab-view")
           .forEach((v) => v.classList.remove("active"));
@@ -4119,17 +4132,35 @@
           if (items[idx]) items[idx].classList.add("active");
         }
 
-        const auskunftBtn = document.getElementById("btn-hdr-auskunft");
-        if (auskunftBtn) {
-          auskunftBtn.classList.toggle("active", viewId === "view-auskunft");
-        }
-        const sucheBtn = document.getElementById("btn-hdr-suche");
-        if (sucheBtn) {
-          sucheBtn.classList.toggle("active", viewId === "view-suche");
-        }
+        syncHdrQuickTabs(viewId);
 
         if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") renderAuskunft();
+      }
+
+      function currentWorkspaceViewId() {
+        const open = document.querySelector(".tab-view.active");
+        return open && open.id ? open.id : "view-suche";
+      }
+
+      function syncHdrQuickTabs(viewId) {
+        const view = viewId || currentWorkspaceViewId();
+        const photoOpen = document
+          .getElementById("photo-dialog")
+          ?.classList.contains("active");
+        const sucheBtn = document.getElementById("btn-hdr-suche");
+        const auskunftBtn = document.getElementById("btn-hdr-auskunft");
+        const photoBtn = document.getElementById("btn-hdr-photo");
+        if (sucheBtn) {
+          sucheBtn.classList.toggle("active", !photoOpen && view === "view-suche");
+        }
+        if (auskunftBtn) {
+          auskunftBtn.classList.toggle(
+            "active",
+            !photoOpen && view === "view-auskunft",
+          );
+        }
+        if (photoBtn) photoBtn.classList.toggle("active", !!photoOpen);
       }
 
       function bindWorkspaceChrome() {
@@ -4193,11 +4224,7 @@
             showToast(t("photo_saved"));
           });
         }
-        const sucheView = document.getElementById("view-suche");
-        const sBtn = document.getElementById("btn-hdr-suche");
-        if (sucheView && sucheView.classList.contains("active") && sBtn) {
-          sBtn.classList.add("active");
-        }
+        syncHdrQuickTabs();
       }
 
       function openPhotoCapture() {
@@ -4205,11 +4232,13 @@
         const dlg = document.getElementById("photo-dialog");
         dlg.classList.add("active");
         dlg.setAttribute("aria-hidden", "false");
+        syncHdrQuickTabs();
       }
       function closePhotoCapture() {
         const dlg = document.getElementById("photo-dialog");
         dlg.classList.remove("active");
         dlg.setAttribute("aria-hidden", "true");
+        syncHdrQuickTabs();
       }
 
       function initSearchHandlers() {
