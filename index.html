@@ -2872,9 +2872,9 @@
         position: fixed;
         width: 240px;
         height: 240px;
-        padding: 10px;
-        background: #0b132b;
-        border: 1px solid rgba(56, 189, 248, 0.5);
+        padding: 8px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(56, 189, 248, 0.6);
         border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
         z-index: 50;
@@ -2883,6 +2883,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(12px);
       }
       .drawing-hover-pop[hidden] {
         display: none;
@@ -2891,8 +2892,32 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
-        padding: 4px;
-        border-radius: 8px;
+        pointer-events: none;
+      }
+      .drawing-hover-pop-close {
+        display: none;
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 2;
+        pointer-events: auto;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        border-radius: 999px;
+        background: rgba(2, 6, 23, 0.85);
+        color: #e2e8f0;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+      }
+      .drawing-hover-pop-close .ico {
+        width: 16px;
+        height: 16px;
+      }
+      .drawing-hover-pop.is-sticky .drawing-hover-pop-close {
+        display: flex;
       }
       .settings-card {
         width: 100%;
@@ -3621,6 +3646,14 @@
     </div>
 
     <div id="drawing-hover-pop" class="drawing-hover-pop" hidden>
+      <button
+        type="button"
+        class="drawing-hover-pop-close"
+        id="drawing-hover-pop-close"
+        aria-label="Close"
+      >
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       <img alt="" />
     </div>
 
@@ -4730,6 +4763,9 @@
       let lastColorQuery = "";
       let kbArtikelIndex = -1;
       let kbColorIndex = -1;
+      let drawingPreviewSticky = false;
+      let drawingPreviewAnchor = null;
+      let drawingPreviewTouch = false;
       let profileGalleryUrls = [];
       let profileGalleryEntries = [];
       let profileGalleryIndex = 0;
@@ -5389,6 +5425,7 @@
       }
 
       function handleSearchEscape(active) {
+        hideDrawingHover();
         if (closeNoteModal()) return;
         if (isZoomOpen()) {
           closeZoom();
@@ -6133,6 +6170,14 @@
         bindProfileGalleryUi();
         bindZoomUi();
         window.addEventListener("scroll", hideDrawingHover, true);
+        const popClose = document.getElementById("drawing-hover-pop-close");
+        if (popClose) {
+          popClose.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            hideDrawingHover();
+          });
+        }
       }
 
       const RESULT_LIMIT = 80;
@@ -6472,6 +6517,7 @@
       }
 
       function confirmArtikelSelection() {
+        hideDrawingHover();
         const pIn = document.getElementById("find-prof");
         const exact = findExactArticleKey(pIn && pIn.value);
         const key =
@@ -6961,13 +7007,36 @@
       }
 
       function hideDrawingHover() {
+        drawingPreviewSticky = false;
+        drawingPreviewAnchor = null;
         const pop = document.getElementById("drawing-hover-pop");
-        if (pop) pop.hidden = true;
+        if (pop) {
+          pop.hidden = true;
+          pop.classList.remove("is-sticky");
+        }
       }
 
-      function showDrawingHover(anchor) {
-        if (!canHoverPreview() || !anchor) return;
-        const img = anchor.querySelector("img");
+      function positionDrawingHover(anchor) {
+        const pop = document.getElementById("drawing-hover-pop");
+        if (!pop || !anchor) return;
+        const size = 240;
+        const r = anchor.getBoundingClientRect();
+        let left = r.right + 12;
+        let top = r.top + r.height / 2 - size / 2;
+        if (left + size > window.innerWidth - 8) left = r.left - 12 - size;
+        if (left < 8) left = 8;
+        if (top < 8) top = 8;
+        if (top + size > window.innerHeight - 8) {
+          top = window.innerHeight - 8 - size;
+        }
+        pop.style.left = left + "px";
+        pop.style.top = top + "px";
+      }
+
+      function showDrawingHover(anchor, forced) {
+        if (!forced && !canHoverPreview()) return;
+        if (!anchor) return;
+        const img = anchor.querySelector("img") || (anchor.tagName === "IMG" ? anchor : null);
         const pop = document.getElementById("drawing-hover-pop");
         if (!img || !pop) return;
         const popImg = pop.querySelector("img");
@@ -6976,22 +7045,31 @@
           popImg.src = src;
           setMediaInvertedClass(popImg, isMediaInverted(src));
         }
+        drawingPreviewAnchor = anchor;
+        pop.classList.toggle("is-sticky", !!forced);
         pop.hidden = false;
-        const size = 240;
-        const r = anchor.getBoundingClientRect();
-        let left = r.right + 12;
-        let top = r.top + r.height / 2 - size / 2;
-        if (left + size > window.innerWidth - 8) left = r.left - 12 - size;
-        if (left < 8) left = 8;
-        if (top < 8) top = 8;
-        if (top + size > window.innerHeight - 8) top = window.innerHeight - 8 - size;
-        pop.style.left = left + "px";
-        pop.style.top = top + "px";
+        positionDrawingHover(anchor);
       }
 
       function bindDrawingHover(thumb) {
-        thumb.addEventListener("mouseenter", () => showDrawingHover(thumb));
-        thumb.addEventListener("mouseleave", hideDrawingHover);
+        thumb.addEventListener("pointerdown", (e) => {
+          drawingPreviewTouch = e.pointerType === "touch";
+        });
+        thumb.addEventListener("mouseenter", () => {
+          if (drawingPreviewSticky) return;
+          showDrawingHover(thumb);
+        });
+        thumb.addEventListener("mouseleave", () => {
+          if (drawingPreviewSticky) return;
+          hideDrawingHover();
+        });
+        thumb.addEventListener("click", (e) => {
+          if (!drawingPreviewTouch) return;
+          e.preventDefault();
+          e.stopPropagation();
+          drawingPreviewSticky = true;
+          showDrawingHover(thumb, true);
+        });
       }
 
       function applyZoomTransform() {
