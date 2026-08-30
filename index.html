@@ -1445,11 +1445,70 @@
       .osk-alpha[data-osk-lang="en"] {
         --osk-cols: 10;
       }
-      .osk-alpha[data-osk-lang="en"] .osk-row:nth-child(2) {
+      .osk-alpha[data-osk-lang="ru"] {
+        --osk-cols: 12;
+      }
+      .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2) {
         padding-left: calc(var(--osk-key-w) * 0.5);
       }
-      .osk-alpha[data-osk-lang="en"] .osk-row:nth-child(3) {
-        padding-left: calc(var(--osk-key-w) + var(--osk-gap));
+      .osk-alpha .osk-letters,
+      .osk-alpha .osk-symbols {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+      .osk-alpha .osk-symbols .osk-row .osk-key {
+        width: auto;
+        max-width: none;
+      }
+      .osk-symbols .osk-row:not(.osk-row-fn) {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1.8fr)) repeat(4, minmax(0, 0.85fr));
+        gap: 6px;
+      }
+      .osk-symbols .osk-row:not(.osk-row-fn) .osk-key {
+        flex: none;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .osk-symbols .osk-row:not(.osk-row-fn) .osk-key-digit,
+      .osk-symbols .osk-row-fn .osk-key-digit {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .osk-symbols .osk-row-fn .osk-key-digit {
+        flex: 0 0 auto;
+        width: calc((100% - 36px) * 1.8 / 8.8);
+        max-width: none;
+      }
+      .osk-symbols .osk-row:not(.osk-row-fn) .osk-key:not(.osk-key-digit) {
+        flex: 1 1 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #cbd5e1;
+      }
+      .osk-symbols .osk-row-fn .osk-key-num,
+      .osk-symbols .osk-row-fn .osk-key-back,
+      .osk-symbols .osk-row-fn .osk-key-enter {
+        flex: 0 0 56px;
+        flex-shrink: 0;
+        width: 56px;
+        max-width: 56px;
+      }
+      .osk-symbols .osk-row-fn .osk-key-space {
+        flex: 1 1 0;
+        width: auto;
+        max-width: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      .osk-alpha .osk-letters.is-hidden,
+      .osk-alpha .osk-symbols.is-hidden {
+        display: none;
       }
       .osk-alpha.is-hidden,
       .osk-num.is-hidden {
@@ -1497,6 +1556,12 @@
         box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
         transform: scale(0.95);
       }
+      .osk-key.is-on {
+        background: #1e293b;
+        border: 2px solid var(--heroal-accent);
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
+      }
       .osk-key-enter {
         grid-column: span 2;
         font-size: 28px;
@@ -1533,6 +1598,47 @@
       }
       .osk-alpha .osk-row-fn .osk-key-space {
         flex: 2.8 1 0;
+      }
+      .osk-alpha .osk-letters .osk-row:not(.osk-row-fn):not(.osk-row-shift) .osk-key {
+        flex: 1 1 0;
+        width: auto;
+        max-width: none;
+      }
+      .osk-alpha .osk-letters .osk-row-shift {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        gap: 4px;
+      }
+      .osk-alpha .osk-letters .osk-row-shift .osk-key-shift,
+      .osk-alpha .osk-letters .osk-row-shift .osk-key-back {
+        flex: 1.4 0 0;
+        flex-shrink: 0;
+        width: auto;
+        min-width: 48px;
+        max-width: none;
+      }
+      .osk-alpha .osk-letters .osk-row-shift .osk-key:not(.osk-key-shift):not(.osk-key-back) {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .osk-alpha .osk-letters .osk-row-fn .osk-key-num,
+      .osk-alpha .osk-letters .osk-row-fn .osk-key-enter {
+        flex: 0 0 56px;
+        width: 56px;
+        max-width: 56px;
+      }
+      .osk-alpha .osk-letters .osk-row-fn .osk-key[data-osk-char="."] {
+        flex: 0 0 40px;
+        width: 40px;
+        max-width: 40px;
+      }
+      .osk-alpha .osk-letters .osk-row-fn .osk-key-space {
+        flex: 1 1 0;
+        width: auto;
+        max-width: none;
       }
       .osk-key-fn {
         font-size: 14px;
@@ -1590,8 +1696,8 @@
         justify-content: stretch;
         padding-left: 0;
       }
-      .search-stack .osk-alpha[data-osk-lang="en"] .osk-row:nth-child(2),
-      .search-stack .osk-alpha[data-osk-lang="en"] .osk-row:nth-child(3) {
+      .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2),
+      .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(3) {
         padding-left: 0;
       }
       .search-stack .osk-alpha .osk-row .osk-key {
@@ -1603,11 +1709,30 @@
         height: 44px;
         font-size: 15px;
       }
-      .search-stack .osk-alpha .osk-row .osk-key-back {
-        flex: 1.35 1 0;
-        width: auto;
-        min-width: 0;
-        max-width: none;
+      .search-stack .osk-alpha .osk-letters .osk-row-shift {
+        gap: 4px;
+        justify-content: space-between;
+      }
+      .search-stack .osk-alpha .osk-letters .osk-row-shift .osk-key-shift,
+      .search-stack .osk-alpha .osk-letters .osk-row-shift .osk-key-back {
+        flex: 1.4 0 0;
+        flex-shrink: 0;
+        min-width: 48px;
+      }
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-num,
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-enter {
+        flex: 0 0 56px;
+        width: 56px;
+        max-width: 56px;
+      }
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key[data-osk-char="."] {
+        flex: 0 0 40px;
+        width: 40px;
+        max-width: 40px;
+        font-size: 18px;
+      }
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-space {
+        flex: 1 1 0;
       }
       .search-stack .osk-alpha .osk-row-fn .osk-key-num {
         flex: 0 0 68px;
@@ -1625,6 +1750,50 @@
         flex: 1 1 auto;
         width: auto;
         max-width: none;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1.8fr)) repeat(4, minmax(0, 0.85fr));
+        gap: 6px;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) .osk-key {
+        flex: none;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) .osk-key-digit,
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-digit {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-digit {
+        flex: 0 0 auto;
+        width: calc((100% - 36px) * 1.8 / 8.8);
+        max-width: none;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) .osk-key:not(.osk-key-digit) {
+        flex: 1 1 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #cbd5e1;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-num,
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-back,
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-enter {
+        flex: 0 0 56px;
+        flex-shrink: 0;
+        width: 56px;
+        max-width: 56px;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-space {
+        flex: 1 1 0;
+        width: auto;
+        max-width: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
       }
       .search-stack .osk-alpha .osk-row-fn .osk-key-enter {
         flex: 0 0 80px;
@@ -6632,22 +6801,69 @@
 
       const RESULT_LIMIT = 80;
 
-      function oskCharLabel(ch) {
-        if (ch === "ß") return "ß";
-        try {
-          return ch.toLocaleUpperCase(appLang || "de");
-        } catch (e) {
-          return ch.toUpperCase();
+      function oskUi(pad) {
+        if (!pad._oskUi) {
+          pad._oskUi = { shift: false, capsLock: false, shiftTimer: 0 };
         }
+        return pad._oskUi;
+      }
+
+      function isOskLetter(ch) {
+        return !!(ch && ch.length === 1 && /[a-zA-ZäöüÄÖÜßẞа-яА-ЯёЁ]/u.test(ch));
+      }
+
+      function oskEscAttr(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/</g, "&lt;");
+      }
+
+      function oskEscText(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function oskCharLabel(ch, upper) {
+        if (!ch) return "";
+        if (!isOskLetter(ch)) return ch;
+        try {
+          return upper
+            ? ch.toLocaleUpperCase(appLang || "de")
+            : ch.toLocaleLowerCase(appLang || "de");
+        } catch (e) {
+          return upper ? ch.toUpperCase() : ch.toLowerCase();
+        }
+      }
+
+      function syncOskCase(pad) {
+        const ui = oskUi(pad);
+        const upper = !!(ui.shift || ui.capsLock);
+        pad.querySelectorAll(".osk-letters [data-osk-char]").forEach((btn) => {
+          const ch = btn.getAttribute("data-osk-char");
+          if (!isOskLetter(ch)) return;
+          btn.textContent = oskCharLabel(ch, upper);
+        });
+        pad.querySelectorAll('[data-osk-act="shift"]').forEach((btn) => {
+          btn.classList.toggle("is-on", upper);
+          btn.setAttribute("aria-pressed", upper ? "true" : "false");
+        });
       }
 
       function oskKeyHtml(item) {
         if (typeof item === "string") {
+          const label = isOskLetter(item) ? oskCharLabel(item, false) : item;
+          const digit = item.length === 1 && item >= "0" && item <= "9";
+          const cls = "osk-key" + (digit ? " osk-key-digit" : "");
           return (
-            '<button type="button" class="osk-key" data-osk-char="' +
-            item +
+            '<button type="button" class="' +
+            cls +
+            '" data-osk-char="' +
+            oskEscAttr(item) +
             '" tabindex="-1">' +
-            oskCharLabel(item) +
+            oskEscText(label) +
             "</button>"
           );
         }
@@ -6671,37 +6887,86 @@
         return '<div class="' + cls + '">' + items.map(oskKeyHtml).join("") + "</div>";
       }
 
-      function oskAlphaRows() {
-        const back = {
+      function oskBackKey() {
+        return {
           act: "back",
           label: "⌫",
           cls: "osk-key-fn osk-key-back",
           aria: "Backspace",
         };
+      }
+
+      function oskShiftKey() {
+        return {
+          act: "shift",
+          label: "⇧",
+          cls: "osk-key-fn osk-key-shift",
+          aria: "Shift",
+        };
+      }
+
+      function oskFnRowKeys(leading) {
+        return [
+          leading,
+          ".",
+          { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: "Space" },
+          { act: "enter", label: "↵", cls: "osk-key-fn osk-key-enter", aria: "Enter" },
+        ];
+      }
+
+      function oskAlphaRows() {
+        const back = oskBackKey();
+        const shift = oskShiftKey();
         if (appLang === "ru") {
           return [
             "йцукенгшщзх".split(""),
-            "фывапролджэ".split(""),
-            "ячсмитьбюъ".split("").concat([back]),
+            "фывапролджэъ".split(""),
+            [shift].concat("ячсмитьбю".split("")).concat([back]),
           ];
         }
         if (appLang === "en") {
           return [
             "qwertyuiop".split(""),
             "asdfghjkl".split(""),
-            "zxcvbnm".split("").concat([back]),
+            [shift].concat("zxcvbnm".split("")).concat([back]),
           ];
         }
         return [
           "qwertzuiopü".split(""),
           "asdfghjklöä".split(""),
-          "yxcvbnmß".split("").concat([back]),
+          [shift].concat("yxcvbnmß".split("")).concat([back]),
+        ];
+      }
+
+      function oskSymbolRows(abcKey) {
+        const back = oskBackKey();
+        const enter = {
+          act: "enter",
+          label: "↵",
+          cls: "osk-key-fn osk-key-enter",
+          aria: "Enter",
+        };
+        const space = {
+          act: "space",
+          label: "",
+          cls: "osk-key-space osk-key-fn",
+          aria: "Space",
+        };
+        const currency =
+          appLang === "ru" ? "₽" : appLang === "en" ? "$" : "€";
+        return [
+          ["1", "2", "3", "-", "/", "@", "#"],
+          ["4", "5", "6", "_", ":", "!", currency],
+          ["7", "8", "9", ".", ",", "?", '"'],
+          [abcKey, "0", space, back, enter],
         ];
       }
 
       function searchOskInnerHtml(opts) {
         const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
         const login = !!(opts && opts.login);
+        const abcKey = { act: "abc", label: abcLabel, cls: "osk-key-fn osk-key-num" };
+        const symKey = { act: "sym", label: "123", cls: "osk-key-fn osk-key-num" };
         const numPad = login
           ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
               .map(oskKeyHtml)
@@ -6726,18 +6991,14 @@
             oskKeyHtml({ act: "abc", label: abcLabel, cls: "osk-key-fn" }) +
             oskKeyHtml("0") +
             oskKeyHtml("-");
-        const alpha =
-          oskAlphaRows().map(oskRowHtml).join("") +
-          oskRowHtml(
-            [
-              { act: "num", label: "123", cls: "osk-key-fn osk-key-num" },
-              "-",
-              { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: "Space" },
-              ".",
-              { act: "enter", label: "↵", cls: "osk-key-fn osk-key-enter", aria: "Enter" },
-            ],
-            "osk-row-fn",
-          );
+        const letters =
+          oskAlphaRows()
+            .map((row, i) => oskRowHtml(row, i === 2 ? "osk-row-shift" : ""))
+            .join("") +
+          oskRowHtml(oskFnRowKeys(symKey), "osk-row-fn");
+        const symbols = oskSymbolRows(abcKey)
+          .map((row, i) => oskRowHtml(row, i === 3 ? "osk-row-fn" : ""))
+          .join("");
         return (
           '<div class="osk-num">' +
           numPad +
@@ -6745,7 +7006,12 @@
           '<div class="osk-alpha is-hidden" data-osk-lang="' +
           (appLang || "de") +
           '">' +
-          alpha +
+          '<div class="osk-letters">' +
+          letters +
+          "</div>" +
+          '<div class="osk-symbols is-hidden">' +
+          symbols +
+          "</div>" +
           "</div>"
         );
       }
@@ -6755,6 +7021,15 @@
           pad.dataset.oskBound = "1";
           pad.addEventListener("mousedown", (e) => {
             if (e.target.closest(".osk-key")) e.preventDefault();
+          });
+          pad.addEventListener("dblclick", (e) => {
+            const btn = e.target.closest('[data-osk-act="shift"]');
+            if (!btn || !pad.contains(btn)) return;
+            const ui = oskUi(pad);
+            clearTimeout(ui.shiftTimer);
+            ui.capsLock = !ui.capsLock;
+            ui.shift = false;
+            syncOskCase(pad);
           });
         }
         pad.querySelectorAll(".osk-key").forEach((btn) => {
@@ -6766,17 +7041,25 @@
           btn.addEventListener("pointerleave", pressOff);
           btn.addEventListener("click", () => handleOskKey(pad, btn));
         });
+        syncOskCase(pad);
       }
 
       function remountSearchKeypads() {
         document.querySelectorAll(".osk[data-target]").forEach((pad) => {
           const wasHidden = pad.classList.contains("is-hidden");
           const alphaEl = pad.querySelector(".osk-alpha");
+          const symbolsEl = pad.querySelector(".osk-symbols");
           const alphaOn = !!(alphaEl && !alphaEl.classList.contains("is-hidden"));
+          const symbolsOn = !!(
+            symbolsEl && !symbolsEl.classList.contains("is-hidden")
+          );
           pad.innerHTML = searchOskInnerHtml({ login: pad.id === "login-numpad" });
           bindOskPad(pad);
           pad.classList.toggle("is-hidden", wasHidden);
-          setOskLayout(pad, alphaOn ? "alpha" : "num");
+          setOskLayout(
+            pad,
+            !alphaOn ? "num" : symbolsOn ? "symbols" : "letters",
+          );
         });
       }
 
@@ -6831,10 +7114,21 @@
       }
 
       function setOskLayout(pad, layout) {
+        if (layout === "alpha") layout = "letters";
+        if (layout === "sym") layout = "symbols";
         const num = pad.querySelector(".osk-num");
         const alpha = pad.querySelector(".osk-alpha");
+        const letters = pad.querySelector(".osk-letters");
+        const symbols = pad.querySelector(".osk-symbols");
         if (num) num.classList.toggle("is-hidden", layout !== "num");
-        if (alpha) alpha.classList.toggle("is-hidden", layout !== "alpha");
+        if (alpha) {
+          alpha.classList.toggle(
+            "is-hidden",
+            layout !== "letters" && layout !== "symbols",
+          );
+        }
+        if (letters) letters.classList.toggle("is-hidden", layout !== "letters");
+        if (symbols) symbols.classList.toggle("is-hidden", layout !== "symbols");
       }
 
       function handleOskKey(pad, btn) {
@@ -6844,12 +7138,27 @@
         const act = btn.getAttribute("data-osk-act");
         const ch = btn.getAttribute("data-osk-char");
         if (act === "abc") {
-          setOskLayout(pad, "alpha");
+          setOskLayout(pad, "letters");
+          input.focus();
+          return;
+        }
+        if (act === "sym") {
+          setOskLayout(pad, "symbols");
           input.focus();
           return;
         }
         if (act === "num") {
           setOskLayout(pad, "num");
+          input.focus();
+          return;
+        }
+        if (act === "shift") {
+          const ui = oskUi(pad);
+          clearTimeout(ui.shiftTimer);
+          ui.shiftTimer = setTimeout(() => {
+            ui.shift = !ui.shift;
+            syncOskCase(pad);
+          }, 280);
           input.focus();
           return;
         }
@@ -6878,7 +7187,18 @@
           oskInsert(input, " ");
           return;
         }
-        if (ch) oskInsert(input, ch);
+        if (ch) {
+          let out = ch;
+          if (isOskLetter(ch)) {
+            const ui = oskUi(pad);
+            out = oskCharLabel(ch, !!(ui.shift || ui.capsLock));
+            if (!ui.capsLock && ui.shift) {
+              ui.shift = false;
+              syncOskCase(pad);
+            }
+          }
+          oskInsert(input, out);
+        }
       }
 
       function oskInsert(input, text) {
@@ -7019,7 +7339,7 @@
         const listEl = document.getElementById("prof-list");
         const emptyEl = document.getElementById("prof-empty");
         const query = (pIn.value || "").trim().toLowerCase();
-        if (pClr) pClr.classList.toggle("is-on", !!query);
+        if (pClr) pClr.classList.toggle("is-on", !!(pIn && pIn.value));
         if (query !== lastArtikelQuery) {
           artikelDetailOpen = false;
           kbArtikelIndex = -1;
@@ -7123,7 +7443,7 @@
         const listEl = document.getElementById("col-list");
         const emptyEl = document.getElementById("col-empty");
         const query = (cIn.value || "").trim().toLowerCase();
-        if (cClr) cClr.classList.toggle("is-on", !!query);
+        if (cClr) cClr.classList.toggle("is-on", !!(cIn && cIn.value));
         if (query !== lastColorQuery) {
           kbColorIndex = -1;
           lastColorQuery = query;
