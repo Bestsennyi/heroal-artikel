@@ -126,7 +126,8 @@
       html:not(.authed) #sync-dialog,
       html:not(.authed) #zoom-dialog,
       html:not(.authed) #note-dialog,
-      html:not(.authed) #photo-dialog {
+      html:not(.authed) #photo-dialog,
+      html:not(.authed) #drawing-hover-pop {
         visibility: hidden;
         pointer-events: none;
       }
@@ -1191,6 +1192,98 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         flex-shrink: 0;
       }
+      #prof-list {
+        gap: 0;
+      }
+      #prof-list .result-row {
+        gap: 0;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        border-color: #1e293b;
+        background: rgba(12, 21, 39, 0.7);
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+      }
+      #prof-list .result-row:last-child {
+        margin-bottom: 0;
+      }
+      #prof-list .result-row:hover,
+      #prof-list .result-row.is-active {
+        background: #13223f;
+        border-color: rgba(14, 165, 233, 0.4);
+      }
+      #prof-list .result-row-thumb {
+        width: 64px;
+        height: 64px;
+        padding: 4px;
+        border-radius: 12px;
+        background: #fff;
+        cursor: zoom-in;
+      }
+      #prof-list .result-row-meta {
+        justify-content: center;
+        gap: 6px;
+        margin-left: 14px;
+      }
+      #prof-list .result-row-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
+      }
+      #prof-list .result-row-code {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        width: auto;
+        min-width: 0;
+        padding: 2px 8px;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        border-radius: 4px;
+        background: rgba(14, 165, 233, 0.1);
+        color: #38bdf8;
+        font-size: 0.75rem;
+      }
+      #prof-list .result-row-name {
+        flex: 1;
+        min-width: 0;
+        color: #fff;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      #prof-list .result-row-stats {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      #prof-list .result-chip {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      #prof-list .result-chip-masse {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fcd34d;
+      }
+      #prof-list .result-chip-cat {
+        background: rgba(168, 85, 247, 0.2);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #d8b4fe;
+      }
+      @media (min-width: 640px) {
+        #prof-list .result-row-name {
+          font-size: 1rem;
+        }
+      }
 
       .zone-header {
         display: flex;
@@ -1569,6 +1662,55 @@
         padding: 8px;
         position: relative;
         cursor: zoom-in;
+        user-select: none;
+        overflow: hidden;
+      }
+      .drawing-nav {
+        display: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.55);
+        color: #fff;
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+      }
+      .profile-drawing-box.has-multi .drawing-nav {
+        display: inline-flex;
+      }
+      .drawing-nav:hover {
+        background: rgba(14, 165, 233, 0.75);
+      }
+      .drawing-nav-prev {
+        left: 8px;
+      }
+      .drawing-nav-next {
+        right: 8px;
+      }
+      .drawing-counter {
+        display: none;
+        position: absolute;
+        left: 8px;
+        bottom: 8px;
+        z-index: 2;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.7);
+        color: #e2e8f0;
+        font-size: 11px;
+        font-weight: 600;
+        pointer-events: none;
+      }
+      .profile-drawing-box.has-multi .drawing-counter {
+        display: inline-flex;
       }
       .display-card-prof.is-solo .profile-drawing-box {
         flex: 1 1 0;
@@ -1635,10 +1777,10 @@
         display: flex;
       }
       .profile-thumb {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
         padding: 2px;
-        background: #0b0f19;
+        background: #fff;
         border: 2px solid var(--border-color);
         border-radius: 8px;
         cursor: pointer;
@@ -2579,18 +2721,76 @@
         color: #e2e8f0;
         white-space: pre-wrap;
       }
+      .zoom-modal {
+        flex-direction: column;
+        gap: 12px;
+        padding: 56px 14px 16px;
+      }
+      .zoom-stage {
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        touch-action: none;
+        cursor: grab;
+      }
+      .zoom-stage.is-panning {
+        cursor: grabbing;
+      }
       .zoom-img-view {
         max-width: 100%;
-        max-height: 90vh;
+        max-height: 100%;
         object-fit: contain;
         background: #ffffff;
         border-radius: 8px;
         padding: 8px;
+        transform-origin: center center;
+        will-change: transform;
+        pointer-events: none;
+      }
+      .zoom-thumbs {
+        display: none;
+        flex: 0 0 auto;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 100%;
+        overflow-x: auto;
+        padding: 4px 0;
+      }
+      .zoom-thumbs.has-thumbs {
+        display: flex;
+      }
+      .zoom-thumb {
+        width: 48px;
+        height: 48px;
+        padding: 2px;
+        background: #fff;
+        border: 2px solid rgba(148, 163, 184, 0.4);
+        border-radius: 8px;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .zoom-thumb img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        pointer-events: none;
+      }
+      .zoom-thumb.active {
+        border-color: #38bdf8;
       }
       .zoom-close {
         position: absolute;
         top: 16px;
         right: 16px;
+        z-index: 2;
         background: rgba(255, 255, 255, 0.2);
         border: none;
         color: #fff;
@@ -2601,6 +2801,27 @@
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+      .drawing-hover-pop {
+        position: fixed;
+        width: 240px;
+        height: 240px;
+        padding: 8px;
+        background: #fff;
+        border: 2px solid #38bdf8;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+        z-index: 50;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .drawing-hover-pop[hidden] {
+        display: none;
+      }
+      .drawing-hover-pop img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
       .settings-card {
         width: 100%;
@@ -3038,14 +3259,31 @@
               <div id="prof-card" class="display-card-prof" style="display: none">
               <div
                 class="profile-drawing-box"
-                onclick="showZoom(document.getElementById('prof-img').src)"
+                id="prof-drawing-box"
               >
+                <button
+                  type="button"
+                  class="drawing-nav drawing-nav-prev"
+                  id="prof-draw-prev"
+                  aria-label="Previous"
+                >
+                  ‹
+                </button>
                 <img
                   id="prof-img"
                   class="profile-drawing-img"
                   src=""
                   alt="Zeichnung"
                 />
+                <button
+                  type="button"
+                  class="drawing-nav drawing-nav-next"
+                  id="prof-draw-next"
+                  aria-label="Next"
+                >
+                  ›
+                </button>
+                <span class="drawing-counter" id="prof-draw-count"></span>
                 <span class="btn-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
                   <span data-i18n="zoom_btn">Zoom</span>
@@ -3275,11 +3513,18 @@
     </footer>
 
     <!-- 5. ZOOM MODAL -->
-    <div id="zoom-dialog" class="zoom-modal" onclick="closeZoom()">
-      <button class="zoom-close" onclick="closeZoom()" aria-label="Close">
+    <div id="zoom-dialog" class="zoom-modal">
+      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close">
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
-      <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
+      <div class="zoom-stage" id="zoom-stage">
+        <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
+      </div>
+      <div id="zoom-thumbs" class="zoom-thumbs"></div>
+    </div>
+
+    <div id="drawing-hover-pop" class="drawing-hover-pop" hidden>
+      <img alt="" />
     </div>
 
     <div id="note-dialog" class="note-modal" aria-hidden="true">
@@ -3991,7 +4236,7 @@
       }
 
       function articleMasse(item) {
-        return locField(item, "masse", appLang) || String((item && (item.masse || item.size)) || "").trim();
+        return locField(item, "masse", appLang) || String((item && (item.masse_de || item.masse || item.size)) || "").trim();
       }
 
       function articleSystem(item) {
@@ -4005,12 +4250,15 @@
       function articleImageList(item) {
         if (!item) return [];
         const out = [];
-        ["image_url", "img_url", "img_1", "img_2", "img_3", "img_4"].forEach(
-          (key) => {
-            const url = String(item[key] || "").trim();
-            if (url && out.indexOf(url) === -1) out.push(url);
-          },
-        );
+        const push = (value) => {
+          const url = String(value || "").trim();
+          if (url && out.indexOf(url) === -1) out.push(url);
+        };
+        push(item.image_url);
+        push(item.img_url);
+        if (Array.isArray(item.images)) item.images.forEach(push);
+        if (Array.isArray(item.extra)) item.extra.forEach(push);
+        ["img_1", "img_2", "img_3", "img_4"].forEach((key) => push(item[key]));
         return out;
       }
 
@@ -4345,7 +4593,22 @@
       let lastActiveColorCode = "";
       let articlePickedByUser = false;
       let lastArticleHits = [];
+      let lastColorHits = [];
       let lastArtikelQuery = "";
+      let lastColorQuery = "";
+      let kbArtikelIndex = -1;
+      let kbColorIndex = -1;
+      let profileGalleryUrls = [];
+      let profileGalleryIndex = 0;
+      let zoomGalleryUrls = [];
+      let zoomGalleryIndex = 0;
+      let zoomScale = 1;
+      let zoomX = 0;
+      let zoomY = 0;
+      const zoomPointers = new Map();
+      let zoomPinchStart = 0;
+      let zoomPinchScale = 1;
+      let zoomBound = false;
       let artikelDetailOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
@@ -4639,6 +4902,9 @@
       initAutoLogout();
       updateOnlineStatus();
       requestPersistentStorage();
+      if (currentUser && !isLoginVisible()) {
+        setTimeout(() => focusArtikelSearch(false), 0);
+      }
       dbReady = initDatabase().then(async () => {
         await loadTranslationsFromIdb();
         applyLanguage();
@@ -4687,6 +4953,12 @@
           hinweis_en: it.hinweis_en || "",
           hinweis_ru: it.hinweis_ru || "",
           image_url: image,
+          img_1: String(it.img_1 || extra[1] || "").trim(),
+          img_2: String(it.img_2 || extra[2] || "").trim(),
+          img_3: String(it.img_3 || extra[3] || "").trim(),
+          img_4: String(it.img_4 || extra[4] || "").trim(),
+          extra: extra.slice(),
+          images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
           drive_folder_id: String(it.drive_folder_id || ""),
         };
       }
@@ -4833,44 +5105,320 @@
         }
       }
 
+      function isSucheView() {
+        const view = document.getElementById("view-suche");
+        return !!(view && view.classList.contains("active"));
+      }
+
+      function isModalBlockingKeys() {
+        const ids = [
+          "zoom-dialog",
+          "settings-dialog",
+          "sync-dialog",
+          "note-dialog",
+          "photo-dialog",
+        ];
+        return ids.some((id) => {
+          const el = document.getElementById(id);
+          return el && el.classList.contains("active");
+        });
+      }
+
+      function isZoomOpen() {
+        const el = document.getElementById("zoom-dialog");
+        return !!(el && el.classList.contains("active"));
+      }
+
+      function focusArtikelSearch(select) {
+        navigate("view-suche");
+        hideDrawingHover();
+        const p = document.getElementById("find-prof");
+        if (!p) return;
+        p.focus();
+        if (select) p.select();
+      }
+
+      function focusColorSearch() {
+        navigate("view-suche");
+        hideDrawingHover();
+        const c = document.getElementById("find-color");
+        if (!c) return;
+        c.focus();
+      }
+
+      function caretCollapsedAt(input, pos) {
+        if (!input) return false;
+        try {
+          return (
+            input.selectionStart === pos && input.selectionEnd === pos
+          );
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function artikelListClosed() {
+        const listEl = document.getElementById("prof-list");
+        return (
+          artikelDetailOpen ||
+          !listEl ||
+          listEl.hidden ||
+          !listEl.querySelector(".result-row")
+        );
+      }
+
+      function colorListClosed() {
+        const listEl = document.getElementById("col-list");
+        return !listEl || !listEl.querySelector(".result-row");
+      }
+
+      function highlightArtikelRows() {
+        const key =
+          kbArtikelIndex >= 0
+            ? lastArticleHits[kbArtikelIndex]
+            : lastActiveArticle;
+        document.querySelectorAll("#prof-list .result-row").forEach((row) => {
+          const on = !!key && row.dataset.art === key;
+          row.classList.toggle("is-active", on);
+          if (on && kbArtikelIndex >= 0) {
+            row.scrollIntoView({ block: "nearest" });
+          }
+        });
+      }
+
+      function highlightColorRows() {
+        const key =
+          kbColorIndex >= 0 ? lastColorHits[kbColorIndex] : lastActiveColorCode;
+        document.querySelectorAll("#col-list .result-row").forEach((row) => {
+          const on = !!key && row.dataset.col === key;
+          row.classList.toggle("is-active", on);
+          if (on && kbColorIndex >= 0) {
+            row.scrollIntoView({ block: "nearest" });
+          }
+        });
+      }
+
+      function moveArtikelHighlight(delta) {
+        if (artikelDetailOpen) {
+          artikelDetailOpen = false;
+          applyArtikelWorkspace();
+        }
+        if (!lastArticleHits.length) return;
+        if (kbArtikelIndex < 0) {
+          kbArtikelIndex = delta > 0 ? 0 : lastArticleHits.length - 1;
+        } else {
+          kbArtikelIndex =
+            (kbArtikelIndex + delta + lastArticleHits.length) %
+            lastArticleHits.length;
+        }
+        lastActiveArticle = lastArticleHits[kbArtikelIndex];
+        highlightArtikelRows();
+      }
+
+      function moveColorHighlight(delta) {
+        if (!lastColorHits.length) return;
+        if (kbColorIndex < 0) {
+          kbColorIndex = delta > 0 ? 0 : lastColorHits.length - 1;
+        } else {
+          kbColorIndex =
+            (kbColorIndex + delta + lastColorHits.length) % lastColorHits.length;
+        }
+        lastActiveColorCode = lastColorHits[kbColorIndex];
+        highlightColorRows();
+        selectColor(lastActiveColorCode);
+      }
+
+      function findExactColorKey(query) {
+        const q = String(query || "").trim().toLowerCase();
+        if (!q) return "";
+        const catalog = appDB.farben || {};
+        for (const key of Object.keys(catalog)) {
+          const code = String((catalog[key] && catalog[key].code) || key).toLowerCase();
+          if (key.toLowerCase() === q || code === q) return key;
+        }
+        return "";
+      }
+
+      function confirmColorSelection() {
+        const cIn = document.getElementById("find-color");
+        const exact = findExactColorKey(cIn && cIn.value);
+        const key =
+          kbColorIndex >= 0
+            ? lastColorHits[kbColorIndex]
+            : exact || lastColorHits[0] || lastActiveColorCode;
+        if (key) selectColor(key);
+      }
+
+      function handleSearchEscape(active) {
+        if (closeNoteModal()) return;
+        if (isZoomOpen()) {
+          closeZoom();
+          return;
+        }
+        closeSettings();
+        closePhotoCapture();
+        closeHdrLangDropdown();
+        if (hideAllSearchOsk()) return;
+        const pIn = document.getElementById("find-prof");
+        const cIn = document.getElementById("find-color");
+        if (active === pIn) {
+          if (artikelDetailOpen) {
+            artikelDetailOpen = false;
+            applyArtikelWorkspace();
+            pIn.focus();
+            return;
+          }
+          if (kbArtikelIndex >= 0) {
+            kbArtikelIndex = -1;
+            highlightArtikelRows();
+            pIn.focus();
+            return;
+          }
+          if ((pIn.value || "").trim()) {
+            clearInput("find-prof");
+            return;
+          }
+          pIn.focus();
+          return;
+        }
+        if (active === cIn) {
+          if (kbColorIndex >= 0) {
+            kbColorIndex = -1;
+            highlightColorRows();
+            cIn.focus();
+            return;
+          }
+          if ((cIn.value || "").trim()) {
+            clearInput("find-color");
+            return;
+          }
+          cIn.focus();
+          return;
+        }
+        if (artikelDetailOpen) {
+          artikelDetailOpen = false;
+          applyArtikelWorkspace();
+        }
+        focusArtikelSearch(false);
+      }
+
       // Hotkeys Handler
       function initHotkeys() {
         window.addEventListener("keydown", (e) => {
           if (isLoginVisible() || !currentUser) return;
+          const active = document.activeElement;
+          const pIn = document.getElementById("find-prof");
+          const cIn = document.getElementById("find-color");
+          const tag = active && active.tagName;
+          const inSearch = active === pIn || active === cIn;
+          const inOtherField =
+            (tag === "INPUT" || tag === "TEXTAREA") && !inSearch;
+
           if (e.key === "Escape") {
-            if (closeNoteModal()) return;
-            closeZoom();
-            closeSettings();
-            closePhotoCapture();
-            closeHdrLangDropdown();
-            hideAllSearchOsk();
-            clearInput("find-prof");
-            clearInput("find-color");
+            e.preventDefault();
+            handleSearchEscape(active);
             return;
           }
 
-          if (
-            document.activeElement.tagName === "INPUT" ||
-            document.activeElement.tagName === "TEXTAREA"
-          ) {
+          if (isZoomOpen()) {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              stepZoomGallery(-1);
+            } else if (e.key === "ArrowRight") {
+              e.preventDefault();
+              stepZoomGallery(1);
+            }
             return;
           }
+
+          if (isModalBlockingKeys() || inOtherField) return;
 
           if (e.key === "/") {
-            e.preventDefault();
-            navigate("view-suche");
-            const p = document.getElementById("find-prof");
-            p.focus();
-            p.select();
-          } else if (
+            if (!inSearch) {
+              e.preventDefault();
+              focusArtikelSearch(true);
+            }
+            return;
+          }
+          if (
             e.altKey &&
             (e.key === "c" || e.key === "C" || e.code === "KeyC")
           ) {
             e.preventDefault();
-            navigate("view-suche");
-            const c = document.getElementById("find-color");
-            c.focus();
-            c.select();
+            focusColorSearch();
+            if (cIn) cIn.select();
+            return;
+          }
+
+          if (!isSucheView() && (e.key === "Enter" || e.key.startsWith("Arrow"))) {
+            if (e.key === "Enter" && !inSearch && !inOtherField) {
+              e.preventDefault();
+              focusArtikelSearch(false);
+            }
+            return;
+          }
+
+          if (e.key === "Enter") {
+            if (!inSearch && tag !== "BUTTON") {
+              e.preventDefault();
+              focusArtikelSearch(false);
+              return;
+            }
+            if (active === pIn) {
+              e.preventDefault();
+              confirmArtikelSelection();
+            } else if (active === cIn) {
+              e.preventDefault();
+              confirmColorSelection();
+            }
+            return;
+          }
+
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+            const delta = e.key === "ArrowDown" ? 1 : -1;
+            if (active === cIn || (active && active.closest && active.closest("#col-list"))) {
+              e.preventDefault();
+              moveColorHighlight(delta);
+              return;
+            }
+            if (
+              active === pIn ||
+              (active && active.closest && active.closest("#prof-list")) ||
+              !inSearch
+            ) {
+              e.preventDefault();
+              moveArtikelHighlight(delta);
+            }
+            return;
+          }
+
+          if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+            const toColor = e.key === "ArrowRight";
+            if (active === pIn) {
+              const atEdge = toColor
+                ? caretCollapsedAt(pIn, (pIn.value || "").length)
+                : caretCollapsedAt(pIn, 0);
+              if (atEdge || artikelListClosed()) {
+                e.preventDefault();
+                focusColorSearch();
+              }
+              return;
+            }
+            if (active === cIn) {
+              const atEdge = toColor
+                ? caretCollapsedAt(cIn, (cIn.value || "").length)
+                : caretCollapsedAt(cIn, 0);
+              if (atEdge || colorListClosed()) {
+                e.preventDefault();
+                focusArtikelSearch(false);
+              }
+              return;
+            }
+            if (!inSearch) {
+              e.preventDefault();
+              if (toColor) focusColorSearch();
+              else focusArtikelSearch(false);
+            }
           }
         });
       }
@@ -5207,6 +5755,7 @@
           persistCurrentUser(currentUser);
           clearPack();
           checkAuth();
+          focusArtikelSearch(false);
         } finally {
           loginInFlight = false;
         }
@@ -5432,11 +5981,6 @@
           artikelDetailOpen = false;
           applyArtikelWorkspace();
         });
-        pIn.addEventListener("keydown", (e) => {
-          if (e.key !== "Enter") return;
-          e.preventDefault();
-          confirmArtikelSelection();
-        });
         document
           .getElementById("find-color")
           .addEventListener("input", refreshColorResults);
@@ -5447,6 +5991,9 @@
           clearInput("find-color");
         });
         mountSearchKeypads();
+        bindProfileGalleryUi();
+        bindZoomUi();
+        window.addEventListener("scroll", hideDrawingHover, true);
       }
 
       const RESULT_LIMIT = 80;
@@ -5633,9 +6180,14 @@
       }
 
       function hideAllSearchOsk() {
+        let closed = false;
         document.querySelectorAll(".search-stack .osk[data-target]").forEach((pad) => {
-          setSearchOskVisible(pad.id, false);
+          if (!pad.classList.contains("is-hidden")) {
+            closed = true;
+            setSearchOskVisible(pad.id, false);
+          }
         });
+        return closed;
       }
 
       function toggleSearchOsk(oskId) {
@@ -5783,7 +6335,10 @@
       function confirmArtikelSelection() {
         const pIn = document.getElementById("find-prof");
         const exact = findExactArticleKey(pIn && pIn.value);
-        const key = exact || lastArticleHits[0] || lastActiveArticle;
+        const key =
+          kbArtikelIndex >= 0
+            ? lastArticleHits[kbArtikelIndex]
+            : exact;
         if (!key || !(appDB.artikel || {})[key]) {
           artikelDetailOpen = false;
           setProfOskOpen(false);
@@ -5794,10 +6349,9 @@
         articlePickedByUser = true;
         artikelDetailOpen = true;
         renderProfileCard(key);
-        document.querySelectorAll("#prof-list .result-row").forEach((row) => {
-          row.classList.toggle("is-active", row.dataset.art === key);
-        });
+        highlightArtikelRows();
         setProfOskOpen(false);
+        applyArtikelWorkspace();
       }
 
       function applyArtikelWorkspace() {
@@ -5830,6 +6384,7 @@
         if (pClr) pClr.classList.toggle("is-on", !!query);
         if (query !== lastArtikelQuery) {
           artikelDetailOpen = false;
+          kbArtikelIndex = -1;
           lastArtikelQuery = query;
         }
 
@@ -5839,6 +6394,8 @@
         );
         const shown = keys.slice(0, RESULT_LIMIT);
         lastArticleHits = shown.slice();
+        if (kbArtikelIndex >= lastArticleHits.length) kbArtikelIndex = -1;
+        hideDrawingHover();
         const exact = findExactArticleKey(query);
         if (exact) {
           lastActiveArticle = exact;
@@ -5856,11 +6413,22 @@
             .map((key) => {
               const item = catalog[key];
               const active = key === lastActiveArticle ? " is-active" : "";
+              const nr = articleNr(item, key);
               const name = locField(item, "name", appLang) || item.name_de || "";
-              const thumb =
-                articleImageList(item)[0] ||
-                getSvgPlaceholder(articleNr(item, key));
-              return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-code">${escapeHtml(key)}</span><span class="result-row-name">${escapeHtml(name)}</span></span></button>`;
+              const masse = articleMasse(item);
+              const category = articleCategory(item);
+              const thumb = articleImageList(item)[0] || getSvgPlaceholder(nr);
+              const masseChip = masse
+                ? `<span class="result-chip result-chip-masse">${escapeHtml(masse)}</span>`
+                : "";
+              const catChip = category
+                ? `<span class="result-chip result-chip-cat">${escapeHtml(category)}</span>`
+                : "";
+              const stats =
+                masseChip || catChip
+                  ? `<span class="result-row-stats">${masseChip}${catChip}</span>`
+                  : "";
+              return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(nr)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
             })
             .join("");
           listEl.querySelectorAll(".result-row").forEach((row) => {
@@ -5870,8 +6438,11 @@
                 img.src = getSvgPlaceholder(row.dataset.art);
               });
             }
+            const thumb = row.querySelector(".result-row-thumb");
+            if (thumb) bindDrawingHover(thumb);
             row.addEventListener("click", () => selectArticle(row.dataset.art));
           });
+          highlightArtikelRows();
         }
 
         const hasQuery = !!query;
@@ -5893,13 +6464,14 @@
 
       function selectArticle(key) {
         lastActiveArticle = key;
+        kbArtikelIndex = lastArticleHits.indexOf(key);
         articlePickedByUser = true;
         artikelDetailOpen = true;
+        hideDrawingHover();
         renderProfileCard(key);
-        document.querySelectorAll("#prof-list .result-row").forEach((row) => {
-          row.classList.toggle("is-active", row.dataset.art === key);
-        });
+        highlightArtikelRows();
         setProfOskOpen(false);
+        applyArtikelWorkspace();
       }
 
       function refreshColorResults() {
@@ -5910,12 +6482,18 @@
         const emptyEl = document.getElementById("col-empty");
         const query = (cIn.value || "").trim().toLowerCase();
         if (cClr) cClr.classList.toggle("is-on", !!query);
+        if (query !== lastColorQuery) {
+          kbColorIndex = -1;
+          lastColorQuery = query;
+        }
 
         const catalog = appDB.farben || {};
         const keys = Object.keys(catalog).filter((k) =>
           colorMatches(k, catalog[k], query),
         );
         const shown = keys.slice(0, RESULT_LIMIT);
+        lastColorHits = shown.slice();
+        if (kbColorIndex >= lastColorHits.length) kbColorIndex = -1;
         listEl.innerHTML = shown
           .map((key) => {
             const col = catalog[key];
@@ -5926,8 +6504,12 @@
           })
           .join("");
         listEl.querySelectorAll(".result-row").forEach((row) => {
-          row.addEventListener("click", () => selectColor(row.dataset.col));
+          row.addEventListener("click", () => {
+            kbColorIndex = lastColorHits.indexOf(row.dataset.col);
+            selectColor(row.dataset.col);
+          });
         });
+        highlightColorRows();
 
         const hasQuery = !!query;
         if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
@@ -5945,9 +6527,7 @@
         lastActiveColorCode = code;
         renderColorCard(code);
         document.getElementById("col-card").style.display = "flex";
-        document.querySelectorAll("#col-list .result-row").forEach((row) => {
-          row.classList.toggle("is-active", row.dataset.col === code);
-        });
+        highlightColorRows();
       }
 
       function renderColorCard(code) {
@@ -6089,40 +6669,316 @@
         return true;
       }
 
+      function setProfileDrawing(index) {
+        const urls = profileGalleryUrls;
+        if (!urls.length) return;
+        const total = urls.length;
+        profileGalleryIndex = ((index % total) + total) % total;
+        const imgEl = document.getElementById("prof-img");
+        const countEl = document.getElementById("prof-draw-count");
+        const thumbs = document.getElementById("prof-thumbs");
+        const url = urls[profileGalleryIndex];
+        if (imgEl) {
+          imgEl.onerror = () => {
+            imgEl.onerror = null;
+            imgEl.src = getSvgPlaceholder(lastActiveArticle);
+          };
+          imgEl.src = url;
+        }
+        if (countEl) countEl.textContent = profileGalleryIndex + 1 + " / " + total;
+        if (thumbs) {
+          thumbs.querySelectorAll(".profile-thumb").forEach((el, i) => {
+            el.classList.toggle("active", i === profileGalleryIndex);
+          });
+        }
+      }
+
+      function stepProfileGallery(delta) {
+        if (profileGalleryUrls.length < 2) return;
+        setProfileDrawing(profileGalleryIndex + delta);
+      }
+
       function renderProfileGallery(it, artnr) {
         const urls = articleImageList(it);
-        const imgEl = document.getElementById("prof-img");
+        const fallback = getSvgPlaceholder(artnr);
+        profileGalleryUrls = urls.length ? urls.slice() : [fallback];
+        profileGalleryIndex = 0;
+        const box = document.getElementById("prof-drawing-box");
         const thumbs = document.getElementById("prof-thumbs");
-        imgEl.onerror = () => {
-          imgEl.onerror = null;
-          imgEl.src = getSvgPlaceholder(artnr);
-        };
-        imgEl.src = urls[0] || getSvgPlaceholder(artnr);
-        thumbs.innerHTML = "";
-        thumbs.classList.toggle("has-thumbs", urls.length > 1);
-        if (urls.length <= 1) return;
-        urls.forEach((url, i) => {
+        const multi = urls.length > 1;
+        if (box) {
+          box.classList.toggle("has-multi", multi);
+          box.style.touchAction = multi ? "pan-y" : "";
+        }
+        if (thumbs) {
+          thumbs.innerHTML = "";
+          thumbs.classList.toggle("has-thumbs", multi);
+          if (multi) {
+            urls.forEach((url, i) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "profile-thumb" + (i === 0 ? " active" : "");
+              const thumbImg = document.createElement("img");
+              thumbImg.src = url;
+              thumbImg.alt = "";
+              btn.appendChild(thumbImg);
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                setProfileDrawing(i);
+              });
+              thumbs.appendChild(btn);
+            });
+          }
+        }
+        setProfileDrawing(0);
+      }
+
+      function canHoverPreview() {
+        return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      }
+
+      function hideDrawingHover() {
+        const pop = document.getElementById("drawing-hover-pop");
+        if (pop) pop.hidden = true;
+      }
+
+      function showDrawingHover(anchor) {
+        if (!canHoverPreview() || !anchor) return;
+        const img = anchor.querySelector("img");
+        const pop = document.getElementById("drawing-hover-pop");
+        if (!img || !pop) return;
+        const popImg = pop.querySelector("img");
+        if (popImg) popImg.src = img.currentSrc || img.src;
+        pop.hidden = false;
+        const size = 240;
+        const r = anchor.getBoundingClientRect();
+        let left = r.right + 12;
+        let top = r.top + r.height / 2 - size / 2;
+        if (left + size > window.innerWidth - 8) left = r.left - 12 - size;
+        if (left < 8) left = 8;
+        if (top < 8) top = 8;
+        if (top + size > window.innerHeight - 8) top = window.innerHeight - 8 - size;
+        pop.style.left = left + "px";
+        pop.style.top = top + "px";
+      }
+
+      function bindDrawingHover(thumb) {
+        thumb.addEventListener("mouseenter", () => showDrawingHover(thumb));
+        thumb.addEventListener("mouseleave", hideDrawingHover);
+      }
+
+      function applyZoomTransform() {
+        const img = document.getElementById("zoom-img-target");
+        if (!img) return;
+        img.style.transform =
+          "translate(" + zoomX + "px, " + zoomY + "px) scale(" + zoomScale + ")";
+      }
+
+      function resetZoomTransform() {
+        zoomScale = 1;
+        zoomX = 0;
+        zoomY = 0;
+        zoomPointers.clear();
+        applyZoomTransform();
+      }
+
+      function pointerDistance() {
+        const pts = [...zoomPointers.values()];
+        if (pts.length < 2) return 0;
+        const dx = pts[0].x - pts[1].x;
+        const dy = pts[0].y - pts[1].y;
+        return Math.hypot(dx, dy);
+      }
+
+      function renderZoomThumbs() {
+        const wrap = document.getElementById("zoom-thumbs");
+        if (!wrap) return;
+        wrap.innerHTML = "";
+        const multi = zoomGalleryUrls.length > 1;
+        wrap.classList.toggle("has-thumbs", multi);
+        if (!multi) return;
+        zoomGalleryUrls.forEach((url, i) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "profile-thumb" + (i === 0 ? " active" : "");
-          const thumbImg = document.createElement("img");
-          thumbImg.src = url;
-          thumbImg.alt = "";
-          btn.appendChild(thumbImg);
+          btn.className = "zoom-thumb" + (i === zoomGalleryIndex ? " active" : "");
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "";
+          btn.appendChild(img);
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
-            imgEl.onerror = () => {
-              imgEl.onerror = null;
-              imgEl.src = getSvgPlaceholder(artnr);
-            };
-            imgEl.src = url;
-            thumbs.querySelectorAll(".profile-thumb").forEach((el) => {
-              el.classList.remove("active");
-            });
-            btn.classList.add("active");
+            setZoomGalleryIndex(i);
           });
-          thumbs.appendChild(btn);
+          wrap.appendChild(btn);
         });
+      }
+
+      function setZoomGalleryIndex(index) {
+        if (!zoomGalleryUrls.length) return;
+        const total = zoomGalleryUrls.length;
+        zoomGalleryIndex = ((index % total) + total) % total;
+        const img = document.getElementById("zoom-img-target");
+        if (img) img.src = zoomGalleryUrls[zoomGalleryIndex];
+        resetZoomTransform();
+        renderZoomThumbs();
+      }
+
+      function stepZoomGallery(delta) {
+        if (zoomGalleryUrls.length < 2) return;
+        setZoomGalleryIndex(zoomGalleryIndex + delta);
+      }
+
+      function showZoom(url, urls) {
+        const list =
+          Array.isArray(urls) && urls.length
+            ? urls.slice()
+            : url
+              ? [url]
+              : [];
+        if (!list.length) return;
+        zoomGalleryUrls = list;
+        const at = list.indexOf(url);
+        zoomGalleryIndex = at >= 0 ? at : 0;
+        const img = document.getElementById("zoom-img-target");
+        if (img) img.src = zoomGalleryUrls[zoomGalleryIndex];
+        resetZoomTransform();
+        renderZoomThumbs();
+        document.getElementById("zoom-dialog").classList.add("active");
+      }
+
+      function closeZoom() {
+        const dlg = document.getElementById("zoom-dialog");
+        if (!dlg) return;
+        dlg.classList.remove("active");
+        resetZoomTransform();
+      }
+
+      function bindZoomUi() {
+        if (zoomBound) return;
+        zoomBound = true;
+        const dlg = document.getElementById("zoom-dialog");
+        const stage = document.getElementById("zoom-stage");
+        const closeBtn = document.getElementById("zoom-close");
+        if (closeBtn) closeBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeZoom();
+        });
+        if (dlg) {
+          dlg.addEventListener("click", (e) => {
+            if (e.target === dlg) closeZoom();
+          });
+        }
+        if (!stage) return;
+        stage.addEventListener(
+          "wheel",
+          (e) => {
+            if (!isZoomOpen()) return;
+            e.preventDefault();
+            const next = Math.min(6, Math.max(1, zoomScale * (e.deltaY < 0 ? 1.12 : 0.9)));
+            zoomScale = next;
+            if (zoomScale <= 1.01) {
+              zoomScale = 1;
+              zoomX = 0;
+              zoomY = 0;
+            }
+            applyZoomTransform();
+          },
+          { passive: false },
+        );
+        stage.addEventListener("pointerdown", (e) => {
+          if (!isZoomOpen()) return;
+          stage.setPointerCapture(e.pointerId);
+          zoomPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (zoomPointers.size === 2) {
+            zoomPinchStart = pointerDistance();
+            zoomPinchScale = zoomScale;
+          } else if (zoomScale > 1) {
+            stage.classList.add("is-panning");
+          }
+        });
+        stage.addEventListener("pointermove", (e) => {
+          if (!zoomPointers.has(e.pointerId)) return;
+          const prev = zoomPointers.get(e.pointerId);
+          zoomPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (zoomPointers.size === 2 && zoomPinchStart) {
+            const dist = pointerDistance();
+            zoomScale = Math.min(6, Math.max(1, zoomPinchScale * (dist / zoomPinchStart)));
+            if (zoomScale <= 1.01) {
+              zoomScale = 1;
+              zoomX = 0;
+              zoomY = 0;
+            }
+            applyZoomTransform();
+            return;
+          }
+          if (zoomPointers.size === 1 && zoomScale > 1) {
+            zoomX += e.clientX - prev.x;
+            zoomY += e.clientY - prev.y;
+            applyZoomTransform();
+          }
+        });
+        const endPtr = (e) => {
+          zoomPointers.delete(e.pointerId);
+          if (zoomPointers.size < 2) zoomPinchStart = 0;
+          if (!zoomPointers.size) stage.classList.remove("is-panning");
+        };
+        stage.addEventListener("pointerup", endPtr);
+        stage.addEventListener("pointercancel", endPtr);
+        stage.addEventListener("lostpointercapture", endPtr);
+      }
+
+      function bindProfileGalleryUi() {
+        const box = document.getElementById("prof-drawing-box");
+        const prev = document.getElementById("prof-draw-prev");
+        const next = document.getElementById("prof-draw-next");
+        if (prev) {
+          prev.addEventListener("click", (e) => {
+            e.stopPropagation();
+            stepProfileGallery(-1);
+          });
+        }
+        if (next) {
+          next.addEventListener("click", (e) => {
+            e.stopPropagation();
+            stepProfileGallery(1);
+          });
+        }
+        if (!box) return;
+        box.addEventListener("click", (e) => {
+          if (e.target.closest(".drawing-nav")) return;
+          const url =
+            (document.getElementById("prof-img") &&
+              document.getElementById("prof-img").src) ||
+            "";
+          showZoom(url, profileGalleryUrls);
+        });
+        let swipeX = 0;
+        let swipeY = 0;
+        let swiping = false;
+        box.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.touches.length !== 1 || profileGalleryUrls.length < 2) return;
+            swipeX = e.touches[0].clientX;
+            swipeY = e.touches[0].clientY;
+            swiping = true;
+          },
+          { passive: true },
+        );
+        box.addEventListener(
+          "touchend",
+          (e) => {
+            if (!swiping) return;
+            swiping = false;
+            const t = e.changedTouches[0];
+            if (!t) return;
+            const dx = t.clientX - swipeX;
+            const dy = t.clientY - swipeY;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+            stepProfileGallery(dx < 0 ? 1 : -1);
+          },
+          { passive: true },
+        );
       }
 
       function clearInput(id) {
@@ -6223,15 +7079,6 @@
           .join("");
       }
 
-      function showZoom(url) {
-        if (!url) return;
-        document.getElementById("zoom-img-target").src = url;
-        document.getElementById("zoom-dialog").classList.add("active");
-      }
-      function closeZoom() {
-        document.getElementById("zoom-dialog").classList.remove("active");
-      }
-
       function parseCSV(text) {
         const lines = text.trim().split(/\r?\n/);
         return lines.map((line) => {
@@ -6319,6 +7166,10 @@
             hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
             hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
             image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+            img_1: csvCell(row, map, "img_1"),
+            img_2: csvCell(row, map, "img_2"),
+            img_3: csvCell(row, map, "img_3"),
+            img_4: csvCell(row, map, "img_4"),
             drive_folder_id: csvCell(row, map, "drive_folder_id"),
           };
         });
