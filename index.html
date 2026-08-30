@@ -1034,7 +1034,7 @@
       .zone-color {
         flex: 1 1 auto;
         height: auto;
-        background: #131b2e;
+        background: #0d1322;
       }
       .zone-toolbar {
         display: flex;
@@ -1100,26 +1100,31 @@
       .result-list[hidden] {
         display: none;
       }
-      .zone-prof.is-kb-open #prof-card {
+      .zone-prof.is-kb-open #prof-card,
+      .zone-color.is-kb-open #col-card {
         display: none !important;
       }
-      .zone-prof.is-kb-open .zone-scroll {
+      .zone-prof.is-kb-open .zone-scroll,
+      .zone-color.is-kb-open .zone-scroll {
         overflow: hidden;
       }
-      .zone-prof.is-kb-open .result-list {
+      .zone-prof.is-kb-open .result-list,
+      .zone-color.is-kb-open .result-list {
         flex: 1 1 auto;
         min-height: 0;
         overflow-x: hidden;
         overflow-y: auto;
         max-height: none;
       }
-      .zone-prof .zone-scroll:has(.display-card-prof:not(.is-solo)) .result-list {
+      .zone-prof .zone-scroll:has(.display-card-prof:not(.is-solo)) .result-list,
+      .zone-color .zone-scroll:has(.display-card-color:not(.is-solo)) .result-list {
         flex: 1 1 auto;
         min-height: 0;
         overflow-x: hidden;
         overflow-y: auto;
       }
-      .zone-prof .zone-scroll:has(.display-card-prof.is-solo) {
+      .zone-prof .zone-scroll:has(.display-card-prof.is-solo),
+      .zone-color .zone-scroll:has(.display-card-color.is-solo) {
         overflow: hidden;
         padding-bottom: 12px;
         gap: 0;
@@ -1191,10 +1196,12 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         flex-shrink: 0;
       }
-      #prof-list {
+      #prof-list,
+      #col-list {
         gap: 0;
       }
-      #prof-list .result-row {
+      #prof-list .result-row,
+      #col-list .result-row {
         gap: 0;
         padding: 10px;
         margin-bottom: 8px;
@@ -1203,40 +1210,62 @@
         background: rgba(12, 21, 39, 0.7);
         transition: background-color 0.15s ease, border-color 0.15s ease;
       }
-      #prof-list .result-row:last-child {
+      #prof-list .result-row:last-child,
+      #col-list .result-row:last-child {
         margin-bottom: 0;
       }
       #prof-list .result-row:hover,
-      #prof-list .result-row.is-active {
+      #prof-list .result-row.is-active,
+      #col-list .result-row:hover,
+      #col-list .result-row.is-active {
         background: #13223f;
         border-color: rgba(14, 165, 233, 0.4);
       }
-      #prof-list .result-row-thumb {
+      #prof-list .result-row-thumb,
+      #col-list .result-row-thumb {
         width: 64px;
         height: 64px;
         padding: 4px;
         border-radius: 12px;
         background: #0f172a;
         border: 1px solid rgba(51, 65, 85, 0.5);
+      }
+      #prof-list .result-row-thumb,
+      #col-list .result-row-thumb {
         cursor: zoom-in;
+      }
+      #col-list .result-row-thumb.is-swatch {
+        padding: 0;
+        overflow: hidden;
       }
       #prof-list .result-row-thumb img {
         padding: 4px;
         border-radius: 8px;
       }
-      #prof-list .result-row-meta {
+      #col-list .result-row-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        padding: 0;
+        border-radius: 11px;
+        pointer-events: none;
+      }
+      #prof-list .result-row-meta,
+      #col-list .result-row-meta {
         justify-content: center;
         gap: 6px;
         margin-left: 14px;
       }
-      #prof-list .result-row-title {
+      #prof-list .result-row-title,
+      #col-list .result-row-title {
         display: flex;
         align-items: center;
         gap: 10px;
         width: 100%;
         min-width: 0;
       }
-      #prof-list .result-row-code {
+      #prof-list .result-row-code,
+      #col-list .result-row-code {
         display: inline-flex;
         align-items: center;
         flex-shrink: 0;
@@ -1249,21 +1278,24 @@
         color: #38bdf8;
         font-size: 0.75rem;
       }
-      #prof-list .result-row-name {
+      #prof-list .result-row-name,
+      #col-list .result-row-name {
         flex: 1;
         min-width: 0;
         color: #fff;
         font-size: 0.875rem;
         font-weight: 600;
       }
-      #prof-list .result-row-stats {
+      #prof-list .result-row-stats,
+      #col-list .result-row-stats {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 8px;
         margin-top: 2px;
       }
-      #prof-list .result-chip {
+      #prof-list .result-chip,
+      #col-list .result-chip {
         display: inline-flex;
         align-items: center;
         flex-shrink: 0;
@@ -1273,18 +1305,31 @@
         font-weight: 500;
         white-space: nowrap;
       }
-      #prof-list .result-chip-masse {
+      #prof-list .result-chip-masse,
+      #col-list .result-chip-matt {
         background: rgba(245, 158, 11, 0.15);
         border: 1px solid rgba(245, 158, 11, 0.3);
         color: #fcd34d;
       }
-      #prof-list .result-chip-cat {
+      #prof-list .result-chip-cat,
+      #col-list .result-chip-fine {
         background: rgba(168, 85, 247, 0.2);
         border: 1px solid rgba(168, 85, 247, 0.4);
         color: #d8b4fe;
       }
+      #col-list .result-chip-gloss {
+        background: rgba(14, 165, 233, 0.15);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #7dd3fc;
+      }
+      #col-list .result-chip-heroal {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: #6ee7b7;
+      }
       @media (min-width: 640px) {
-        #prof-list .result-row-name {
+        #prof-list .result-row-name,
+        #col-list .result-row-name {
           font-size: 1rem;
         }
       }
@@ -1871,7 +1916,8 @@
         align-items: center;
         justify-content: center;
       }
-      .profile-drawing-box.has-multi .drawing-nav {
+      .profile-drawing-box.has-multi .drawing-nav,
+      .color-showcase-box.has-multi .drawing-nav {
         display: inline-flex;
       }
       .drawing-nav:hover {
@@ -1897,7 +1943,8 @@
         font-weight: 600;
         pointer-events: none;
       }
-      .profile-drawing-box.has-multi .drawing-counter {
+      .profile-drawing-box.has-multi .drawing-counter,
+      .color-showcase-box.has-multi .drawing-counter {
         display: inline-flex;
       }
       .display-card-prof.is-solo .profile-drawing-box {
@@ -1914,7 +1961,10 @@
       }
       .display-card-prof:not(.is-solo) .profile-thumbs,
       .display-card-prof:not(.is-solo) .profile-note,
-      .display-card-prof:not(.is-solo) .info-copy-bar {
+      .display-card-prof:not(.is-solo) .info-copy-bar,
+      .display-card-color:not(.is-solo) .profile-thumbs,
+      .display-card-color:not(.is-solo) .profile-note,
+      .display-card-color:not(.is-solo) .info-copy-bar {
         display: none;
       }
       .profile-drawing-img {
@@ -2044,7 +2094,8 @@
         text-align: center;
         flex-shrink: 0;
       }
-      .display-card-prof .info-details {
+      .display-card-prof .info-details,
+      .display-card-color .info-details {
         text-align: center;
         gap: 10px;
         flex-shrink: 0;
@@ -2189,7 +2240,8 @@
         flex-wrap: wrap;
         gap: 4px;
       }
-      .display-card-prof .info-tags-row {
+      .display-card-prof .info-tags-row,
+      .display-card-color .info-tags-row {
         justify-content: center;
         align-items: center;
         gap: 10px;
@@ -2201,19 +2253,22 @@
         padding: 2px 8px;
         border-radius: 4px;
       }
-      .display-card-prof .info-tags-row .tag-chip {
+      .display-card-prof .info-tags-row .tag-chip,
+      .display-card-color .info-tags-row .tag-chip {
         font-size: 0.875rem;
         font-weight: 600;
         padding: 6px 14px;
         border-radius: 8px;
       }
-      .display-card-prof .info-artnr-row {
+      .display-card-prof .info-artnr-row,
+      .display-card-color .info-artnr-row {
         display: flex;
         justify-content: center;
         align-items: center;
         margin: 0;
       }
-      .display-card-prof .tag-artnr {
+      .display-card-prof .tag-artnr,
+      .display-card-color .tag-artnr {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           "Liberation Mono", "Courier New", monospace;
         font-size: 1.125rem;
@@ -2227,15 +2282,27 @@
         line-height: 1.4;
         box-shadow: none;
       }
-      .display-card-prof .info-tags-row .tag-size {
+      .display-card-prof .info-tags-row .tag-size,
+      .display-card-color .info-tags-row .tag-matt {
         background: rgba(245, 158, 11, 0.15);
         color: #fcd34d;
         border: 1px solid rgba(245, 158, 11, 0.3);
       }
-      .display-card-prof .info-tags-row .tag-kat {
+      .display-card-prof .info-tags-row .tag-kat,
+      .display-card-color .info-tags-row .tag-fine {
         background: rgba(168, 85, 247, 0.2);
         color: #d8b4fe;
         border: 1px solid rgba(168, 85, 247, 0.4);
+      }
+      .display-card-color .info-tags-row .tag-gloss {
+        background: rgba(14, 165, 233, 0.15);
+        color: #7dd3fc;
+        border: 1px solid rgba(56, 189, 248, 0.35);
+      }
+      .display-card-color .info-tags-row .tag-heroal {
+        background: rgba(16, 185, 129, 0.18);
+        color: #6ee7b7;
+        border: 1px solid rgba(16, 185, 129, 0.4);
       }
       .tag-size {
         background: #261f0c;
@@ -2268,7 +2335,8 @@
         text-align: left;
         flex: 0 1 auto;
       }
-      .display-card-prof.is-solo .profile-note.is-on {
+      .display-card-prof.is-solo .profile-note.is-on,
+      .display-card-color.is-solo .profile-note.is-on {
         display: flex;
         flex: 0 1 auto;
         min-height: 0;
@@ -2344,7 +2412,8 @@
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
       }
-      .display-card-prof.is-solo .profile-note-text {
+      .display-card-prof.is-solo .profile-note-text,
+      .display-card-color.is-solo .profile-note-text {
         max-height: none;
         height: 100%;
       }
@@ -2362,36 +2431,54 @@
         background: rgba(255, 255, 255, 0.3);
       }
 
-      /* Color Mobile Card */
+      /* Color Result Card — same structure as Artikel */
       .display-card-color {
         background: #131b2e;
         border: 1px solid #1e293b;
         border-radius: 16px;
-        padding: 10px;
+        padding: 8px 10px 12px;
         display: flex;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        gap: 8px;
         flex: 0 0 auto;
         min-height: 0;
         width: 100%;
       }
+      .display-card-color.is-solo {
+        flex: 1 1 0;
+        max-height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        padding-bottom: 8px;
+      }
       .color-showcase-box {
-        width: 76px;
-        height: 100%;
-        max-height: 90px;
-        border-radius: 6px;
-        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        width: 100%;
+        height: 150px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(51, 65, 85, 0.5);
+        border-radius: 12px;
         display: flex;
-        align-items: center;
         justify-content: center;
-        flex-shrink: 0;
+        align-items: center;
+        padding: 8px;
         position: relative;
         overflow: hidden;
+        user-select: none;
+        cursor: zoom-in;
         background-size: cover;
         background-position: center;
       }
-      .color-showcase-box.has-photo {
-        cursor: zoom-in;
+      .display-card-color.is-solo .color-showcase-box {
+        flex: 1 1 0;
+        height: auto;
+        min-height: 160px;
+        max-height: none;
+      }
+      .zone-color.is-kb-open .display-card-color:not(.is-solo) .color-showcase-box,
+      .zone-color:has(#osk-color:not(.is-hidden))
+        .display-card-color:not(.is-solo)
+        .color-showcase-box {
+        height: 100px;
       }
       .color-showcase-img {
         position: absolute;
@@ -2400,36 +2487,40 @@
         height: 100%;
         object-fit: cover;
         display: none;
+        pointer-events: none;
       }
-      .color-showcase-box.has-photo .color-showcase-img {
+      .color-showcase-box.has-photo .color-showcase-img,
+      .color-showcase-box.has-swatch .color-showcase-img {
         display: block;
       }
+      .color-showcase-box.has-swatch .color-showcase-img {
+        object-fit: cover;
+      }
       .color-showcase-code {
-        font-size: 16px;
-        font-weight: 700;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        font-size: 2.25rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        line-height: 1;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
         position: relative;
         z-index: 1;
       }
-      .color-showcase-box.has-photo .color-showcase-code {
-        background: rgba(0, 0, 0, 0.45);
-        color: #fff;
-        padding: 2px 6px;
-        border-radius: 4px;
-        text-shadow: none;
-      }
-      .color-showcase-box .btn-zoom-hint {
+      .color-showcase-box.has-swatch .color-showcase-code {
         display: none;
       }
-      .color-showcase-box.has-photo .btn-zoom-hint {
+      .color-showcase-box.has-photo .color-showcase-code {
+        background: rgba(2, 6, 23, 0.55);
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 10px;
+        text-shadow: none;
+        backdrop-filter: blur(4px);
+      }
+      .color-showcase-box .btn-zoom-hint {
         display: inline-flex;
       }
-      .color-text-details {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 3px;
-        overflow: hidden;
+      #zoom-dialog.is-color .media-mode-btn {
+        display: none;
       }
 
       /* Accordion Cards */
@@ -2602,34 +2693,14 @@
           gap: 8px;
           border-radius: 16px;
         }
-        .display-card-prof.is-solo {
+        .display-card-prof.is-solo,
+        .display-card-color.is-solo {
           flex: 1 1 0;
           max-height: 100%;
           padding-bottom: 8px;
         }
-        .display-card-color {
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .color-showcase-box {
-          width: 100%;
-          height: 160px;
-          max-height: 160px;
-          flex: 0 0 160px;
-          border-radius: 8px;
-        }
-        .color-showcase-code {
-          font-size: 22px;
-        }
-        .color-text-details {
-          align-items: center;
-          text-align: center;
-        }
-        .info-title {
-          font-size: 15px;
-        }
-        .display-card-prof .info-name {
+        .display-card-prof .info-name,
+        .display-card-color .info-name {
           font-size: 1.25rem;
         }
         .info-subtitle {
@@ -2639,15 +2710,18 @@
           font-size: 11px;
           padding: 2px 8px;
         }
-        .display-card-prof .info-tags-row .tag-chip {
+        .display-card-prof .info-tags-row .tag-chip,
+        .display-card-color .info-tags-row .tag-chip {
           font-size: 0.875rem;
           padding: 6px 14px;
         }
-        .display-card-prof .tag-artnr {
+        .display-card-prof .tag-artnr,
+        .display-card-color .tag-artnr {
           font-size: 1.125rem;
           padding: 2px 14px;
         }
-        .display-card-prof.is-solo .profile-drawing-box {
+        .display-card-prof.is-solo .profile-drawing-box,
+        .display-card-color.is-solo .color-showcase-box {
           flex: 1 1 0;
           height: auto;
           min-height: 180px;
@@ -2740,7 +2814,7 @@
       }
       @media (min-width: 1280px) {
         .color-showcase-code {
-          font-size: 20px;
+          font-size: 2.75rem;
         }
       }
 
@@ -3735,8 +3809,10 @@
                     placeholder="Farbnummer oder Farbname eingeben..."
                     data-i18n-placeholder="ph_farben"
                     autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
                     spellcheck="false"
-                    inputmode="numeric"
+                    inputmode="search"
                     enterkeyhint="search"
                   />
                   <div class="search-field-actions">
@@ -3767,12 +3843,30 @@
             <div class="zone-scroll">
               <div id="col-card" class="display-card-color" style="display: none">
               <div class="color-showcase-box" id="col-swatch">
+                <button
+                  type="button"
+                  class="drawing-nav drawing-nav-prev"
+                  id="col-draw-prev"
+                  aria-label="Previous"
+                >
+                  ‹
+                </button>
                 <img
                   id="col-swatch-img"
                   class="color-showcase-img"
                   src=""
                   alt=""
+                  data-media="color"
                 />
+                <button
+                  type="button"
+                  class="drawing-nav drawing-nav-next"
+                  id="col-draw-next"
+                  aria-label="Next"
+                >
+                  ›
+                </button>
+                <span class="drawing-counter" id="col-draw-count"></span>
                 <span class="color-showcase-code" id="col-swatch-code"
                   >7016</span
                 >
@@ -3781,29 +3875,86 @@
                   <span data-i18n="zoom_btn">Zoom</span>
                 </span>
               </div>
+              <div id="col-thumbs" class="profile-thumbs"></div>
 
-              <div class="color-text-details">
-                <div class="info-title-wrap">
-                  <div class="info-title" id="col-name">--</div>
+              <div class="info-details">
+                <div class="info-heading">
+                  <span class="info-name" id="col-name">--</span>
+                </div>
+                <div class="info-tags-row" id="col-tags"></div>
+                <div class="info-artnr-row">
+                  <span class="tag-artnr" id="col-hex">#000000</span>
+                </div>
+              </div>
+
+              <div id="col-note" class="profile-note">
+                <div class="profile-note-head">
+                  <div class="profile-note-title">
+                    <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
+                    <span data-i18n="hint_title">Beschreibung</span>
+                  </div>
                   <button
-                    class="btn-copy"
-                    id="btn-copy-col"
-                    title="Farbcode kopieren"
+                    type="button"
+                    id="col-note-more"
+                    class="btn-note-full"
+                    data-i18n-title="hint_more"
+                    title="Vollansicht"
+                    aria-label="Vollansicht"
                   >
-                    <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                    <span data-i18n="copy_btn">Copy</span>
+                    <svg class="ico" aria-hidden="true"><use href="#i-expand"></use></svg>
+                    <span data-i18n="hint_more">Vollansicht</span>
                   </button>
                 </div>
-                <div class="info-subtitle" id="col-desc">--</div>
-                <div class="info-tags-row">
-                  <span
-                    class="tag-chip tag-hex"
-                    id="col-hex"
-                    title="Hex-Code kopieren"
-                    >#000000</span
-                  >
-                  <span class="tag-chip tag-kat">heroal Color</span>
+                <div class="profile-note-body">
+                  <p id="col-note-text" class="profile-note-text"></p>
                 </div>
+              </div>
+
+              <div class="info-copy-bar">
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-col"
+                  data-i18n-title="copy_farbnr_title"
+                  title="Farbnummer kopieren"
+                  aria-label="Farbnummer kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_farbnr_btn">Farb-Nr.</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-col-name"
+                  data-i18n-title="copy_name_title"
+                  title="Bezeichnung kopieren"
+                  aria-label="Bezeichnung kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_name_btn">Name</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-copy-action"
+                  id="btn-copy-col-hex"
+                  data-i18n-title="copy_hex_title"
+                  title="HEX-Code kopieren"
+                  aria-label="HEX-Code kopieren"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+                  <span data-i18n="copy_hex_btn">HEX</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-share-action"
+                  id="btn-share-col"
+                  data-i18n-title="share_title"
+                  title="Karte teilen"
+                  aria-label="Karte teilen"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-share2"></use></svg>
+                  <span data-i18n="share_btn">Teilen</span>
+                </button>
               </div>
             </div>
               <div id="col-list" class="result-list"></div>
@@ -4078,7 +4229,7 @@
           role_staff: "Mitarbeiter",
           role_customer: "Kunde",
           list_hint_artikel: "Artikelnummer oder Name suchen",
-          list_hint_farben: "RAL- oder SD-Code suchen",
+          list_hint_farben: "Farbnummer oder Farbname suchen",
           ph_artikel: "Artikelnummer oder Name eingeben...",
           ph_farben: "Farbnummer oder Farbname eingeben...",
           ph_defect: "Fehler suchen...",
@@ -4094,9 +4245,17 @@
           copy_artnr_title: "Artikelnummer kopieren",
           copy_name_title: "Bezeichnung kopieren",
           copy_hint_title: "Beschreibung kopieren",
+          copy_farbnr_title: "Farbnummer kopieren",
+          copy_hex_title: "HEX-Code kopieren",
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
           copy_hint_btn: "Beschreibung",
+          copy_farbnr_btn: "Farb-Nr.",
+          copy_hex_btn: "HEX",
+          finish_matt: "Matt",
+          finish_gloss: "Glänzend",
+          finish_fine: "Feinstruktur",
+          finish_heroal: "heroal Color",
           share_btn: "Teilen",
           share_title: "Karte teilen",
           share_saved: "Screenshot gespeichert / kopiert",
@@ -4180,7 +4339,7 @@
           role_staff: "Staff",
           role_customer: "Customer",
           list_hint_artikel: "Search article number or name",
-          list_hint_farben: "Search RAL or SD code",
+          list_hint_farben: "Search color number or name",
           ph_artikel: "Enter article number or name...",
           ph_farben: "Enter color code or name...",
           ph_defect: "Search defect...",
@@ -4196,9 +4355,17 @@
           copy_artnr_title: "Copy article number",
           copy_name_title: "Copy name",
           copy_hint_title: "Copy description",
+          copy_farbnr_title: "Copy colour number",
+          copy_hex_title: "Copy HEX code",
           copy_artnr_btn: "Art. no.",
           copy_name_btn: "Name",
           copy_hint_btn: "Description",
+          copy_farbnr_btn: "Colour no.",
+          copy_hex_btn: "HEX",
+          finish_matt: "Matt",
+          finish_gloss: "Gloss",
+          finish_fine: "Fine texture",
+          finish_heroal: "heroal Color",
           share_btn: "Share",
           share_title: "Share card",
           share_saved: "Screenshot saved / copied",
@@ -4282,7 +4449,7 @@
           role_staff: "Сотрудник",
           role_customer: "Клиент",
           list_hint_artikel: "Искать артикул или название",
-          list_hint_farben: "Искать код RAL или SD",
+          list_hint_farben: "Искать номер или название краски",
           ph_artikel: "Введите артикул или название товара...",
           ph_farben: "Введите номер или название краски...",
           ph_defect: "Искать дефект...",
@@ -4298,9 +4465,17 @@
           copy_artnr_title: "Копировать артикул",
           copy_name_title: "Копировать название",
           copy_hint_title: "Копировать описание",
+          copy_farbnr_title: "Копировать номер цвета",
+          copy_hex_title: "Копировать HEX-код",
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
           copy_hint_btn: "Описание",
+          copy_farbnr_btn: "Farb-Nr.",
+          copy_hex_btn: "HEX",
+          finish_matt: "Matt",
+          finish_gloss: "Glänzend",
+          finish_fine: "Feinstruktur",
+          finish_heroal: "heroal Color",
           share_btn: "Поделиться",
           share_title: "Поделиться карточкой",
           share_saved: "Скриншот сохранен / скопирован",
@@ -4646,6 +4821,52 @@
         return locField(item, "hinweis", appLang);
       }
 
+      function colorCode(col, fallback) {
+        return String((col && col.code) || fallback || "").trim();
+      }
+
+      function colorHex(col) {
+        const raw = String((col && col.hex) || "").trim();
+        if (!raw) return "";
+        return raw.charAt(0) === "#" ? raw : "#" + raw;
+      }
+
+      function colorHint(col) {
+        return (
+          locField(col, "hinweis", appLang) ||
+          locField(col, "beschreibung", appLang) ||
+          locField(col, "oberflaeche", appLang)
+        );
+      }
+
+      function colorFinishBadges(col) {
+        const hay = [
+          locField(col, "oberflaeche", appLang),
+          col && col.oberflaeche_de,
+          col && col.oberflaeche_en,
+          col && col.oberflaeche_ru,
+          locField(col, "hinweis", appLang),
+        ]
+          .join(" ")
+          .toLowerCase();
+        const out = [];
+        const add = (id, cls, i18nKey) => {
+          if (out.some((b) => b.id === id)) return;
+          out.push({ id: id, cls: cls, label: t(i18nKey) });
+        };
+        if (/feinstruktur|fine\s*texture|feinstruktur/.test(hay)) {
+          add("fine", "tag-fine", "finish_fine");
+        }
+        if (/\bmatt\b/.test(hay)) add("matt", "tag-matt", "finish_matt");
+        if (/glänzend|glaenzend|\bglanz\b|\bgloss/.test(hay)) {
+          add("gloss", "tag-gloss", "finish_gloss");
+        }
+        if (/heroal\s*color|heroal\s*standard|heroal\s*farbe/.test(hay) || !out.length) {
+          add("heroal", "tag-heroal", "finish_heroal");
+        }
+        return out;
+      }
+
       function normalizeImageEntry(value, fallbackType) {
         if (value == null || value === "") return null;
         if (typeof value === "string") {
@@ -4693,8 +4914,40 @@
         return /^https?:\/\//i.test(String(value || "").trim());
       }
 
+      function farbeImageEntries(col) {
+        if (!col) return [];
+        const out = [];
+        const seen = Object.create(null);
+        const add = (raw, type) => {
+          const entry = normalizeImageEntry(raw, type);
+          if (!entry || !isHttpUrl(entry.url) || seen[entry.url]) return;
+          seen[entry.url] = true;
+          out.push(entry);
+        };
+        add(col.echtes_foto, "photo");
+        add(col.foto, "photo");
+        add(col.photo, "photo");
+        add(col.image_url, col.image_type || "photo");
+        add(col.img_url, col.image_type || "photo");
+        if (Array.isArray(col.images)) {
+          col.images.forEach((it) => add(it, "photo"));
+        }
+        if (Array.isArray(col.extra)) {
+          col.extra.forEach((it) => add(it, "photo"));
+        }
+        ["img_1", "img_2", "img_3", "img_4", "foto_1", "foto_2", "foto_3"].forEach(
+          (key) => {
+            add(col[key], col[key + "_type"] || "photo");
+          },
+        );
+        add(col.bild_dummyimage, "photo");
+        add(col.bild_de, "photo");
+        return out;
+      }
+
       function farbePhotoUrl(col) {
-        return String((col && col.echtes_foto) || "").trim();
+        const first = farbeImageEntries(col)[0];
+        return first ? first.url : String((col && col.echtes_foto) || "").trim();
       }
 
       function farbeDummyUrl(col) {
@@ -4710,8 +4963,9 @@
           articleImageList(item).forEach((url) => urls.add(url));
         });
         Object.values(appDB.farben || {}).forEach((col) => {
-          const photo = farbePhotoUrl(col);
-          if (isHttpUrl(photo)) urls.add(photo);
+          farbeImageEntries(col).forEach((entry) => {
+            if (entry && isHttpUrl(entry.url)) urls.add(entry.url);
+          });
         });
         return [...urls];
       }
@@ -4930,6 +5184,8 @@
             echtes_foto: "",
             name_de: "Anthrazitgrau",
             oberflaeche_de: "RAL 7016 Matt / Glanz",
+            hinweis_de:
+              "Standard-Anthrazit für heroal Profile. Matt- und Glanzvarianten prüfen. Bei SD-Sonderbeschichtung den Auftrag mit der Farbkarte abgleichen.",
             name_en: "Anthracite grey",
             oberflaeche_en: "",
             name_ru: "Антрацитово-серый",
@@ -5018,7 +5274,11 @@
       let lastActiveArticleName = "";
       let lastProfileHint = "";
       let lastActiveColorCode = "";
-      let articlePickedByUser = false;
+      let lastActiveColorName = "";
+      let lastActiveColorHex = "";
+      let lastColorHint = "";
+      let lastNoteText = "";
+      let colorPickedByUser = false;
       let lastArticleHits = [];
       let lastColorHits = [];
       let lastArtikelQuery = "";
@@ -5031,8 +5291,12 @@
       let profileGalleryUrls = [];
       let profileGalleryEntries = [];
       let profileGalleryIndex = 0;
+      let colorGalleryUrls = [];
+      let colorGalleryEntries = [];
+      let colorGalleryIndex = 0;
       let zoomGalleryUrls = [];
       let zoomGalleryIndex = 0;
+      let zoomMediaKind = "article";
       let zoomScale = 1;
       let zoomX = 0;
       let zoomY = 0;
@@ -5042,6 +5306,7 @@
       let zoomBound = false;
       const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
+      let farbeDetailOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
 
@@ -5424,17 +5689,37 @@
 
       function migrateFarbe(key, it) {
         if (!it || typeof it !== "object") return null;
+        const extra = Array.isArray(it.extra)
+          ? it.extra.slice()
+          : Array.isArray(it.images)
+            ? it.images.slice()
+            : [];
         return {
           code: String(it.code || key || ""),
           hex: it.hex || "#ffffff",
           bild_dummyimage: it.bild_dummyimage || it.bild_de || "",
-          echtes_foto: it.echtes_foto || "",
+          echtes_foto: it.echtes_foto || it.foto || it.photo || "",
+          image_url: it.image_url || it.img_url || "",
+          image_type: String(it.image_type || it.type || "").trim(),
+          img_1: String(it.img_1 || extra[0] || "").trim(),
+          img_2: String(it.img_2 || extra[1] || "").trim(),
+          img_3: String(it.img_3 || extra[2] || "").trim(),
+          img_4: String(it.img_4 || extra[3] || "").trim(),
+          img_1_type: String(it.img_1_type || "").trim(),
+          img_2_type: String(it.img_2_type || "").trim(),
+          img_3_type: String(it.img_3_type || "").trim(),
+          img_4_type: String(it.img_4_type || "").trim(),
+          extra: extra.slice(),
+          images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
           name_de: it.name_de || it.name || "",
           oberflaeche_de: it.oberflaeche_de || it.desc || "",
           name_en: it.name_en || "",
           oberflaeche_en: it.oberflaeche_en || "",
           name_ru: it.name_ru || "",
           oberflaeche_ru: it.oberflaeche_ru || "",
+          hinweis_de: it.hinweis_de || it.beschreibung_de || it.hinweis || "",
+          hinweis_en: it.hinweis_en || it.beschreibung_en || "",
+          hinweis_ru: it.hinweis_ru || it.beschreibung_ru || "",
         };
       }
 
@@ -5609,7 +5894,12 @@
 
       function colorListClosed() {
         const listEl = document.getElementById("col-list");
-        return !listEl || !listEl.querySelector(".result-row");
+        return (
+          farbeDetailOpen ||
+          !listEl ||
+          listEl.hidden ||
+          !listEl.querySelector(".result-row")
+        );
       }
 
       function highlightArtikelRows() {
@@ -5656,6 +5946,10 @@
       }
 
       function moveColorHighlight(delta) {
+        if (farbeDetailOpen) {
+          farbeDetailOpen = false;
+          applyFarbeWorkspace();
+        }
         if (!lastColorHits.length) return;
         if (kbColorIndex < 0) {
           kbColorIndex = delta > 0 ? 0 : lastColorHits.length - 1;
@@ -5665,11 +5959,13 @@
         }
         lastActiveColorCode = lastColorHits[kbColorIndex];
         highlightColorRows();
-        selectColor(lastActiveColorCode);
       }
 
       function findExactColorKey(query) {
-        const q = String(query || "").trim().toLowerCase();
+        const q = String(query || "")
+          .trim()
+          .toLowerCase()
+          .replace(/^(ral|sd)\s+/i, "");
         if (!q) return "";
         const catalog = appDB.farben || {};
         for (const key of Object.keys(catalog)) {
@@ -5680,13 +5976,26 @@
       }
 
       function confirmColorSelection() {
+        hideDrawingHover();
         const cIn = document.getElementById("find-color");
         const exact = findExactColorKey(cIn && cIn.value);
         const key =
           kbColorIndex >= 0
             ? lastColorHits[kbColorIndex]
-            : exact || lastColorHits[0] || lastActiveColorCode;
-        if (key) selectColor(key);
+            : exact;
+        if (!key || !(appDB.farben || {})[key]) {
+          farbeDetailOpen = false;
+          setColorOskOpen(false);
+          applyFarbeWorkspace();
+          return;
+        }
+        lastActiveColorCode = key;
+        colorPickedByUser = true;
+        farbeDetailOpen = true;
+        renderColorCard(key);
+        highlightColorRows();
+        setColorOskOpen(false);
+        applyFarbeWorkspace();
       }
 
       function handleSearchEscape(active) {
@@ -5723,6 +6032,12 @@
           return;
         }
         if (active === cIn) {
+          if (farbeDetailOpen) {
+            farbeDetailOpen = false;
+            applyFarbeWorkspace();
+            cIn.focus();
+            return;
+          }
           if (kbColorIndex >= 0) {
             kbColorIndex = -1;
             highlightColorRows();
@@ -5739,6 +6054,10 @@
         if (artikelDetailOpen) {
           artikelDetailOpen = false;
           applyArtikelWorkspace();
+        }
+        if (farbeDetailOpen) {
+          farbeDetailOpen = false;
+          applyFarbeWorkspace();
         }
         focusArtikelSearch(false);
       }
@@ -6146,9 +6465,9 @@
             (logoSrc.width && logoSrc.height
               ? logoSrc.width / logoSrc.height
               : 1200 / 140);
-          let logoH = 20;
+          let logoH = 28;
           let logoW = aspect * logoH;
-          const maxW = 240;
+          const maxW = 336;
           if (logoW > maxW) {
             logoW = maxW;
             logoH = logoW / aspect;
@@ -6323,10 +6642,276 @@
         }
       }
 
+      function shareColorFileName(code) {
+        const id = String(code || "farbe")
+          .replace(/[^\w.-]+/g, "_")
+          .replace(/^_+|_+$/g, "")
+          .slice(0, 48);
+        return "heroal-farbe-" + (id || "farbe") + ".png";
+      }
+
+      async function buildColorShareBlob(col, code) {
+        const name = locField(col, "name", appLang) || col.name_de || "";
+        const hex = colorHex(col);
+        const hint = colorHint(col);
+        const badges = colorFinishBadges(col);
+        const imgEl = document.getElementById("col-swatch-img");
+        const photo = await loadShareDrawing(imgEl);
+        const lum = getLuminance(hex);
+        const codeColor = lum > 130 ? "#000000" : "#ffffff";
+
+        const cssW = 720;
+        const scale = 2;
+        const pad = 28;
+        const headerH = 80;
+        const drawH = 280;
+        const font = 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif';
+        const measure = document.createElement("canvas").getContext("2d");
+        measure.font = "700 22px " + font;
+        const nameLines = wrapCanvasLines(measure, name, cssW - pad * 2, 3);
+        measure.font = "400 15px " + font;
+        const hintLines = wrapCanvasLines(measure, hint, cssW - pad * 2, 10);
+        const chipsH = badges.length ? 36 : 0;
+        const hintBlock = hintLines.length ? 28 + hintLines.length * 22 : 0;
+        const cssH =
+          headerH +
+          drawH +
+          pad +
+          nameLines.length * 28 +
+          12 +
+          40 +
+          chipsH +
+          hintBlock +
+          44;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(cssW * scale);
+        canvas.height = Math.round(cssH * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.scale(scale, scale);
+        const setTracking = (value) => {
+          if (typeof ctx.letterSpacing === "string") ctx.letterSpacing = value;
+        };
+
+        ctx.fillStyle = "#0b0f19";
+        ctx.fillRect(0, 0, cssW, cssH);
+
+        ctx.fillStyle = "#003366";
+        ctx.fillRect(0, 0, cssW, headerH);
+        try {
+          const logoImg = await loadShareLogoImage();
+          const logoSrc = shareLogoOnTransparent(logoImg);
+          const aspect =
+            logoSrc.width && logoSrc.height
+              ? logoSrc.width / logoSrc.height
+              : 1200 / 140;
+          let logoH = 28;
+          let logoW = aspect * logoH;
+          const maxW = 336;
+          if (logoW > maxW) {
+            logoW = maxW;
+            logoH = logoW / aspect;
+          }
+          ctx.drawImage(
+            logoSrc,
+            (cssW - logoW) / 2,
+            (headerH - logoH) / 2,
+            logoW,
+            logoH,
+          );
+        } catch (err) {}
+        ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
+        ctx.fillRect(0, headerH - 1, cssW, 1);
+
+        ctx.fillStyle = hex || "#64748b";
+        ctx.fillRect(0, headerH, cssW, drawH);
+        if (photo && photo.naturalWidth) {
+          const ir = photo.naturalWidth / photo.naturalHeight;
+          let dw = cssW;
+          let dh = dw / ir;
+          if (dh < drawH) {
+            dh = drawH;
+            dw = dh * ir;
+          }
+          ctx.drawImage(
+            photo,
+            (cssW - dw) / 2,
+            headerH + (drawH - dh) / 2,
+            dw,
+            dh,
+          );
+        }
+        ctx.fillStyle = codeColor;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "800 56px " + font;
+        ctx.fillText(code, cssW / 2, headerH + drawH / 2);
+
+        let y = headerH + drawH + 22;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 22px " + font;
+        nameLines.forEach((ln) => {
+          ctx.fillText(ln, cssW / 2, y);
+          y += 28;
+        });
+        y += 10;
+
+        roundedRectPath(ctx, cssW / 2 - 90, y, 180, 32, 8);
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = "#38bdf8";
+        ctx.font =
+          "700 18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+        ctx.textBaseline = "middle";
+        ctx.fillText(hex || code, cssW / 2, y + 16);
+        y += 44;
+
+        ctx.textBaseline = "middle";
+        ctx.font = "600 14px " + font;
+        const chips = badges.map((b) => {
+          if (b.id === "matt") {
+            return {
+              text: b.label,
+              bg: "rgba(245, 158, 11, 0.18)",
+              fg: "#fcd34d",
+              bd: "rgba(245, 158, 11, 0.35)",
+            };
+          }
+          if (b.id === "fine") {
+            return {
+              text: b.label,
+              bg: "rgba(168, 85, 247, 0.2)",
+              fg: "#d8b4fe",
+              bd: "rgba(168, 85, 247, 0.4)",
+            };
+          }
+          if (b.id === "gloss") {
+            return {
+              text: b.label,
+              bg: "rgba(14, 165, 233, 0.18)",
+              fg: "#7dd3fc",
+              bd: "rgba(56, 189, 248, 0.4)",
+            };
+          }
+          return {
+            text: b.label,
+            bg: "rgba(16, 185, 129, 0.18)",
+            fg: "#6ee7b7",
+            bd: "rgba(16, 185, 129, 0.4)",
+          };
+        });
+        if (chips.length) {
+          const gap = 10;
+          const widths = chips.map((c) => ctx.measureText(c.text).width + 28);
+          const total = widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1);
+          let x = (cssW - total) / 2;
+          chips.forEach((c, i) => {
+            roundedRectPath(ctx, x, y, widths[i], 28, 8);
+            ctx.fillStyle = c.bg;
+            ctx.fill();
+            ctx.strokeStyle = c.bd;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.fillStyle = c.fg;
+            ctx.fillText(c.text, x + widths[i] / 2, y + 14);
+            x += widths[i] + gap;
+          });
+          y += 40;
+        }
+
+        if (hintLines.length) {
+          ctx.textAlign = "left";
+          ctx.textBaseline = "top";
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "600 12px " + font;
+          ctx.fillText(t("hint_title"), pad, y);
+          y += 22;
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "400 15px " + font;
+          hintLines.forEach((ln) => {
+            ctx.fillText(ln, pad, y);
+            y += 22;
+          });
+        }
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        setTracking("0.1em");
+        ctx.globalAlpha = 0.6;
+        ctx.font =
+          '500 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+        ctx.fillStyle = "#64748b";
+        ctx.fillText("HEROAL SYSTEMKATALOG", cssW / 2, cssH - 16);
+        ctx.globalAlpha = 1;
+        setTracking("0px");
+
+        return canvasToPngBlob(canvas);
+      }
+
+      async function handleShareColorScreenshot() {
+        const key = lastActiveColorCode;
+        const col = key && (appDB.farben || {})[key];
+        if (!col) return;
+        const code = colorCode(col, key);
+        const name = locField(col, "name", appLang) || col.name_de || "";
+        const hex = colorHex(col);
+        const btn = document.getElementById("btn-share-col");
+        if (btn) btn.disabled = true;
+        try {
+          const blob = await buildColorShareBlob(col, code);
+          const filename = shareColorFileName(code);
+          const file = new File([blob], filename, { type: "image/png" });
+          const title = "heroal " + code + (name ? " - " + name : "");
+          const text = name + (hex ? " (" + hex + ")" : "");
+          const payload = { title: title, text: text, files: [file] };
+          const canFiles =
+            typeof navigator.canShare === "function" &&
+            navigator.canShare({ files: [file] });
+          if (canFiles && typeof navigator.share === "function") {
+            try {
+              await navigator.share(payload);
+              return;
+            } catch (err) {
+              if (err && err.name === "AbortError") return;
+            }
+          }
+          await downloadShareBlob(blob, filename);
+          await copyShareBlob(blob);
+          showToast(t("share_saved"), "ok");
+        } catch (err) {
+          console.warn("share color screenshot failed", err);
+          showToast(t("share_error"), "error");
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+
       // Fallback SVG Drawing
       function getSvgPlaceholder(artNr) {
         const cleanArt = artNr || "heroal";
         return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%230b0f19" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23334155" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%2393c5fd" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
+      }
+
+      function getColorSwatchDataUrl(hex, code) {
+        const raw = String(hex || "#64748b").trim();
+        const safe =
+          (raw.charAt(0) === "#" ? raw : "#" + raw).replace(/[^#0-9A-Fa-f]/g, "") ||
+          "#64748b";
+        const fill = encodeURIComponent(safe);
+        const fg = getLuminance(safe) > 130 ? "%23000000" : "%23ffffff";
+        const label = encodeURIComponent(String(code || ""));
+        return (
+          "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='280' viewBox='0 0 400 280'><rect width='100%' height='100%' fill='" +
+          fill +
+          "'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' fill='" +
+          fg +
+          "' font-family='sans-serif' font-size='48' font-weight='800'>" +
+          label +
+          "</text></svg>"
+        );
       }
 
       function userDisplayName(user) {
@@ -6722,8 +7307,11 @@
         const copyProfHintBtn = document.getElementById("btn-copy-prof-hint");
         const shareProfBtn = document.getElementById("btn-share-prof");
         const copyColBtn = document.getElementById("btn-copy-col");
-        const hexChip = document.getElementById("col-hex");
+        const copyColNameBtn = document.getElementById("btn-copy-col-name");
+        const copyColHexBtn = document.getElementById("btn-copy-col-hex");
+        const shareColBtn = document.getElementById("btn-share-col");
         const noteMore = document.getElementById("prof-note-more");
+        const colNoteMore = document.getElementById("col-note-more");
         const noteDlg = document.getElementById("note-dialog");
         const noteClose = document.getElementById("note-dialog-close");
         const noteCopy = document.getElementById("note-dialog-copy");
@@ -6759,16 +7347,22 @@
         if (noteMore) {
           noteMore.addEventListener("click", (e) => {
             e.stopPropagation();
-            openNoteModal();
+            openNoteModal(lastProfileHint);
+          });
+        }
+        if (colNoteMore) {
+          colNoteMore.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openNoteModal(lastColorHint);
           });
         }
         if (noteClose) noteClose.addEventListener("click", closeNoteModal);
         if (noteCopy) {
           noteCopy.addEventListener("click", (e) => {
             e.stopPropagation();
-            if (!lastProfileHint) return;
+            if (!lastNoteText) return;
             flashCopyButton(noteCopy);
-            copyToClipboard(lastProfileHint, "", t("copied_short"), () => {});
+            copyToClipboard(lastNoteText, "", t("copied_short"), () => {});
           });
         }
         if (noteDlg) {
@@ -6777,15 +7371,36 @@
           });
         }
 
-        copyColBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          copyToClipboard(lastActiveColorCode, "Farbcode");
-        });
-
-        hexChip.addEventListener("click", (e) => {
-          e.stopPropagation();
-          copyToClipboard(hexChip.innerText, "Hex-Code");
-        });
+        if (copyColBtn) {
+          copyColBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastActiveColorCode) return;
+            flashCopyButton(copyColBtn);
+            copyToClipboard(lastActiveColorCode, "Farb-Nr.", t("copied_short"), () => {});
+          });
+        }
+        if (copyColNameBtn) {
+          copyColNameBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastActiveColorName) return;
+            flashCopyButton(copyColNameBtn);
+            copyToClipboard(lastActiveColorName, "", t("copied_short"), () => {});
+          });
+        }
+        if (copyColHexBtn) {
+          copyColHexBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastActiveColorHex) return;
+            flashCopyButton(copyColHexBtn);
+            copyToClipboard(lastActiveColorHex, "HEX", t("copied_short"), () => {});
+          });
+        }
+        if (shareColBtn) {
+          shareColBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleShareColorScreenshot();
+          });
+        }
 
         pIn.addEventListener("input", refreshArticleResults);
         pIn.addEventListener("pointerdown", () => {
@@ -6796,6 +7411,11 @@
         document
           .getElementById("find-color")
           .addEventListener("input", refreshColorResults);
+        document.getElementById("find-color").addEventListener("pointerdown", () => {
+          if (!farbeDetailOpen) return;
+          farbeDetailOpen = false;
+          applyFarbeWorkspace();
+        });
         document.getElementById("clr-prof").addEventListener("click", () => {
           clearInput("find-prof");
         });
@@ -6804,6 +7424,7 @@
         });
         mountSearchKeypads();
         bindProfileGalleryUi();
+        bindColorGalleryUi();
         bindZoomUi();
         window.addEventListener("scroll", hideDrawingHover, true);
         const popClose = document.getElementById("drawing-hover-pop-close");
@@ -7076,13 +7697,18 @@
         }
         const input = document.getElementById(pad.getAttribute("data-target"));
         if (input) {
-          input.setAttribute("inputmode", visible ? "none" : "numeric");
+          const fallback = oskId === "osk-color" ? "search" : "numeric";
+          input.setAttribute("inputmode", visible ? "none" : fallback);
           if (visible) input.focus();
         }
         if (visible) setOskLayout(pad, "symbols");
         if (oskId === "osk-prof") {
           if (visible) artikelDetailOpen = false;
           applyArtikelWorkspace();
+        }
+        if (oskId === "osk-color") {
+          if (visible) farbeDetailOpen = false;
+          applyFarbeWorkspace();
         }
       }
 
@@ -7156,6 +7782,9 @@
           if (isLogin) handleLogin();
           else if (pad.id === "osk-prof") {
             confirmArtikelSelection();
+            return;
+          } else if (pad.id === "osk-color") {
+            confirmColorSelection();
             return;
           } else {
             setSearchOskVisible(pad.id, false);
@@ -7241,14 +7870,20 @@
 
       function colorMatches(key, col, query) {
         if (!query) return false;
+        const hex = colorHex(col).replace(/^#/, "").toLowerCase();
         const hay = [
           key,
           col.code,
+          "ral " + (col.code || key),
+          "sd " + (col.code || key),
           locField(col, "name", appLang),
           locField(col, "oberflaeche", appLang),
+          colorHint(col),
           col.name_de,
           col.name_en,
           col.name_ru,
+          col.hex,
+          hex,
         ]
           .join(" ")
           .toLowerCase();
@@ -7277,6 +7912,39 @@
           const pIn = document.getElementById("find-prof");
           if (pIn && document.activeElement === pIn) pIn.blur();
         }
+      }
+
+      function isColorOskOpen() {
+        const pad = document.getElementById("osk-color");
+        return !!(pad && !pad.classList.contains("is-hidden"));
+      }
+
+      function setColorOskOpen(open) {
+        setSearchOskVisible("osk-color", open);
+        if (!open) {
+          const cIn = document.getElementById("find-color");
+          if (cIn && document.activeElement === cIn) cIn.blur();
+        }
+      }
+
+      function applyFarbeWorkspace() {
+        const kbOpen = isColorOskOpen();
+        const zone = document.querySelector(".zone-color");
+        if (zone) zone.classList.toggle("is-kb-open", kbOpen);
+        const cCard = document.getElementById("col-card");
+        const listEl = document.getElementById("col-list");
+        const catalog = appDB.farben || {};
+        const hasItem = !!(lastActiveColorCode && catalog[lastActiveColorCode]);
+        const showCard = !kbOpen && farbeDetailOpen && hasItem;
+        if (cCard) {
+          cCard.style.display = showCard ? "flex" : "none";
+          cCard.classList.toggle("is-solo", showCard);
+        }
+        if (listEl) {
+          const hasRows = !!listEl.querySelector(".result-row");
+          listEl.hidden = showCard || !hasRows;
+        }
+        if (showCard) requestAnimationFrame(updateNoteClamp);
       }
 
       function confirmArtikelSelection() {
@@ -7435,6 +8103,7 @@
         const query = (cIn.value || "").trim().toLowerCase();
         if (cClr) cClr.classList.toggle("is-on", !!(cIn && cIn.value));
         if (query !== lastColorQuery) {
+          farbeDetailOpen = false;
           kbColorIndex = -1;
           lastColorQuery = query;
         }
@@ -7446,106 +8115,139 @@
         const shown = keys.slice(0, RESULT_LIMIT);
         lastColorHits = shown.slice();
         if (kbColorIndex >= lastColorHits.length) kbColorIndex = -1;
-        listEl.innerHTML = shown
-          .map((key) => {
-            const col = catalog[key];
-            const active = key === lastActiveColorCode ? " is-active" : "";
-            const hex = col.hex || "#64748b";
-            const name = locField(col, "name", appLang) || "";
-            return `<button type="button" class="result-row${active}" data-col="${key}"><span class="result-row-swatch" style="background:${hex}"></span><span class="result-row-code">${key}</span><span class="result-row-name">${name}</span></button>`;
-          })
-          .join("");
-        listEl.querySelectorAll(".result-row").forEach((row) => {
-          row.addEventListener("click", () => {
-            kbColorIndex = lastColorHits.indexOf(row.dataset.col);
-            selectColor(row.dataset.col);
+        hideDrawingHover();
+        const exact = findExactColorKey(query);
+        if (exact) {
+          lastActiveColorCode = exact;
+        } else {
+          colorPickedByUser = false;
+          if (!shown.includes(lastActiveColorCode)) {
+            lastActiveColorCode = shown[0] || "";
+          }
+        }
+
+        if (!shown.length) {
+          listEl.innerHTML = "";
+        } else {
+          listEl.innerHTML = shown
+            .map((key) => {
+              const col = catalog[key];
+              const active = key === lastActiveColorCode ? " is-active" : "";
+              const hex = colorHex(col) || "#64748b";
+              const name = locField(col, "name", appLang) || "";
+              const code = colorCode(col, key);
+              const badges = colorFinishBadges(col);
+              const chips = badges
+                .map((b) => {
+                  const chipCls =
+                    b.id === "matt"
+                      ? "result-chip-matt"
+                      : b.id === "fine"
+                        ? "result-chip-fine"
+                        : b.id === "gloss"
+                          ? "result-chip-gloss"
+                          : "result-chip-heroal";
+                  return `<span class="result-chip ${chipCls}">${escapeHtml(b.label)}</span>`;
+                })
+                .join("");
+              const stats = chips
+                ? `<span class="result-row-stats">${chips}</span>`
+                : "";
+              const photo = farbeImageEntries(col)[0];
+              const thumb = (photo && photo.url) || getColorSwatchDataUrl(hex, code);
+              return `<button type="button" class="result-row${active}" data-col="${escapeHtml(key)}"><span class="result-row-thumb is-swatch" style="background:${escapeHtml(hex)}"><img data-media="color" src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(code)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
+            })
+            .join("");
+          listEl.querySelectorAll(".result-row").forEach((row) => {
+            const img = row.querySelector("img");
+            if (img) {
+              img.addEventListener("error", () => {
+                const col = catalog[row.dataset.col];
+                img.src = getColorSwatchDataUrl(
+                  colorHex(col) || "#64748b",
+                  colorCode(col, row.dataset.col),
+                );
+              });
+            }
+            const thumb = row.querySelector(".result-row-thumb");
+            if (thumb) bindDrawingHover(thumb);
+            row.addEventListener("click", () => selectColor(row.dataset.col));
           });
-        });
-        highlightColorRows();
+          highlightColorRows();
+        }
 
         const hasQuery = !!query;
         if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
         if (!shown.length) {
-          cCard.style.display = "none";
+          lastActiveColorCode = "";
+          colorPickedByUser = false;
+          if (cCard) {
+            cCard.style.display = "none";
+            cCard.classList.remove("is-solo");
+          }
+          applyFarbeWorkspace();
           return;
         }
-        if (!shown.includes(lastActiveColorCode)) {
-          lastActiveColorCode = shown[0];
-        }
-        selectColor(lastActiveColorCode);
+
+        if (lastActiveColorCode) renderColorCard(lastActiveColorCode);
+        applyFarbeWorkspace();
       }
 
       function selectColor(code) {
         lastActiveColorCode = code;
+        kbColorIndex = lastColorHits.indexOf(code);
+        colorPickedByUser = true;
+        farbeDetailOpen = true;
+        hideDrawingHover();
         renderColorCard(code);
-        document.getElementById("col-card").style.display = "flex";
         highlightColorRows();
+        setColorOskOpen(false);
+        applyFarbeWorkspace();
       }
 
       function renderColorCard(code) {
         const col = (appDB.farben || {})[code];
         if (!col) return;
-        const name = locField(col, "name", appLang);
-        document.getElementById("col-name").innerText = `${code} — ${name}`;
-        document.getElementById("col-desc").innerText =
-          locField(col, "oberflaeche", appLang) || t("color_surface_fallback");
-        document.getElementById("col-hex").innerText = col.hex || "";
+        const name = locField(col, "name", appLang) || col.name_de || "";
+        const hex = colorHex(col);
+        lastActiveColorName = name;
+        lastActiveColorHex = hex;
+        const nameEl = document.getElementById("col-name");
+        if (nameEl) nameEl.innerText = name || "--";
+        const hexEl = document.getElementById("col-hex");
+        if (hexEl) {
+          hexEl.innerText = hex || "--";
+          hexEl.style.display = hex ? "" : "none";
+        }
+        const tagsEl = document.getElementById("col-tags");
+        if (tagsEl) {
+          const badges = colorFinishBadges(col);
+          tagsEl.innerHTML = badges
+            .map(
+              (b) =>
+                `<span class="tag-chip ${b.cls}">${escapeHtml(b.label)}</span>`,
+            )
+            .join("");
+        }
 
         const swatch = document.getElementById("col-swatch");
-        const swatchImg = document.getElementById("col-swatch-img");
         const swatchCode = document.getElementById("col-swatch-code");
-        const photo = farbePhotoUrl(col);
-        const dummy = farbeDummyUrl(col);
-        const hex = col.hex || "#ffffff";
-
-        swatch.style.backgroundColor = hex;
-        swatch.style.backgroundImage = "";
-        swatch.onclick = null;
-        swatch.classList.remove("has-photo");
-        if (swatchImg) {
-          swatchImg.onload = null;
-          swatchImg.onerror = null;
-          swatchImg.removeAttribute("src");
+        const fill = hex || "#ffffff";
+        const nr = colorCode(col, code);
+        if (swatch) {
+          swatch.style.backgroundColor = fill;
+          swatch.style.backgroundImage = "";
         }
-
-        const showPhoto = (url) => {
-          if (!swatchImg || !isHttpUrl(url)) return false;
-          swatch.classList.add("has-photo");
-          swatchImg.onerror = () => {
-            swatchImg.onerror = null;
-            swatch.classList.remove("has-photo");
-            swatchImg.removeAttribute("src");
-            applyHexFallback();
-          };
-          swatchImg.src = url;
-          swatch.onclick = (e) => {
-            e.stopPropagation();
-            showZoom(url);
-          };
-          return true;
-        };
-
-        const applyHexFallback = () => {
-          swatch.classList.remove("has-photo");
-          swatch.onclick = null;
-          const dummyUrl = farbeDummyUrl(col);
-          if (!col.hex && isHttpUrl(dummyUrl)) {
-            swatch.style.backgroundImage = 'url("' + dummyUrl + '")';
-          }
-          const isBright = getLuminance(hex) > 130;
-          swatchCode.style.color = isBright ? "#000000" : "#ffffff";
-        };
-
-        if (isHttpUrl(photo)) {
-          swatchCode.style.color = "#ffffff";
-          showPhoto(photo);
-        } else if (isHttpUrl(dummy) && !(col.hex && col.hex.trim())) {
-          swatchCode.style.color = "#ffffff";
-          showPhoto(dummy);
-        } else {
-          applyHexFallback();
+        if (swatchCode) {
+          swatchCode.innerText = nr;
+          swatchCode.style.color = getLuminance(fill) > 130 ? "#000000" : "#ffffff";
         }
-        swatchCode.innerText = code;
+        renderColorGallery(col, nr, fill);
+        const nameBtn = document.getElementById("btn-copy-col-name");
+        const hexBtn = document.getElementById("btn-copy-col-hex");
+        if (nameBtn) nameBtn.disabled = !name;
+        if (hexBtn) hexBtn.disabled = !hex;
+        renderColorNote(col);
       }
 
       function renderProfileCard(artnr) {
@@ -7584,6 +8286,7 @@
         if (!noteEl) return;
         const hint = articleHint(it);
         lastProfileHint = hint;
+        lastNoteText = hint;
         noteEl.classList.add("is-on");
         if (textEl) {
           textEl.textContent = hint;
@@ -7594,21 +8297,46 @@
         requestAnimationFrame(updateNoteClamp);
       }
 
-      function updateNoteClamp() {
-        const textEl = document.getElementById("prof-note-text");
-        const moreBtn = document.getElementById("prof-note-more");
-        if (!textEl || !moreBtn) return;
-        const visible = textEl.style.display !== "none" && !!textEl.textContent;
-        const overflow = visible && textEl.scrollHeight > textEl.clientHeight + 1;
-        moreBtn.classList.toggle("is-on", overflow);
+      function renderColorNote(col) {
+        const noteEl = document.getElementById("col-note");
+        const textEl = document.getElementById("col-note-text");
+        const moreBtn = document.getElementById("col-note-more");
+        if (!noteEl) return;
+        const hint = colorHint(col);
+        lastColorHint = hint;
+        lastNoteText = hint;
+        noteEl.classList.add("is-on");
+        if (textEl) {
+          textEl.textContent = hint;
+          textEl.style.display = hint ? "" : "none";
+        }
+        if (moreBtn) moreBtn.classList.remove("is-on");
+        requestAnimationFrame(updateNoteClamp);
       }
 
-      function openNoteModal() {
-        if (!lastProfileHint) return;
+      function updateNoteClamp() {
+        const pairs = [
+          ["prof-note-text", "prof-note-more"],
+          ["col-note-text", "col-note-more"],
+        ];
+        pairs.forEach(([textId, btnId]) => {
+          const textEl = document.getElementById(textId);
+          const moreBtn = document.getElementById(btnId);
+          if (!textEl || !moreBtn) return;
+          const visible = textEl.style.display !== "none" && !!textEl.textContent;
+          const overflow = visible && textEl.scrollHeight > textEl.clientHeight + 1;
+          moreBtn.classList.toggle("is-on", overflow);
+        });
+      }
+
+      function openNoteModal(text) {
+        const bodyText = text != null ? text : lastNoteText;
+        if (!bodyText) return;
+        lastNoteText = bodyText;
         const dlg = document.getElementById("note-dialog");
         const body = document.getElementById("note-dialog-body");
         if (!dlg || !body) return;
-        body.textContent = lastProfileHint;
+        body.textContent = bodyText;
         dlg.classList.add("active");
         dlg.setAttribute("aria-hidden", "false");
       }
@@ -7680,9 +8408,22 @@
         const profUrl = profileGalleryUrls[profileGalleryIndex] || (profImg && profImg.src) || "";
         const zoomUrl = zoomGalleryUrls[zoomGalleryIndex] || (zoomImg && zoomImg.src) || "";
         setMediaInvertedClass(profImg, isMediaInverted(profUrl));
-        setMediaInvertedClass(zoomImg, isMediaInverted(zoomUrl));
-        if (popImg) setMediaInvertedClass(popImg, isMediaInverted(popImg.src));
+        setMediaInvertedClass(
+          zoomImg,
+          zoomMediaKind !== "color" && isMediaInverted(zoomUrl),
+        );
+        if (popImg) {
+          const skipInvert = popImg.getAttribute("data-media") === "color";
+          setMediaInvertedClass(
+            popImg,
+            !skipInvert && isMediaInverted(popImg.src),
+          );
+        }
         document.querySelectorAll(".profile-thumb img, .zoom-thumb img, #prof-list .result-row-thumb img").forEach((img) => {
+          if (img.getAttribute("data-media") === "color") {
+            setMediaInvertedClass(img, false);
+            return;
+          }
           setMediaInvertedClass(img, isMediaInverted(img.currentSrc || img.src));
         });
         syncMediaModeButtons();
@@ -7765,6 +8506,88 @@
         setProfileDrawing(0);
       }
 
+      function setColorDrawing(index) {
+        const urls = colorGalleryUrls;
+        if (!urls.length) return;
+        const total = urls.length;
+        colorGalleryIndex = ((index % total) + total) % total;
+        const imgEl = document.getElementById("col-swatch-img");
+        const countEl = document.getElementById("col-draw-count");
+        const thumbs = document.getElementById("col-thumbs");
+        const box = document.getElementById("col-swatch");
+        const url = urls[colorGalleryIndex];
+        const http = isHttpUrl(url);
+        if (box) {
+          box.classList.toggle("has-photo", http);
+          box.classList.toggle("has-swatch", !http);
+        }
+        if (imgEl) {
+          imgEl.setAttribute("data-media", "color");
+          imgEl.onerror = () => {
+            imgEl.onerror = null;
+            imgEl.src = getColorSwatchDataUrl(
+              lastActiveColorHex,
+              lastActiveColorCode,
+            );
+            if (box) {
+              box.classList.remove("has-photo");
+              box.classList.add("has-swatch");
+            }
+          };
+          imgEl.src = url;
+        }
+        if (countEl) countEl.textContent = colorGalleryIndex + 1 + " / " + total;
+        if (thumbs) {
+          thumbs.querySelectorAll(".profile-thumb").forEach((el, i) => {
+            el.classList.toggle("active", i === colorGalleryIndex);
+          });
+        }
+      }
+
+      function stepColorGallery(delta) {
+        if (colorGalleryUrls.length < 2) return;
+        setColorDrawing(colorGalleryIndex + delta);
+      }
+
+      function renderColorGallery(col, code, hex) {
+        const photos = farbeImageEntries(col);
+        const fallback = getColorSwatchDataUrl(hex, code);
+        colorGalleryEntries = photos.length
+          ? photos.slice()
+          : [{ url: fallback, type: "swatch" }];
+        colorGalleryUrls = colorGalleryEntries.map((e) => e.url);
+        colorGalleryIndex = 0;
+        const box = document.getElementById("col-swatch");
+        const thumbs = document.getElementById("col-thumbs");
+        const multi = colorGalleryUrls.length > 1;
+        if (box) {
+          box.classList.toggle("has-multi", multi);
+          box.style.touchAction = multi ? "pan-y" : "";
+        }
+        if (thumbs) {
+          thumbs.innerHTML = "";
+          thumbs.classList.toggle("has-thumbs", multi);
+          if (multi) {
+            colorGalleryEntries.forEach((entry, i) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "profile-thumb" + (i === 0 ? " active" : "");
+              const thumbImg = document.createElement("img");
+              thumbImg.src = entry.url;
+              thumbImg.alt = "";
+              thumbImg.setAttribute("data-media", "color");
+              btn.appendChild(thumbImg);
+              btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                setColorDrawing(i);
+              });
+              thumbs.appendChild(btn);
+            });
+          }
+        }
+        setColorDrawing(0);
+      }
+
       function canHoverPreview() {
         return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
       }
@@ -7806,7 +8629,12 @@
         if (popImg) {
           const src = img.currentSrc || img.src;
           popImg.src = src;
-          setMediaInvertedClass(popImg, isMediaInverted(src));
+          const skipInvert = img.getAttribute("data-media") === "color";
+          popImg.setAttribute("data-media", skipInvert ? "color" : "");
+          setMediaInvertedClass(
+            popImg,
+            !skipInvert && isMediaInverted(src),
+          );
         }
         drawingPreviewAnchor = anchor;
         pop.classList.toggle("is-sticky", !!forced);
@@ -7872,7 +8700,10 @@
           const thumbImg = document.createElement("img");
           thumbImg.src = url;
           thumbImg.alt = "";
-          setMediaInvertedClass(thumbImg, isMediaInverted(url));
+          setMediaInvertedClass(
+            thumbImg,
+            zoomMediaKind !== "color" && isMediaInverted(url),
+          );
           btn.appendChild(thumbImg);
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -7887,7 +8718,13 @@
         const total = zoomGalleryUrls.length;
         zoomGalleryIndex = ((index % total) + total) % total;
         const img = document.getElementById("zoom-img-target");
-        if (img) img.src = zoomGalleryUrls[zoomGalleryIndex];
+        if (img) {
+          img.src = zoomGalleryUrls[zoomGalleryIndex];
+          img.setAttribute(
+            "data-media",
+            zoomMediaKind === "color" ? "color" : "",
+          );
+        }
         resetZoomTransform();
         renderZoomThumbs();
         applyMediaInvertUi();
@@ -7898,7 +8735,8 @@
         setZoomGalleryIndex(zoomGalleryIndex + delta);
       }
 
-      function showZoom(url, urls) {
+      function showZoom(url, urls, kind) {
+        zoomMediaKind = kind === "color" ? "color" : "article";
         const list =
           Array.isArray(urls) && urls.length
             ? urls.slice()
@@ -7910,10 +8748,20 @@
         const at = list.indexOf(url);
         zoomGalleryIndex = at >= 0 ? at : 0;
         const img = document.getElementById("zoom-img-target");
-        if (img) img.src = zoomGalleryUrls[zoomGalleryIndex];
+        if (img) {
+          img.src = zoomGalleryUrls[zoomGalleryIndex];
+          img.setAttribute(
+            "data-media",
+            zoomMediaKind === "color" ? "color" : "",
+          );
+        }
         resetZoomTransform();
         renderZoomThumbs();
-        document.getElementById("zoom-dialog").classList.add("active");
+        const dlg = document.getElementById("zoom-dialog");
+        if (dlg) {
+          dlg.classList.toggle("is-color", zoomMediaKind === "color");
+          dlg.classList.add("active");
+        }
         applyMediaInvertUi();
       }
 
@@ -8058,6 +8906,62 @@
             const dy = t.clientY - swipeY;
             if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
             stepProfileGallery(dx < 0 ? 1 : -1);
+          },
+          { passive: true },
+        );
+      }
+
+      function bindColorGalleryUi() {
+        const box = document.getElementById("col-swatch");
+        const prev = document.getElementById("col-draw-prev");
+        const next = document.getElementById("col-draw-next");
+        if (prev) {
+          prev.addEventListener("click", (e) => {
+            e.stopPropagation();
+            stepColorGallery(-1);
+          });
+        }
+        if (next) {
+          next.addEventListener("click", (e) => {
+            e.stopPropagation();
+            stepColorGallery(1);
+          });
+        }
+        if (!box) return;
+        box.addEventListener("click", (e) => {
+          if (e.target.closest(".drawing-nav")) return;
+          const url =
+            (document.getElementById("col-swatch-img") &&
+              document.getElementById("col-swatch-img").src) ||
+            colorGalleryUrls[colorGalleryIndex] ||
+            "";
+          if (!url) return;
+          showZoom(url, colorGalleryUrls, "color");
+        });
+        let swipeX = 0;
+        let swipeY = 0;
+        let swiping = false;
+        box.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.touches.length !== 1 || colorGalleryUrls.length < 2) return;
+            swipeX = e.touches[0].clientX;
+            swipeY = e.touches[0].clientY;
+            swiping = true;
+          },
+          { passive: true },
+        );
+        box.addEventListener(
+          "touchend",
+          (e) => {
+            if (!swiping) return;
+            swiping = false;
+            const t = e.changedTouches[0];
+            if (!t) return;
+            const dx = t.clientX - swipeX;
+            const dy = t.clientY - swipeY;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+            stepColorGallery(dx < 0 ? 1 : -1);
           },
           { passive: true },
         );
@@ -8286,6 +9190,23 @@
             oberflaeche_en: csvCell(row, map, "oberflaeche_en"),
             name_ru: csvCell(row, map, "name_ru"),
             oberflaeche_ru: csvCell(row, map, "oberflaeche_ru"),
+            hinweis_de: csvCellAny(row, map, [
+              "hinweis_de",
+              "hinweis",
+              "beschreibung_de",
+            ]),
+            hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
+            hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
+            image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+            image_type: csvCellAny(row, map, ["image_type", "type"]),
+            img_1: csvCell(row, map, "img_1"),
+            img_2: csvCell(row, map, "img_2"),
+            img_3: csvCell(row, map, "img_3"),
+            img_4: csvCell(row, map, "img_4"),
+            img_1_type: csvCell(row, map, "img_1_type"),
+            img_2_type: csvCell(row, map, "img_2_type"),
+            img_3_type: csvCell(row, map, "img_3_type"),
+            img_4_type: csvCell(row, map, "img_4_type"),
           };
         });
         return out;
