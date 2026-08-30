@@ -162,31 +162,17 @@
       }
       .login-logo {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: center;
-        gap: 0.28em;
-        font-family:
-          Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: clamp(28px, 5.6vw, 34px);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        text-align: center;
-        line-height: 1.05;
+        width: 100%;
         margin-bottom: 10px;
       }
-      .login-logo,
-      .login-logo span {
-        font-family:
-          Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-      }
-      .login-logo-brand {
-        color: #ffffff;
-        text-transform: lowercase;
-      }
-      .login-logo-product {
-        color: #93c5fd;
+      .login-logo .heroal-logo {
+        height: auto;
+        width: auto;
+        max-height: 34px;
+        max-width: 88%;
+        object-fit: contain;
       }
       .login-sub {
         font-size: clamp(13px, 3vw, 14px);
@@ -316,7 +302,8 @@
       .numpad-toggle:active {
         transform: translateY(-50%) scale(0.97);
       }
-      .login-btn {
+      .login-btn,
+      button.login-btn {
         width: 100%;
         min-height: 44px;
         height: 44px;
@@ -331,17 +318,17 @@
         box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.28);
       }
       button.login-btn:hover {
-        background: #bfdbfe;
+        background: #93c5fd;
         color: #0d1322;
-        border-color: #bfdbfe;
-        filter: none;
+        border-color: #93c5fd;
+        filter: brightness(1.06);
         box-shadow: 0 0 20px rgba(147, 197, 253, 0.45);
       }
       button.login-btn:active {
-        background: #7eb8f8;
+        background: #93c5fd;
         color: #0d1322;
-        border-color: #7eb8f8;
-        filter: none;
+        border-color: #93c5fd;
+        filter: brightness(0.92);
         transform: scale(0.97);
         box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
       }
@@ -544,8 +531,8 @@
           max-width: 460px;
           padding: 24px 22px 16px;
         }
-        .login-logo {
-          font-size: 30px;
+        .login-logo .heroal-logo {
+          max-height: 32px;
         }
         .login-sub {
           font-size: 13px;
@@ -591,8 +578,8 @@
           max-width: 460px;
           padding: 22px 20px 16px;
         }
-        .login-logo {
-          font-size: 32px;
+        .login-logo .heroal-logo {
+          max-height: 34px;
         }
       }
       @media (min-width: 900px) and (pointer: coarse) {
@@ -645,40 +632,52 @@
       .header-right {
         display: flex;
         align-items: center;
-        min-width: 0;
       }
       .header-left {
         justify-self: start;
+        flex-shrink: 1;
+        min-width: 0;
+        overflow: hidden;
+        max-width: min(250px, 32vw);
       }
       .header-center {
         justify-self: center;
         justify-content: center;
         gap: 8px;
+        min-width: 0;
       }
       .header-right {
         justify-self: end;
         justify-content: flex-end;
         gap: 12px;
+        min-width: 0;
       }
       .brand-title {
-        font-weight: 800;
-        font-size: 32px;
-        letter-spacing: -0.03em;
-        line-height: 1;
+        display: block;
         background: none;
         border: none;
-        color: #fff;
-        cursor: pointer;
         padding: 0;
-        white-space: nowrap;
-        font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        flex-shrink: 1;
+        min-width: 0;
+        max-width: 100%;
+        line-height: 0;
       }
-      .brand-title .brand-heroal {
-        color: #ffffff;
+      .heroal-logo {
+        display: block;
+        height: auto;
+        width: auto;
+        max-height: 32px;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: left center;
+        flex-shrink: 1;
+        user-select: none;
+        mix-blend-mode: screen;
       }
-      .brand-title .brand-product {
-        color: #93c5fd;
-        text-shadow: none;
+      .brand-title .heroal-logo {
+        max-height: 32px;
+        max-width: 100%;
       }
       .btn-quick {
         box-sizing: border-box;
@@ -1917,27 +1916,35 @@
         color: #60a5fa;
         border-color: #60a5fa;
       }
-      .btn-copy-action {
+      .btn-copy-action,
+      .btn-share-action {
+        box-sizing: border-box;
         margin: 0;
-        padding: 4px 10px;
+        height: 32px;
+        min-height: 32px;
+        padding: 0 12px;
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
-        background: rgba(2, 6, 23, 0.8);
-        border: 1px solid rgba(56, 189, 248, 0.4);
         border-radius: 9999px;
-        color: #7dd3fc;
         font-size: 0.75rem;
         font-weight: 600;
         line-height: 1;
         cursor: pointer;
         user-select: none;
-        backdrop-filter: blur(4px);
         transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease,
           border-color 0.15s ease;
       }
-      .btn-copy-action .ico {
+      .btn-copy-action {
+        background: rgba(2, 6, 23, 0.8);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        color: #7dd3fc;
+        backdrop-filter: blur(4px);
+      }
+      .btn-copy-action .ico,
+      .btn-share-action .ico {
         width: 14px;
         height: 14px;
       }
@@ -1955,6 +1962,27 @@
       .btn-copy-action.is-copied {
         color: #86efac;
         border-color: rgba(74, 222, 128, 0.4);
+      }
+      .btn-share-action {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #6ee7b7;
+      }
+      .btn-share-action:hover {
+        background: rgba(16, 185, 129, 0.25);
+        color: #a7f3d0;
+      }
+      .btn-share-action:active {
+        transform: scale(0.95);
+      }
+      .btn-share-action:disabled {
+        opacity: 0.45;
+        cursor: default;
+        pointer-events: none;
+      }
+      .btn-share-action.is-copied {
+        color: #bbf7d0;
+        border-color: rgba(74, 222, 128, 0.55);
       }
       .info-copy-bar {
         display: flex;
@@ -2520,8 +2548,11 @@
         .hdr-user-name {
           max-width: 120px;
         }
-        .brand-title {
-          font-size: 26px;
+        .brand-title .heroal-logo {
+          max-height: 24px;
+        }
+        .header-left {
+          max-width: min(160px, 36vw);
         }
       }
       @media (min-width: 1280px) {
@@ -3014,6 +3045,13 @@
         <polyline points="16 17 21 12 16 7"/>
         <line x1="21" y1="12" x2="9" y2="12"/>
       </symbol>
+      <symbol id="i-share2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/>
+        <circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </symbol>
       <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -3094,8 +3132,11 @@
     <div id="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-sub-txt">
       <div class="login-box">
         <div class="login-logo">
-          <span class="login-logo-brand">heroal</span>
-          <span class="login-logo-product">Artikel</span>
+          <img
+            class="heroal-logo"
+            src="logo/heroal-artikel-logo-hell.png"
+            alt="heroal Artikel"
+          />
         </div>
         <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
           PIN eingeben
@@ -3204,8 +3245,12 @@
     <header>
       <div class="header-left">
         <button type="button" class="brand-title" id="hdr-brand" title="heroal Artikel">
-          <span class="brand-heroal">heroal</span>
-          <span class="brand-product">Artikel</span>
+          <img
+            class="heroal-logo"
+            id="logo-heroal"
+            src="logo/heroal-artikel-logo-hell.png"
+            alt="heroal Artikel"
+          />
         </button>
       </div>
 
@@ -3474,6 +3519,17 @@
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
                   <span data-i18n="copy_hint_btn">Beschreibung</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-share-action"
+                  id="btn-share-prof"
+                  data-i18n-title="share_title"
+                  title="Karte teilen"
+                  aria-label="Karte teilen"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-share2"></use></svg>
+                  <span data-i18n="share_btn">Teilen</span>
                 </button>
               </div>
             </div>
@@ -3858,6 +3914,10 @@
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
           copy_hint_btn: "Beschreibung",
+          share_btn: "Teilen",
+          share_title: "Karte teilen",
+          share_saved: "Screenshot gespeichert / kopiert",
+          share_error: "Screenshot fehlgeschlagen",
           copied_short: "Kopiert!",
           settings_title: "Einstellungen",
           settings_save: "Speichern",
@@ -3956,6 +4016,10 @@
           copy_artnr_btn: "Art. no.",
           copy_name_btn: "Name",
           copy_hint_btn: "Description",
+          share_btn: "Share",
+          share_title: "Share card",
+          share_saved: "Screenshot saved / copied",
+          share_error: "Screenshot failed",
           copied_short: "Copied!",
           settings_title: "Settings",
           settings_save: "Save",
@@ -4054,6 +4118,10 @@
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
           copy_hint_btn: "Описание",
+          share_btn: "Поделиться",
+          share_title: "Поделиться карточкой",
+          share_saved: "Скриншот сохранен / скопирован",
+          share_error: "Не удалось создать скриншот",
           copied_short: "Kopiert!",
           settings_title: "Настройки",
           settings_save: "Сохранить",
@@ -5705,6 +5773,370 @@
         }, 1500);
       }
 
+      function shareArticleFileName(nr) {
+        const id = String(nr || "artikel")
+          .replace(/[^\w.-]+/g, "_")
+          .replace(/^_+|_+$/g, "")
+          .slice(0, 48);
+        return "heroal-" + (id || "artikel") + ".png";
+      }
+
+      function wrapCanvasLines(ctx, text, maxWidth, maxLines) {
+        const raw = String(text || "").replace(/\s+/g, " ").trim();
+        if (!raw) return [];
+        const words = raw.split(" ");
+        const lines = [];
+        let line = "";
+        const limit = maxLines || 16;
+        const pushWord = (word) => {
+          if (!word) return;
+          if (ctx.measureText(word).width <= maxWidth) {
+            line = line ? line + " " + word : word;
+            return;
+          }
+          if (line) {
+            lines.push(line);
+            line = "";
+          }
+          let chunk = "";
+          for (let i = 0; i < word.length; i++) {
+            const next = chunk + word[i];
+            if (chunk && ctx.measureText(next).width > maxWidth) {
+              lines.push(chunk);
+              chunk = word[i];
+            } else {
+              chunk = next;
+            }
+          }
+          line = chunk;
+        };
+        words.forEach((word) => {
+          if (lines.length >= limit) return;
+          const test = line ? line + " " + word : word;
+          if (ctx.measureText(test).width <= maxWidth) {
+            line = test;
+          } else {
+            if (line) lines.push(line);
+            line = "";
+            pushWord(word);
+          }
+        });
+        if (line && lines.length < limit) lines.push(line);
+        if (lines.length > limit) {
+          const cut = lines.slice(0, limit);
+          let last = cut[cut.length - 1] || "";
+          while (last.length > 1 && ctx.measureText(last + "…").width > maxWidth) {
+            last = last.slice(0, -1);
+          }
+          cut[cut.length - 1] = last + "…";
+          return cut;
+        }
+        return lines;
+      }
+
+      function roundedRectPath(ctx, x, y, w, h, r) {
+        const rad = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + rad, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rad);
+        ctx.arcTo(x + w, y + h, x, y + h, rad);
+        ctx.arcTo(x, y + h, x, y, rad);
+        ctx.arcTo(x, y, x + w, y, rad);
+        ctx.closePath();
+      }
+
+      function loadShareDrawing(img) {
+        return new Promise((resolve) => {
+          if (!img) {
+            resolve(null);
+            return;
+          }
+          const src = img.currentSrc || img.src;
+          if (!src) {
+            resolve(null);
+            return;
+          }
+          const im = new Image();
+          im.crossOrigin = "anonymous";
+          const finish = (ok) => {
+            resolve(ok ? im : img.naturalWidth ? img : null);
+          };
+          im.onload = () => finish(true);
+          im.onerror = () => finish(false);
+          im.src = src;
+          if (im.complete && im.naturalWidth) finish(true);
+        });
+      }
+
+      function loadShareLogoImage() {
+        return new Promise((resolve, reject) => {
+          const im = new Image();
+          im.onload = () => resolve(im);
+          im.onerror = () => reject(new Error("logo"));
+          im.src = "logo/heroal-artikel-logo-hell.png";
+        });
+      }
+
+      function shareLogoOnTransparent(img) {
+        const w = img.naturalWidth || img.width;
+        const h = img.naturalHeight || img.height;
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        const x = c.getContext("2d");
+        x.drawImage(img, 0, 0);
+        const data = x.getImageData(0, 0, w, h);
+        const px = data.data;
+        for (let i = 0; i < px.length; i += 4) {
+          const a = Math.max(px[i], px[i + 1], px[i + 2]);
+          px[i + 3] = Math.round((px[i + 3] * a) / 255);
+        }
+        x.putImageData(data, 0, 0);
+        return c;
+      }
+
+      function canvasToPngBlob(canvas) {
+        return new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("toBlob"));
+          }, "image/png");
+        });
+      }
+
+      async function buildArticleShareBlob(item, nr) {
+        const name = locField(item, "name", appLang) || item.name_de || "";
+        const masse = articleMasse(item);
+        const category = articleCategory(item);
+        const hint = articleHint(item);
+        const imgEl = document.getElementById("prof-img");
+        const drawing = await loadShareDrawing(imgEl);
+        const invert = !!(imgEl && imgEl.classList.contains("media-invert"));
+
+        const cssW = 720;
+        const scale = 2;
+        const pad = 28;
+        const headerH = 72;
+        const drawH = 360;
+        const font = 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif';
+        const measure = document.createElement("canvas").getContext("2d");
+        measure.font = "700 22px " + font;
+        const nameLines = wrapCanvasLines(measure, name, cssW - pad * 2, 3);
+        measure.font = "400 15px " + font;
+        const hintLines = wrapCanvasLines(measure, hint, cssW - pad * 2, 10);
+        const chipsH = masse || category ? 36 : 0;
+        const hintBlock = hintLines.length
+          ? 28 + hintLines.length * 22
+          : 0;
+        const cssH =
+          headerH +
+          drawH +
+          pad +
+          nameLines.length * 28 +
+          12 +
+          40 +
+          chipsH +
+          hintBlock +
+          44;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(cssW * scale);
+        canvas.height = Math.round(cssH * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.scale(scale, scale);
+        const setTracking = (value) => {
+          if (typeof ctx.letterSpacing === "string") ctx.letterSpacing = value;
+        };
+
+        ctx.fillStyle = "#0b0f19";
+        ctx.fillRect(0, 0, cssW, cssH);
+
+        ctx.fillStyle = "#003366";
+        ctx.fillRect(0, 0, cssW, headerH);
+        try {
+          const logoImg = await loadShareLogoImage();
+          const logoSrc = shareLogoOnTransparent(logoImg);
+          const aspect =
+            (logoSrc.width && logoSrc.height
+              ? logoSrc.width / logoSrc.height
+              : 1200 / 140);
+          let logoH = 42;
+          let logoW = aspect * logoH;
+          const maxW = cssW - pad * 2;
+          if (logoW > maxW) {
+            logoW = maxW;
+            logoH = logoW / aspect;
+          }
+          ctx.drawImage(
+            logoSrc,
+            pad,
+            (headerH - logoH) / 2,
+            logoW,
+            logoH,
+          );
+        } catch (err) {}
+        ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
+        ctx.fillRect(0, headerH - 1, cssW, 1);
+
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(0, headerH, cssW, drawH);
+        if (drawing && drawing.naturalWidth) {
+          const boxW = cssW - 32;
+          const boxH = drawH - 24;
+          const bx = 16;
+          const by = headerH + 12;
+          const ir = drawing.naturalWidth / drawing.naturalHeight;
+          let dw = boxW;
+          let dh = dw / ir;
+          if (dh > boxH) {
+            dh = boxH;
+            dw = dh * ir;
+          }
+          const dx = bx + (boxW - dw) / 2;
+          const dy = by + (boxH - dh) / 2;
+          if (invert) {
+            ctx.filter = "invert(0.92) hue-rotate(180deg) contrast(1.15)";
+          }
+          ctx.drawImage(drawing, dx, dy, dw, dh);
+          ctx.filter = "none";
+        }
+
+        let y = headerH + drawH + 22;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 22px " + font;
+        nameLines.forEach((ln) => {
+          ctx.fillText(ln, cssW / 2, y);
+          y += 28;
+        });
+        y += 10;
+
+        roundedRectPath(ctx, cssW / 2 - 90, y, 180, 32, 8);
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = "#38bdf8";
+        ctx.font = "700 18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+        ctx.textBaseline = "middle";
+        ctx.fillText(nr, cssW / 2, y + 16);
+        y += 44;
+
+        ctx.textBaseline = "middle";
+        ctx.font = "600 14px " + font;
+        const chips = [];
+        if (masse) chips.push({ text: masse, bg: "rgba(245, 158, 11, 0.18)", fg: "#fcd34d", bd: "rgba(245, 158, 11, 0.35)" });
+        if (category) chips.push({ text: category, bg: "rgba(168, 85, 247, 0.2)", fg: "#d8b4fe", bd: "rgba(168, 85, 247, 0.4)" });
+        if (chips.length) {
+          const gap = 10;
+          const widths = chips.map((c) => ctx.measureText(c.text).width + 28);
+          const total = widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1);
+          let x = (cssW - total) / 2;
+          chips.forEach((c, i) => {
+            roundedRectPath(ctx, x, y, widths[i], 28, 8);
+            ctx.fillStyle = c.bg;
+            ctx.fill();
+            ctx.strokeStyle = c.bd;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.fillStyle = c.fg;
+            ctx.fillText(c.text, x + widths[i] / 2, y + 14);
+            x += widths[i] + gap;
+          });
+          y += 40;
+        }
+
+        if (hintLines.length) {
+          ctx.textAlign = "left";
+          ctx.textBaseline = "top";
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "600 12px " + font;
+          ctx.fillText(t("hint_title"), pad, y);
+          y += 22;
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "400 15px " + font;
+          hintLines.forEach((ln) => {
+            ctx.fillText(ln, pad, y);
+            y += 22;
+          });
+        }
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        setTracking("0.1em");
+        ctx.globalAlpha = 0.6;
+        ctx.font =
+          "500 10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+        ctx.fillStyle = "#64748b";
+        ctx.fillText("HEROAL SYSTEMKATALOG", cssW / 2, cssH - 16);
+        ctx.globalAlpha = 1;
+        setTracking("0px");
+
+        return canvasToPngBlob(canvas);
+      }
+
+      async function downloadShareBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.rel = "noopener";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }
+
+      async function copyShareBlob(blob) {
+        if (!navigator.clipboard || !window.ClipboardItem) return false;
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob }),
+          ]);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function handleShareScreenshot() {
+        const key = lastActiveArticle;
+        const item = key && (appDB.artikel || {})[key];
+        if (!item) return;
+        const nr = articleNr(item, key);
+        const name = locField(item, "name", appLang) || item.name_de || "";
+        const masse = articleMasse(item);
+        const btn = document.getElementById("btn-share-prof");
+        if (btn) btn.disabled = true;
+        try {
+          const blob = await buildArticleShareBlob(item, nr);
+          const filename = shareArticleFileName(nr);
+          const file = new File([blob], filename, { type: "image/png" });
+          const title = "heroal " + nr + (name ? " - " + name : "");
+          const text = name + (masse ? " (" + masse + ")" : "");
+          const payload = { title: title, text: text, files: [file] };
+          const canFiles =
+            typeof navigator.canShare === "function" &&
+            navigator.canShare({ files: [file] });
+          if (canFiles && typeof navigator.share === "function") {
+            try {
+              await navigator.share(payload);
+              return;
+            } catch (err) {
+              if (err && err.name === "AbortError") return;
+            }
+          }
+          await downloadShareBlob(blob, filename);
+          await copyShareBlob(blob);
+          showToast(t("share_saved"), "ok");
+        } catch (err) {
+          console.warn("share screenshot failed", err);
+          showToast(t("share_error"), "error");
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+
       // Fallback SVG Drawing
       function getSvgPlaceholder(artNr) {
         const cleanArt = artNr || "heroal";
@@ -6102,6 +6534,7 @@
         const copyProfBtn = document.getElementById("btn-copy-prof");
         const copyProfNameBtn = document.getElementById("btn-copy-prof-name");
         const copyProfHintBtn = document.getElementById("btn-copy-prof-hint");
+        const shareProfBtn = document.getElementById("btn-share-prof");
         const copyColBtn = document.getElementById("btn-copy-col");
         const hexChip = document.getElementById("col-hex");
         const noteMore = document.getElementById("prof-note-more");
@@ -6129,6 +6562,12 @@
             if (!lastProfileHint) return;
             flashCopyButton(copyProfHintBtn);
             copyToClipboard(lastProfileHint, "", t("copied_short"), () => {});
+          });
+        }
+        if (shareProfBtn) {
+          shareProfBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleShareScreenshot();
           });
         }
         if (noteMore) {
