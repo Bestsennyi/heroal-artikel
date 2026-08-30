@@ -5916,7 +5916,7 @@
         const cssW = 720;
         const scale = 2;
         const pad = 28;
-        const headerH = 72;
+        const headerH = 80;
         const drawH = 360;
         const font = 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif';
         const measure = document.createElement("canvas").getContext("2d");
@@ -5960,16 +5960,16 @@
             (logoSrc.width && logoSrc.height
               ? logoSrc.width / logoSrc.height
               : 1200 / 140);
-          let logoH = 42;
+          let logoH = 20;
           let logoW = aspect * logoH;
-          const maxW = cssW - pad * 2;
+          const maxW = 240;
           if (logoW > maxW) {
             logoW = maxW;
             logoH = logoW / aspect;
           }
           ctx.drawImage(
             logoSrc,
-            pad,
+            (cssW - logoW) / 2,
             (headerH - logoH) / 2,
             logoW,
             logoH,
