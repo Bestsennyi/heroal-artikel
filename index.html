@@ -3106,6 +3106,7 @@
             id="input-login-nr"
             class="login-input"
             placeholder="PIN"
+            data-i18n-placeholder="login_placeholder"
             value=""
             inputmode="numeric"
             autocomplete="off"
@@ -4131,22 +4132,34 @@
       let i18nDict = cloneFallbackDict();
       let appLang = readSavedLang();
 
+      function usableText(val) {
+        if (val == null) return "";
+        const s = String(val).trim();
+        if (!s || /^null$/i.test(s) || /^undefined$/i.test(s)) return "";
+        return s;
+      }
+
       function t(key) {
+        const k = usableText(key);
+        if (!k) return "";
         const table = i18nDict[appLang] || i18nDict.de;
-        const fromDict = table && table[key];
-        const localFb = I18N_FALLBACK[appLang] && I18N_FALLBACK[appLang][key];
-        const deFb = I18N_FALLBACK.de && I18N_FALLBACK.de[key];
+        const fromDict = usableText(table && table[k]);
+        const localFb = usableText(
+          I18N_FALLBACK[appLang] && I18N_FALLBACK[appLang][k],
+        );
+        const deFb = usableText(I18N_FALLBACK.de && I18N_FALLBACK.de[k]);
+        const deDict = usableText(i18nDict.de && i18nDict.de[k]);
         if (
           appLang !== "de" &&
           localFb &&
           deFb &&
-          fromDict != null &&
-          String(fromDict) === String(deFb) &&
-          String(localFb) !== String(deFb)
+          fromDict &&
+          fromDict === deFb &&
+          localFb !== deFb
         ) {
           return localFb;
         }
-        return fromDict || (i18nDict.de && i18nDict.de[key]) || deFb || key;
+        return fromDict || deDict || localFb || deFb || k;
       }
 
       function tf(key, vars) {
@@ -4158,7 +4171,7 @@
       }
 
       function acceptSheetTranslation(lang, key, incoming) {
-        const s = String(incoming).trim();
+        const s = usableText(incoming);
         if (!s) return false;
         if (lang === "de") return true;
         const deVal = I18N_FALLBACK.de && I18N_FALLBACK.de[key];
@@ -4176,7 +4189,7 @@
             Object.keys(bundle[lang]).forEach((key) => {
               const val = bundle[lang][key];
               if (acceptSheetTranslation(lang, key, val)) {
-                i18nDict[lang][key] = String(val).trim();
+                i18nDict[lang][key] = usableText(val);
               }
             });
           }
@@ -4187,7 +4200,7 @@
           if (!row || typeof row !== "object") return;
           LANGS.forEach((lang) => {
             if (acceptSheetTranslation(lang, key, row[lang])) {
-              i18nDict[lang][key] = String(row[lang]).trim();
+              i18nDict[lang][key] = usableText(row[lang]);
             }
           });
         });
@@ -4217,7 +4230,8 @@
           el.textContent = t(el.getAttribute("data-i18n"));
         });
         document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-          el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+          const key = el.getAttribute("data-i18n-placeholder");
+          el.placeholder = t(key) || "";
         });
         document.querySelectorAll("[data-i18n-title]").forEach((el) => {
           const label = t(el.getAttribute("data-i18n-title"));
@@ -4227,7 +4241,7 @@
         const footerEl = document.getElementById("login-footer-txt");
         if (footerEl) footerEl.textContent = I18N_FALLBACK.de.footer_text;
         const loginInput = document.getElementById("input-login-nr");
-        if (loginInput) loginInput.placeholder = t("login_placeholder");
+        if (loginInput) loginInput.placeholder = t("login_placeholder") || "PIN";
         syncLangDropdown();
         syncNumpadVisibility();
         const setTxt = (id, value) => {
@@ -4348,12 +4362,9 @@
       function locField(obj, stem, lang) {
         if (!obj) return "";
         const code = lang || appLang;
-        const chosen = obj[stem + "_" + code];
-        if (chosen != null && String(chosen).trim() !== "") {
-          return String(chosen).trim();
-        }
-        const de = obj[stem + "_de"];
-        return de != null ? String(de).trim() : "";
+        const chosen = usableText(obj[stem + "_" + code]);
+        if (chosen) return chosen;
+        return usableText(obj[stem + "_de"]);
       }
 
       function escapeHtml(value) {
@@ -6432,10 +6443,12 @@
       }
 
       function oskInsert(input, text) {
-        const start = input.selectionStart == null ? input.value.length : input.selectionStart;
+        const cur = String(input.value || "");
+        const chunk = text == null ? "" : String(text);
+        const start = input.selectionStart == null ? cur.length : input.selectionStart;
         const end = input.selectionEnd == null ? start : input.selectionEnd;
-        input.value = input.value.slice(0, start) + text + input.value.slice(end);
-        const pos = start + text.length;
+        input.value = cur.slice(0, start) + chunk + cur.slice(end);
+        const pos = start + chunk.length;
         try {
           input.setSelectionRange(pos, pos);
         } catch (e) {}
@@ -6444,15 +6457,16 @@
       }
 
       function oskDelete(input) {
-        const start = input.selectionStart == null ? input.value.length : input.selectionStart;
+        const cur = String(input.value || "");
+        const start = input.selectionStart == null ? cur.length : input.selectionStart;
         const end = input.selectionEnd == null ? start : input.selectionEnd;
         if (start !== end) {
-          input.value = input.value.slice(0, start) + input.value.slice(end);
+          input.value = cur.slice(0, start) + cur.slice(end);
           try {
             input.setSelectionRange(start, start);
           } catch (e) {}
         } else if (start > 0) {
-          input.value = input.value.slice(0, start - 1) + input.value.slice(start);
+          input.value = cur.slice(0, start - 1) + cur.slice(start);
           try {
             input.setSelectionRange(start - 1, start - 1);
           } catch (e) {}
@@ -7600,11 +7614,14 @@
         const ruIdx = header.indexOf("ru") !== -1 ? header.indexOf("ru") : 3;
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
-          const key = (row[keyIdx] || "").trim();
+          const key = usableText(row[keyIdx]);
           if (!key || LANGS.indexOf(key) !== -1) continue;
-          if (row[deIdx]) bundle.de[key] = row[deIdx];
-          if (row[enIdx]) bundle.en[key] = row[enIdx];
-          if (row[ruIdx]) bundle.ru[key] = row[ruIdx];
+          const de = usableText(row[deIdx]);
+          const en = usableText(row[enIdx]);
+          const ru = usableText(row[ruIdx]);
+          if (de) bundle.de[key] = de;
+          if (en) bundle.en[key] = en;
+          if (ru) bundle.ru[key] = ru;
         }
         return bundle;
       }
