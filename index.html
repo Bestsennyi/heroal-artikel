@@ -1217,8 +1217,13 @@
         height: 64px;
         padding: 4px;
         border-radius: 12px;
-        background: #fff;
+        background: #0f172a;
+        border: 1px solid rgba(51, 65, 85, 0.5);
         cursor: zoom-in;
+      }
+      #prof-list .result-row-thumb img {
+        padding: 4px;
+        border-radius: 8px;
       }
       #prof-list .result-row-meta {
         justify-content: center;
@@ -1654,7 +1659,8 @@
         width: 100%;
         height: 150px;
         flex: 0 0 auto;
-        background: #0b0f19;
+        background: #0f172a;
+        border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 12px;
         display: flex;
         justify-content: center;
@@ -1735,20 +1741,68 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        padding: 4px;
+        border-radius: 8px;
+      }
+      .media-invert {
+        filter: invert(0.92) hue-rotate(180deg) contrast(1.15);
+      }
+      .media-mode-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 9999px;
+        background: rgba(2, 6, 23, 0.8);
+        color: #7dd3fc;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        user-select: none;
+        backdrop-filter: blur(4px);
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      }
+      .media-mode-btn:hover {
+        background: rgba(14, 165, 233, 0.2);
+      }
+      .media-mode-btn .ico {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+      }
+      .zoom-stage .media-mode-btn {
+        top: 10px;
+        right: 10px;
       }
       .btn-zoom-hint {
         position: absolute;
-        right: 6px;
-        bottom: 6px;
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 4px;
-        pointer-events: none;
+        right: 8px;
+        bottom: 8px;
+        z-index: 3;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        padding: 4px 10px;
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 9999px;
+        background: rgba(2, 6, 23, 0.8);
+        color: #7dd3fc;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+        backdrop-filter: blur(4px);
+      }
+      .btn-zoom-hint .ico {
+        width: 14px;
+        height: 14px;
       }
       .profile-thumbs {
         display: none;
@@ -1780,8 +1834,8 @@
         width: 48px;
         height: 48px;
         padding: 2px;
-        background: #fff;
-        border: 2px solid var(--border-color);
+        background: #0f172a;
+        border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 8px;
         cursor: pointer;
         flex-shrink: 0;
@@ -1793,6 +1847,8 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        padding: 4px;
+        border-radius: 8px;
         pointer-events: none;
       }
       .profile-thumb.active {
@@ -1863,29 +1919,30 @@
       }
       .btn-copy-action {
         margin: 0;
-        padding: 6px 12px;
+        padding: 4px 10px;
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: #e2e8f0;
-        font-size: 12px;
+        background: rgba(2, 6, 23, 0.8);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 9999px;
+        color: #7dd3fc;
+        font-size: 0.75rem;
         font-weight: 600;
         line-height: 1;
         cursor: pointer;
-        transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease,
+        user-select: none;
+        backdrop-filter: blur(4px);
+        transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease,
           border-color 0.15s ease;
       }
       .btn-copy-action .ico {
-        width: 13px;
-        height: 13px;
+        width: 14px;
+        height: 14px;
       }
       .btn-copy-action:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
+        background: rgba(14, 165, 233, 0.2);
       }
       .btn-copy-action:active {
         transform: scale(0.95);
@@ -2034,26 +2091,27 @@
         margin: 0;
         padding: 4px 10px;
         flex-shrink: 0;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-        color: #38bdf8;
-        font-size: 12px;
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        border-radius: 9999px;
+        background: rgba(2, 6, 23, 0.8);
+        color: #7dd3fc;
+        font-size: 0.75rem;
         font-weight: 600;
         line-height: 1;
         cursor: pointer;
-        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        user-select: none;
+        backdrop-filter: blur(4px);
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
       }
       .btn-note-full.is-on {
         display: inline-flex;
       }
       .btn-note-full:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #7dd3fc;
+        background: rgba(14, 165, 233, 0.2);
       }
       .btn-note-full .ico {
-        width: 13px;
-        height: 13px;
+        width: 14px;
+        height: 14px;
       }
       .profile-note-body {
         flex: 1 1 auto;
@@ -2151,7 +2209,7 @@
         display: none;
       }
       .color-showcase-box.has-photo .btn-zoom-hint {
-        display: inline-block;
+        display: inline-flex;
       }
       .color-text-details {
         display: flex;
@@ -2727,6 +2785,7 @@
         padding: 56px 14px 16px;
       }
       .zoom-stage {
+        position: relative;
         flex: 1 1 auto;
         min-height: 0;
         width: 100%;
@@ -2736,6 +2795,9 @@
         overflow: hidden;
         touch-action: none;
         cursor: grab;
+        background: #0f172a;
+        border: 1px solid rgba(51, 65, 85, 0.5);
+        border-radius: 12px;
       }
       .zoom-stage.is-panning {
         cursor: grabbing;
@@ -2744,9 +2806,9 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
-        background: #ffffff;
+        padding: 4px;
         border-radius: 8px;
-        padding: 8px;
+        background: transparent;
         transform-origin: center center;
         will-change: transform;
         pointer-events: none;
@@ -2768,8 +2830,8 @@
         width: 48px;
         height: 48px;
         padding: 2px;
-        background: #fff;
-        border: 2px solid rgba(148, 163, 184, 0.4);
+        background: #0f172a;
+        border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 8px;
         cursor: pointer;
         flex-shrink: 0;
@@ -2781,6 +2843,8 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        padding: 4px;
+        border-radius: 8px;
         pointer-events: none;
       }
       .zoom-thumb.active {
@@ -2806,14 +2870,17 @@
         position: fixed;
         width: 240px;
         height: 240px;
-        padding: 8px;
-        background: #fff;
-        border: 2px solid #38bdf8;
+        padding: 10px;
+        background: #0b132b;
+        border: 1px solid rgba(56, 189, 248, 0.5);
         border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
         z-index: 50;
         pointer-events: none;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .drawing-hover-pop[hidden] {
         display: none;
@@ -2822,6 +2889,8 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
+        padding: 4px;
+        border-radius: 8px;
       }
       .settings-card {
         width: 100%;
@@ -2899,6 +2968,14 @@
       <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
         <circle cx="12" cy="13" r="4"/>
+      </symbol>
+      <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 18a6 6 0 0 0 0-12z" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-circle-dot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="1" fill="currentColor"/>
       </symbol>
       <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="23 4 23 10 17 10"/>
@@ -3284,6 +3361,15 @@
                   ›
                 </button>
                 <span class="drawing-counter" id="prof-draw-count"></span>
+                <button
+                  type="button"
+                  class="media-mode-btn"
+                  id="prof-media-mode"
+                  aria-pressed="false"
+                >
+                  <svg class="ico media-mode-icon" aria-hidden="true"><use href="#i-circle-dot"></use></svg>
+                  <span class="media-mode-label">Original</span>
+                </button>
                 <span class="btn-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
                   <span data-i18n="zoom_btn">Zoom</span>
@@ -3518,6 +3604,15 @@
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
       <div class="zoom-stage" id="zoom-stage">
+        <button
+          type="button"
+          class="media-mode-btn"
+          id="zoom-media-mode"
+          aria-pressed="false"
+        >
+          <svg class="ico media-mode-icon" aria-hidden="true"><use href="#i-circle-dot"></use></svg>
+          <span class="media-mode-label">Original</span>
+        </button>
         <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
       </div>
       <div id="zoom-thumbs" class="zoom-thumbs"></div>
@@ -3715,6 +3810,8 @@
           ph_guide: "Thema suchen...",
           copy_btn: "Copy",
           zoom_btn: "Zoom",
+          view_invert: "Invertieren",
+          view_original: "Original",
           hint_title: "Hinweis / Beschreibung",
           hint_system: "System",
           hint_masse: "Masse",
@@ -3811,6 +3908,8 @@
           ph_guide: "Search topic...",
           copy_btn: "Copy",
           zoom_btn: "Zoom",
+          view_invert: "Invert",
+          view_original: "Original",
           hint_title: "Note / Description",
           hint_system: "System",
           hint_masse: "Dimensions",
@@ -3907,6 +4006,8 @@
           ph_guide: "Искать тему...",
           copy_btn: "Копировать",
           zoom_btn: "Zoom",
+          view_invert: "Инверсия",
+          view_original: "Оригинал",
           hint_title: "Примечание / Описание",
           hint_system: "Система",
           hint_masse: "Размеры",
@@ -4115,6 +4216,7 @@
           logoutBtn.setAttribute("title", label);
           logoutBtn.setAttribute("aria-label", label);
         }
+        if (typeof syncMediaModeButtons === "function") syncMediaModeButtons();
       }
 
       function setLanguage(lang) {
@@ -4247,19 +4349,47 @@
         return locField(item, "hinweis", appLang);
       }
 
-      function articleImageList(item) {
+      function normalizeImageEntry(value, fallbackType) {
+        if (value == null || value === "") return null;
+        if (typeof value === "string") {
+          const url = value.trim();
+          return url ? { url: url, type: String(fallbackType || "").trim() } : null;
+        }
+        if (typeof value !== "object") return null;
+        const url = String(value.url || value.src || value.image_url || "").trim();
+        if (!url) return null;
+        return {
+          url: url,
+          type: String(value.type || value.kind || fallbackType || "").trim(),
+        };
+      }
+
+      function articleImageEntries(item) {
         if (!item) return [];
         const out = [];
-        const push = (value) => {
-          const url = String(value || "").trim();
-          if (url && out.indexOf(url) === -1) out.push(url);
+        const seen = Object.create(null);
+        const add = (raw, type) => {
+          const entry = normalizeImageEntry(raw, type);
+          if (!entry || seen[entry.url]) return;
+          seen[entry.url] = true;
+          out.push(entry);
         };
-        push(item.image_url);
-        push(item.img_url);
-        if (Array.isArray(item.images)) item.images.forEach(push);
-        if (Array.isArray(item.extra)) item.extra.forEach(push);
-        ["img_1", "img_2", "img_3", "img_4"].forEach((key) => push(item[key]));
+        add(item.image_url, item.image_type || item.type);
+        add(item.img_url, item.image_type || item.type);
+        if (Array.isArray(item.images)) {
+          item.images.forEach((it) => add(it, ""));
+        }
+        if (Array.isArray(item.extra)) {
+          item.extra.forEach((it) => add(it, ""));
+        }
+        ["img_1", "img_2", "img_3", "img_4"].forEach((key) => {
+          add(item[key], item[key + "_type"]);
+        });
         return out;
+      }
+
+      function articleImageList(item) {
+        return articleImageEntries(item).map((entry) => entry.url);
       }
 
       function isHttpUrl(value) {
@@ -4599,6 +4729,7 @@
       let kbArtikelIndex = -1;
       let kbColorIndex = -1;
       let profileGalleryUrls = [];
+      let profileGalleryEntries = [];
       let profileGalleryIndex = 0;
       let zoomGalleryUrls = [];
       let zoomGalleryIndex = 0;
@@ -4609,6 +4740,7 @@
       let zoomPinchStart = 0;
       let zoomPinchScale = 1;
       let zoomBound = false;
+      const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
@@ -4953,10 +5085,15 @@
           hinweis_en: it.hinweis_en || "",
           hinweis_ru: it.hinweis_ru || "",
           image_url: image,
+          image_type: String(it.image_type || it.type || "").trim(),
           img_1: String(it.img_1 || extra[1] || "").trim(),
           img_2: String(it.img_2 || extra[2] || "").trim(),
           img_3: String(it.img_3 || extra[3] || "").trim(),
           img_4: String(it.img_4 || extra[4] || "").trim(),
+          img_1_type: String(it.img_1_type || "").trim(),
+          img_2_type: String(it.img_2_type || "").trim(),
+          img_3_type: String(it.img_3_type || "").trim(),
+          img_4_type: String(it.img_4_type || "").trim(),
           extra: extra.slice(),
           images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
           drive_folder_id: String(it.drive_folder_id || ""),
@@ -6417,7 +6554,11 @@
               const name = locField(item, "name", appLang) || item.name_de || "";
               const masse = articleMasse(item);
               const category = articleCategory(item);
-              const thumb = articleImageList(item)[0] || getSvgPlaceholder(nr);
+              const media = articleImageEntries(item)[0];
+              const thumb = (media && media.url) || getSvgPlaceholder(nr);
+              const invertClass = isMediaInverted(thumb, media && media.type)
+                ? " media-invert"
+                : "";
               const masseChip = masse
                 ? `<span class="result-chip result-chip-masse">${escapeHtml(masse)}</span>`
                 : "";
@@ -6428,7 +6569,7 @@
                 masseChip || catChip
                   ? `<span class="result-row-stats">${masseChip}${catChip}</span>`
                   : "";
-              return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(nr)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
+              return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img class="${invertClass.trim()}" src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(nr)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
             })
             .join("");
           listEl.querySelectorAll(".result-row").forEach((row) => {
@@ -6669,6 +6810,81 @@
         return true;
       }
 
+      function isPlaceholderUrl(url) {
+        return /^data:image\/svg/i.test(String(url || ""));
+      }
+
+      function typeImpliesInverted(type) {
+        const t = String(type || "").toLowerCase();
+        if (!t) return false;
+        if (/photo|foto|camera|phone|pic/.test(t)) return false;
+        if (/draw|blueprint|zeichn|schema|line/.test(t)) return true;
+        return false;
+      }
+
+      function typeForMediaUrl(url) {
+        const hit = (profileGalleryEntries || []).find((e) => e.url === url);
+        return hit ? hit.type : "";
+      }
+
+      function isMediaInverted(url, type) {
+        if (!url || isPlaceholderUrl(url)) return false;
+        if (Object.prototype.hasOwnProperty.call(imageInvertByUrl, url)) {
+          return !!imageInvertByUrl[url];
+        }
+        return typeImpliesInverted(type != null ? type : typeForMediaUrl(url));
+      }
+
+      function setMediaInvertedClass(el, on) {
+        if (el) el.classList.toggle("media-invert", !!on);
+      }
+
+      function currentGalleryUrl() {
+        if (isZoomOpen() && zoomGalleryUrls[zoomGalleryIndex]) {
+          return zoomGalleryUrls[zoomGalleryIndex];
+        }
+        return profileGalleryUrls[profileGalleryIndex] || "";
+      }
+
+      function syncMediaModeButtons() {
+        const inverted = isMediaInverted(currentGalleryUrl());
+        const label = inverted ? t("view_invert") : t("view_original");
+        ["prof-media-mode", "zoom-media-mode"].forEach((id) => {
+          const btn = document.getElementById(id);
+          if (!btn) return;
+          btn.setAttribute("aria-pressed", inverted ? "true" : "false");
+          btn.title = label;
+          btn.setAttribute("aria-label", label);
+          const useEl = btn.querySelector(".media-mode-icon use");
+          const labelEl = btn.querySelector(".media-mode-label");
+          if (useEl) useEl.setAttribute("href", inverted ? "#i-contrast" : "#i-circle-dot");
+          if (labelEl) labelEl.textContent = label;
+        });
+      }
+
+      function applyMediaInvertUi() {
+        const profImg = document.getElementById("prof-img");
+        const zoomImg = document.getElementById("zoom-img-target");
+        const popImg = document.querySelector("#drawing-hover-pop img");
+        const profUrl = profileGalleryUrls[profileGalleryIndex] || (profImg && profImg.src) || "";
+        const zoomUrl = zoomGalleryUrls[zoomGalleryIndex] || (zoomImg && zoomImg.src) || "";
+        setMediaInvertedClass(profImg, isMediaInverted(profUrl));
+        setMediaInvertedClass(zoomImg, isMediaInverted(zoomUrl));
+        if (popImg) setMediaInvertedClass(popImg, isMediaInverted(popImg.src));
+        document.querySelectorAll(".profile-thumb img, .zoom-thumb img, #prof-list .result-row-thumb img").forEach((img) => {
+          setMediaInvertedClass(img, isMediaInverted(img.currentSrc || img.src));
+        });
+        syncMediaModeButtons();
+      }
+
+      function toggleMediaInvert(e) {
+        if (e) e.stopPropagation();
+        const url = currentGalleryUrl();
+        if (!url || isPlaceholderUrl(url)) return;
+        imageInvertByUrl[url] = !isMediaInverted(url);
+        applyMediaInvertUi();
+      }
+
       function setProfileDrawing(index) {
         const urls = profileGalleryUrls;
         if (!urls.length) return;
@@ -6691,6 +6907,7 @@
             el.classList.toggle("active", i === profileGalleryIndex);
           });
         }
+        applyMediaInvertUi();
       }
 
       function stepProfileGallery(delta) {
@@ -6699,13 +6916,16 @@
       }
 
       function renderProfileGallery(it, artnr) {
-        const urls = articleImageList(it);
+        const entries = articleImageEntries(it);
         const fallback = getSvgPlaceholder(artnr);
-        profileGalleryUrls = urls.length ? urls.slice() : [fallback];
+        profileGalleryEntries = entries.length
+          ? entries.slice()
+          : [{ url: fallback, type: "" }];
+        profileGalleryUrls = profileGalleryEntries.map((e) => e.url);
         profileGalleryIndex = 0;
         const box = document.getElementById("prof-drawing-box");
         const thumbs = document.getElementById("prof-thumbs");
-        const multi = urls.length > 1;
+        const multi = entries.length > 1;
         if (box) {
           box.classList.toggle("has-multi", multi);
           box.style.touchAction = multi ? "pan-y" : "";
@@ -6714,13 +6934,14 @@
           thumbs.innerHTML = "";
           thumbs.classList.toggle("has-thumbs", multi);
           if (multi) {
-            urls.forEach((url, i) => {
+            profileGalleryEntries.forEach((entry, i) => {
               const btn = document.createElement("button");
               btn.type = "button";
               btn.className = "profile-thumb" + (i === 0 ? " active" : "");
               const thumbImg = document.createElement("img");
-              thumbImg.src = url;
+              thumbImg.src = entry.url;
               thumbImg.alt = "";
+              setMediaInvertedClass(thumbImg, isMediaInverted(entry.url, entry.type));
               btn.appendChild(thumbImg);
               btn.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -6748,7 +6969,11 @@
         const pop = document.getElementById("drawing-hover-pop");
         if (!img || !pop) return;
         const popImg = pop.querySelector("img");
-        if (popImg) popImg.src = img.currentSrc || img.src;
+        if (popImg) {
+          const src = img.currentSrc || img.src;
+          popImg.src = src;
+          setMediaInvertedClass(popImg, isMediaInverted(src));
+        }
         pop.hidden = false;
         const size = 240;
         const r = anchor.getBoundingClientRect();
@@ -6801,10 +7026,11 @@
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "zoom-thumb" + (i === zoomGalleryIndex ? " active" : "");
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = "";
-          btn.appendChild(img);
+          const thumbImg = document.createElement("img");
+          thumbImg.src = url;
+          thumbImg.alt = "";
+          setMediaInvertedClass(thumbImg, isMediaInverted(url));
+          btn.appendChild(thumbImg);
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             setZoomGalleryIndex(i);
@@ -6821,6 +7047,7 @@
         if (img) img.src = zoomGalleryUrls[zoomGalleryIndex];
         resetZoomTransform();
         renderZoomThumbs();
+        applyMediaInvertUi();
       }
 
       function stepZoomGallery(delta) {
@@ -6844,6 +7071,7 @@
         resetZoomTransform();
         renderZoomThumbs();
         document.getElementById("zoom-dialog").classList.add("active");
+        applyMediaInvertUi();
       }
 
       function closeZoom() {
@@ -6863,6 +7091,16 @@
           e.stopPropagation();
           closeZoom();
         });
+        const zoomMode = document.getElementById("zoom-media-mode");
+        if (zoomMode) {
+          zoomMode.addEventListener("click", toggleMediaInvert);
+          zoomMode.addEventListener("pointerdown", (e) => e.stopPropagation());
+        }
+        const profMode = document.getElementById("prof-media-mode");
+        if (profMode) {
+          profMode.addEventListener("click", toggleMediaInvert);
+          profMode.addEventListener("pointerdown", (e) => e.stopPropagation());
+        }
         if (dlg) {
           dlg.addEventListener("click", (e) => {
             if (e.target === dlg) closeZoom();
@@ -6887,6 +7125,7 @@
         );
         stage.addEventListener("pointerdown", (e) => {
           if (!isZoomOpen()) return;
+          if (e.target.closest && e.target.closest(".media-mode-btn")) return;
           stage.setPointerCapture(e.pointerId);
           zoomPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
           if (zoomPointers.size === 2) {
@@ -6945,7 +7184,7 @@
         }
         if (!box) return;
         box.addEventListener("click", (e) => {
-          if (e.target.closest(".drawing-nav")) return;
+          if (e.target.closest(".drawing-nav") || e.target.closest(".media-mode-btn")) return;
           const url =
             (document.getElementById("prof-img") &&
               document.getElementById("prof-img").src) ||
@@ -7166,10 +7405,15 @@
             hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
             hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
             image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+            image_type: csvCellAny(row, map, ["image_type", "type"]),
             img_1: csvCell(row, map, "img_1"),
             img_2: csvCell(row, map, "img_2"),
             img_3: csvCell(row, map, "img_3"),
             img_4: csvCell(row, map, "img_4"),
+            img_1_type: csvCell(row, map, "img_1_type"),
+            img_2_type: csvCell(row, map, "img_2_type"),
+            img_3_type: csvCell(row, map, "img_3_type"),
+            img_4_type: csvCell(row, map, "img_4_type"),
             drive_folder_id: csvCell(row, map, "drive_folder_id"),
           };
         });
