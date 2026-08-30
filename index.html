@@ -1449,7 +1449,13 @@
         --osk-cols: 12;
       }
       .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2) {
-        padding-left: calc(var(--osk-key-w) * 0.5);
+        justify-content: center;
+        padding-left: 0;
+      }
+      .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2) .osk-key {
+        flex: 0 0 calc((100% - 9 * var(--osk-gap)) / 10);
+        width: calc((100% - 9 * var(--osk-gap)) / 10);
+        max-width: calc((100% - 9 * var(--osk-gap)) / 10);
       }
       .osk-alpha .osk-letters,
       .osk-alpha .osk-symbols {
@@ -1696,9 +1702,17 @@
         justify-content: stretch;
         padding-left: 0;
       }
-      .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2),
+      .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2) {
+        justify-content: center;
+        padding-left: 0;
+      }
       .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(3) {
         padding-left: 0;
+      }
+      .search-stack .osk-alpha[data-osk-lang="en"] .osk-letters .osk-row:nth-child(2) .osk-key {
+        flex: 0 0 calc((100% - 54px) / 10);
+        width: calc((100% - 54px) / 10);
+        max-width: calc((100% - 54px) / 10);
       }
       .search-stack .osk-alpha .osk-row .osk-key {
         flex: 1 1 0;
@@ -5168,7 +5182,10 @@
         const visible = readNumpadVisible();
         const pad = document.getElementById("login-numpad");
         const btn = document.getElementById("btn-numpad-toggle");
-        if (pad) pad.classList.toggle("is-hidden", !visible);
+        if (pad) {
+          pad.classList.toggle("is-hidden", !visible);
+          if (visible) setOskLayout(pad, "symbols");
+        }
         if (btn) {
           btn.classList.toggle("is-on", visible);
           btn.setAttribute("aria-pressed", visible ? "true" : "false");
@@ -6962,35 +6979,10 @@
         ];
       }
 
-      function searchOskInnerHtml(opts) {
+      function searchOskInnerHtml() {
         const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
-        const login = !!(opts && opts.login);
         const abcKey = { act: "abc", label: abcLabel, cls: "osk-key-fn osk-key-num" };
         const symKey = { act: "sym", label: "123", cls: "osk-key-fn osk-key-num" };
-        const numPad = login
-          ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-              .map(oskKeyHtml)
-              .join("") +
-            oskKeyHtml({ act: "clear", label: "C", cls: "osk-key-fn" }) +
-            oskKeyHtml("0") +
-            oskKeyHtml({ act: "back", label: "⌫", cls: "osk-key-fn", aria: "Backspace" }) +
-            oskKeyHtml({ act: "abc", label: abcLabel, cls: "osk-key-fn" }) +
-            oskKeyHtml({ act: "enter", label: "↵", cls: "osk-key-enter osk-key-fn", aria: "Enter" })
-          : oskKeyHtml("1") +
-            oskKeyHtml("2") +
-            oskKeyHtml("3") +
-            oskKeyHtml({ act: "back", label: "⌫", cls: "osk-key-fn", aria: "Backspace" }) +
-            oskKeyHtml("4") +
-            oskKeyHtml("5") +
-            oskKeyHtml("6") +
-            oskKeyHtml({ act: "clear", label: "C", cls: "osk-key-fn" }) +
-            oskKeyHtml("7") +
-            oskKeyHtml("8") +
-            oskKeyHtml("9") +
-            oskKeyHtml({ act: "enter", label: "↵", cls: "osk-key-enter osk-key-fn", aria: "Enter" }) +
-            oskKeyHtml({ act: "abc", label: abcLabel, cls: "osk-key-fn" }) +
-            oskKeyHtml("0") +
-            oskKeyHtml("-");
         const letters =
           oskAlphaRows()
             .map((row, i) => oskRowHtml(row, i === 2 ? "osk-row-shift" : ""))
@@ -7000,9 +6992,7 @@
           .map((row, i) => oskRowHtml(row, i === 3 ? "osk-row-fn" : ""))
           .join("");
         return (
-          '<div class="osk-num">' +
-          numPad +
-          "</div>" +
+          '<div class="osk-num is-hidden"></div>' +
           '<div class="osk-alpha is-hidden" data-osk-lang="' +
           (appLang || "de") +
           '">' +
@@ -7053,12 +7043,12 @@
           const symbolsOn = !!(
             symbolsEl && !symbolsEl.classList.contains("is-hidden")
           );
-          pad.innerHTML = searchOskInnerHtml({ login: pad.id === "login-numpad" });
+          pad.innerHTML = searchOskInnerHtml();
           bindOskPad(pad);
           pad.classList.toggle("is-hidden", wasHidden);
           setOskLayout(
             pad,
-            !alphaOn ? "num" : symbolsOn ? "symbols" : "letters",
+            alphaOn && !symbolsOn ? "letters" : "symbols",
           );
         });
       }
@@ -7089,7 +7079,7 @@
           input.setAttribute("inputmode", visible ? "none" : "numeric");
           if (visible) input.focus();
         }
-        if (visible) setOskLayout(pad, "num");
+        if (visible) setOskLayout(pad, "symbols");
         if (oskId === "osk-prof") {
           if (visible) artikelDetailOpen = false;
           applyArtikelWorkspace();
@@ -7148,7 +7138,7 @@
           return;
         }
         if (act === "num") {
-          setOskLayout(pad, "num");
+          setOskLayout(pad, "symbols");
           input.focus();
           return;
         }
