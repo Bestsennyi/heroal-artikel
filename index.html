@@ -2075,14 +2075,16 @@
         align-items: center;
         gap: 8px;
         font-size: 0.875rem;
-        font-weight: 600;
+        font-weight: 500;
         color: #e2e8f0;
+        user-select: none;
       }
       .profile-note-title .ico {
         width: 16px;
         height: 16px;
-        color: #93c5fd;
+        color: #fbbf24;
         flex-shrink: 0;
+        filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.35));
       }
       .btn-note-full {
         display: none;
@@ -3394,7 +3396,7 @@
                 <div class="profile-note-head">
                   <div class="profile-note-title">
                     <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
-                    <span data-i18n="hint_title">Hinweis / Beschreibung</span>
+                    <span data-i18n="hint_title">Beschreibung</span>
                   </div>
                   <button
                     type="button"
@@ -3441,11 +3443,11 @@
                   class="btn-copy-action"
                   id="btn-copy-prof-hint"
                   data-i18n-title="copy_hint_title"
-                  title="Hinweis kopieren"
-                  aria-label="Hinweis kopieren"
+                  title="Beschreibung kopieren"
+                  aria-label="Beschreibung kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_hint_btn">Hinweis</span>
+                  <span data-i18n="copy_hint_btn">Beschreibung</span>
                 </button>
               </div>
             </div>
@@ -3625,18 +3627,18 @@
     <div id="note-dialog" class="note-modal" aria-hidden="true">
       <div class="note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-dialog-title">
         <div class="note-modal-head">
-          <span id="note-dialog-title" data-i18n="hint_title">Hinweis / Beschreibung</span>
+          <span id="note-dialog-title" data-i18n="hint_title">Beschreibung</span>
           <div class="note-modal-actions">
             <button
               type="button"
               class="btn-copy-action"
               id="note-dialog-copy"
               data-i18n-title="copy_hint_title"
-              title="Hinweis kopieren"
-              aria-label="Hinweis kopieren"
+              title="Beschreibung kopieren"
+              aria-label="Beschreibung kopieren"
             >
               <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-              <span data-i18n="copy_hint_btn">Hinweis</span>
+              <span data-i18n="copy_hint_btn">Beschreibung</span>
             </button>
             <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close">
               <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
@@ -3812,16 +3814,16 @@
           zoom_btn: "Zoom",
           view_invert: "Invertieren",
           view_original: "Original",
-          hint_title: "Hinweis / Beschreibung",
+          hint_title: "Beschreibung",
           hint_system: "System",
           hint_masse: "Masse",
           hint_more: "Vollansicht",
           copy_artnr_title: "Artikelnummer kopieren",
           copy_name_title: "Bezeichnung kopieren",
-          copy_hint_title: "Hinweis kopieren",
+          copy_hint_title: "Beschreibung kopieren",
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
-          copy_hint_btn: "Hinweis",
+          copy_hint_btn: "Beschreibung",
           copied_short: "Kopiert!",
           settings_title: "Einstellungen",
           settings_save: "Speichern",
@@ -3910,16 +3912,16 @@
           zoom_btn: "Zoom",
           view_invert: "Invert",
           view_original: "Original",
-          hint_title: "Note / Description",
+          hint_title: "Description",
           hint_system: "System",
           hint_masse: "Dimensions",
           hint_more: "Full View",
           copy_artnr_title: "Copy article number",
           copy_name_title: "Copy name",
-          copy_hint_title: "Copy note",
+          copy_hint_title: "Copy description",
           copy_artnr_btn: "Art. no.",
           copy_name_btn: "Name",
-          copy_hint_btn: "Note",
+          copy_hint_btn: "Description",
           copied_short: "Copied!",
           settings_title: "Settings",
           settings_save: "Save",
@@ -4008,16 +4010,16 @@
           zoom_btn: "Zoom",
           view_invert: "Инверсия",
           view_original: "Оригинал",
-          hint_title: "Примечание / Описание",
+          hint_title: "Описание",
           hint_system: "Система",
           hint_masse: "Размеры",
           hint_more: "Полный обзор",
           copy_artnr_title: "Копировать артикул",
           copy_name_title: "Копировать название",
-          copy_hint_title: "Копировать примечание",
+          copy_hint_title: "Копировать описание",
           copy_artnr_btn: "Art.-Nr.",
           copy_name_btn: "Name",
-          copy_hint_btn: "Hinweis",
+          copy_hint_btn: "Описание",
           copied_short: "Kopiert!",
           settings_title: "Настройки",
           settings_save: "Сохранить",
