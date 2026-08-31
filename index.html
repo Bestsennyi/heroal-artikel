@@ -1272,8 +1272,40 @@
         cursor: zoom-in;
       }
       #col-list .result-row-thumb.is-swatch {
+        position: relative;
         padding: 0;
         overflow: hidden;
+      }
+      .result-row-thumb-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        pointer-events: none;
+      }
+      .result-row-thumb-code {
+        max-width: 100%;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        line-height: 1;
+        padding: 0;
+        border-radius: 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        background: none;
+      }
+      .result-row-thumb-overlay.is-dark .result-row-thumb-code {
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+      }
+      .result-row-thumb-overlay.is-bright .result-row-thumb-code {
+        color: #111;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.55);
       }
       #prof-list .result-row-thumb img {
         padding: 4px;
@@ -1658,6 +1690,12 @@
         color: #f8fafc;
         box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
       }
+      .osk-key-enter,
+      .osk-key-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
       .osk-key-enter {
         grid-column: span 2;
         font-size: 28px;
@@ -1738,17 +1776,24 @@
       }
       .osk-key-fn {
         font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
+        font-weight: 500;
+        letter-spacing: 0.04em;
         color: #ffffff;
         background: rgba(59, 130, 246, 0.22);
         border-color: rgba(147, 197, 253, 0.35);
       }
-      .osk-num .osk-key-enter,
-      .osk-row .osk-key-enter {
-        font-size: 28px;
-        letter-spacing: 0;
-        text-transform: none;
+      .osk-key-enter .ico,
+      .osk-key-back .ico {
+        width: 22px;
+        height: 22px;
+        display: block;
+        margin: 0 auto;
+        pointer-events: none;
+      }
+      .search-stack .osk-alpha .osk-row-fn .osk-key-enter .ico,
+      .search-stack .osk-alpha .osk-row-fn .osk-key-back .ico {
+        width: 22px;
+        height: 22px;
       }
       .search-stack .osk,
       .search-stack .osk-num,
@@ -3479,6 +3524,15 @@
         <polyline points="9 21 3 21 3 15"/>
         <line x1="21" y1="3" x2="14" y2="10"/>
         <line x1="3" y1="21" x2="10" y2="14"/>
+      </symbol>
+      <symbol id="i-osk-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 5a2 2 0 0 0-1.34.52l-6.33 5.74a1 1 0 0 0 0 1.48l6.33 5.74A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/>
+        <path d="m12 9 6 6"/>
+        <path d="m18 9-6 6"/>
+      </symbol>
+      <symbol id="i-osk-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 10 4 15 9 20"/>
+        <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
       </symbol>
       <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -7692,10 +7746,18 @@
         return '<div class="' + cls + '">' + items.map(oskKeyHtml).join("") + "</div>";
       }
 
+      function oskGlyph(symbolId) {
+        return (
+          '<svg class="ico" aria-hidden="true"><use href="#' +
+          symbolId +
+          '"></use></svg>'
+        );
+      }
+
       function oskBackKey() {
         return {
           act: "back",
-          label: "⌫",
+          label: oskGlyph("i-osk-back"),
           cls: "osk-key-fn osk-key-back",
           aria: "Backspace",
         };
@@ -7710,12 +7772,21 @@
         };
       }
 
+      function oskEnterKey() {
+        return {
+          act: "enter",
+          label: oskGlyph("i-osk-enter"),
+          cls: "osk-key-fn osk-key-enter",
+          aria: "Enter",
+        };
+      }
+
       function oskFnRowKeys(leading) {
         return [
           leading,
           ".",
           { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: "Space" },
-          { act: "enter", label: "↵", cls: "osk-key-fn osk-key-enter", aria: "Enter" },
+          oskEnterKey(),
         ];
       }
 
@@ -7745,12 +7816,7 @@
 
       function oskSymbolRows(abcKey) {
         const back = oskBackKey();
-        const enter = {
-          act: "enter",
-          label: "↵",
-          cls: "osk-key-fn osk-key-enter",
-          aria: "Enter",
-        };
+        const enter = oskEnterKey();
         const space = {
           act: "space",
           label: "",
@@ -8322,7 +8388,12 @@
                 : "";
               const photo = farbePreviewEntries(col)[0];
               const thumb = (photo && photo.url) || getColorFillDataUrl(hex);
-              return `<button type="button" class="result-row${active}" data-col="${escapeHtml(key)}"><span class="result-row-thumb is-swatch" style="background:${escapeHtml(hex)}"><img data-media="color" src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(code)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
+              const overlayTone =
+                getLuminance(hex) > 130 ? "is-bright" : "is-dark";
+              const overlay = code
+                ? `<span class="result-row-thumb-overlay ${overlayTone}"><span class="result-row-thumb-code">${escapeHtml(code)}</span></span>`
+                : "";
+              return `<button type="button" class="result-row${active}" data-col="${escapeHtml(key)}"><span class="result-row-thumb is-swatch" style="background:${escapeHtml(hex)}"><img data-media="color" src="${escapeHtml(thumb)}" alt="">${overlay}</span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(code)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
             })
             .join("");
           listEl.querySelectorAll(".result-row").forEach((row) => {
