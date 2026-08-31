@@ -971,15 +971,20 @@
         display: none;
         position: absolute;
         top: calc(100% + 6px);
-        right: 0;
-        min-width: 132px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: max-content;
+        min-width: 100%;
         flex-direction: column;
         gap: 2px;
         padding: 6px;
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: #00264d;
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        border-radius: 12px;
+        border: 1px solid rgba(125, 211, 252, 0.28);
+        background: rgba(0, 20, 48, 0.92);
+        backdrop-filter: blur(16px) saturate(1.1);
+        -webkit-backdrop-filter: blur(16px) saturate(1.1);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
         z-index: 40;
       }
       .hdr-lang-dd.is-open .hdr-lang-menu {
@@ -3298,6 +3303,31 @@
         object-fit: contain;
         pointer-events: none;
       }
+      .drawing-hover-pop-stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+      .drawing-hover-pop.is-color img {
+        object-fit: cover;
+      }
+      .drawing-hover-pop-code {
+        display: none;
+      }
+      .drawing-hover-pop.is-color .drawing-hover-pop-code:not([hidden]) {
+        display: block;
+        font-size: 0.845rem;
+        padding: 5.2px 10.4px;
+        border-radius: 6.4px;
+        top: 10px;
+        right: 10px;
+      }
+      .drawing-hover-pop.is-color.is-sticky .drawing-hover-pop-close {
+        left: 6px;
+        right: auto;
+      }
       .drawing-hover-pop-close {
         display: none;
         position: absolute;
@@ -4142,7 +4172,14 @@
       >
         <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
-      <img alt="" />
+      <div class="drawing-hover-pop-stage">
+        <img alt="" />
+        <span
+          class="color-showcase-code drawing-hover-pop-code"
+          id="drawing-hover-pop-code"
+          hidden
+        ></span>
+      </div>
     </div>
 
     <div id="note-dialog" class="note-modal" aria-hidden="true">
@@ -8728,8 +8765,15 @@
         const pop = document.getElementById("drawing-hover-pop");
         if (pop) {
           pop.hidden = true;
-          pop.classList.remove("is-sticky");
+          pop.classList.remove("is-sticky", "is-color");
         }
+        const codeEl = document.getElementById("drawing-hover-pop-code");
+        if (codeEl) {
+          codeEl.textContent = "";
+          codeEl.hidden = true;
+        }
+        const stage = pop && pop.querySelector(".drawing-hover-pop-stage");
+        if (stage) stage.style.backgroundColor = "";
       }
 
       function positionDrawingHover(anchor) {
@@ -8767,6 +8811,32 @@
           );
         }
         drawingPreviewAnchor = anchor;
+        const row = anchor.closest("[data-col]");
+        const codeEl = document.getElementById("drawing-hover-pop-code");
+        const stage = pop.querySelector(".drawing-hover-pop-stage");
+        const colKey = row && row.dataset.col;
+        const col = colKey && (appDB.farben || {})[colKey];
+        if (col && codeEl) {
+          const nr = colorCode(col, colKey);
+          const hex = colorHex(col) || "#64748b";
+          const bright = getLuminance(hex) > 130;
+          const photos = farbePreviewEntries(col);
+          codeEl.textContent = nr || "";
+          codeEl.hidden = !nr;
+          codeEl.style.color =
+            photos.length || !bright ? "#ffffff" : "#000000";
+          codeEl.style.background =
+            photos.length || !bright
+              ? "rgba(0, 0, 0, 0.4)"
+              : "rgba(255, 255, 255, 0.45)";
+          if (stage) stage.style.backgroundColor = hex;
+          pop.classList.add("is-color");
+        } else if (codeEl) {
+          codeEl.textContent = "";
+          codeEl.hidden = true;
+          if (stage) stage.style.backgroundColor = "";
+          pop.classList.remove("is-color");
+        }
         pop.classList.toggle("is-sticky", !!forced);
         pop.hidden = false;
         positionDrawingHover(anchor);
