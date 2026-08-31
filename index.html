@@ -1963,7 +1963,7 @@
       .display-card-prof:not(.is-solo) .profile-note,
       .display-card-prof:not(.is-solo) .info-copy-bar,
       .display-card-color:not(.is-solo) .profile-thumbs,
-      .display-card-color:not(.is-solo) .profile-note,
+      .display-card-color:not(.is-solo) .color-hex-panel,
       .display-card-color:not(.is-solo) .info-copy-bar {
         display: none;
       }
@@ -2288,11 +2288,21 @@
         color: #fcd34d;
         border: 1px solid rgba(245, 158, 11, 0.3);
       }
+      .display-card-prof .info-tags-row .tag-size {
+        background: rgba(69, 26, 3, 0.7);
+        color: #fcd34d;
+        border: 1px solid rgba(251, 191, 36, 0.5);
+      }
       .display-card-prof .info-tags-row .tag-kat,
       .display-card-color .info-tags-row .tag-fine {
         background: rgba(168, 85, 247, 0.2);
         color: #d8b4fe;
         border: 1px solid rgba(168, 85, 247, 0.4);
+      }
+      .display-card-prof .info-tags-row .tag-kat {
+        background: rgba(46, 16, 101, 0.7);
+        color: #d8b4fe;
+        border: 1px solid rgba(192, 132, 252, 0.5);
       }
       .display-card-color .info-tags-row .tag-gloss {
         background: rgba(14, 165, 233, 0.15);
@@ -2489,35 +2499,83 @@
         display: none;
         pointer-events: none;
       }
-      .color-showcase-box.has-photo .color-showcase-img,
-      .color-showcase-box.has-swatch .color-showcase-img {
+      .color-showcase-box.has-photo .color-showcase-img {
         display: block;
       }
-      .color-showcase-box.has-swatch .color-showcase-img {
-        object-fit: cover;
+      .color-showcase-code,
+      .color-showcase-hex {
+        z-index: 10;
+        font-size: 1.05625rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        line-height: 1;
+        padding: 6.5px 13px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff;
+        text-shadow: none;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        pointer-events: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .color-showcase-code {
-        font-size: 2.25rem;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-        line-height: 1;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-        position: relative;
-        z-index: 1;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        max-width: calc(100% - 24px);
       }
-      .color-showcase-box.has-swatch .color-showcase-code {
-        display: none;
+      .color-showcase-hex {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        max-width: calc(100% - 24px);
       }
       .color-showcase-box.has-photo .color-showcase-code {
-        background: rgba(2, 6, 23, 0.55);
+        background: rgba(0, 0, 0, 0.4);
         color: #fff;
-        padding: 8px 16px;
-        border-radius: 10px;
         text-shadow: none;
-        backdrop-filter: blur(4px);
       }
       .color-showcase-box .btn-zoom-hint {
         display: inline-flex;
+        bottom: 12px;
+        right: 12px;
+      }
+      .display-card-color .info-tags-row .tag-surface-gloss {
+        background: rgba(8, 51, 68, 0.7);
+        color: #67e8f9;
+        border: 1px solid rgba(34, 211, 238, 0.5);
+      }
+      .display-card-color .info-tags-row .tag-surface-matt {
+        background: rgba(67, 20, 7, 0.7);
+        color: #fdba74;
+        border: 1px solid rgba(249, 115, 22, 0.4);
+      }
+      .display-card-color .info-tags-row .tag-surface-fine {
+        background: rgba(26, 46, 5, 0.7);
+        color: #bef264;
+        border: 1px solid rgba(132, 204, 22, 0.4);
+      }
+      .color-hex-panel {
+        display: none;
+        position: relative;
+        min-height: 0;
+        border: 1px solid rgba(51, 65, 85, 0.55);
+        border-radius: 12px;
+        overflow: hidden;
+        flex: 0 1 auto;
+      }
+      .display-card-color.is-solo .color-hex-panel {
+        display: flex;
+        align-items: center;
+        min-height: 0;
+        max-height: min(120px, 16vh);
+        flex: 0 1 auto;
+        height: min(120px, 16vh);
       }
       #zoom-dialog.is-color .media-mode-btn {
         display: none;
@@ -2813,8 +2871,9 @@
         }
       }
       @media (min-width: 1280px) {
-        .color-showcase-code {
-          font-size: 2.75rem;
+        .color-showcase-code,
+        .color-showcase-hex {
+          font-size: 1.1375rem;
         }
       }
 
@@ -3867,9 +3926,7 @@
                   ›
                 </button>
                 <span class="drawing-counter" id="col-draw-count"></span>
-                <span class="color-showcase-code" id="col-swatch-code"
-                  >7016</span
-                >
+                <span class="color-showcase-code" id="col-swatch-code"></span>
                 <span class="btn-zoom-hint" id="col-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
                   <span data-i18n="zoom_btn">Zoom</span>
@@ -3881,33 +3938,16 @@
                 <div class="info-heading">
                   <span class="info-name" id="col-name">--</span>
                 </div>
-                <div class="info-tags-row" id="col-tags"></div>
+                <div class="info-tags-row">
+                  <span class="tag-chip tag-surface" id="col-surface"></span>
+                </div>
                 <div class="info-artnr-row">
-                  <span class="tag-artnr" id="col-hex">#000000</span>
+                  <span class="tag-artnr" id="col-code">--</span>
                 </div>
               </div>
 
-              <div id="col-note" class="profile-note">
-                <div class="profile-note-head">
-                  <div class="profile-note-title">
-                    <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
-                    <span data-i18n="hint_title">Beschreibung</span>
-                  </div>
-                  <button
-                    type="button"
-                    id="col-note-more"
-                    class="btn-note-full"
-                    data-i18n-title="hint_more"
-                    title="Vollansicht"
-                    aria-label="Vollansicht"
-                  >
-                    <svg class="ico" aria-hidden="true"><use href="#i-expand"></use></svg>
-                    <span data-i18n="hint_more">Vollansicht</span>
-                  </button>
-                </div>
-                <div class="profile-note-body">
-                  <p id="col-note-text" class="profile-note-text"></p>
-                </div>
+              <div id="col-hex-panel" class="color-hex-panel">
+                <span class="color-showcase-hex" id="col-swatch-hex"></span>
               </div>
 
               <div class="info-copy-bar">
@@ -3942,7 +3982,7 @@
                   aria-label="HEX-Code kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_hex_btn">HEX</span>
+                  <span data-i18n="copy_hex_btn">Hex</span>
                 </button>
                 <button
                   type="button"
@@ -4251,7 +4291,7 @@
           copy_name_btn: "Name",
           copy_hint_btn: "Beschreibung",
           copy_farbnr_btn: "Farb-Nr.",
-          copy_hex_btn: "HEX",
+          copy_hex_btn: "Hex",
           finish_matt: "Matt",
           finish_gloss: "Glänzend",
           finish_fine: "Feinstruktur",
@@ -4361,7 +4401,7 @@
           copy_name_btn: "Name",
           copy_hint_btn: "Description",
           copy_farbnr_btn: "Colour no.",
-          copy_hex_btn: "HEX",
+          copy_hex_btn: "Hex",
           finish_matt: "Matt",
           finish_gloss: "Gloss",
           finish_fine: "Fine texture",
@@ -4471,7 +4511,7 @@
           copy_name_btn: "Name",
           copy_hint_btn: "Описание",
           copy_farbnr_btn: "Farb-Nr.",
-          copy_hex_btn: "HEX",
+          copy_hex_btn: "Hex",
           finish_matt: "Matt",
           finish_gloss: "Glänzend",
           finish_fine: "Feinstruktur",
@@ -4839,6 +4879,27 @@
         );
       }
 
+      function colorSurfaceKind(col) {
+        const hay = [
+          locField(col, "oberflaeche", appLang),
+          col && col.oberflaeche_de,
+          col && col.oberflaeche_en,
+          col && col.oberflaeche_ru,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+        if (
+          /feinstruktur|fine\s*structur|fine\s*texture|мелкоструктур/.test(hay)
+        ) {
+          return "fine";
+        }
+        if (/\bmatt\b|\bmatte\b|матовый|\bмат\b/.test(hay)) return "matt";
+        if (/glanzend|\bglanz\b|\bgloss|глянц/.test(hay)) return "gloss";
+        return "gloss";
+      }
+
       function colorFinishBadges(col) {
         const hay = [
           locField(col, "oberflaeche", appLang),
@@ -4914,6 +4975,21 @@
         return /^https?:\/\//i.test(String(value || "").trim());
       }
 
+      function farbePreviewEntries(col) {
+        if (!col) return [];
+        const out = [];
+        const seen = Object.create(null);
+        const add = (raw) => {
+          const entry = normalizeImageEntry(raw, "photo");
+          if (!entry || !isHttpUrl(entry.url) || seen[entry.url]) return;
+          seen[entry.url] = true;
+          out.push(entry);
+        };
+        add(col.echtes_foto);
+        add(col.bild_dummyimage || col.bild_de);
+        return out;
+      }
+
       function farbeImageEntries(col) {
         if (!col) return [];
         const out = [];
@@ -4946,7 +5022,7 @@
       }
 
       function farbePhotoUrl(col) {
-        const first = farbeImageEntries(col)[0];
+        const first = farbePreviewEntries(col)[0];
         return first ? first.url : String((col && col.echtes_foto) || "").trim();
       }
 
@@ -4963,7 +5039,7 @@
           articleImageList(item).forEach((url) => urls.add(url));
         });
         Object.values(appDB.farben || {}).forEach((col) => {
-          farbeImageEntries(col).forEach((entry) => {
+          farbePreviewEntries(col).forEach((entry) => {
             if (entry && isHttpUrl(entry.url)) urls.add(entry.url);
           });
         });
@@ -6851,39 +6927,31 @@
         return canvasToPngBlob(canvas);
       }
 
-      async function handleShareColorScreenshot() {
+      async function handleShareColorText() {
         const key = lastActiveColorCode;
         const col = key && (appDB.farben || {})[key];
         if (!col) return;
         const code = colorCode(col, key);
         const name = locField(col, "name", appLang) || col.name_de || "";
         const hex = colorHex(col);
+        const text =
+          code + " - " + (name || code) + (hex ? " (" + hex + ")" : "");
         const btn = document.getElementById("btn-share-col");
         if (btn) btn.disabled = true;
         try {
-          const blob = await buildColorShareBlob(col, code);
-          const filename = shareColorFileName(code);
-          const file = new File([blob], filename, { type: "image/png" });
-          const title = "heroal " + code + (name ? " - " + name : "");
-          const text = name + (hex ? " (" + hex + ")" : "");
-          const payload = { title: title, text: text, files: [file] };
-          const canFiles =
-            typeof navigator.canShare === "function" &&
-            navigator.canShare({ files: [file] });
-          if (canFiles && typeof navigator.share === "function") {
+          if (typeof navigator.share === "function") {
             try {
-              await navigator.share(payload);
+              await navigator.share({
+                title: "heroal " + code,
+                text: text,
+              });
               return;
             } catch (err) {
               if (err && err.name === "AbortError") return;
             }
           }
-          await downloadShareBlob(blob, filename);
-          await copyShareBlob(blob);
-          showToast(t("share_saved"), "ok");
-        } catch (err) {
-          console.warn("share color screenshot failed", err);
-          showToast(t("share_error"), "error");
+          flashCopyButton(btn);
+          copyToClipboard(text, "", t("copied_short"), () => {});
         } finally {
           if (btn) btn.disabled = false;
         }
@@ -6895,22 +6963,16 @@
         return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="%230b0f19" rx="8"/><rect x="20" y="20" width="360" height="180" fill="none" stroke="%23334155" stroke-width="2" stroke-dasharray="6,6" rx="6"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%2393c5fd" font-family="sans-serif" font-size="24" font-weight="bold">Art. ${cleanArt}</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="13">${encodeURIComponent(t("drawing_missing"))}</text></svg>`;
       }
 
-      function getColorSwatchDataUrl(hex, code) {
+      function getColorFillDataUrl(hex) {
         const raw = String(hex || "#64748b").trim();
         const safe =
           (raw.charAt(0) === "#" ? raw : "#" + raw).replace(/[^#0-9A-Fa-f]/g, "") ||
           "#64748b";
         const fill = encodeURIComponent(safe);
-        const fg = getLuminance(safe) > 130 ? "%23000000" : "%23ffffff";
-        const label = encodeURIComponent(String(code || ""));
         return (
           "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='280' viewBox='0 0 400 280'><rect width='100%' height='100%' fill='" +
           fill +
-          "'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' fill='" +
-          fg +
-          "' font-family='sans-serif' font-size='48' font-weight='800'>" +
-          label +
-          "</text></svg>"
+          "'/></svg>"
         );
       }
 
@@ -7311,7 +7373,6 @@
         const copyColHexBtn = document.getElementById("btn-copy-col-hex");
         const shareColBtn = document.getElementById("btn-share-col");
         const noteMore = document.getElementById("prof-note-more");
-        const colNoteMore = document.getElementById("col-note-more");
         const noteDlg = document.getElementById("note-dialog");
         const noteClose = document.getElementById("note-dialog-close");
         const noteCopy = document.getElementById("note-dialog-copy");
@@ -7348,12 +7409,6 @@
           noteMore.addEventListener("click", (e) => {
             e.stopPropagation();
             openNoteModal(lastProfileHint);
-          });
-        }
-        if (colNoteMore) {
-          colNoteMore.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openNoteModal(lastColorHint);
           });
         }
         if (noteClose) noteClose.addEventListener("click", closeNoteModal);
@@ -7398,7 +7453,7 @@
         if (shareColBtn) {
           shareColBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            handleShareColorScreenshot();
+            handleShareColorText();
           });
         }
 
@@ -8153,8 +8208,8 @@
               const stats = chips
                 ? `<span class="result-row-stats">${chips}</span>`
                 : "";
-              const photo = farbeImageEntries(col)[0];
-              const thumb = (photo && photo.url) || getColorSwatchDataUrl(hex, code);
+              const photo = farbePreviewEntries(col)[0];
+              const thumb = (photo && photo.url) || getColorFillDataUrl(hex);
               return `<button type="button" class="result-row${active}" data-col="${escapeHtml(key)}"><span class="result-row-thumb is-swatch" style="background:${escapeHtml(hex)}"><img data-media="color" src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(code)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
             })
             .join("");
@@ -8163,10 +8218,7 @@
             if (img) {
               img.addEventListener("error", () => {
                 const col = catalog[row.dataset.col];
-                img.src = getColorSwatchDataUrl(
-                  colorHex(col) || "#64748b",
-                  colorCode(col, row.dataset.col),
-                );
+                img.src = getColorFillDataUrl(colorHex(col) || "#64748b");
               });
             }
             const thumb = row.querySelector(".result-row-thumb");
@@ -8210,44 +8262,62 @@
         if (!col) return;
         const name = locField(col, "name", appLang) || col.name_de || "";
         const hex = colorHex(col);
+        const nr = colorCode(col, code);
+        const surface = locField(col, "oberflaeche", appLang);
         lastActiveColorName = name;
         lastActiveColorHex = hex;
+        lastActiveColorCode = nr || code;
         const nameEl = document.getElementById("col-name");
         if (nameEl) nameEl.innerText = name || "--";
-        const hexEl = document.getElementById("col-hex");
-        if (hexEl) {
-          hexEl.innerText = hex || "--";
-          hexEl.style.display = hex ? "" : "none";
+        const codeEl = document.getElementById("col-code");
+        if (codeEl) {
+          codeEl.innerText = nr || "--";
+          codeEl.style.display = nr ? "" : "none";
         }
-        const tagsEl = document.getElementById("col-tags");
-        if (tagsEl) {
-          const badges = colorFinishBadges(col);
-          tagsEl.innerHTML = badges
-            .map(
-              (b) =>
-                `<span class="tag-chip ${b.cls}">${escapeHtml(b.label)}</span>`,
-            )
-            .join("");
+        const surfaceEl = document.getElementById("col-surface");
+        if (surfaceEl) {
+          surfaceEl.innerText = surface;
+          surfaceEl.style.display = surface ? "" : "none";
+          const kind = colorSurfaceKind(col);
+          surfaceEl.className =
+            "tag-chip tag-surface tag-surface-" + (kind || "gloss");
         }
+        const hexPanel = document.getElementById("col-hex-panel");
+        const fill = hex || "#ffffff";
+        const bright = getLuminance(fill) > 130;
+        if (hexPanel) hexPanel.style.backgroundColor = fill;
 
         const swatch = document.getElementById("col-swatch");
         const swatchCode = document.getElementById("col-swatch-code");
-        const fill = hex || "#ffffff";
-        const nr = colorCode(col, code);
+        const swatchHex = document.getElementById("col-swatch-hex");
+        const photos = farbePreviewEntries(col);
         if (swatch) {
           swatch.style.backgroundColor = fill;
           swatch.style.backgroundImage = "";
         }
+        const chipFg = photos.length || !bright ? "#ffffff" : "#000000";
+        const chipBg =
+          photos.length || !bright
+            ? "rgba(0, 0, 0, 0.4)"
+            : "rgba(255, 255, 255, 0.45)";
         if (swatchCode) {
           swatchCode.innerText = nr;
-          swatchCode.style.color = getLuminance(fill) > 130 ? "#000000" : "#ffffff";
+          swatchCode.style.color = chipFg;
+          swatchCode.style.background = chipBg;
         }
-        renderColorGallery(col, nr, fill);
+        if (swatchHex) {
+          swatchHex.innerText = hex || "";
+          swatchHex.style.display = hex ? "" : "none";
+          swatchHex.style.color = bright ? "#000000" : "#ffffff";
+          swatchHex.style.background = bright
+            ? "rgba(255, 255, 255, 0.45)"
+            : "rgba(0, 0, 0, 0.4)";
+        }
+        renderColorGallery(col);
         const nameBtn = document.getElementById("btn-copy-col-name");
         const hexBtn = document.getElementById("btn-copy-col-hex");
         if (nameBtn) nameBtn.disabled = !name;
         if (hexBtn) hexBtn.disabled = !hex;
-        renderColorNote(col);
       }
 
       function renderProfileCard(artnr) {
@@ -8297,28 +8367,8 @@
         requestAnimationFrame(updateNoteClamp);
       }
 
-      function renderColorNote(col) {
-        const noteEl = document.getElementById("col-note");
-        const textEl = document.getElementById("col-note-text");
-        const moreBtn = document.getElementById("col-note-more");
-        if (!noteEl) return;
-        const hint = colorHint(col);
-        lastColorHint = hint;
-        lastNoteText = hint;
-        noteEl.classList.add("is-on");
-        if (textEl) {
-          textEl.textContent = hint;
-          textEl.style.display = hint ? "" : "none";
-        }
-        if (moreBtn) moreBtn.classList.remove("is-on");
-        requestAnimationFrame(updateNoteClamp);
-      }
-
       function updateNoteClamp() {
-        const pairs = [
-          ["prof-note-text", "prof-note-more"],
-          ["col-note-text", "col-note-more"],
-        ];
+        const pairs = [["prof-note-text", "prof-note-more"]];
         pairs.forEach(([textId, btnId]) => {
           const textEl = document.getElementById(textId);
           const moreBtn = document.getElementById(btnId);
@@ -8508,27 +8558,35 @@
 
       function setColorDrawing(index) {
         const urls = colorGalleryUrls;
-        if (!urls.length) return;
-        const total = urls.length;
-        colorGalleryIndex = ((index % total) + total) % total;
         const imgEl = document.getElementById("col-swatch-img");
         const countEl = document.getElementById("col-draw-count");
         const thumbs = document.getElementById("col-thumbs");
         const box = document.getElementById("col-swatch");
+        if (!urls.length) {
+          if (box) {
+            box.classList.remove("has-photo", "has-multi");
+            box.classList.add("has-swatch");
+          }
+          if (imgEl) {
+            imgEl.onload = null;
+            imgEl.onerror = null;
+            imgEl.removeAttribute("src");
+          }
+          if (countEl) countEl.textContent = "";
+          return;
+        }
+        const total = urls.length;
+        colorGalleryIndex = ((index % total) + total) % total;
         const url = urls[colorGalleryIndex];
-        const http = isHttpUrl(url);
         if (box) {
-          box.classList.toggle("has-photo", http);
-          box.classList.toggle("has-swatch", !http);
+          box.classList.add("has-photo");
+          box.classList.remove("has-swatch");
         }
         if (imgEl) {
           imgEl.setAttribute("data-media", "color");
           imgEl.onerror = () => {
             imgEl.onerror = null;
-            imgEl.src = getColorSwatchDataUrl(
-              lastActiveColorHex,
-              lastActiveColorCode,
-            );
+            imgEl.removeAttribute("src");
             if (box) {
               box.classList.remove("has-photo");
               box.classList.add("has-swatch");
@@ -8549,12 +8607,9 @@
         setColorDrawing(colorGalleryIndex + delta);
       }
 
-      function renderColorGallery(col, code, hex) {
-        const photos = farbeImageEntries(col);
-        const fallback = getColorSwatchDataUrl(hex, code);
-        colorGalleryEntries = photos.length
-          ? photos.slice()
-          : [{ url: fallback, type: "swatch" }];
+      function renderColorGallery(col) {
+        const photos = farbePreviewEntries(col);
+        colorGalleryEntries = photos.slice();
         colorGalleryUrls = colorGalleryEntries.map((e) => e.url);
         colorGalleryIndex = 0;
         const box = document.getElementById("col-swatch");
@@ -8931,12 +8986,17 @@
         box.addEventListener("click", (e) => {
           if (e.target.closest(".drawing-nav")) return;
           const url =
-            (document.getElementById("col-swatch-img") &&
+            (colorGalleryUrls[colorGalleryIndex] &&
+              document.getElementById("col-swatch-img") &&
               document.getElementById("col-swatch-img").src) ||
             colorGalleryUrls[colorGalleryIndex] ||
             "";
-          if (!url) return;
-          showZoom(url, colorGalleryUrls, "color");
+          if (url && isHttpUrl(url)) {
+            showZoom(url, colorGalleryUrls, "color");
+            return;
+          }
+          const fillUrl = getColorFillDataUrl(lastActiveColorHex);
+          showZoom(fillUrl, [fillUrl], "color");
         });
         let swipeX = 0;
         let swipeY = 0;
