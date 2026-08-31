@@ -1337,22 +1337,30 @@
         font-weight: 500;
         white-space: nowrap;
       }
-      #prof-list .result-chip-masse,
-      #col-list .result-chip-matt {
+      #prof-list .result-chip-masse {
         background: rgba(245, 158, 11, 0.15);
         border: 1px solid rgba(245, 158, 11, 0.3);
         color: #fcd34d;
       }
-      #prof-list .result-chip-cat,
-      #col-list .result-chip-fine {
+      #col-list .result-chip-matt {
+        background: #1f2124;
+        border: 1px solid #444950;
+        color: #d1d5db;
+      }
+      #prof-list .result-chip-cat {
         background: rgba(168, 85, 247, 0.2);
         border: 1px solid rgba(168, 85, 247, 0.4);
         color: #d8b4fe;
       }
+      #col-list .result-chip-fine {
+        background: #241f1c;
+        border: 1px solid #544842;
+        color: #dfd5cf;
+      }
       #col-list .result-chip-gloss {
-        background: rgba(14, 165, 233, 0.15);
-        border: 1px solid rgba(56, 189, 248, 0.35);
-        color: #7dd3fc;
+        background: #17212b;
+        border: 1px solid #3b5266;
+        color: #cce3f5;
       }
       #col-list .result-chip-heroal {
         background: rgba(16, 185, 129, 0.15);
@@ -2314,32 +2322,30 @@
         line-height: 1.4;
         box-shadow: none;
       }
-      .display-card-prof .info-tags-row .tag-size,
-      .display-card-color .info-tags-row .tag-matt {
-        background: rgba(245, 158, 11, 0.15);
-        color: #fcd34d;
-        border: 1px solid rgba(245, 158, 11, 0.3);
-      }
       .display-card-prof .info-tags-row .tag-size {
         background: rgba(69, 26, 3, 0.7);
         color: #fcd34d;
         border: 1px solid rgba(251, 191, 36, 0.5);
-      }
-      .display-card-prof .info-tags-row .tag-kat,
-      .display-card-color .info-tags-row .tag-fine {
-        background: rgba(168, 85, 247, 0.2);
-        color: #d8b4fe;
-        border: 1px solid rgba(168, 85, 247, 0.4);
       }
       .display-card-prof .info-tags-row .tag-kat {
         background: rgba(46, 16, 101, 0.7);
         color: #d8b4fe;
         border: 1px solid rgba(192, 132, 252, 0.5);
       }
+      .display-card-color .info-tags-row .tag-matt {
+        background: #1f2124;
+        color: #d1d5db;
+        border: 1px solid #444950;
+      }
+      .display-card-color .info-tags-row .tag-fine {
+        background: #241f1c;
+        color: #dfd5cf;
+        border: 1px solid #544842;
+      }
       .display-card-color .info-tags-row .tag-gloss {
-        background: rgba(14, 165, 233, 0.15);
-        color: #7dd3fc;
-        border: 1px solid rgba(56, 189, 248, 0.35);
+        background: #17212b;
+        color: #cce3f5;
+        border: 1px solid #3b5266;
       }
       .display-card-color .info-tags-row .tag-heroal {
         background: rgba(16, 185, 129, 0.18);
@@ -2578,19 +2584,19 @@
         right: 12px;
       }
       .display-card-color .info-tags-row .tag-surface-gloss {
-        background: rgba(8, 51, 68, 0.7);
-        color: #67e8f9;
-        border: 1px solid rgba(34, 211, 238, 0.5);
+        background: #17212b;
+        color: #cce3f5;
+        border: 1px solid #3b5266;
       }
       .display-card-color .info-tags-row .tag-surface-matt {
-        background: rgba(67, 20, 7, 0.7);
-        color: #fdba74;
-        border: 1px solid rgba(249, 115, 22, 0.4);
+        background: #1f2124;
+        color: #d1d5db;
+        border: 1px solid #444950;
       }
       .display-card-color .info-tags-row .tag-surface-fine {
-        background: rgba(26, 46, 5, 0.7);
-        color: #bef264;
-        border: 1px solid rgba(132, 204, 22, 0.4);
+        background: #241f1c;
+        color: #dfd5cf;
+        border: 1px solid #544842;
       }
       .color-hex-panel {
         display: none;
@@ -6727,20 +6733,20 @@
         const surfaceStyle =
           kind === "matt"
             ? {
-                bg: "rgba(67, 20, 7, 0.7)",
-                fg: "#fdba74",
-                bd: "rgba(249, 115, 22, 0.4)",
+                bg: "#1f2124",
+                fg: "#d1d5db",
+                bd: "#444950",
               }
             : kind === "fine"
               ? {
-                  bg: "rgba(26, 46, 5, 0.7)",
-                  fg: "#bef264",
-                  bd: "rgba(132, 204, 22, 0.4)",
+                  bg: "#241f1c",
+                  fg: "#dfd5cf",
+                  bd: "#544842",
                 }
               : {
-                  bg: "rgba(8, 51, 68, 0.7)",
-                  fg: "#67e8f9",
-                  bd: "rgba(34, 211, 238, 0.5)",
+                  bg: "#17212b",
+                  fg: "#cce3f5",
+                  bd: "#3b5266",
                 };
 
         const cssW = 720;
