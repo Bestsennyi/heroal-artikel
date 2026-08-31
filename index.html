@@ -3131,7 +3131,7 @@
       .zoom-modal {
         flex-direction: column;
         gap: 12px;
-        padding: 56px 14px 16px;
+        padding: 63px 16px 16px;
       }
       .zoom-stage {
         position: relative;
@@ -3201,19 +3201,38 @@
       }
       .zoom-close {
         position: absolute;
-        top: 16px;
+        top: 14px;
         right: 16px;
-        z-index: 2;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: #fff;
+        z-index: 4;
         width: 40px;
         height: 40px;
-        border-radius: 50%;
+        padding: 0;
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        border-radius: 999px;
+        background: rgba(2, 6, 23, 0.88);
+        color: #7dd3fc;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        transition: background-color 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .zoom-close:hover {
+        background: rgba(14, 165, 233, 0.22);
+        border-color: rgba(56, 189, 248, 0.75);
+        color: #e0f2fe;
+      }
+      .zoom-close:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+      .zoom-close .ico {
+        width: 18px;
+        height: 18px;
       }
       .drawing-hover-pop {
         position: fixed;
@@ -6728,37 +6747,60 @@
 
       async function buildColorShareBlob(col, code) {
         const name = locField(col, "name", appLang) || col.name_de || "";
-        const hex = colorHex(col);
-        const hint = colorHint(col);
-        const badges = colorFinishBadges(col);
+        const hex = colorHex(col) || "";
+        const fill = hex || "#64748b";
+        const surface = locField(col, "oberflaeche", appLang) || "";
+        const kind = colorSurfaceKind(col);
         const imgEl = document.getElementById("col-swatch-img");
         const photo = await loadShareDrawing(imgEl);
-        const lum = getLuminance(hex);
-        const codeColor = lum > 130 ? "#000000" : "#ffffff";
+        const hasPhoto = !!(photo && photo.naturalWidth);
+        const bright = getLuminance(fill) > 130;
+        const glassFg = hasPhoto || !bright ? "#ffffff" : "#000000";
+        const glassBg =
+          hasPhoto || !bright
+            ? "rgba(0, 0, 0, 0.4)"
+            : "rgba(255, 255, 255, 0.45)";
+        const surfaceStyle =
+          kind === "matt"
+            ? {
+                bg: "rgba(67, 20, 7, 0.7)",
+                fg: "#fdba74",
+                bd: "rgba(249, 115, 22, 0.4)",
+              }
+            : kind === "fine"
+              ? {
+                  bg: "rgba(26, 46, 5, 0.7)",
+                  fg: "#bef264",
+                  bd: "rgba(132, 204, 22, 0.4)",
+                }
+              : {
+                  bg: "rgba(8, 51, 68, 0.7)",
+                  fg: "#67e8f9",
+                  bd: "rgba(34, 211, 238, 0.5)",
+                };
 
         const cssW = 720;
         const scale = 2;
-        const pad = 28;
+        const pad = 24;
         const headerH = 80;
-        const drawH = 280;
+        const previewH = 280;
+        const hexPanelH = 96;
+        const boxR = 12;
         const font = 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif';
+        const mono =
+          "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
         const measure = document.createElement("canvas").getContext("2d");
         measure.font = "700 22px " + font;
         const nameLines = wrapCanvasLines(measure, name, cssW - pad * 2, 3);
-        measure.font = "400 15px " + font;
-        const hintLines = wrapCanvasLines(measure, hint, cssW - pad * 2, 10);
-        const chipsH = badges.length ? 36 : 0;
-        const hintBlock = hintLines.length ? 28 + hintLines.length * 22 : 0;
-        const cssH =
-          headerH +
-          drawH +
-          pad +
+        const infoH =
+          22 +
           nameLines.length * 28 +
           12 +
-          40 +
-          chipsH +
-          hintBlock +
-          44;
+          (surface ? 32 : 0) +
+          10 +
+          34 +
+          18;
+        const cssH = headerH + 16 + previewH + infoH + hexPanelH + 40;
 
         const canvas = document.createElement("canvas");
         canvas.width = Math.round(cssW * scale);
@@ -6767,6 +6809,33 @@
         ctx.scale(scale, scale);
         const setTracking = (value) => {
           if (typeof ctx.letterSpacing === "string") ctx.letterSpacing = value;
+        };
+        const paintRound = (x, y, w, h, r, bg, bd) => {
+          roundedRectPath(ctx, x, y, w, h, r);
+          if (bg) {
+            ctx.fillStyle = bg;
+            ctx.fill();
+          }
+          if (bd) {
+            ctx.strokeStyle = bd;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        };
+        const chipAt = (text, x, y, h, padX, r, bg, fg, bd, face) => {
+          ctx.font = face;
+          const w = Math.ceil(ctx.measureText(text).width) + padX * 2;
+          paintRound(x, y, w, h, r, bg, bd);
+          ctx.fillStyle = fg;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(text, x + w / 2, y + h / 2);
+          return w;
+        };
+        const chipCentered = (text, cx, y, h, padX, r, bg, fg, bd, face) => {
+          ctx.font = face;
+          const w = Math.ceil(ctx.measureText(text).width) + padX * 2;
+          return chipAt(text, cx - w / 2, y, h, padX, r, bg, fg, bd, face);
         };
 
         ctx.fillStyle = "#0b0f19";
@@ -6799,31 +6868,59 @@
         ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
         ctx.fillRect(0, headerH - 1, cssW, 1);
 
-        ctx.fillStyle = hex || "#64748b";
-        ctx.fillRect(0, headerH, cssW, drawH);
-        if (photo && photo.naturalWidth) {
+        const boxX = pad;
+        const boxW = cssW - pad * 2;
+        const previewY = headerH + 16;
+        ctx.save();
+        roundedRectPath(ctx, boxX, previewY, boxW, previewH, boxR);
+        ctx.clip();
+        ctx.fillStyle = fill;
+        ctx.fillRect(boxX, previewY, boxW, previewH);
+        if (hasPhoto) {
           const ir = photo.naturalWidth / photo.naturalHeight;
-          let dw = cssW;
+          let dw = boxW;
           let dh = dw / ir;
-          if (dh < drawH) {
-            dh = drawH;
+          if (dh < previewH) {
+            dh = previewH;
             dw = dh * ir;
           }
           ctx.drawImage(
             photo,
-            (cssW - dw) / 2,
-            headerH + (drawH - dh) / 2,
+            boxX + (boxW - dw) / 2,
+            previewY + (previewH - dh) / 2,
             dw,
             dh,
           );
         }
-        ctx.fillStyle = codeColor;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "800 56px " + font;
-        ctx.fillText(code, cssW / 2, headerH + drawH / 2);
+        ctx.restore();
+        paintRound(
+          boxX,
+          previewY,
+          boxW,
+          previewH,
+          boxR,
+          null,
+          "rgba(51, 65, 85, 0.55)",
+        );
+        if (code) {
+          ctx.font = "700 17px " + font;
+          const cw =
+            Math.ceil(ctx.measureText(code).width) + 26;
+          chipAt(
+            code,
+            boxX + boxW - 12 - cw,
+            previewY + 12,
+            27,
+            13,
+            8,
+            glassBg,
+            glassFg,
+            null,
+            "700 17px " + font,
+          );
+        }
 
-        let y = headerH + drawH + 22;
+        let y = previewY + previewH + 22;
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
         ctx.fillStyle = "#ffffff";
@@ -6832,93 +6929,79 @@
           ctx.fillText(ln, cssW / 2, y);
           y += 28;
         });
-        y += 10;
-
-        roundedRectPath(ctx, cssW / 2 - 90, y, 180, 32, 8);
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.fillStyle = "#38bdf8";
-        ctx.font =
-          "700 18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-        ctx.textBaseline = "middle";
-        ctx.fillText(hex || code, cssW / 2, y + 16);
-        y += 44;
-
-        ctx.textBaseline = "middle";
-        ctx.font = "600 14px " + font;
-        const chips = badges.map((b) => {
-          if (b.id === "matt") {
-            return {
-              text: b.label,
-              bg: "rgba(245, 158, 11, 0.18)",
-              fg: "#fcd34d",
-              bd: "rgba(245, 158, 11, 0.35)",
-            };
-          }
-          if (b.id === "fine") {
-            return {
-              text: b.label,
-              bg: "rgba(168, 85, 247, 0.2)",
-              fg: "#d8b4fe",
-              bd: "rgba(168, 85, 247, 0.4)",
-            };
-          }
-          if (b.id === "gloss") {
-            return {
-              text: b.label,
-              bg: "rgba(14, 165, 233, 0.18)",
-              fg: "#7dd3fc",
-              bd: "rgba(56, 189, 248, 0.4)",
-            };
-          }
-          return {
-            text: b.label,
-            bg: "rgba(16, 185, 129, 0.18)",
-            fg: "#6ee7b7",
-            bd: "rgba(16, 185, 129, 0.4)",
-          };
-        });
-        if (chips.length) {
-          const gap = 10;
-          const widths = chips.map((c) => ctx.measureText(c.text).width + 28);
-          const total = widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1);
-          let x = (cssW - total) / 2;
-          chips.forEach((c, i) => {
-            roundedRectPath(ctx, x, y, widths[i], 28, 8);
-            ctx.fillStyle = c.bg;
-            ctx.fill();
-            ctx.strokeStyle = c.bd;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-            ctx.fillStyle = c.fg;
-            ctx.fillText(c.text, x + widths[i] / 2, y + 14);
-            x += widths[i] + gap;
-          });
-          y += 40;
+        y += 12;
+        if (surface) {
+          chipCentered(
+            surface,
+            cssW / 2,
+            y,
+            28,
+            14,
+            8,
+            surfaceStyle.bg,
+            surfaceStyle.fg,
+            surfaceStyle.bd,
+            "600 14px " + font,
+          );
+          y += 38;
+        } else {
+          y += 4;
         }
+        chipCentered(
+          code,
+          cssW / 2,
+          y,
+          30,
+          14,
+          8,
+          "transparent",
+          "#38bdf8",
+          "rgba(56, 189, 248, 0.6)",
+          "700 18px " + mono,
+        );
+        y += 48;
 
-        if (hintLines.length) {
-          ctx.textAlign = "left";
-          ctx.textBaseline = "top";
-          ctx.fillStyle = "#94a3b8";
-          ctx.font = "600 12px " + font;
-          ctx.fillText(t("hint_title"), pad, y);
-          y += 22;
-          ctx.fillStyle = "#e2e8f0";
-          ctx.font = "400 15px " + font;
-          hintLines.forEach((ln) => {
-            ctx.fillText(ln, pad, y);
-            y += 22;
-          });
+        ctx.save();
+        roundedRectPath(ctx, boxX, y, boxW, hexPanelH, boxR);
+        ctx.clip();
+        ctx.fillStyle = fill;
+        ctx.fillRect(boxX, y, boxW, hexPanelH);
+        ctx.restore();
+        paintRound(
+          boxX,
+          y,
+          boxW,
+          hexPanelH,
+          boxR,
+          null,
+          "rgba(51, 65, 85, 0.55)",
+        );
+        if (hex) {
+          const hexFg = bright ? "#000000" : "#ffffff";
+          const hexBg = bright
+            ? "rgba(255, 255, 255, 0.45)"
+            : "rgba(0, 0, 0, 0.4)";
+          ctx.font = "700 17px " + mono;
+          const hw = Math.ceil(ctx.measureText(hex).width) + 26;
+          chipAt(
+            hex,
+            boxX + boxW - 12 - hw,
+            y + hexPanelH - 12 - 27,
+            27,
+            13,
+            8,
+            hexBg,
+            hexFg,
+            null,
+            "700 17px " + mono,
+          );
         }
 
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         setTracking("0.1em");
         ctx.globalAlpha = 0.6;
-        ctx.font =
-          '500 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+        ctx.font = "500 11px " + mono;
         ctx.fillStyle = "#64748b";
         ctx.fillText("HEROAL SYSTEMKATALOG", cssW / 2, cssH - 16);
         ctx.globalAlpha = 1;
@@ -6927,31 +7010,49 @@
         return canvasToPngBlob(canvas);
       }
 
-      async function handleShareColorText() {
+      async function handleShareColorScreenshot() {
+        const catalog = appDB.farben || {};
         const key = lastActiveColorCode;
-        const col = key && (appDB.farben || {})[key];
+        let col = key && catalog[key];
+        let colKey = key;
+        if (!col && key) {
+          colKey = Object.keys(catalog).find((k) => colorCode(catalog[k], k) === key);
+          col = colKey ? catalog[colKey] : null;
+        }
         if (!col) return;
-        const code = colorCode(col, key);
+        const nr = colorCode(col, colKey);
         const name = locField(col, "name", appLang) || col.name_de || "";
         const hex = colorHex(col);
-        const text =
-          code + " - " + (name || code) + (hex ? " (" + hex + ")" : "");
+        const surface = locField(col, "oberflaeche", appLang);
         const btn = document.getElementById("btn-share-col");
         if (btn) btn.disabled = true;
         try {
-          if (typeof navigator.share === "function") {
+          const blob = await buildColorShareBlob(col, nr);
+          const filename = shareColorFileName(nr);
+          const file = new File([blob], filename, { type: "image/png" });
+          const title = "heroal " + nr + (name ? " - " + name : "");
+          const text =
+            name +
+            (hex ? " (" + hex + ")" : "") +
+            (surface ? " · " + surface : "");
+          const payload = { title: title, text: text, files: [file] };
+          const canFiles =
+            typeof navigator.canShare === "function" &&
+            navigator.canShare({ files: [file] });
+          if (canFiles && typeof navigator.share === "function") {
             try {
-              await navigator.share({
-                title: "heroal " + code,
-                text: text,
-              });
+              await navigator.share(payload);
               return;
             } catch (err) {
               if (err && err.name === "AbortError") return;
             }
           }
-          flashCopyButton(btn);
-          copyToClipboard(text, "", t("copied_short"), () => {});
+          await downloadShareBlob(blob, filename);
+          await copyShareBlob(blob);
+          showToast(t("share_saved"), "ok");
+        } catch (err) {
+          console.warn("share color screenshot failed", err);
+          showToast(t("share_error"), "error");
         } finally {
           if (btn) btn.disabled = false;
         }
@@ -7453,7 +7554,7 @@
         if (shareColBtn) {
           shareColBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            handleShareColorText();
+            handleShareColorScreenshot();
           });
         }
 
