@@ -122,7 +122,6 @@
       html:not(.authed) main,
       html:not(.authed) nav,
       html:not(.authed) #app-footer,
-      html:not(.authed) #settings-dialog,
       html:not(.authed) #sync-dialog,
       html:not(.authed) #zoom-dialog,
       html:not(.authed) #note-dialog,
@@ -662,6 +661,14 @@
         min-width: 0;
         max-width: 100%;
         line-height: 0;
+        border-radius: 6px;
+        padding: 0 8px 0 0;
+        -webkit-tap-highlight-color: transparent;
+        transition: opacity 0.15s ease;
+      }
+      .brand-title:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 3px;
       }
       .heroal-logo {
         display: block;
@@ -676,8 +683,33 @@
         mix-blend-mode: screen;
       }
       .brand-title .heroal-logo {
-        max-height: 32px;
+        max-height: 28.8px;
         max-width: 100%;
+        transform-origin: left center;
+        transition: filter 0.15s ease, opacity 0.15s ease;
+      }
+      .brand-title:hover .heroal-logo {
+        filter: brightness(1.08) drop-shadow(0 0 3px rgba(125, 211, 252, 0.22));
+      }
+      .brand-title:active .heroal-logo,
+      .brand-title.is-twitch .heroal-logo {
+        animation: logo-twitch 0.28s ease;
+        filter: brightness(1.05) drop-shadow(0 0 2px rgba(125, 211, 252, 0.18));
+      }
+      @keyframes logo-twitch {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-2px);
+        }
+        50% {
+          transform: translateX(2px);
+        }
+        75% {
+          transform: translateX(-1px);
+        }
       }
       .btn-quick {
         box-sizing: border-box;
@@ -2864,7 +2896,7 @@
           max-width: 120px;
         }
         .brand-title .heroal-logo {
-          max-height: 24px;
+          max-height: 21.6px;
         }
         .header-left {
           max-width: min(160px, 36vw);
@@ -4147,72 +4179,6 @@
         </div>
         <div class="sync-progress-bar-bg">
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 7. SETTINGS MODAL -->
-    <div id="settings-dialog" class="settings-modal">
-      <div class="settings-card">
-        <div class="settings-title">
-          <span data-i18n="settings_title">Einstellungen</span>
-          <button
-            style="
-              background: none;
-              border: none;
-              color: #fff;
-              font-size: 18px;
-              cursor: pointer;
-            "
-          onclick="closeSettings()"
-          aria-label="Close"
-        >
-          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-        </button>
-        </div>
-        <div style="font-size: 11px; color: var(--text-sub)" data-i18n="settings_urls">
-          Google Sheets CSV Publish URLs:
-        </div>
-
-        <div>
-          <div class="url-label">Artikel CSV URL</div>
-          <input type="text" id="cfg-url-artikel" class="url-input" />
-        </div>
-        <div>
-          <div class="url-label">Farben CSV URL</div>
-          <input type="text" id="cfg-url-farben" class="url-input" />
-        </div>
-        <div>
-          <div class="url-label">Auskunft CSV URL</div>
-          <input type="text" id="cfg-url-auskunft" class="url-input" />
-        </div>
-        <div>
-          <div class="url-label">Benutzer CSV URL</div>
-          <input type="text" id="cfg-url-users" class="url-input" />
-        </div>
-        <div>
-          <div class="url-label">Translations CSV URL</div>
-          <input type="text" id="cfg-url-translations" class="url-input" />
-        </div>
-
-        <button
-          class="btn-hdr"
-          style="height: 36px; font-size: 12px; margin-top: 6px"
-          onclick="reloadAllDrawings()"
-          data-i18n="settings_reload"
-        >
-          Alle Zeichnungen neu laden
-        </button>
-
-        <div style="display: flex; gap: 8px; margin-top: 6px">
-          <button
-            class="login-btn"
-            style="flex: 1; height: 40px; font-size: 13px"
-            onclick="saveSettings()"
-            data-i18n="settings_save"
-          >
-            Speichern
-          </button>
         </div>
       </div>
     </div>
@@ -5933,7 +5899,6 @@
       function isModalBlockingKeys() {
         const ids = [
           "zoom-dialog",
-          "settings-dialog",
           "sync-dialog",
           "note-dialog",
           "photo-dialog",
@@ -6100,7 +6065,6 @@
           closeZoom();
           return;
         }
-        closeSettings();
         closePhotoCapture();
         closeHdrLangDropdown();
         if (hideAllSearchOsk()) return;
@@ -7183,7 +7147,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #settings-dialog, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog",
+            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -7318,7 +7282,6 @@
         const messageKey = opts && opts.messageKey;
         currentUser = null;
         clearStoredUser();
-        closeSettings();
         closePhotoCapture();
         restoreLoginPack();
         clearLoginFeedback();
@@ -7393,9 +7356,14 @@
       function bindWorkspaceChrome() {
         const brand = document.getElementById("hdr-brand");
         if (brand) {
-          brand.addEventListener("click", () => navigate("view-suche"));
-          brand.addEventListener("dblclick", () => {
-            if (isAdministrator(currentUser)) openSettings();
+          brand.addEventListener("click", () => {
+            brand.classList.remove("is-twitch");
+            void brand.offsetWidth;
+            brand.classList.add("is-twitch");
+            focusArtikelSearch(true);
+          });
+          brand.addEventListener("animationend", () => {
+            brand.classList.remove("is-twitch");
           });
         }
         const sucheBtn = document.getElementById("btn-hdr-suche");
@@ -9741,52 +9709,6 @@
       }
 
       initBackgroundSync();
-
-      function openSettings() {
-        document.getElementById("cfg-url-artikel").value =
-          appUrls.artikel || "";
-        document.getElementById("cfg-url-farben").value = appUrls.farben || "";
-        document.getElementById("cfg-url-auskunft").value =
-          appUrls.auskunft || "";
-        document.getElementById("cfg-url-users").value = appUrls.users || "";
-        document.getElementById("cfg-url-translations").value =
-          appUrls.translations || "";
-        document.getElementById("settings-dialog").classList.add("active");
-      }
-      function closeSettings() {
-        document.getElementById("settings-dialog").classList.remove("active");
-      }
-      /**
-       * Re-downloads every drawing, ignoring what is already cached. Needed when
-       * a drawing was corrected at the source, since the incremental path would
-       * otherwise keep serving the version already on the device.
-       */
-      function reloadAllDrawings() {
-        if (!navigator.onLine) {
-          showToast(t("offline_no_net"), "error");
-          return;
-        }
-        const count = collectDrawingUrls().length;
-        const confirmed = confirm(tf("reload_drawings_confirm", { n: count }));
-        if (!confirmed) return;
-        closeSettings();
-        triggerSync(true);
-      }
-
-      function saveSettings() {
-        appUrls = {
-          artikel: document.getElementById("cfg-url-artikel").value.trim(),
-          farben: document.getElementById("cfg-url-farben").value.trim(),
-          auskunft: document.getElementById("cfg-url-auskunft").value.trim(),
-          users: document.getElementById("cfg-url-users").value.trim(),
-          translations: document
-            .getElementById("cfg-url-translations")
-            .value.trim(),
-        };
-        localStorage.setItem("heroal_urls", JSON.stringify(appUrls));
-        closeSettings();
-        showToast(t("urls_saved"));
-      }
     </script>
   </body>
 </html>
