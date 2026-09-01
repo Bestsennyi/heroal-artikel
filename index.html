@@ -1590,7 +1590,8 @@
         width: auto;
         max-width: none;
       }
-      .osk-symbols .osk-row:not(.osk-row-fn) {
+      .osk-symbols .osk-row:not(.osk-row-fn),
+      .osk-symbols .osk-row-fn {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1.8fr)) repeat(4, minmax(0, 0.85fr));
         gap: 6px;
@@ -1608,8 +1609,8 @@
         color: #ffffff;
       }
       .osk-symbols .osk-row-fn .osk-key-digit {
-        flex: 0 0 auto;
-        width: calc((100% - 36px) * 1.8 / 8.8);
+        flex: none;
+        width: auto;
         max-width: none;
       }
       .osk-symbols .osk-row:not(.osk-row-fn) .osk-key:not(.osk-key-digit) {
@@ -1618,16 +1619,25 @@
         font-weight: 600;
         color: #cbd5e1;
       }
+      .osk-symbols .osk-row-fn .osk-key {
+        flex: none;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
       .osk-symbols .osk-row-fn .osk-key-num,
       .osk-symbols .osk-row-fn .osk-key-back,
       .osk-symbols .osk-row-fn .osk-key-enter {
-        flex: 0 0 56px;
-        flex-shrink: 0;
-        width: 56px;
-        max-width: 56px;
+        flex: none;
+        width: auto;
+        max-width: none;
+      }
+      .osk-symbols .osk-row-fn .osk-key-enter {
+        grid-column: span 1;
       }
       .osk-symbols .osk-row-fn .osk-key-space {
-        flex: 1 1 0;
+        grid-column: span 3;
+        flex: none;
         width: auto;
         max-width: none;
         font-size: 12px;
@@ -1900,7 +1910,8 @@
         width: auto;
         max-width: none;
       }
-      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) {
+      .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn),
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1.8fr)) repeat(4, minmax(0, 0.85fr));
         gap: 6px;
@@ -1918,8 +1929,8 @@
         color: #ffffff;
       }
       .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-digit {
-        flex: 0 0 auto;
-        width: calc((100% - 36px) * 1.8 / 8.8);
+        flex: none;
+        width: auto;
         max-width: none;
       }
       .search-stack .osk-alpha .osk-symbols .osk-row:not(.osk-row-fn) .osk-key:not(.osk-key-digit) {
@@ -1928,16 +1939,22 @@
         font-weight: 600;
         color: #cbd5e1;
       }
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key,
       .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-num,
       .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-back,
       .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-enter {
-        flex: 0 0 56px;
-        flex-shrink: 0;
-        width: 56px;
-        max-width: 56px;
+        flex: none;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-enter {
+        grid-column: span 1;
+        font-size: 22px;
       }
       .search-stack .osk-alpha .osk-symbols .osk-row-fn .osk-key-space {
-        flex: 1 1 0;
+        grid-column: span 3;
+        flex: none;
         width: auto;
         max-width: none;
         font-size: 12px;
@@ -7829,7 +7846,7 @@
           ["1", "2", "3", "-", "/", "@", "#"],
           ["4", "5", "6", "_", ":", "!", currency],
           ["7", "8", "9", ".", ",", "?", '"'],
-          [abcKey, "0", space, back, enter],
+          [abcKey, "0", enter, back, space],
         ];
       }
 
