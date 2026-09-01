@@ -747,7 +747,8 @@
         background: rgba(255, 255, 255, 0.28);
         color: #ffffff;
       }
-      .btn-quick.admin-only[hidden] {
+      .btn-quick.admin-only[hidden],
+      #btnPhotoCapture[hidden] {
         display: none !important;
       }
       .hdr-user {
@@ -3477,10 +3478,14 @@
         outline: none;
       }
 
+      .photo-modal .settings-card {
+        max-width: 560px;
+        gap: 12px;
+      }
       .photo-preview {
         width: 100%;
-        min-height: 180px;
-        max-height: 280px;
+        min-height: 140px;
+        max-height: 220px;
         object-fit: contain;
         background: #0c121b;
         border: 1px dashed var(--border-color);
@@ -3489,6 +3494,196 @@
       .photo-actions {
         display: flex;
         gap: 8px;
+        flex-wrap: wrap;
+      }
+      .photo-actions .photo-file-btn {
+        flex: 1 1 160px;
+        min-height: 48px;
+        height: auto;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .photo-stepper {
+        display: flex;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-sub);
+      }
+      .photo-stepper span {
+        flex: 1;
+        text-align: center;
+        padding: 6px 4px;
+        border-radius: 8px;
+        background: #0c121b;
+        border: 1px solid var(--border-color);
+      }
+      .photo-stepper span.is-on {
+        color: #e0f2fe;
+        border-color: #38bdf8;
+        background: rgba(14, 165, 233, 0.16);
+      }
+      .photo-step {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .photo-step.is-on {
+        display: flex;
+      }
+      .photo-target-row {
+        display: flex;
+        gap: 8px;
+      }
+      .photo-target-btn {
+        flex: 1;
+        min-height: 52px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #0c121b;
+        color: #e2e8f0;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .photo-target-btn.is-on {
+        border-color: #38bdf8;
+        background: rgba(14, 165, 233, 0.18);
+        color: #fff;
+      }
+      .photo-match {
+        min-height: 22px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #86efac;
+      }
+      .photo-match.is-miss {
+        color: #fca5a5;
+      }
+      .photo-nav {
+        display: flex;
+        gap: 8px;
+      }
+      .photo-nav button {
+        flex: 1;
+        min-height: 44px;
+        margin: 0;
+        height: auto;
+      }
+      .photo-nav .photo-btn-ghost {
+        background: #1e293b;
+        color: #e2e8f0;
+        border-color: #334155;
+        box-shadow: none;
+      }
+      .photo-slots {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .photo-slot {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 56px;
+        padding: 8px 10px;
+        text-align: left;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #0c121b;
+        color: #e2e8f0;
+        cursor: pointer;
+      }
+      .photo-slot.is-on {
+        border-color: #38bdf8;
+      }
+      .photo-slot-preview {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        background: #1e293b;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .photo-slot-preview.is-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--text-sub);
+      }
+      .photo-slot-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .photo-slot-title {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .photo-slot-state {
+        font-size: 11px;
+        color: var(--text-sub);
+      }
+      .photo-overwrite {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.72);
+        border-radius: 14px;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        z-index: 2;
+      }
+      .photo-overwrite.is-on {
+        display: flex;
+      }
+      .photo-overwrite-card {
+        width: 100%;
+        max-width: 320px;
+        background: #131b2e;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .photo-overwrite-card p {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: #f8fafc;
+        text-align: center;
+      }
+      .photo-modal .settings-card {
+        position: relative;
+      }
+      #photo-id {
+        width: 100%;
+        min-height: 48px;
+        height: 48px;
+        padding: 0 12px;
+        background: #080d14;
+        border: 2px solid #475569;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 600;
+        outline: none;
+      }
+      #photo-id:focus {
+        border-color: #38bdf8;
+      }
+      .photo-osk-wrap .osk {
+        margin-top: 4px;
       }
 
       @keyframes spin {
@@ -3765,7 +3960,7 @@
         <button
           type="button"
           class="btn-quick admin-only"
-          id="btn-hdr-photo"
+          id="btnPhotoCapture"
           hidden
         >
           <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
@@ -4327,15 +4522,85 @@
             <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
           </button>
         </div>
-        <div style="font-size:12px;color:var(--text-sub)" data-i18n="photo_hint">
-          Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.
+        <div class="photo-stepper" id="photo-stepper" aria-hidden="true">
+          <span data-step="1">1</span>
+          <span data-step="2">2</span>
+          <span data-step="3">3</span>
+          <span data-step="4">4</span>
         </div>
-        <img id="photo-preview" class="photo-preview" alt="" hidden />
-        <div class="photo-actions">
-          <label class="login-btn" style="flex:1;height:40px;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">
-            <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
-            <span data-i18n="photo_pick">Kamera öffnen</span>
-          </label>
+
+        <div class="photo-step is-on" data-photo-step="1">
+          <div class="photo-target-row">
+            <button type="button" class="photo-target-btn is-on" id="photo-target-artikel" data-target="artikel">
+              📦 <span data-i18n="lbl_profiles">Artikel</span>
+            </button>
+            <button type="button" class="photo-target-btn" id="photo-target-farben" data-target="farben">
+              🎨 <span data-i18n="lbl_colors">Farben</span>
+            </button>
+          </div>
+          <div class="photo-nav">
+            <button type="button" class="login-btn" id="photo-next-1" data-i18n="photo_next">Weiter</button>
+          </div>
+        </div>
+
+        <div class="photo-step" data-photo-step="2">
+          <input
+            type="text"
+            id="photo-id"
+            class="search-field"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            inputmode="none"
+            enterkeyhint="search"
+            data-i18n-placeholder="photo_id_ph_artikel"
+            placeholder="Artikelnummer"
+          />
+          <div id="photo-match" class="photo-match"></div>
+          <div class="photo-osk-wrap">
+            <div class="osk" id="osk-photo" data-target="photo-id"></div>
+          </div>
+          <div class="photo-nav">
+            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-2" data-i18n="photo_back">Zurück</button>
+            <button type="button" class="login-btn" id="photo-next-2" data-i18n="photo_next" disabled>Weiter</button>
+          </div>
+        </div>
+
+        <div class="photo-step" data-photo-step="3">
+          <img id="photo-preview" class="photo-preview" alt="" hidden />
+          <div class="photo-actions">
+            <label class="login-btn photo-file-btn">
+              <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
+              <span data-i18n="photo_camera">📷 Foto aufnehmen</span>
+            </label>
+            <label class="login-btn photo-file-btn">
+              <input type="file" id="photo-input-gallery" accept="image/*" hidden />
+              <span data-i18n="photo_gallery">📁 Aus Galerie wählen</span>
+            </label>
+          </div>
+          <div class="photo-nav">
+            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-3" data-i18n="photo_back">Zurück</button>
+            <button type="button" class="login-btn" id="photo-next-3" data-i18n="photo_next" disabled>Weiter</button>
+          </div>
+        </div>
+
+        <div class="photo-step" data-photo-step="4">
+          <div id="photo-slots" class="photo-slots"></div>
+          <div class="photo-nav">
+            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-4" data-i18n="photo_back">Zurück</button>
+            <button type="button" class="login-btn" id="photo-save" data-i18n="photo_save">Speichern</button>
+          </div>
+        </div>
+
+        <div id="photo-overwrite" class="photo-overwrite" aria-hidden="true">
+          <div class="photo-overwrite-card">
+            <p data-i18n="photo_overwrite">Foto existiert bereits. Ersetzen?</p>
+            <div class="photo-nav">
+              <button type="button" class="login-btn photo-btn-ghost" id="photo-overwrite-no" data-i18n="photo_no">Nein</button>
+              <button type="button" class="login-btn" id="photo-overwrite-yes" data-i18n="photo_yes">Ja</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -4386,6 +4651,29 @@
           photo_hint: "Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.",
           photo_pick: "Kamera öffnen",
           photo_saved: "Foto erfasst (nur lokal).",
+          photo_next: "Weiter",
+          photo_back: "Zurück",
+          photo_save: "Speichern",
+          photo_camera: "📷 Foto aufnehmen",
+          photo_gallery: "📁 Aus Galerie wählen",
+          photo_id_ph_artikel: "Artikelnummer",
+          photo_id_ph_farben: "Farbcode",
+          photo_not_found: "Eintrag nicht gefunden",
+          photo_slot_main: "Hauptbild (img_url)",
+          photo_slot_1: "Foto 1 (img_1)",
+          photo_slot_2: "Foto 2 (img_2)",
+          photo_slot_3: "Foto 3 (img_3)",
+          photo_slot_4: "Foto 4 (img_4)",
+          photo_slot_color: "Echtes Foto (echtes_foto)",
+          photo_slot_empty: "leer",
+          photo_slot_full: "belegt",
+          photo_overwrite: "Foto existiert bereits. Ersetzen?",
+          photo_yes: "Ja",
+          photo_no: "Nein",
+          photo_saved_offline: "Lokal gespeichert (Offline bereit)",
+          photo_sync_fail: "Foto-Upload fehlgeschlagen",
+          photo_need_photo: "Bitte ein Foto wählen",
+          photo_compress_fail: "Foto konnte nicht verarbeitet werden",
           role_admin: "Administrator",
           role_staff: "Mitarbeiter",
           role_customer: "Kunde",
@@ -4496,6 +4784,29 @@
           photo_hint: "Capture a photo on this device. It is not uploaded.",
           photo_pick: "Open camera",
           photo_saved: "Photo captured (local only).",
+          photo_next: "Next",
+          photo_back: "Back",
+          photo_save: "Save",
+          photo_camera: "📷 Take photo",
+          photo_gallery: "📁 Choose from gallery",
+          photo_id_ph_artikel: "Article number",
+          photo_id_ph_farben: "Colour code",
+          photo_not_found: "Entry not found",
+          photo_slot_main: "Main image (img_url)",
+          photo_slot_1: "Photo 1 (img_1)",
+          photo_slot_2: "Photo 2 (img_2)",
+          photo_slot_3: "Photo 3 (img_3)",
+          photo_slot_4: "Photo 4 (img_4)",
+          photo_slot_color: "Real photo (echtes_foto)",
+          photo_slot_empty: "empty",
+          photo_slot_full: "occupied",
+          photo_overwrite: "Photo already exists. Replace?",
+          photo_yes: "Yes",
+          photo_no: "No",
+          photo_saved_offline: "Saved locally (ready offline)",
+          photo_sync_fail: "Photo upload failed",
+          photo_need_photo: "Please choose a photo",
+          photo_compress_fail: "Could not process the photo",
           role_admin: "Administrator",
           role_staff: "Staff",
           role_customer: "Customer",
@@ -4606,6 +4917,29 @@
           photo_hint: "Снимок только на этом устройстве. Не загружается на сервер.",
           photo_pick: "Открыть камеру",
           photo_saved: "Фото сохранено локально.",
+          photo_next: "Далее",
+          photo_back: "Назад",
+          photo_save: "Сохранить",
+          photo_camera: "📷 Сделать фото",
+          photo_gallery: "📁 Выбрать из галереи",
+          photo_id_ph_artikel: "Артикул",
+          photo_id_ph_farben: "Код цвета",
+          photo_not_found: "Запись не найдена",
+          photo_slot_main: "Главное фото (img_url)",
+          photo_slot_1: "Фото 1 (img_1)",
+          photo_slot_2: "Фото 2 (img_2)",
+          photo_slot_3: "Фото 3 (img_3)",
+          photo_slot_4: "Фото 4 (img_4)",
+          photo_slot_color: "Реальное фото (echtes_foto)",
+          photo_slot_empty: "пусто",
+          photo_slot_full: "занято",
+          photo_overwrite: "Фото уже есть. Заменить?",
+          photo_yes: "Да",
+          photo_no: "Нет",
+          photo_saved_offline: "Сохранено локально (готово офлайн)",
+          photo_sync_fail: "Не удалось загрузить фото",
+          photo_need_photo: "Выберите фото",
+          photo_compress_fail: "Не удалось обработать фото",
           role_admin: "Администратор",
           role_staff: "Сотрудник",
           role_customer: "Клиент",
@@ -5074,17 +5408,15 @@
           seen[entry.url] = true;
           out.push(entry);
         };
-        add(item.image_url, item.image_type || item.type);
-        add(item.img_url, item.image_type || item.type);
+        const main = articleMainImage(item);
+        if (main) add(main.url, main.type);
+        articleSlotImages(item).forEach((entry) => add(entry.url, entry.type));
         if (Array.isArray(item.images)) {
           item.images.forEach((it) => add(it, ""));
         }
         if (Array.isArray(item.extra)) {
           item.extra.forEach((it) => add(it, ""));
         }
-        ["img_1", "img_2", "img_3", "img_4"].forEach((key) => {
-          add(item[key], item[key + "_type"]);
-        });
         return out;
       }
 
@@ -5096,13 +5428,39 @@
         return /^https?:\/\//i.test(String(value || "").trim());
       }
 
+      function isLocalMediaUrl(value) {
+        return /^(data:image\/|blob:)/i.test(String(value || "").trim());
+      }
+
+      function isDisplayableMediaUrl(value) {
+        const url = String(value || "").trim();
+        return isHttpUrl(url) || isLocalMediaUrl(url);
+      }
+
+      function articleMainImage(item) {
+        if (!item) return null;
+        return (
+          normalizeImageEntry(item.img_url, item.image_type || item.type) ||
+          normalizeImageEntry(item.image_url, item.image_type || item.type)
+        );
+      }
+
+      function articleSlotImages(item) {
+        if (!item) return [];
+        return ["img_1", "img_2", "img_3", "img_4"]
+          .map((key) => normalizeImageEntry(item[key], item[key + "_type"]))
+          .filter(Boolean);
+      }
+
       function farbePreviewEntries(col) {
         if (!col) return [];
         const out = [];
         const seen = Object.create(null);
         const add = (raw) => {
           const entry = normalizeImageEntry(raw, "photo");
-          if (!entry || !isHttpUrl(entry.url) || seen[entry.url]) return;
+          if (!entry || !isDisplayableMediaUrl(entry.url) || seen[entry.url]) {
+            return;
+          }
           seen[entry.url] = true;
           out.push(entry);
         };
@@ -5157,7 +5515,9 @@
       function collectDrawingUrls() {
         const urls = new Set();
         Object.values(appDB.artikel || {}).forEach((item) => {
-          articleImageList(item).forEach((url) => urls.add(url));
+          articleImageList(item).forEach((url) => {
+            if (isHttpUrl(url)) urls.add(url);
+          });
         });
         Object.values(appDB.farben || {}).forEach((col) => {
           farbePreviewEntries(col).forEach((entry) => {
@@ -5235,7 +5595,7 @@
 
       // IndexedDB Database Wrapper
       const DB_NAME = "heroal_warehouse_db";
-      const DB_VERSION = 3;
+      const DB_VERSION = 4;
       let dbInstance = null;
       let dbReady = Promise.resolve();
 
@@ -5250,6 +5610,9 @@
             }
             if (!db.objectStoreNames.contains("translations")) {
               db.createObjectStore("translations");
+            }
+            if (!db.objectStoreNames.contains("photoQueue")) {
+              db.createObjectStore("photoQueue", { keyPath: "id" });
             }
           };
           req.onsuccess = (e) => {
@@ -5317,6 +5680,21 @@
           (store) => store.put(val, key),
           "translations",
         );
+      }
+
+      function photoQueueAll() {
+        return idbRun("readonly", (store) => store.getAll(), "photoQueue").then(
+          (rows) => (Array.isArray(rows) ? rows : []),
+          () => [],
+        );
+      }
+
+      function photoQueuePut(item) {
+        return idbRun("readwrite", (store) => store.put(item), "photoQueue");
+      }
+
+      function photoQueueDelete(id) {
+        return idbRun("readwrite", (store) => store.delete(id), "photoQueue");
       }
 
       // Default Seed Data
@@ -5506,6 +5884,29 @@
       let farbeDetailOpen = false;
       let searchOskTogglesBound = false;
       let idbFooterKey = "idb_ready";
+      const PHOTO_JPEG_QUALITY = 0.82;
+      const PHOTO_MAX_EDGE = 1600;
+      const ARTIKEL_PHOTO_SLOTS = [
+        { field: "img_url", suffix: "main", labelKey: "photo_slot_main" },
+        { field: "img_1", suffix: "slot1", labelKey: "photo_slot_1" },
+        { field: "img_2", suffix: "slot2", labelKey: "photo_slot_2" },
+        { field: "img_3", suffix: "slot3", labelKey: "photo_slot_3" },
+        { field: "img_4", suffix: "slot4", labelKey: "photo_slot_4" },
+      ];
+      const photoCaptureState = {
+        step: 1,
+        target: "artikel",
+        recordId: "",
+        recordName: "",
+        dataUrl: "",
+        field: "",
+        overwriteField: "",
+        bound: false,
+      };
+      let photoSyncCtl = { running: false };
+
+      const GAS_PHOTO_UPLOAD_URL =
+        "https://script.google.com/macros/s/AKfycbwaX5aZ072Di_QuwSI0rI88EyvRLwiAtxnZlu6-VJgWkCn9lOHHpsrNEe4vsJEtwaQxeA/exec";
 
       const DEFAULT_URLS = {
         artikel:
@@ -5517,6 +5918,7 @@
         users:
           "https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv",
         translations: "",
+        photoUpload: GAS_PHOTO_UPLOAD_URL,
       };
       let appUrls = readStoredUrls();
 
@@ -5538,6 +5940,7 @@
             vorname_de: parsed.vorname_de || "",
             nachname_de: parsed.nachname_de || "",
             benutzer_de: parsed.benutzer_de || "",
+            role: parsed.role || parsed.benutzer_de || "",
           };
         } catch (e) {
           return null;
@@ -5551,6 +5954,7 @@
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
           benutzer_de: user.benutzer_de || "",
+          role: user.role || user.benutzer_de || "",
         });
         try {
           sessionStorage.setItem(USER_STORAGE_KEY, payload);
@@ -5585,6 +5989,8 @@
             auskunft: merged.auskunft || DEFAULT_URLS.auskunft,
             users: merged.users || DEFAULT_URLS.users,
             translations: merged.translations || "",
+            photoUpload:
+              String(merged.photoUpload || "").trim() || GAS_PHOTO_UPLOAD_URL,
           };
         } catch (e) {
           return DEFAULT_URLS;
@@ -5808,6 +6214,7 @@
         revalidateSession();
         reportOfflineReadiness();
         if (idbFooterKey !== "idb_error") setIdbFooter("idb_ready");
+        triggerPhotoSync();
       });
 
       /** Logs how much of the database is available without connectivity. */
@@ -5850,6 +6257,7 @@
           hinweis_en: it.hinweis_en || "",
           hinweis_ru: it.hinweis_ru || "",
           image_url: image,
+          img_url: String(it.img_url || image || "").trim(),
           image_type: String(it.image_type || it.type || "").trim(),
           img_1: String(it.img_1 || extra[1] || "").trim(),
           img_2: String(it.img_2 || extra[2] || "").trim(),
@@ -5997,15 +6405,18 @@
           const cachedDB = await idbGet("heroal_db");
           if (cachedDB) {
             appDB = migrateAppDB(cachedDB);
+            await applyPhotoQueueToCatalog();
             await idbSet("heroal_db", appDB);
           } else {
             const legacy = localStorage.getItem("heroal_db_v2");
             if (legacy) {
               appDB = migrateAppDB(JSON.parse(legacy));
+              await applyPhotoQueueToCatalog();
               await idbSet("heroal_db", appDB);
               localStorage.removeItem("heroal_db_v2");
             } else {
               appDB = DEFAULT_DATA;
+              await applyPhotoQueueToCatalog();
               await idbSet("heroal_db", appDB);
             }
           }
@@ -7202,6 +7613,7 @@
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
           benutzer_de: user.benutzer_de || "",
+          role: user.benutzer_de || user.role || "",
         };
       }
 
@@ -7212,7 +7624,9 @@
       }
 
       function isAdministrator(user) {
-        const role = normalizeRoleKey(user && user.benutzer_de);
+        const role = normalizeRoleKey(
+          (user && (user.role || user.benutzer_de)) || "",
+        );
         return role === "administrator" || role === "admin";
       }
 
@@ -7295,7 +7709,7 @@
         const nameEl = document.getElementById("hdr-user-name");
         const roleEl = document.getElementById("hdr-user-role");
         const wrap = document.getElementById("hdr-user");
-        const photoBtn = document.getElementById("btn-hdr-photo");
+        const photoBtn = document.getElementById("btnPhotoCapture");
         if (!nameEl || !roleEl) return;
         if (!currentUser) {
           nameEl.textContent = "";
@@ -7476,7 +7890,7 @@
           ?.classList.contains("active");
         const sucheBtn = document.getElementById("btn-hdr-suche");
         const auskunftBtn = document.getElementById("btn-hdr-auskunft");
-        const photoBtn = document.getElementById("btn-hdr-photo");
+        const photoBtn = document.getElementById("btnPhotoCapture");
         if (sucheBtn) {
           sucheBtn.classList.toggle("active", !photoOpen && view === "view-suche");
         }
@@ -7522,7 +7936,7 @@
             navigate(open ? "view-suche" : "view-auskunft");
           });
         }
-        const photoBtn = document.getElementById("btn-hdr-photo");
+        const photoBtn = document.getElementById("btnPhotoCapture");
         if (photoBtn) photoBtn.addEventListener("click", openPhotoCapture);
         const hdrLangBtn = document.getElementById("btn-hdr-lang");
         if (hdrLangBtn) {
@@ -7537,34 +7951,616 @@
             setLanguage(btn.dataset.lang);
           });
         });
-        const photoInput = document.getElementById("photo-input");
-        if (photoInput) {
-          photoInput.addEventListener("change", (e) => {
-            const file = e.target.files && e.target.files[0];
-            if (!file) return;
-            const preview = document.getElementById("photo-preview");
-            if (preview) {
-              preview.src = URL.createObjectURL(file);
-              preview.hidden = false;
+        bindPhotoCaptureUi();
+        syncHdrQuickTabs();
+      }
+
+      function newPhotoId() {
+        if (crypto.randomUUID) return crypto.randomUUID();
+        return "ph_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+      }
+
+      function safePhotoToken(value) {
+        return String(value || "")
+          .trim()
+          .replace(/[^\w.-]+/g, "_");
+      }
+
+      function photoFileName(target, recordId, field) {
+        const ts = Math.floor(Date.now() / 1000);
+        const id = safePhotoToken(recordId);
+        if (target === "farben") return "farb_" + id + "_real_" + ts + ".jpg";
+        const slot =
+          ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field) || ARTIKEL_PHOTO_SLOTS[0];
+        return "art_" + id + "_" + slot.suffix + "_" + ts + ".jpg";
+      }
+
+      function recordPhotoValue(record, field) {
+        if (!record) return "";
+        if (field === "img_url") {
+          return String(record.img_url || record.image_url || "").trim();
+        }
+        return String(record[field] || "").trim();
+      }
+
+      function mergePhotoField(localVal, remoteVal) {
+        const remote = String(remoteVal || "").trim();
+        const local = String(localVal || "").trim();
+        if (remote) return remote;
+        return local;
+      }
+
+      function mergeIncomingTablePhotos(incoming, current, fields) {
+        const out = incoming && typeof incoming === "object" ? { ...incoming } : {};
+        Object.keys(out).forEach((key) => {
+          const next = out[key];
+          const prev = current && current[key];
+          if (!next || !prev) return;
+          fields.forEach((field) => {
+            next[field] = mergePhotoField(prev[field], next[field]);
+          });
+          if (fields.indexOf("img_url") !== -1) {
+            next.image_url = mergePhotoField(prev.image_url, next.image_url);
+            if (!next.img_url && next.image_url) next.img_url = next.image_url;
+            if (!next.image_url && next.img_url) next.image_url = next.img_url;
+          }
+        });
+        return out;
+      }
+
+      function patchRecordPhoto(target, recordId, field, url) {
+        const id = String(recordId || "").trim();
+        if (!id) return;
+        if (target === "farben") {
+          const row = (appDB.farben || {})[id];
+          if (!row) return;
+          row.echtes_foto = url;
+          appDB.farben[id] = row;
+          return;
+        }
+        const row = (appDB.artikel || {})[id];
+        if (!row) return;
+        if (field === "img_url") {
+          row.img_url = url;
+          row.image_url = url;
+        } else {
+          row[field] = url;
+        }
+        appDB.artikel[id] = row;
+      }
+
+      async function applyPhotoQueueToCatalog() {
+        const items = await photoQueueAll();
+        items.forEach((item) => {
+          if (!item || !item.base64Data) return;
+          patchRecordPhoto(item.target, item.recordId, item.field, item.base64Data);
+        });
+      }
+
+      function lookupPhotoRecord(target, query) {
+        const q = String(query || "").trim();
+        if (!q) return null;
+        const catalog =
+          target === "farben" ? appDB.farben || {} : appDB.artikel || {};
+        if (catalog[q]) return { key: q, item: catalog[q] };
+        const lower = q.toLowerCase();
+        const keys = Object.keys(catalog);
+        const exact = keys.find((k) => String(k).toLowerCase() === lower);
+        if (exact) return { key: exact, item: catalog[exact] };
+        if (target === "artikel") {
+          const byNr = keys.find((k) => {
+            const item = catalog[k];
+            return String(articleNr(item, k)).toLowerCase() === lower;
+          });
+          if (byNr) return { key: byNr, item: catalog[byNr] };
+        } else {
+          const byCode = keys.find((k) => {
+            const item = catalog[k];
+            return String(colorCode(item, k)).toLowerCase() === lower;
+          });
+          if (byCode) return { key: byCode, item: catalog[byCode] };
+        }
+        return null;
+      }
+
+      function compressImageFile(file) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const objectUrl = URL.createObjectURL(file);
+          img.onload = () => {
+            URL.revokeObjectURL(objectUrl);
+            let w = img.naturalWidth || img.width;
+            let h = img.naturalHeight || img.height;
+            if (!w || !h) {
+              reject(new Error("empty image"));
+              return;
             }
-            showToast(t("photo_saved"));
+            const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(w, h));
+            w = Math.max(1, Math.round(w * scale));
+            h = Math.max(1, Math.round(h * scale));
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+            try {
+              resolve(canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY));
+            } catch (err) {
+              reject(err);
+            }
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error("decode"));
+          };
+          img.src = objectUrl;
+        });
+      }
+
+      function setPhotoStep(step) {
+        photoCaptureState.step = step;
+        document.querySelectorAll("[data-photo-step]").forEach((el) => {
+          el.classList.toggle("is-on", Number(el.getAttribute("data-photo-step")) === step);
+        });
+        document.querySelectorAll("#photo-stepper span").forEach((el) => {
+          el.classList.toggle("is-on", Number(el.getAttribute("data-step")) === step);
+        });
+        hidePhotoOverwrite();
+        if (step === 2) {
+          remountSearchKeypads();
+          const input = document.getElementById("photo-id");
+          if (input) setTimeout(() => input.focus(), 0);
+        }
+        if (step === 4) renderPhotoSlots();
+      }
+
+      function resetPhotoCaptureState() {
+        photoCaptureState.step = 1;
+        photoCaptureState.target = "artikel";
+        photoCaptureState.recordId = "";
+        photoCaptureState.recordName = "";
+        photoCaptureState.dataUrl = "";
+        photoCaptureState.field = "";
+        photoCaptureState.overwriteField = "";
+        const input = document.getElementById("photo-id");
+        if (input) input.value = "";
+        const preview = document.getElementById("photo-preview");
+        if (preview) {
+          preview.hidden = true;
+          preview.removeAttribute("src");
+        }
+        const cam = document.getElementById("photo-input-camera");
+        const gal = document.getElementById("photo-input-gallery");
+        if (cam) cam.value = "";
+        if (gal) gal.value = "";
+        const next3 = document.getElementById("photo-next-3");
+        if (next3) next3.disabled = true;
+        hidePhotoOverwrite();
+        syncPhotoTargetButtons();
+        updatePhotoMatch();
+        setPhotoStep(1);
+      }
+
+      function syncPhotoTargetButtons() {
+        const art = document.getElementById("photo-target-artikel");
+        const far = document.getElementById("photo-target-farben");
+        if (art) art.classList.toggle("is-on", photoCaptureState.target === "artikel");
+        if (far) far.classList.toggle("is-on", photoCaptureState.target === "farben");
+        const input = document.getElementById("photo-id");
+        if (input) {
+          input.setAttribute(
+            "data-i18n-placeholder",
+            photoCaptureState.target === "farben"
+              ? "photo_id_ph_farben"
+              : "photo_id_ph_artikel",
+          );
+          input.placeholder = t(
+            photoCaptureState.target === "farben"
+              ? "photo_id_ph_farben"
+              : "photo_id_ph_artikel",
+          );
+        }
+      }
+
+      function updatePhotoMatch() {
+        const input = document.getElementById("photo-id");
+        const matchEl = document.getElementById("photo-match");
+        const nextBtn = document.getElementById("photo-next-2");
+        const q = input ? input.value : "";
+        const hit = lookupPhotoRecord(photoCaptureState.target, q);
+        if (!String(q || "").trim()) {
+          photoCaptureState.recordId = "";
+          photoCaptureState.recordName = "";
+          if (matchEl) {
+            matchEl.textContent = "";
+            matchEl.classList.remove("is-miss");
+          }
+          if (nextBtn) nextBtn.disabled = true;
+          return;
+        }
+        if (!hit) {
+          photoCaptureState.recordId = "";
+          photoCaptureState.recordName = "";
+          if (matchEl) {
+            matchEl.textContent = t("photo_not_found");
+            matchEl.classList.add("is-miss");
+          }
+          if (nextBtn) nextBtn.disabled = true;
+          return;
+        }
+        photoCaptureState.recordId = hit.key;
+        photoCaptureState.recordName =
+          locField(hit.item, "name", appLang) || hit.item.name_de || hit.key;
+        if (matchEl) {
+          matchEl.textContent = photoCaptureState.recordName;
+          matchEl.classList.remove("is-miss");
+        }
+        if (nextBtn) nextBtn.disabled = false;
+      }
+
+      async function slotOccupied(target, recordId, field) {
+        const catalog =
+          target === "farben" ? appDB.farben || {} : appDB.artikel || {};
+        const record = catalog[recordId];
+        if (recordPhotoValue(record, field)) return true;
+        const items = await photoQueueAll();
+        return items.some(
+          (it) =>
+            it &&
+            it.target === target &&
+            String(it.recordId) === String(recordId) &&
+            it.field === field,
+        );
+      }
+
+      function renderPhotoSlots() {
+        const wrap = document.getElementById("photo-slots");
+        if (!wrap) return;
+        wrap.innerHTML = "";
+        if (photoCaptureState.target === "farben") {
+          photoCaptureState.field = "echtes_foto";
+          const col = (appDB.farben || {})[photoCaptureState.recordId];
+          const url = recordPhotoValue(col, "echtes_foto");
+          wrap.appendChild(
+            photoSlotButton("echtes_foto", t("photo_slot_color"), url, true),
+          );
+          return;
+        }
+        if (!photoCaptureState.field) photoCaptureState.field = "img_url";
+        const item = (appDB.artikel || {})[photoCaptureState.recordId];
+        ARTIKEL_PHOTO_SLOTS.forEach((slot) => {
+          const url = recordPhotoValue(item, slot.field);
+          wrap.appendChild(
+            photoSlotButton(
+              slot.field,
+              t(slot.labelKey),
+              url,
+              photoCaptureState.field === slot.field,
+            ),
+          );
+        });
+      }
+
+      function photoSlotButton(field, title, url, selected) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "photo-slot" + (selected ? " is-on" : "");
+        btn.setAttribute("data-field", field);
+        const occupied = !!url;
+        const preview = occupied
+          ? '<img class="photo-slot-preview" alt="" src="' +
+            escapeHtml(url) +
+            '">'
+          : '<span class="photo-slot-preview is-empty">—</span>';
+        btn.innerHTML =
+          preview +
+          '<span class="photo-slot-meta"><span class="photo-slot-title">' +
+          escapeHtml(title) +
+          '</span><span class="photo-slot-state">' +
+          escapeHtml(t(occupied ? "photo_slot_full" : "photo_slot_empty")) +
+          "</span></span>";
+        btn.addEventListener("click", () => {
+          photoCaptureState.field = field;
+          wrapSelectPhotoSlot(field);
+        });
+        return btn;
+      }
+
+      function wrapSelectPhotoSlot(field) {
+        document.querySelectorAll("#photo-slots .photo-slot").forEach((el) => {
+          el.classList.toggle("is-on", el.getAttribute("data-field") === field);
+        });
+      }
+
+      function hidePhotoOverwrite() {
+        const el = document.getElementById("photo-overwrite");
+        if (!el) return;
+        el.classList.remove("is-on");
+        el.setAttribute("aria-hidden", "true");
+        photoCaptureState.overwriteField = "";
+      }
+
+      function showPhotoOverwrite(field) {
+        photoCaptureState.overwriteField = field;
+        const el = document.getElementById("photo-overwrite");
+        if (!el) return;
+        el.classList.add("is-on");
+        el.setAttribute("aria-hidden", "false");
+      }
+
+      function refreshPhotoTargetViews() {
+        const id = photoCaptureState.recordId;
+        if (!id) return;
+        if (photoCaptureState.target === "artikel") {
+          if (lastActiveArticle === id) renderProfileCard(id);
+          if (typeof renderArtikelList === "function") {
+            try {
+              const q = document.getElementById("find-prof");
+              if (q && (q.value || "").trim()) {
+                /* list refresh via existing search */
+              }
+            } catch (e) {}
+          }
+          const pIn = document.getElementById("find-prof");
+          if (pIn) pIn.dispatchEvent(new Event("input"));
+        } else {
+          if (lastActiveColorCode === id) renderColorCard(id);
+          const cIn = document.getElementById("find-color");
+          if (cIn) cIn.dispatchEvent(new Event("input"));
+        }
+      }
+
+      async function commitPhotoToQueue(field) {
+        if (!isAdministrator(currentUser)) return;
+        if (!photoCaptureState.dataUrl || !photoCaptureState.recordId) return;
+        const target = photoCaptureState.target;
+        const recordId = photoCaptureState.recordId;
+        const items = await photoQueueAll();
+        await Promise.all(
+          items
+            .filter(
+              (it) =>
+                it &&
+                it.target === target &&
+                String(it.recordId) === String(recordId) &&
+                it.field === field,
+            )
+            .map((it) => photoQueueDelete(it.id)),
+        );
+        const item = {
+          id: newPhotoId(),
+          target: target,
+          recordId: recordId,
+          field: field,
+          fileName: photoFileName(target, recordId, field),
+          base64Data: photoCaptureState.dataUrl,
+          status: "pending",
+          createdAt: Date.now(),
+        };
+        patchRecordPhoto(target, recordId, field, item.base64Data);
+        await photoQueuePut(item);
+        await idbSet("heroal_db", appDB);
+        refreshPhotoTargetViews();
+        showToast(t("photo_saved_offline"), "ok");
+        closePhotoCapture();
+        triggerPhotoSync();
+      }
+
+      async function trySavePhoto(field) {
+        const useField =
+          field ||
+          photoCaptureState.field ||
+          (photoCaptureState.target === "farben" ? "echtes_foto" : "img_url");
+        if (!photoCaptureState.dataUrl) {
+          showToast(t("photo_need_photo"), "warn");
+          return;
+        }
+        if (await slotOccupied(photoCaptureState.target, photoCaptureState.recordId, useField)) {
+          showPhotoOverwrite(useField);
+          return;
+        }
+        await commitPhotoToQueue(useField);
+      }
+
+      async function handlePhotoFile(file) {
+        if (!file) return;
+        try {
+          const dataUrl = await compressImageFile(file);
+          photoCaptureState.dataUrl = dataUrl;
+          const preview = document.getElementById("photo-preview");
+          if (preview) {
+            preview.src = dataUrl;
+            preview.hidden = false;
+          }
+          const next3 = document.getElementById("photo-next-3");
+          if (next3) next3.disabled = false;
+        } catch (err) {
+          console.warn("photo compress failed", err);
+          showToast(t("photo_compress_fail"), "error");
+        }
+      }
+
+      function bindPhotoCaptureUi() {
+        if (photoCaptureState.bound) return;
+        photoCaptureState.bound = true;
+        const art = document.getElementById("photo-target-artikel");
+        const far = document.getElementById("photo-target-farben");
+        if (art) {
+          art.addEventListener("click", () => {
+            photoCaptureState.target = "artikel";
+            photoCaptureState.field = "img_url";
+            syncPhotoTargetButtons();
+            updatePhotoMatch();
           });
         }
-        syncHdrQuickTabs();
+        if (far) {
+          far.addEventListener("click", () => {
+            photoCaptureState.target = "farben";
+            photoCaptureState.field = "echtes_foto";
+            syncPhotoTargetButtons();
+            updatePhotoMatch();
+          });
+        }
+        const idInput = document.getElementById("photo-id");
+        if (idInput) idInput.addEventListener("input", updatePhotoMatch);
+        const n1 = document.getElementById("photo-next-1");
+        if (n1) n1.addEventListener("click", () => setPhotoStep(2));
+        const b2 = document.getElementById("photo-back-2");
+        if (b2) b2.addEventListener("click", () => setPhotoStep(1));
+        const n2 = document.getElementById("photo-next-2");
+        if (n2) {
+          n2.addEventListener("click", () => {
+            updatePhotoMatch();
+            if (photoCaptureState.recordId) setPhotoStep(3);
+          });
+        }
+        const b3 = document.getElementById("photo-back-3");
+        if (b3) b3.addEventListener("click", () => setPhotoStep(2));
+        const n3 = document.getElementById("photo-next-3");
+        if (n3) {
+          n3.addEventListener("click", () => {
+            if (!photoCaptureState.dataUrl) {
+              showToast(t("photo_need_photo"), "warn");
+              return;
+            }
+            setPhotoStep(4);
+          });
+        }
+        const b4 = document.getElementById("photo-back-4");
+        if (b4) b4.addEventListener("click", () => setPhotoStep(3));
+        const save = document.getElementById("photo-save");
+        if (save) {
+          save.addEventListener("click", () => trySavePhoto(photoCaptureState.field));
+        }
+        const yes = document.getElementById("photo-overwrite-yes");
+        if (yes) {
+          yes.addEventListener("click", async () => {
+            const field = photoCaptureState.overwriteField || photoCaptureState.field;
+            hidePhotoOverwrite();
+            await commitPhotoToQueue(field);
+          });
+        }
+        const no = document.getElementById("photo-overwrite-no");
+        if (no) no.addEventListener("click", hidePhotoOverwrite);
+        const cam = document.getElementById("photo-input-camera");
+        const gal = document.getElementById("photo-input-gallery");
+        if (cam) {
+          cam.addEventListener("change", (e) => {
+            const file = e.target.files && e.target.files[0];
+            e.target.value = "";
+            handlePhotoFile(file);
+          });
+        }
+        if (gal) {
+          gal.addEventListener("change", (e) => {
+            const file = e.target.files && e.target.files[0];
+            e.target.value = "";
+            handlePhotoFile(file);
+          });
+        }
       }
 
       function openPhotoCapture() {
         if (!isAdministrator(currentUser)) return;
+        resetPhotoCaptureState();
         const dlg = document.getElementById("photo-dialog");
         dlg.classList.add("active");
         dlg.setAttribute("aria-hidden", "false");
         syncHdrQuickTabs();
+        remountSearchKeypads();
       }
       function closePhotoCapture() {
         const dlg = document.getElementById("photo-dialog");
+        if (!dlg) return;
         dlg.classList.remove("active");
         dlg.setAttribute("aria-hidden", "true");
+        hidePhotoOverwrite();
         syncHdrQuickTabs();
+      }
+
+      function photoUploadEndpoint() {
+        return String(
+          (appUrls && appUrls.photoUpload) || GAS_PHOTO_UPLOAD_URL || "",
+        ).trim();
+      }
+
+      async function uploadPhotoQueueItem(item) {
+        const endpoint = photoUploadEndpoint();
+        if (!endpoint) throw new Error("missing upload url");
+        const payload = {
+          action: "uploadPhoto",
+          target: item.target,
+          recordId: item.recordId,
+          field: item.field,
+          fileName: item.fileName,
+          fileData: item.base64Data,
+          mimeType: "image/jpeg",
+        };
+        // text/plain avoids a CORS preflight; GAS still reads postData.contents.
+        const res = await fetch(endpoint, {
+          method: "POST",
+          mode: "cors",
+          redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+        });
+        const text = await res.text();
+        let json = null;
+        try {
+          json = text ? JSON.parse(text) : null;
+        } catch (err) {
+          throw new Error(
+            res.ok ? "invalid upload response" : "HTTP " + res.status,
+          );
+        }
+        if (!res.ok && !(json && json.success)) {
+          throw new Error((json && json.error) || "HTTP " + res.status);
+        }
+        if (!json || !json.success || !json.fileUrl) {
+          throw new Error((json && json.error) || "upload failed");
+        }
+        return String(json.fileUrl);
+      }
+
+      async function triggerPhotoSync() {
+        if (!navigator.onLine) return;
+        if (photoSyncCtl.running) return photoSyncCtl.running;
+        const run = (async () => {
+          const items = await photoQueueAll();
+          const pending = items.filter(
+            (it) => it && (it.status === "pending" || it.status === "failed"),
+          );
+          if (!pending.length) return;
+          if (!photoUploadEndpoint()) return;
+          for (const item of pending) {
+            try {
+              item.status = "syncing";
+              await photoQueuePut(item);
+              const fileUrl = await uploadPhotoQueueItem(item);
+              patchRecordPhoto(item.target, item.recordId, item.field, fileUrl);
+              await photoQueueDelete(item.id);
+              await idbSet("heroal_db", appDB);
+              if (item.target === "artikel" && lastActiveArticle === item.recordId) {
+                renderProfileCard(item.recordId);
+              }
+              if (item.target === "farben" && lastActiveColorCode === item.recordId) {
+                renderColorCard(item.recordId);
+              }
+            } catch (err) {
+              console.warn("[photo sync]", err);
+              item.status = "failed";
+              await photoQueuePut(item);
+            }
+          }
+        })();
+        photoSyncCtl.running = run;
+        try {
+          await run;
+        } finally {
+          photoSyncCtl.running = null;
+        }
       }
 
       function initSearchHandlers() {
@@ -7929,7 +8925,8 @@
 
       function remountSearchKeypads() {
         document.querySelectorAll(".osk[data-target]").forEach((pad) => {
-          const wasHidden = pad.classList.contains("is-hidden");
+          const keepPhotoOpen = pad.id === "osk-photo";
+          const wasHidden = keepPhotoOpen ? false : pad.classList.contains("is-hidden");
           const alphaEl = pad.querySelector(".osk-alpha");
           const symbolsEl = pad.querySelector(".osk-symbols");
           const alphaOn = !!(alphaEl && !alphaEl.classList.contains("is-hidden"));
@@ -8057,6 +9054,11 @@
             return;
           } else if (pad.id === "osk-color") {
             confirmColorSelection();
+            return;
+          } else if (pad.id === "osk-photo") {
+            updatePhotoMatch();
+            if (photoCaptureState.recordId) setPhotoStep(3);
+            input.focus();
             return;
           } else {
             setSearchOskVisible(pad.id, false);
@@ -9467,6 +10469,7 @@
             hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
             hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
             image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+            img_url: csvCellAny(row, map, ["img_url", "image_url"]),
             image_type: csvCellAny(row, map, ["image_type", "type"]),
             img_1: csvCell(row, map, "img_1"),
             img_2: csvCell(row, map, "img_2"),
@@ -9745,12 +10748,21 @@
             const beforeFarben = fingerprintTable(appDB.farben);
 
             try {
+              await triggerPhotoSync();
               updateSyncProgress(10, t("sync_load_profiles"));
               if (appUrls.artikel) {
                 const parsed = parseArtikelCsv(
                   await fetchCsvText(appUrls.artikel, syncCtl.silent),
                 );
-                if (Object.keys(parsed).length) staged.artikel = parsed;
+                if (Object.keys(parsed).length) {
+                  staged.artikel = mergeIncomingTablePhotos(parsed, appDB.artikel, [
+                    "img_url",
+                    "img_1",
+                    "img_2",
+                    "img_3",
+                    "img_4",
+                  ]);
+                }
               }
 
               updateSyncProgress(25, t("sync_load_colors"));
@@ -9758,7 +10770,11 @@
                 const parsed = parseFarbenCsv(
                   await fetchCsvText(appUrls.farben, syncCtl.silent),
                 );
-                if (Object.keys(parsed).length) staged.farben = parsed;
+                if (Object.keys(parsed).length) {
+                  staged.farben = mergeIncomingTablePhotos(parsed, appDB.farben, [
+                    "echtes_foto",
+                  ]);
+                }
               }
 
               updateSyncProgress(35, t("sync_load_auskunft"));
@@ -9794,6 +10810,7 @@
 
               updateSyncProgress(55, t("sync_save"));
               appDB = migrateAppDB({ ...appDB, ...staged });
+              await applyPhotoQueueToCatalog();
               await idbSet("heroal_db", appDB);
               applyLanguage();
               revalidateSession();
@@ -9884,6 +10901,7 @@
 
         window.addEventListener("online", () => {
           updateOnlineStatus();
+          triggerPhotoSync();
           setTimeout(kickSilent, 800);
         });
         window.addEventListener("offline", () => {

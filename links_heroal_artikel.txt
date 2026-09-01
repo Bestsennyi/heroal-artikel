@@ -9,3 +9,11 @@ https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7f
 
 Benutzer:
 https://docs.google.com/spreadsheets/d/e/2PACX-1vTPN_gsPmG8KSFAVd4RO6KpHmIAo4V7fatqxr0e5srLdFuFctk53iTQtjjXCJ_z9b8YxalkMXhSnq_E/pub?gid=1593796985&single=true&output=csv
+
+Photo upload (Google Apps Script Web App /exec):
+https://script.google.com/macros/s/AKfycbwaX5aZ072Di_QuwSI0rI88EyvRLwiAtxnZlu6-VJgWkCn9lOHHpsrNEe4vsJEtwaQxeA/exec
+
+Deployment ID:
+AKfycbwaX5aZ072Di_QuwSI0rI88EyvRLwiAtxnZlu6-VJgWkCn9lOHHpsrNEe4vsJEtwaQxeA
+
+Used as GAS_PHOTO_UPLOAD_URL / DEFAULT_URLS.photoUpload in index.html (see gas/Code.gs).
