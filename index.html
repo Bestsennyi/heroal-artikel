@@ -1635,14 +1635,36 @@
       .osk-symbols .osk-row-fn .osk-key-enter {
         grid-column: span 1;
       }
+      .osk-symbols .osk-row-fn .osk-key-back,
+      .osk-symbols .osk-row-fn .osk-key-space {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      .osk-symbols .osk-row-fn .osk-key-back:hover,
+      .osk-symbols .osk-row-fn .osk-key-space:hover {
+        background: #243248;
+        border: 1.5px solid #60a5fa;
+        transform: translateY(-2px);
+      }
+      .osk-symbols .osk-row-fn .osk-key-back:active,
+      .osk-symbols .osk-row-fn .osk-key-back.is-pressed,
+      .osk-symbols .osk-row-fn .osk-key-space:active,
+      .osk-symbols .osk-row-fn .osk-key-space.is-pressed {
+        background: #1e293b;
+        border: 2px solid var(--heroal-accent);
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
+        transform: scale(0.95);
+      }
       .osk-symbols .osk-row-fn .osk-key-space {
         grid-column: span 3;
         flex: none;
         width: auto;
         max-width: none;
         font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0;
       }
       .osk-alpha .osk-letters.is-hidden,
       .osk-alpha .osk-symbols.is-hidden {
