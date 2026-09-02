@@ -441,6 +441,8 @@
       }
       .lang-dropdown.is-open .lang-menu {
         display: flex;
+        max-height: min(50vh, 320px);
+        overflow-y: auto;
       }
       .lang-option {
         width: 100%;
@@ -990,6 +992,8 @@
       }
       .hdr-lang-dd.is-open .hdr-lang-menu {
         display: flex;
+        max-height: min(70vh, 340px);
+        overflow-y: auto;
       }
       .hdr-lang-option {
         display: flex;
@@ -4196,10 +4200,10 @@
           <img
             class="heroal-logo"
             src="logo/heroal-artikel-logo-hell.png"
-            alt="heroal Artikel"
+            alt="heroal Artikel" data-i18n-title="a11y.brand"
           />
         </div>
-        <div class="login-sub" id="login-sub-txt" data-i18n="login_prompt">
+        <div class="login-sub" id="login-sub-txt" data-i18n="auth.login_prompt">
           PIN eingeben
         </div>
         <div class="login-field">
@@ -4208,7 +4212,7 @@
             id="input-login-nr"
             class="login-input"
             placeholder="PIN"
-            data-i18n-placeholder="login_placeholder"
+            data-i18n-placeholder="auth.login_placeholder"
             value=""
             inputmode="numeric"
             autocomplete="off"
@@ -4226,6 +4230,7 @@
             class="numpad-toggle"
             id="btn-numpad-toggle"
             aria-label="Keyboard"
+            data-i18n-title="a11y.keyboard"
             aria-pressed="false"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
@@ -4238,8 +4243,9 @@
           data-target="input-login-nr"
           role="group"
           aria-label="Keyboard"
+          data-i18n-title="a11y.keyboard"
         ></div>
-        <button class="login-btn" type="button" id="btn-login-submit" data-i18n="login_btn">
+        <button class="login-btn" type="button" id="btn-login-submit" data-i18n="auth.login_btn">
           Anmelden
         </button>
         <div class="lang-dropdown" id="login-lang-dropdown">
@@ -4261,7 +4267,7 @@
             <span id="lang-trigger-label">Deutsch</span>
             <span class="lang-caret">▾</span>
           </button>
-          <div class="lang-menu" id="lang-menu" role="listbox" aria-label="Language">
+          <div class="lang-menu" id="lang-menu" role="listbox" aria-label="Language" data-i18n-title="a11y.language">
             <button type="button" class="lang-option" data-lang="de" role="option">
               <span class="lang-flag" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
@@ -4270,7 +4276,7 @@
                   <rect width="5" height="1" y="2" fill="#ffce00" />
                 </svg>
               </span>
-              <span data-i18n="lang_de">Deutsch</span>
+              <span data-i18n="lang.de">Deutsch</span>
             </button>
             <button type="button" class="lang-option" data-lang="en" role="option">
               <span class="lang-flag" aria-hidden="true">
@@ -4282,7 +4288,7 @@
                   <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6" />
                 </svg>
               </span>
-              <span data-i18n="lang_en">English</span>
+              <span data-i18n="lang.en">English</span>
             </button>
             <button type="button" class="lang-option" data-lang="ru" role="option">
               <span class="lang-flag" aria-hidden="true">
@@ -4292,11 +4298,42 @@
                   <rect width="9" height="2" y="4" fill="#d52b1e" />
                 </svg>
               </span>
-              <span data-i18n="lang_ru">Русский</span>
+              <span data-i18n="lang.ru">Русский</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="ro" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
+                  <rect width="1" height="2" x="0" fill="#002b7f" />
+                  <rect width="1" height="2" x="1" fill="#fcd116" />
+                  <rect width="1" height="2" x="2" fill="#ce1126" />
+                </svg>
+              </span>
+              <span data-i18n="lang.ro">Română</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="ar" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" focusable="false">
+                  <rect width="3" height="6" fill="#ff0000" />
+                  <rect x="3" width="9" height="2" fill="#00732f" />
+                  <rect x="3" y="2" width="9" height="2" fill="#ffffff" />
+                  <rect x="3" y="4" width="9" height="2" fill="#000000" />
+                </svg>
+              </span>
+              <span data-i18n="lang.ar">العربية</span>
+            </button>
+            <button type="button" class="lang-option" data-lang="fr" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
+                  <rect width="1" height="2" x="0" fill="#002395" />
+                  <rect width="1" height="2" x="1" fill="#ffffff" />
+                  <rect width="1" height="2" x="2" fill="#ed2939" />
+                </svg>
+              </span>
+              <span data-i18n="lang.fr">Français</span>
             </button>
           </div>
         </div>
-        <div class="login-footer" id="login-footer-txt" data-i18n="footer_text">
+        <div class="login-footer" id="login-footer-txt" data-i18n="footer.footer_text">
           heroal Artikel • v1.0.0 • © 2026
         </div>
       </div>
@@ -4305,12 +4342,12 @@
     <!-- 2. MAIN HEADER -->
     <header>
       <div class="header-left">
-        <button type="button" class="brand-title" id="hdr-brand" title="heroal Artikel">
+        <button type="button" class="brand-title" id="hdr-brand" title="heroal Artikel" data-i18n-title="a11y.brand">
           <img
             class="heroal-logo"
             id="logo-heroal"
             src="logo/heroal-artikel-logo-hell.png"
-            alt="heroal Artikel"
+            alt="heroal Artikel" data-i18n-title="a11y.brand"
           />
         </button>
       </div>
@@ -4318,11 +4355,11 @@
       <div class="header-center">
         <button type="button" class="btn-quick active" id="btn-hdr-suche">
           <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
-          <span class="btn-quick-label" data-i18n="nav_search">Suche</span>
+          <span class="btn-quick-label" data-i18n="nav.search">Suche</span>
         </button>
         <button type="button" class="btn-quick" id="btn-hdr-auskunft">
           <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
-          <span class="btn-quick-label" data-i18n="nav_info">Auskunft</span>
+          <span class="btn-quick-label" data-i18n="nav.info">Auskunft</span>
         </button>
       </div>
 
@@ -4331,13 +4368,13 @@
           type="button"
           class="btn-quick admin-only"
           id="btnPhotoCapture"
-          data-i18n-title="photo_capture"
+          data-i18n-title="photo.photo_capture"
           title="Foto erfassen"
           aria-label="Foto erfassen"
           hidden
         >
           <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
-          <span class="btn-quick-label" data-i18n="photo_capture">Foto erfassen</span>
+          <span class="btn-quick-label" data-i18n="photo.photo_capture">Foto erfassen</span>
         </button>
         <button
           type="button"
@@ -4345,6 +4382,7 @@
           class="net-cluster"
           onclick="triggerSync()"
           title="Sync"
+          data-i18n-title="sync.sync_title"
         >
           <span class="net-dot" aria-hidden="true"></span>
           <span class="net-text" id="netStatus-txt">Online</span>
@@ -4370,7 +4408,7 @@
             <span id="hdr-lang-code">DE</span>
             <svg class="ico hdr-lang-caret" aria-hidden="true"><use href="#i-chevron-down"></use></svg>
           </button>
-          <div class="hdr-lang-menu" id="hdr-lang-menu" role="listbox" aria-label="Language">
+          <div class="hdr-lang-menu" id="hdr-lang-menu" role="listbox" aria-label="Language" data-i18n-title="a11y.language">
             <button type="button" class="hdr-lang-option" data-lang="de" role="option">
               <span class="lang-flag" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" focusable="false">
@@ -4403,6 +4441,37 @@
               </span>
               <span>RU</span>
             </button>
+            <button type="button" class="hdr-lang-option" data-lang="ro" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
+                  <rect width="1" height="2" x="0" fill="#002b7f" />
+                  <rect width="1" height="2" x="1" fill="#fcd116" />
+                  <rect width="1" height="2" x="2" fill="#ce1126" />
+                </svg>
+              </span>
+              <span>RO</span>
+            </button>
+            <button type="button" class="hdr-lang-option" data-lang="ar" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" focusable="false">
+                  <rect width="3" height="6" fill="#ff0000" />
+                  <rect x="3" width="9" height="2" fill="#00732f" />
+                  <rect x="3" y="2" width="9" height="2" fill="#ffffff" />
+                  <rect x="3" y="4" width="9" height="2" fill="#000000" />
+                </svg>
+              </span>
+              <span>AR</span>
+            </button>
+            <button type="button" class="hdr-lang-option" data-lang="fr" role="option">
+              <span class="lang-flag" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
+                  <rect width="1" height="2" x="0" fill="#002395" />
+                  <rect width="1" height="2" x="1" fill="#ffffff" />
+                  <rect width="1" height="2" x="2" fill="#ed2939" />
+                </svg>
+              </span>
+              <span>FR</span>
+            </button>
           </div>
         </div>
 
@@ -4410,9 +4479,9 @@
           <span class="hdr-user-name" id="hdr-user-name"></span>
           <span class="hdr-user-role" id="hdr-user-role"></span>
         </div>
-        <button type="button" class="hdr-logout" id="btn-logout" title="Abmelden" aria-label="Abmelden">
+        <button type="button" class="hdr-logout" id="btn-logout" title="Abmelden" aria-label="Abmelden" data-i18n-title="auth.logout_btn">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
-          <span data-i18n="logout_btn">Abmelden</span>
+          <span data-i18n="auth.logout_btn">Abmelden</span>
         </button>
       </div>
     </header>
@@ -4436,7 +4505,7 @@
                     id="find-prof"
                     class="search-field"
                     placeholder="Artikelnummer oder Name eingeben..."
-                    data-i18n-placeholder="ph_artikel"
+                    data-i18n-placeholder="catalog_ui.ph_artikel"
                     autocomplete="off"
                     autocorrect="off"
                     autocapitalize="off"
@@ -4449,7 +4518,7 @@
                       type="button"
                       class="search-icon-btn btn-clear"
                       id="clr-prof"
-                      aria-label="Clear"
+                      aria-label="Clear" data-i18n-title="a11y.clear"
                     >
                       <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
                     </button>
@@ -4458,7 +4527,7 @@
                       class="search-icon-btn osk-toggle"
                       id="btn-osk-prof"
                       data-osk="osk-prof"
-                      aria-label="Numpad"
+                      aria-label="Numpad" data-i18n-title="a11y.numpad"
                       aria-pressed="false"
                     >
                       <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
@@ -4479,7 +4548,7 @@
                   type="button"
                   class="drawing-nav drawing-nav-prev"
                   id="prof-draw-prev"
-                  aria-label="Previous"
+                  aria-label="Previous" data-i18n-title="a11y.previous"
                 >
                   ‹
                 </button>
@@ -4487,13 +4556,13 @@
                   id="prof-img"
                   class="profile-drawing-img"
                   src=""
-                  alt="Zeichnung"
+                  alt="Zeichnung" data-i18n-title="a11y.drawing"
                 />
                 <button
                   type="button"
                   class="drawing-nav drawing-nav-next"
                   id="prof-draw-next"
-                  aria-label="Next"
+                  aria-label="Next" data-i18n-title="a11y.next"
                 >
                   ›
                 </button>
@@ -4509,7 +4578,7 @@
                 </button>
                 <span class="btn-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
-                  <span data-i18n="zoom_btn">Zoom</span>
+                  <span data-i18n="catalog_ui.zoom_btn">Zoom</span>
                 </span>
               </div>
               <div id="prof-thumbs" class="profile-thumbs"></div>
@@ -4531,18 +4600,18 @@
                 <div class="profile-note-head">
                   <div class="profile-note-title">
                     <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
-                    <span data-i18n="hint_title">Beschreibung</span>
+                    <span data-i18n="catalog_ui.hint_title">Beschreibung</span>
                   </div>
                   <button
                     type="button"
                     id="prof-note-more"
                     class="btn-note-full"
-                    data-i18n-title="hint_more"
+                    data-i18n-title="catalog_ui.hint_more"
                     title="Vollansicht"
                     aria-label="Vollansicht"
                   >
                     <svg class="ico" aria-hidden="true"><use href="#i-expand"></use></svg>
-                    <span data-i18n="hint_more">Vollansicht</span>
+                    <span data-i18n="catalog_ui.hint_more">Vollansicht</span>
                   </button>
                 </div>
                 <div class="profile-note-body">
@@ -4555,45 +4624,45 @@
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-prof"
-                  data-i18n-title="copy_artnr_title"
+                  data-i18n-title="catalog_ui.copy_artnr_title"
                   title="Artikelnummer kopieren"
                   aria-label="Artikelnummer kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_artnr_btn">Art.-Nr.</span>
+                  <span data-i18n="catalog_ui.copy_artnr_btn">Art.-Nr.</span>
                 </button>
                 <button
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-prof-name"
-                  data-i18n-title="copy_name_title"
+                  data-i18n-title="catalog_ui.copy_name_title"
                   title="Bezeichnung kopieren"
                   aria-label="Bezeichnung kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_name_btn">Name</span>
+                  <span data-i18n="catalog_ui.copy_name_btn">Name</span>
                 </button>
                 <button
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-prof-hint"
-                  data-i18n-title="copy_hint_title"
+                  data-i18n-title="catalog_ui.copy_hint_title"
                   title="Beschreibung kopieren"
                   aria-label="Beschreibung kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_hint_btn">Beschreibung</span>
+                  <span data-i18n="catalog_ui.copy_hint_btn">Beschreibung</span>
                 </button>
                 <button
                   type="button"
                   class="btn-share-action"
                   id="btn-share-prof"
-                  data-i18n-title="share_title"
+                  data-i18n-title="catalog_ui.share_title"
                   title="Karte teilen"
                   aria-label="Karte teilen"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-share2"></use></svg>
-                  <span data-i18n="share_btn">Teilen</span>
+                  <span data-i18n="catalog_ui.share_btn">Teilen</span>
                 </button>
               </div>
             </div>
@@ -4614,7 +4683,7 @@
                     id="find-color"
                     class="search-field"
                     placeholder="Farbnummer oder Farbname eingeben..."
-                    data-i18n-placeholder="ph_farben"
+                    data-i18n-placeholder="catalog_ui.ph_farben"
                     autocomplete="off"
                     autocorrect="off"
                     autocapitalize="off"
@@ -4627,7 +4696,7 @@
                       type="button"
                       class="search-icon-btn btn-clear"
                       id="clr-col"
-                      aria-label="Clear"
+                      aria-label="Clear" data-i18n-title="a11y.clear"
                     >
                       <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
                     </button>
@@ -4636,7 +4705,7 @@
                       class="search-icon-btn osk-toggle"
                       id="btn-osk-color"
                       data-osk="osk-color"
-                      aria-label="Numpad"
+                      aria-label="Numpad" data-i18n-title="a11y.numpad"
                       aria-pressed="false"
                     >
                       <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
@@ -4654,7 +4723,7 @@
                   type="button"
                   class="drawing-nav drawing-nav-prev"
                   id="col-draw-prev"
-                  aria-label="Previous"
+                  aria-label="Previous" data-i18n-title="a11y.previous"
                 >
                   ‹
                 </button>
@@ -4669,7 +4738,7 @@
                   type="button"
                   class="drawing-nav drawing-nav-next"
                   id="col-draw-next"
-                  aria-label="Next"
+                  aria-label="Next" data-i18n-title="a11y.next"
                 >
                   ›
                 </button>
@@ -4677,7 +4746,7 @@
                 <span class="color-showcase-code" id="col-swatch-code"></span>
                 <span class="btn-zoom-hint" id="col-zoom-hint">
                   <svg class="ico" aria-hidden="true"><use href="#i-zoom"></use></svg>
-                  <span data-i18n="zoom_btn">Zoom</span>
+                  <span data-i18n="catalog_ui.zoom_btn">Zoom</span>
                 </span>
               </div>
               <div id="col-thumbs" class="profile-thumbs"></div>
@@ -4703,45 +4772,45 @@
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-col"
-                  data-i18n-title="copy_farbnr_title"
+                  data-i18n-title="catalog_ui.copy_farbnr_title"
                   title="Farbnummer kopieren"
                   aria-label="Farbnummer kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_farbnr_btn">Farb-Nr.</span>
+                  <span data-i18n="catalog_ui.copy_farbnr_btn">Farb-Nr.</span>
                 </button>
                 <button
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-col-name"
-                  data-i18n-title="copy_name_title"
+                  data-i18n-title="catalog_ui.copy_name_title"
                   title="Bezeichnung kopieren"
                   aria-label="Bezeichnung kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_name_btn">Name</span>
+                  <span data-i18n="catalog_ui.copy_name_btn">Name</span>
                 </button>
                 <button
                   type="button"
                   class="btn-copy-action"
                   id="btn-copy-col-hex"
-                  data-i18n-title="copy_hex_title"
+                  data-i18n-title="catalog_ui.copy_hex_title"
                   title="HEX-Code kopieren"
                   aria-label="HEX-Code kopieren"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-                  <span data-i18n="copy_hex_btn">Hex</span>
+                  <span data-i18n="catalog_ui.copy_hex_btn">Hex</span>
                 </button>
                 <button
                   type="button"
                   class="btn-share-action"
                   id="btn-share-col"
-                  data-i18n-title="share_title"
+                  data-i18n-title="catalog_ui.share_title"
                   title="Karte teilen"
                   aria-label="Karte teilen"
                 >
                   <svg class="ico" aria-hidden="true"><use href="#i-share2"></use></svg>
-                  <span data-i18n="share_btn">Teilen</span>
+                  <span data-i18n="catalog_ui.share_btn">Teilen</span>
                 </button>
               </div>
             </div>
@@ -4759,7 +4828,7 @@
             id="find-defect"
             class="search-field"
             placeholder="Fehler suchen..."
-            data-i18n-placeholder="ph_defect"
+            data-i18n-placeholder="catalog_ui.ph_defect"
             oninput="renderDefects()"
           />
         </div>
@@ -4774,7 +4843,7 @@
             id="find-guide"
             class="search-field"
             placeholder="Thema suchen..."
-            data-i18n-placeholder="ph_guide"
+            data-i18n-placeholder="catalog_ui.ph_guide"
             oninput="renderAuskunft()"
           />
         </div>
@@ -4806,7 +4875,7 @@
 
     <!-- 5. ZOOM MODAL -->
     <div id="zoom-dialog" class="zoom-modal">
-      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close">
+      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
       <div class="zoom-stage" id="zoom-stage">
@@ -4819,7 +4888,7 @@
           <svg class="ico media-mode-icon" aria-hidden="true"><use href="#i-circle-dot"></use></svg>
           <span class="media-mode-label">Original</span>
         </button>
-        <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" />
+        <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" data-i18n-title="a11y.zoom" />
       </div>
       <div id="zoom-thumbs" class="zoom-thumbs"></div>
     </div>
@@ -4829,7 +4898,7 @@
         type="button"
         class="drawing-hover-pop-close"
         id="drawing-hover-pop-close"
-        aria-label="Close"
+        aria-label="Close" data-i18n-title="a11y.close"
       >
         <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
@@ -4846,20 +4915,20 @@
     <div id="note-dialog" class="note-modal" aria-hidden="true">
       <div class="note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-dialog-title">
         <div class="note-modal-head">
-          <span id="note-dialog-title" data-i18n="hint_title">Beschreibung</span>
+          <span id="note-dialog-title" data-i18n="catalog_ui.hint_title">Beschreibung</span>
           <div class="note-modal-actions">
             <button
               type="button"
               class="btn-copy-action"
               id="note-dialog-copy"
-              data-i18n-title="copy_hint_title"
+              data-i18n-title="catalog_ui.copy_hint_title"
               title="Beschreibung kopieren"
               aria-label="Beschreibung kopieren"
             >
               <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-              <span data-i18n="copy_hint_btn">Beschreibung</span>
+              <span data-i18n="catalog_ui.copy_hint_btn">Beschreibung</span>
             </button>
-            <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close">
+            <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close" data-i18n-title="a11y.close">
               <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
             </button>
           </div>
@@ -4875,7 +4944,7 @@
         type="button"
         class="sync-close"
         id="sync-close"
-        data-i18n-title="sync_cancel"
+        data-i18n-title="modal.sync_cancel"
         title="Abbrechen"
         aria-label="Abbrechen"
       >
@@ -4887,7 +4956,7 @@
             <svg class="ico sync-spin"><use href="#i-refresh"></use></svg>
           </div>
           <div class="sync-head-text">
-            <div id="sync-title" data-i18n="sync_dialog_title">Aktualisieren</div>
+            <div id="sync-title" data-i18n="modal.sync_dialog_title">Aktualisieren</div>
             <div id="sync-status-txt">Katalog wird geladen…</div>
           </div>
           <div class="sync-pct" id="sync-pct">0%</div>
@@ -4902,19 +4971,19 @@
     <div id="photo-dialog" class="photo-modal" data-photo-target="artikel" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
       <div class="photo-card" onclick="event.stopPropagation()">
         <div class="photo-head">
-          <span class="photo-head-title" data-i18n="modalTitle">Foto erfassen</span>
-          <button type="button" class="photo-close" id="photo-close" aria-label="Close">
+          <span class="photo-head-title" data-i18n="photo.modalTitle">Foto erfassen</span>
+          <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
             <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
           </button>
         </div>
         <div class="photo-tabs">
           <button type="button" class="photo-tab is-on" id="photo-target-artikel" data-target="artikel">
             <svg class="ico" aria-hidden="true"><use href="#i-box"></use></svg>
-            <span data-i18n="tabArtikel">ARTIKEL</span>
+            <span data-i18n="photo.tabArtikel">ARTIKEL</span>
           </button>
           <button type="button" class="photo-tab" id="photo-target-farben" data-target="farben">
             <svg class="ico" aria-hidden="true"><use href="#i-palette"></use></svg>
-            <span data-i18n="tabFarben">FARBEN</span>
+            <span data-i18n="photo.tabFarben">FARBEN</span>
           </button>
         </div>
         <div class="input-box photo-search">
@@ -4928,7 +4997,7 @@
             spellcheck="false"
             inputmode="numeric"
             enterkeyhint="search"
-            data-i18n-placeholder="phArtikel"
+            data-i18n-placeholder="photo.phArtikel"
             placeholder="Artikelnummer eingeben..."
           />
           <div class="search-field-actions">
@@ -4938,6 +5007,7 @@
               id="btn-osk-photo"
               data-osk="osk-photo"
               aria-label="Keyboard"
+              data-i18n-title="a11y.keyboard"
               aria-pressed="false"
             >
               <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
@@ -4946,17 +5016,17 @@
         </div>
         <div id="photo-match" class="photo-match"></div>
         <div id="photo-slots" class="photo-slots"></div>
-        <p id="photo-warn" class="photo-warn" data-i18n="warnOverwrite">⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.</p>
+        <p id="photo-warn" class="photo-warn" data-i18n="photo.warnOverwrite">⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.</p>
         <div class="photo-actions">
           <button type="button" class="login-btn photo-file-btn" id="photo-btn-camera">
             <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
-            <span data-i18n="btnCamera">Foto aufnehmen</span>
+            <span data-i18n="photo.btnCamera">Foto aufnehmen</span>
           </button>
           <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
           <label class="login-btn photo-file-btn">
             <input type="file" id="photo-input-gallery" accept="image/*" hidden />
             <svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg>
-            <span data-i18n="btnGallery">Aus Galerie</span>
+            <span data-i18n="photo.btnGallery">Aus Galerie</span>
           </label>
         </div>
         <div id="photo-live" class="photo-live">
@@ -4970,22 +5040,22 @@
           <div class="photo-live-bar">
             <button type="button" class="login-btn" id="photo-live-snap">
               <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
-              <span data-i18n="btnCameraSnap">Aufnehmen</span>
+              <span data-i18n="photo.btnCameraSnap">Aufnehmen</span>
             </button>
-            <button type="button" class="login-btn photo-live-cancel" id="photo-live-cancel" data-i18n-title="btnCameraCancel" title="Kamera schließen" aria-label="Kamera schließen">
+            <button type="button" class="login-btn photo-live-cancel" id="photo-live-cancel" data-i18n-title="photo.btnCameraCancel" title="Kamera schließen" aria-label="Kamera schließen">
               <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
             </button>
           </div>
         </div>
         <div id="photo-preview-wrap" class="photo-preview-wrap">
           <img id="photo-preview" class="photo-preview" alt="" />
-          <button type="button" class="photo-preview-clear" id="photo-preview-clear" aria-label="Clear">
+          <button type="button" class="photo-preview-clear" id="photo-preview-clear" aria-label="Clear" data-i18n-title="a11y.clear">
             <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
           </button>
         </div>
           <button type="button" class="login-btn" id="photo-save" disabled>
             <svg class="ico" aria-hidden="true"><use href="#i-save"></use></svg>
-            <span data-i18n="btnSave">Foto speichern</span>
+            <span data-i18n="photo.btnSave">Foto speichern</span>
           </button>
         <div class="photo-osk-wrap">
           <div class="osk is-hidden" id="osk-photo" data-target="photo-id"></div>
@@ -4994,464 +5064,24 @@
     </div>
 
     <!-- 8. APPLICATION LOGIC & INDEXEDDB INTEGRATION -->
+    <script src="./src/i18n.js"></script>
     <script>
-      const LANGS = ["de", "en", "ru"];
+      const LANGS = window.HeroalI18n.SUPPORTED_LANGS.slice();
       const LANG_STORAGE_KEY = "lagerguide_lang";
       const PACK_STORAGE_KEY = "lagerguide_last_pack";
       const USER_STORAGE_KEY = "currentUser";
       const USER_STORAGE_LEGACY_KEY = "heroal_current_user";
       const PIN_LENGTH = 4;
       const NUMPAD_STORAGE_KEY = "lagerguide_numpad_visible";
-      const LANG_META = {
-        de: { nameKey: "lang_de" },
-        en: { nameKey: "lang_en" },
-        ru: { nameKey: "lang_ru" },
-      };
+      const LANG_META = {};
+      LANGS.forEach(function (code) {
+        LANG_META[code] = { nameKey: "lang." + code };
+      });
 
-      const I18N_FALLBACK = {
-        de: {
-          login_title: "Artikel",
-          login_prompt: "PIN eingeben",
-          login_placeholder: "PIN",
-          login_btn: "Anmelden",
-          lang_de: "Deutsch",
-          lang_en: "English",
-          lang_ru: "Русский",
-          login_error_empty: "Bitte PIN eingeben!",
-          login_error_wrong: "Falsche PIN-Nummer",
-          login_error_inactive: "Benutzerkonto ist inaktiv",
-          login_error_blocked: "Benutzerkonto ist inaktiv",
-          login_error_deactivated: "Benutzerkonto wurde deaktiviert",
-          logout_btn: "Abmelden",
-          lbl_profiles: "Artikel",
-          lbl_artnr: "Art.-Nr. [/]",
-          lbl_colors: "Farben",
-          lbl_color_badge: "RAL / SD [Alt+C]",
-          cat_all: "Alle",
-          cat_ral: "RAL",
-          cat_sd: "SD",
-          nav_search: "Suche",
-          nav_search_hotkey: "Suche [/]",
-          nav_scrap: "Ausschuss",
-          nav_info: "Auskunft",
-          photo_capture: "Foto erfassen",
-          modalTitle: "Foto erfassen",
-          tabArtikel: "ARTIKEL",
-          tabFarben: "FARBEN",
-          phArtikel: "Artikelnummer eingeben...",
-          phFarben: "Farbnummer eingeben...",
-          itemNotFound: "Eintrag nicht gefunden",
-          slotMain: "Hauptbild",
-          slotPhoto: "Foto",
-          slotReal: "Echtes Foto",
-          slotRealPhoto: "Echtes Foto",
-          slotDummyImage: "Farbmuster / Dummy",
-          slotStatusEmpty: "Leer",
-          slotStatusOccupied: "Belegt",
-          warnOverwrite: "⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.",
-          btnCamera: "Foto aufnehmen",
-          btnCameraSnap: "Aufnehmen",
-          btnCameraCancel: "Kamera schließen",
-          btnGallery: "Aus Galerie",
-          btnSave: "Foto speichern",
-          toastAdded: "Foto erfolgreich hinzugefügt ({slot})",
-          toastUpdated: "Foto in {slot} erfolgreich aktualisiert",
-          toastOffline: "Lokal gespeichert (Offline bereit)",
-          photo_title: "Foto erfassen",
-          photo_not_found: "Eintrag nicht gefunden",
-          photo_sync_fail: "Foto-Upload fehlgeschlagen",
-          photo_need_photo: "Bitte ein Foto wählen",
-          photo_compress_fail: "Foto konnte nicht verarbeitet werden",
-          photo_camera_fail: "Kamera nicht verfügbar",
-          photo_camera_denied: "Kamerazugriff verweigert",
-          role_admin: "Administrator",
-          role_staff: "Mitarbeiter",
-          role_customer: "Kunde",
-          list_hint_artikel: "Artikelnummer oder Name suchen",
-          list_hint_farben: "Farbnummer oder Farbname suchen",
-          ph_artikel: "Artikelnummer oder Name eingeben...",
-          ph_farben: "Farbnummer oder Farbname eingeben...",
-          ph_defect: "Fehler suchen...",
-          ph_guide: "Thema suchen...",
-          copy_btn: "Copy",
-          zoom_btn: "Zoom",
-          view_invert: "Invertieren",
-          view_original: "Original",
-          hint_title: "Beschreibung",
-          hint_system: "System",
-          hint_masse: "Masse",
-          hint_more: "Vollansicht",
-          copy_artnr_title: "Artikelnummer kopieren",
-          copy_name_title: "Bezeichnung kopieren",
-          copy_hint_title: "Beschreibung kopieren",
-          copy_farbnr_title: "Farbnummer kopieren",
-          copy_hex_title: "HEX-Code kopieren",
-          copy_artnr_btn: "Art.-Nr.",
-          copy_name_btn: "Name",
-          copy_hint_btn: "Beschreibung",
-          copy_farbnr_btn: "Farb-Nr.",
-          copy_hex_btn: "Hex",
-          finish_matt: "Matt",
-          finish_gloss: "Glänzend",
-          finish_fine: "Feinstruktur",
-          finish_heroal: "heroal Color",
-          share_btn: "Teilen",
-          share_title: "Karte teilen",
-          share_saved: "Screenshot gespeichert / kopiert",
-          share_error: "Screenshot fehlgeschlagen",
-          copied_short: "Kopiert!",
-          settings_title: "Einstellungen",
-          settings_save: "Speichern",
-          settings_reload: "Alle Zeichnungen neu laden",
-          settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Aktualisieren",
-          sync_cancel: "Abbrechen",
-          sync_cancelled: "Aktualisierung abgebrochen",
-          color_surface_fallback: "heroal Beschichtung",
-          online: "Online",
-          offline: "Offline",
-          syncing: "Aktualisieren…",
-          synced: "Aktuell",
-          sync: "Sync",
-          sync_title: "Daten aktualisieren",
-          sync_offline: "Offline — nicht verfügbar",
-          idle_logout: "Sitzung wegen Inaktivität beendet.",
-          copied: "{label} kopiert!",
-          drawing_missing: "Zeichnung nicht hinterlegt",
-          sync_drawings_missing: "{n} Zeichnungen fehlen",
-          defect_desc: "Beschreibung:",
-          defect_action: "Vorgehen (Aktion):",
-          drawings_check: "Zeichnungen prüfen…",
-          drawings_load: "Zeichnungen {done}/{total}",
-          offline_no_net: "Keine Verbindung",
-          sync_load_start: "Katalog wird geladen…",
-          sync_load_profiles: "Artikel…",
-          sync_load_colors: "Farben…",
-          sync_load_auskunft: "Auskunft…",
-          sync_load_users: "Benutzer…",
-          sync_load_i18n: "Sprache…",
-          sync_save: "Speichern…",
-          sync_done: "Fertig",
-          sync_abort_net: "Verbindung unterbrochen · {cached}/{total}",
-          sync_abort_throttle: "Server ausgelastet · {cached}/{total}",
-          sync_partial: "{artikel} Artikel · {missing} Zeichnungen fehlen",
-          sync_ok: "{artikel} Artikel · {cached} Zeichnungen{newly}",
-          sync_newly: " · {n} neu",
-          sync_error: "Aktualisierung fehlgeschlagen",
-          reload_drawings_confirm:
-            "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
-          urls_saved: "URLs gespeichert! Drücken Sie Sync.",
-          footer_text: "heroal Artikel • v1.2.0 • © 2026",
-          footer_brand: "heroal Artikel App • PWA Offline Ready",
-          idb_ready: "IndexedDB: Bereit (Synchronisiert)",
-          idb_error: "IndexedDB: Fehler",
-        },
-        en: {
-          login_title: "Artikel",
-          login_prompt: "Enter PIN",
-          login_placeholder: "PIN",
-          login_btn: "Sign in",
-          lang_de: "Deutsch",
-          lang_en: "English",
-          lang_ru: "Русский",
-          login_error_empty: "Please enter a PIN!",
-          login_error_wrong: "Wrong PIN",
-          login_error_inactive: "Account is inactive",
-          login_error_blocked: "Account is inactive",
-          login_error_deactivated: "Account has been deactivated",
-          logout_btn: "Sign out",
-          lbl_profiles: "Articles",
-          lbl_artnr: "Art. no. [/]",
-          lbl_colors: "Colours",
-          lbl_color_badge: "RAL / SD [Alt+C]",
-          cat_all: "All",
-          cat_ral: "RAL",
-          cat_sd: "SD",
-          nav_search: "Search",
-          nav_search_hotkey: "Search [/]",
-          nav_scrap: "Scrap",
-          nav_info: "Info",
-          photo_capture: "Capture photo",
-          modalTitle: "Capture photo",
-          tabArtikel: "ARTICLES",
-          tabFarben: "COLORS",
-          phArtikel: "Enter article number...",
-          phFarben: "Enter color code...",
-          itemNotFound: "Item not found",
-          slotMain: "Main image",
-          slotPhoto: "Photo",
-          slotReal: "Real photo",
-          slotRealPhoto: "Real photo",
-          slotDummyImage: "Color swatch / Dummy",
-          slotStatusEmpty: "Empty",
-          slotStatusOccupied: "Occupied",
-          warnOverwrite: "⚠️ Slot already occupied. Photo will be overwritten on save.",
-          btnCamera: "Take photo",
-          btnCameraSnap: "Capture",
-          btnCameraCancel: "Close camera",
-          btnGallery: "From gallery",
-          btnSave: "Save photo",
-          toastAdded: "Photo successfully added ({slot})",
-          toastUpdated: "Photo in {slot} successfully updated",
-          toastOffline: "Saved locally (Offline ready)",
-          photo_title: "Capture photo",
-          photo_not_found: "Item not found",
-          photo_sync_fail: "Photo upload failed",
-          photo_need_photo: "Please choose a photo",
-          photo_compress_fail: "Could not process the photo",
-          photo_camera_fail: "Camera not available",
-          photo_camera_denied: "Camera access denied",
-          role_admin: "Administrator",
-          role_staff: "Staff",
-          role_customer: "Customer",
-          list_hint_artikel: "Search article number or name",
-          list_hint_farben: "Search color number or name",
-          ph_artikel: "Enter article number or name...",
-          ph_farben: "Enter color code or name...",
-          ph_defect: "Search defect...",
-          ph_guide: "Search topic...",
-          copy_btn: "Copy",
-          zoom_btn: "Zoom",
-          view_invert: "Invert",
-          view_original: "Original",
-          hint_title: "Description",
-          hint_system: "System",
-          hint_masse: "Dimensions",
-          hint_more: "Full View",
-          copy_artnr_title: "Copy article number",
-          copy_name_title: "Copy name",
-          copy_hint_title: "Copy description",
-          copy_farbnr_title: "Copy colour number",
-          copy_hex_title: "Copy HEX code",
-          copy_artnr_btn: "Art. no.",
-          copy_name_btn: "Name",
-          copy_hint_btn: "Description",
-          copy_farbnr_btn: "Colour no.",
-          copy_hex_btn: "Hex",
-          finish_matt: "Matt",
-          finish_gloss: "Gloss",
-          finish_fine: "Fine texture",
-          finish_heroal: "heroal Color",
-          share_btn: "Share",
-          share_title: "Share card",
-          share_saved: "Screenshot saved / copied",
-          share_error: "Screenshot failed",
-          copied_short: "Copied!",
-          settings_title: "Settings",
-          settings_save: "Save",
-          settings_reload: "Reload all drawings",
-          settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Updating",
-          sync_cancel: "Cancel",
-          sync_cancelled: "Update cancelled",
-          color_surface_fallback: "heroal coating",
-          online: "Online",
-          offline: "Offline",
-          syncing: "Updating…",
-          synced: "Up to date",
-          sync: "Sync",
-          sync_title: "Update data",
-          sync_offline: "Offline — unavailable",
-          idle_logout: "Signed out due to inactivity.",
-          copied: "{label} copied!",
-          drawing_missing: "No drawing on file",
-          sync_drawings_missing: "{n} drawings missing",
-          defect_desc: "Description:",
-          defect_action: "Action:",
-          drawings_check: "Checking drawings…",
-          drawings_load: "Drawings {done}/{total}",
-          offline_no_net: "No connection",
-          sync_load_start: "Loading catalogue…",
-          sync_load_profiles: "Articles…",
-          sync_load_colors: "Colours…",
-          sync_load_auskunft: "Info…",
-          sync_load_users: "Users…",
-          sync_load_i18n: "Language…",
-          sync_save: "Saving…",
-          sync_done: "Done",
-          sync_abort_net: "Connection lost · {cached}/{total}",
-          sync_abort_throttle: "Server busy · {cached}/{total}",
-          sync_partial: "{artikel} articles · {missing} drawings missing",
-          sync_ok: "{artikel} articles · {cached} drawings{newly}",
-          sync_newly: " · {n} new",
-          sync_error: "Update failed",
-          reload_drawings_confirm:
-            "Re-download all {n} drawings? This takes longer than a normal sync.",
-          urls_saved: "URLs saved! Press Sync.",
-          footer_text: "heroal Artikel • v1.2.0 • © 2026",
-          footer_brand: "heroal Artikel App • PWA Offline Ready",
-          idb_ready: "IndexedDB: Ready (Synced)",
-          idb_error: "IndexedDB: Error",
-        },
-        ru: {
-          login_title: "Artikel",
-          login_prompt: "Введите PIN",
-          login_placeholder: "PIN",
-          login_btn: "Войти",
-          lang_de: "Deutsch",
-          lang_en: "English",
-          lang_ru: "Русский",
-          login_error_empty: "Пожалуйста, введите PIN!",
-          login_error_wrong: "Неверный PIN",
-          login_error_inactive: "Учётная запись неактивна",
-          login_error_blocked: "Учётная запись неактивна",
-          login_error_deactivated: "Учётная запись отключена",
-          logout_btn: "Выйти",
-          lbl_profiles: "Артикулы",
-          lbl_artnr: "Артикул [/]",
-          lbl_colors: "Цвета",
-          lbl_color_badge: "RAL / SD [Alt+C]",
-          cat_all: "Все",
-          cat_ral: "RAL",
-          cat_sd: "SD",
-          nav_search: "Поиск",
-          nav_search_hotkey: "Поиск [/]",
-          nav_scrap: "Брак",
-          nav_info: "Справка",
-          photo_capture: "Захват фото",
-          modalTitle: "Захват фото",
-          tabArtikel: "АРТИКУЛЫ",
-          tabFarben: "КРАСКИ",
-          phArtikel: "Введите номер артикула...",
-          phFarben: "Введите номер краски...",
-          itemNotFound: "Запись не найдена",
-          slotMain: "Главное фото",
-          slotPhoto: "Фото",
-          slotReal: "Реальное фото",
-          slotRealPhoto: "Реальное фото",
-          slotDummyImage: "Образец цвета / Dummy",
-          slotStatusEmpty: "Свободно",
-          slotStatusOccupied: "Занято",
-          warnOverwrite: "⚠️ Слот уже занят. Фото будет заменено при сохранении.",
-          btnCamera: "Сделать фото",
-          btnCameraSnap: "Снять",
-          btnCameraCancel: "Закрыть камеру",
-          btnGallery: "Из галереи",
-          btnSave: "Сохранить фото",
-          toastAdded: "Фото успешно добавлено ({slot})",
-          toastUpdated: "Фото в {slot} успешно обновлено",
-          toastOffline: "Сохранено локально (Оффлайн режим)",
-          photo_title: "Захват фото",
-          photo_not_found: "Запись не найдена",
-          photo_sync_fail: "Не удалось загрузить фото",
-          photo_need_photo: "Выберите фото",
-          photo_compress_fail: "Не удалось обработать фото",
-          photo_camera_fail: "Камера недоступна",
-          photo_camera_denied: "Доступ к камере запрещён",
-          role_admin: "Администратор",
-          role_staff: "Сотрудник",
-          role_customer: "Клиент",
-          list_hint_artikel: "Искать артикул или название",
-          list_hint_farben: "Искать номер или название краски",
-          ph_artikel: "Введите артикул или название товара...",
-          ph_farben: "Введите номер или название краски...",
-          ph_defect: "Искать дефект...",
-          ph_guide: "Искать тему...",
-          copy_btn: "Копировать",
-          zoom_btn: "Zoom",
-          view_invert: "Инверсия",
-          view_original: "Оригинал",
-          hint_title: "Описание",
-          hint_system: "Система",
-          hint_masse: "Размеры",
-          hint_more: "Полный обзор",
-          copy_artnr_title: "Копировать артикул",
-          copy_name_title: "Копировать название",
-          copy_hint_title: "Копировать описание",
-          copy_farbnr_title: "Копировать номер цвета",
-          copy_hex_title: "Копировать HEX-код",
-          copy_artnr_btn: "Art.-Nr.",
-          copy_name_btn: "Name",
-          copy_hint_btn: "Описание",
-          copy_farbnr_btn: "Farb-Nr.",
-          copy_hex_btn: "Hex",
-          finish_matt: "Matt",
-          finish_gloss: "Glänzend",
-          finish_fine: "Feinstruktur",
-          finish_heroal: "heroal Color",
-          share_btn: "Поделиться",
-          share_title: "Поделиться карточкой",
-          share_saved: "Скриншот сохранен / скопирован",
-          share_error: "Не удалось создать скриншот",
-          copied_short: "Kopiert!",
-          settings_title: "Настройки",
-          settings_save: "Сохранить",
-          settings_reload: "Загрузить все чертежи заново",
-          settings_urls: "Google Sheets CSV Publish URLs:",
-          sync_dialog_title: "Обновление",
-          sync_cancel: "Отмена",
-          sync_cancelled: "Синхронизация прервана",
-          color_surface_fallback: "Покрытие heroal",
-          online: "Онлайн",
-          offline: "Офлайн",
-          syncing: "Обновление…",
-          synced: "Актуально",
-          sync: "Sync",
-          sync_title: "Обновить данные",
-          sync_offline: "Офлайн — недоступно",
-          idle_logout: "Сессия завершена из-за неактивности.",
-          copied: "{label} скопировано!",
-          drawing_missing: "Чертёж не задан",
-          sync_drawings_missing: "Нет {n} чертежей",
-          defect_desc: "Описание:",
-          defect_action: "Инструкция по действию:",
-          drawings_check: "Проверка чертежей…",
-          drawings_load: "Чертежи {done}/{total}",
-          offline_no_net: "Нет соединения",
-          sync_load_start: "Загрузка каталога…",
-          sync_load_profiles: "Артикулы…",
-          sync_load_colors: "Цвета…",
-          sync_load_auskunft: "Справка…",
-          sync_load_users: "Сотрудники…",
-          sync_load_i18n: "Язык…",
-          sync_save: "Сохранение…",
-          sync_done: "Готово",
-          sync_abort_net: "Нет связи · {cached}/{total}",
-          sync_abort_throttle: "Сервер занят · {cached}/{total}",
-          sync_partial: "{artikel} артикулов · нет {missing} чертежей",
-          sync_ok: "{artikel} артикулов · {cached} чертежей{newly}",
-          sync_newly: " · {n} новых",
-          sync_error: "Не удалось обновить",
-          reload_drawings_confirm:
-            "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
-          urls_saved: "Ссылки сохранены! Нажмите Sync.",
-          footer_text: "heroal Artikel • v1.2.0 • © 2026",
-          footer_brand: "heroal Artikel App • PWA Offline Ready",
-          idb_ready: "IndexedDB: Готово (синхронизировано)",
-          idb_error: "IndexedDB: Ошибка",
-        },
-      };
-
-      function cloneFallbackDict() {
-        const out = { de: {}, en: {}, ru: {} };
-        LANGS.forEach((lang) => {
-          out[lang] = Object.assign({}, I18N_FALLBACK[lang]);
-        });
-        return out;
+      const I18N = window.HeroalI18n;
+      if (!I18N) {
+        throw new Error("src/i18n.js must load before the app script");
       }
-
-      function normalizeLang(raw) {
-        if (raw == null) return "de";
-        const v = String(raw).trim().toLowerCase();
-        if (v === "de" || v === "en" || v === "ru") return v;
-        if (v === "deutsch" || v === "ger" || v === "german") return "de";
-        if (v === "english") return "en";
-        if (v === "рус" || v === "russian") return "ru";
-        return "de";
-      }
-
-      function readSavedLang() {
-        try {
-          const next = localStorage.getItem(LANG_STORAGE_KEY);
-          if (next) return normalizeLang(next);
-          const legacy = localStorage.getItem("heroal_lang");
-          if (legacy) return normalizeLang(legacy);
-        } catch (e) {}
-        return "de";
-      }
-
-      let i18nDict = cloneFallbackDict();
-      let appLang = readSavedLang();
 
       function usableText(val) {
         if (val == null) return "";
@@ -5460,72 +5090,23 @@
         return s;
       }
 
-      function t(key) {
-        const k = usableText(key);
-        if (!k) return "";
-        const table = i18nDict[appLang] || i18nDict.de;
-        const fromDict = usableText(table && table[k]);
-        const localFb = usableText(
-          I18N_FALLBACK[appLang] && I18N_FALLBACK[appLang][k],
-        );
-        const deFb = usableText(I18N_FALLBACK.de && I18N_FALLBACK.de[k]);
-        const deDict = usableText(i18nDict.de && i18nDict.de[k]);
-        if (
-          appLang !== "de" &&
-          localFb &&
-          deFb &&
-          fromDict &&
-          fromDict === deFb &&
-          localFb !== deFb
-        ) {
-          return localFb;
-        }
-        return fromDict || deDict || localFb || deFb || k;
-      }
-
-      function tf(key, vars) {
-        let s = t(key);
-        Object.keys(vars || {}).forEach((k) => {
-          s = s.split("{" + k + "}").join(String(vars[k]));
-        });
-        return s;
-      }
-
-      function acceptSheetTranslation(lang, key, incoming) {
-        const s = usableText(incoming);
-        if (!s) return false;
-        if (lang === "de") return true;
-        const deVal = I18N_FALLBACK.de && I18N_FALLBACK.de[key];
-        const local = I18N_FALLBACK[lang] && I18N_FALLBACK[lang][key];
-        if (local && deVal && s === String(deVal) && String(local) !== String(deVal)) {
-          return false;
-        }
-        return true;
-      }
+      let appLang = getCurrentLanguage();
 
       function mergeTranslationBundle(bundle) {
-        if (!bundle || typeof bundle !== "object") return;
-        LANGS.forEach((lang) => {
-          if (bundle[lang] && typeof bundle[lang] === "object") {
-            Object.keys(bundle[lang]).forEach((key) => {
-              const val = bundle[lang][key];
-              if (acceptSheetTranslation(lang, key, val)) {
-                i18nDict[lang][key] = usableText(val);
-              }
-            });
-          }
-        });
-        Object.keys(bundle).forEach((key) => {
-          if (LANGS.indexOf(key) !== -1) return;
-          const row = bundle[key];
-          if (!row || typeof row !== "object") return;
-          LANGS.forEach((lang) => {
-            if (acceptSheetTranslation(lang, key, row[lang])) {
-              i18nDict[lang][key] = usableText(row[lang]);
-            }
-          });
-        });
+        I18N.mergeOverlay(bundle);
       }
+
+      window.addEventListener("languageChanged", function () {
+        appLang = getCurrentLanguage();
+        if (typeof closeLangDropdown === "function") closeLangDropdown();
+        if (typeof applyLanguage === "function") applyLanguage();
+        var findProf = document.getElementById("find-prof");
+        var findColor = document.getElementById("find-color");
+        if (findProf) findProf.dispatchEvent(new Event("input"));
+        if (findColor) findColor.dispatchEvent(new Event("input"));
+        if (typeof renderDefects === "function") renderDefects();
+        if (typeof renderAuskunft === "function") renderAuskunft();
+      });
 
       function isValidPin(val) {
         return typeof val === "string" && new RegExp("^\\d{" + PIN_LENGTH + "}$").test(val.trim());
@@ -5558,9 +5139,10 @@
           const label = t(el.getAttribute("data-i18n-title"));
           el.title = label;
           el.setAttribute("aria-label", label);
+          if (el.tagName === "IMG") el.alt = label;
         });
         const footerEl = document.getElementById("login-footer-txt");
-        if (footerEl) footerEl.textContent = I18N_FALLBACK.de.footer_text;
+        if (footerEl) footerEl.textContent = t("footer_text");
         const loginInput = document.getElementById("input-login-nr");
         if (loginInput) loginInput.placeholder = t("login_placeholder") || "PIN";
         syncLangDropdown();
@@ -5588,22 +5170,11 @@
         }
         if (typeof syncMediaModeButtons === "function") syncMediaModeButtons();
         if (typeof refreshPhotoCaptureUi === "function") refreshPhotoCaptureUi();
+        if (typeof applyNetBadge === "function") applyNetBadge();
       }
 
       function setLanguage(lang) {
-        appLang = normalizeLang(lang);
-        try {
-          localStorage.setItem(LANG_STORAGE_KEY, appLang);
-          localStorage.setItem("heroal_lang", appLang.toUpperCase());
-        } catch (e) {}
-        closeLangDropdown();
-        applyLanguage();
-        const findProf = document.getElementById("find-prof");
-        const findColor = document.getElementById("find-color");
-        if (findProf) findProf.dispatchEvent(new Event("input"));
-        if (findColor) findColor.dispatchEvent(new Event("input"));
-        if (typeof renderDefects === "function") renderDefects();
-        if (typeof renderAuskunft === "function") renderAuskunft();
+        I18N.setLanguage(lang);
       }
 
       // Service Worker Registration
@@ -6604,7 +6175,10 @@
       bindWorkspaceChrome();
       restoreLoginPack();
       checkAuth();
-      applyLanguage();
+      I18N.ready.then(function () {
+        appLang = getCurrentLanguage();
+        applyLanguage();
+      });
       initSearchHandlers();
       initHotkeys();
       initAutoLogout();
@@ -9286,7 +8860,7 @@
       }
 
       function isOskLetter(ch) {
-        return !!(ch && ch.length === 1 && /[a-zA-ZäöüÄÖÜßẞа-яА-ЯёЁ]/u.test(ch));
+        return !!(ch && ch.length === 1 && /[a-zA-ZäöüÄÖÜßẞа-яА-ЯёЁ\u0600-\u06FF]/u.test(ch));
       }
 
       function oskEscAttr(value) {
@@ -9377,7 +8951,7 @@
           act: "back",
           label: oskGlyph("i-osk-back"),
           cls: "osk-key-fn osk-key-back",
-          aria: "Backspace",
+          aria: t("a11y.backspace"),
         };
       }
 
@@ -9386,7 +8960,7 @@
           act: "shift",
           label: "⇧",
           cls: "osk-key-fn osk-key-shift",
-          aria: "Shift",
+          aria: t("a11y.shift"),
         };
       }
 
@@ -9395,7 +8969,7 @@
           act: "enter",
           label: oskGlyph("i-osk-enter"),
           cls: "osk-key-fn osk-key-enter",
-          aria: "Enter",
+          aria: t("a11y.enter"),
         };
       }
 
@@ -9409,7 +8983,7 @@
             cls: "osk-key-fn osk-key-num numpad-key-more",
             aria: "#+=",
           },
-          { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: "Space" },
+          { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: t("a11y.space") },
           oskEnterKey(),
         ];
       }
@@ -9424,7 +8998,21 @@
             [shift].concat("ячсмитьбю".split("")).concat([back]),
           ];
         }
-        if (appLang === "en") {
+        if (appLang === "ar") {
+          return [
+            "ضصثقفغعهخحجد".split(""),
+            "شسيبلاتنمكط".split(""),
+            [shift].concat("ئءؤرلاىةوزظ".split("")).concat([back]),
+          ];
+        }
+        if (appLang === "fr") {
+          return [
+            "azertyuiop".split(""),
+            "qsdfghjklm".split(""),
+            [shift].concat("wxcvbn".split("")).concat([back]),
+          ];
+        }
+        if (appLang === "en" || appLang === "ro") {
           return [
             "qwertyuiop".split(""),
             "asdfghjkl".split(""),
@@ -9458,7 +9046,8 @@
       }
 
       function oskNumpadHtml() {
-        const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
+        const abcLabel =
+          appLang === "ru" ? "АБВ" : appLang === "ar" ? "أبج" : "ABC";
         const back = oskBackKey();
         back.cls += " numpad-key-back";
         const enter = oskEnterKey();
@@ -9548,7 +9137,8 @@
       }
 
       function searchOskInnerHtml() {
-        const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
+        const abcLabel =
+          appLang === "ru" ? "АБВ" : appLang === "ar" ? "أبج" : "ABC";
         const abcKey = { act: "abc", label: abcLabel, cls: "osk-key-fn osk-key-num" };
         const symKey = { act: "sym", label: "123", cls: "osk-key-fn osk-key-num" };
         const letters =
@@ -11283,23 +10873,28 @@
       }
 
       function rowsToTranslationBundle(rows) {
-        const bundle = { de: {}, en: {}, ru: {} };
+        const bundle = {};
+        LANGS.forEach(function (lang) {
+          bundle[lang] = {};
+        });
         if (!rows || rows.length < 2) return bundle;
         const header = rows[0].map((h) => String(h || "").trim().toLowerCase());
         const keyIdx = header.indexOf("key") !== -1 ? header.indexOf("key") : 0;
-        const deIdx = header.indexOf("de") !== -1 ? header.indexOf("de") : 1;
-        const enIdx = header.indexOf("en") !== -1 ? header.indexOf("en") : 2;
-        const ruIdx = header.indexOf("ru") !== -1 ? header.indexOf("ru") : 3;
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
           const key = usableText(row[keyIdx]);
           if (!key || LANGS.indexOf(key) !== -1) continue;
-          const de = usableText(row[deIdx]);
-          const en = usableText(row[enIdx]);
-          const ru = usableText(row[ruIdx]);
-          if (de) bundle.de[key] = de;
-          if (en) bundle.en[key] = en;
-          if (ru) bundle.ru[key] = ru;
+          LANGS.forEach(function (lang) {
+            let idx = header.indexOf(lang);
+            if (idx === -1) {
+              if (lang === "de") idx = 1;
+              else if (lang === "en") idx = 2;
+              else if (lang === "ru") idx = 3;
+            }
+            if (idx < 0) return;
+            const val = usableText(row[idx]);
+            if (val) bundle[lang][key] = val;
+          });
         }
         return bundle;
       }
@@ -11449,6 +11044,7 @@
         const missing = mediaResult ? mediaResult.failed : 0;
         const added = mediaResult ? mediaResult.downloaded || 0 : 0;
         const artikel = Object.keys(appDB.artikel || {}).length;
+        const farben = Object.keys(appDB.farben || {}).length;
 
         if (mediaResult && mediaResult.aborted) {
           const drawings = cached + missing;
@@ -11460,10 +11056,10 @@
             "warn",
           );
         } else if (missing > 0) {
-          showToast(tf("sync_partial", { artikel, cached, missing }), "warn");
+          showToast(tf("sync_partial", { artikel, farben, cached, missing }), "warn");
         } else {
           const newly = added > 0 ? tf("sync_newly", { n: added }) : "";
-          showToast(tf("sync_ok", { artikel, cached, newly }), "ok");
+          showToast(tf("sync_ok", { artikel, farben, cached, newly }), "ok");
         }
       }
 
