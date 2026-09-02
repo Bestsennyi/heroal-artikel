@@ -5887,11 +5887,11 @@
       const PHOTO_JPEG_QUALITY = 0.82;
       const PHOTO_MAX_EDGE = 1600;
       const ARTIKEL_PHOTO_SLOTS = [
-        { field: "img_url", suffix: "main", labelKey: "photo_slot_main" },
-        { field: "img_1", suffix: "slot1", labelKey: "photo_slot_1" },
-        { field: "img_2", suffix: "slot2", labelKey: "photo_slot_2" },
-        { field: "img_3", suffix: "slot3", labelKey: "photo_slot_3" },
-        { field: "img_4", suffix: "slot4", labelKey: "photo_slot_4" },
+        { field: "img_url", suffix: "", labelKey: "photo_slot_main" },
+        { field: "img_1", suffix: "1", labelKey: "photo_slot_1" },
+        { field: "img_2", suffix: "2", labelKey: "photo_slot_2" },
+        { field: "img_3", suffix: "3", labelKey: "photo_slot_3" },
+        { field: "img_4", suffix: "4", labelKey: "photo_slot_4" },
       ];
       const photoCaptureState = {
         step: 1,
@@ -7967,12 +7967,12 @@
       }
 
       function photoFileName(target, recordId, field) {
-        const ts = Math.floor(Date.now() / 1000);
         const id = safePhotoToken(recordId);
-        if (target === "farben") return "farb_" + id + "_real_" + ts + ".jpg";
+        if (!id) return "photo.jpg";
+        if (target === "farben" || field === "echtes_foto") return id + ".jpg";
         const slot =
           ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field) || ARTIKEL_PHOTO_SLOTS[0];
-        return "art_" + id + "_" + slot.suffix + "_" + ts + ".jpg";
+        return slot.suffix ? id + "_" + slot.suffix + ".jpg" : id + ".jpg";
       }
 
       function recordPhotoValue(record, field) {

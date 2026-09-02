@@ -15,6 +15,11 @@
  *   "heroal-artikel - Farben"   key column code
  *     column: echtes_foto
  *
+ * Drive filenames (stable, overwritten on replace):
+ *   Artikel img_url → {artnr}.jpg
+ *   Artikel img_1–img_4 → {artnr}_1.jpg … {artnr}_4.jpg
+ *   Farben echtes_foto → {code}.jpg
+ *
  * The PWA POSTs text/plain JSON (avoids a CORS preflight):
  *   { action, target, recordId, field, fileName, fileData, mimeType }
  */
@@ -49,6 +54,10 @@ function doPost(e) {
     var folder = folderId
       ? DriveApp.getFolderById(folderId)
       : DriveApp.getRootFolder();
+    var existing = folder.getFilesByName(fileName);
+    while (existing.hasNext()) {
+      existing.next().setTrashed(true);
+    }
     var file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
     var fileId = file.getId();
