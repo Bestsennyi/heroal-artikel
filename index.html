@@ -3478,18 +3478,233 @@
         outline: none;
       }
 
-      .photo-modal .settings-card {
+      .photo-modal {
+        --photo-accent: #93c5fd;
+        --photo-accent-dim: rgba(147, 197, 253, 0.18);
+      }
+      .photo-modal[data-photo-target="farben"] {
+        --photo-accent: #38bdf8;
+        --photo-accent-dim: rgba(56, 189, 248, 0.18);
+      }
+      .photo-modal .photo-card {
+        width: 100%;
         max-width: 560px;
+        max-height: min(92vh, 92dvh, 820px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 16px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .photo-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: 12px;
+      }
+      .photo-head-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .photo-close {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .photo-close:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .photo-tabs {
+        display: flex;
+        gap: 8px;
+      }
+      .photo-tab {
+        flex: 1;
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #0c121b;
+        color: #94a3b8;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .photo-tab .ico {
+        width: 18px;
+        height: 18px;
+      }
+      .photo-tab[data-target="artikel"].is-on {
+        color: #93c5fd;
+        border-color: #93c5fd;
+        background: rgba(147, 197, 253, 0.14);
+        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
+      }
+      .photo-tab[data-target="farben"].is-on {
+        color: #38bdf8;
+        border-color: #38bdf8;
+        background: rgba(56, 189, 248, 0.14);
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.28);
+      }
+      .photo-search {
+        position: relative;
+        --search-icon-slot: 48px;
+      }
+      .photo-search .search-field {
+        padding-right: var(--search-icon-slot);
+        font-size: 18px;
+      }
+      .photo-modal[data-photo-target="artikel"] #photo-id:focus {
+        border-color: #93c5fd;
+        box-shadow: 0 0 16px rgba(147, 197, 253, 0.35);
+      }
+      .photo-modal[data-photo-target="farben"] #photo-id:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      }
+      .photo-match {
+        min-height: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #86efac;
+      }
+      .photo-match.is-miss {
+        color: #fca5a5;
+      }
+      .photo-slots {
+        display: none;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .photo-slots.is-on {
+        display: grid;
+      }
+      .photo-slots.is-single {
+        grid-template-columns: 1fr;
+      }
+      .photo-slot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        min-height: 88px;
+        padding: 8px 4px;
+        text-align: center;
+        border-radius: 12px;
+        border: 1px dashed #334155;
+        background: #0c121b;
+        color: #e2e8f0;
+        cursor: pointer;
+      }
+      .photo-slot.is-full {
+        border-style: solid;
+      }
+      .photo-slot.is-on {
+        border-color: var(--photo-accent);
+        border-style: solid;
+        box-shadow: 0 0 12px var(--photo-accent-dim);
+      }
+      .photo-slot-preview {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: #1e293b;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .photo-slot-preview.is-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-sub);
+        border: 1px dashed #475569;
+        background: transparent;
+      }
+      .photo-slot-preview.is-empty .ico {
+        width: 16px;
+        height: 16px;
+      }
+      .photo-slot-title {
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .photo-slot-state {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text-sub);
+      }
+      .photo-slot.is-full .photo-slot-state {
+        color: #86efac;
+      }
+      .photo-warn {
+        display: none;
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(250, 204, 21, 0.45);
+        background: rgba(250, 204, 21, 0.1);
+        color: #fde68a;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      .photo-warn.is-on {
+        display: block;
+      }
+      .photo-preview-wrap {
+        position: relative;
+        display: none;
+      }
+      .photo-preview-wrap.is-on {
+        display: block;
       }
       .photo-preview {
         width: 100%;
-        min-height: 140px;
-        max-height: 220px;
+        min-height: 120px;
+        max-height: 180px;
         object-fit: contain;
         background: #0c121b;
-        border: 1px dashed var(--border-color);
-        border-radius: 8px;
+        border: 1px solid var(--photo-accent);
+        border-radius: 10px;
+      }
+      .photo-preview-clear {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        border-radius: 999px;
+        background: rgba(2, 6, 23, 0.88);
+        color: #e2e8f0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .photo-actions {
         display: flex;
@@ -3497,7 +3712,7 @@
         flex-wrap: wrap;
       }
       .photo-actions .photo-file-btn {
-        flex: 1 1 160px;
+        flex: 1 1 140px;
         min-height: 48px;
         height: auto;
         margin: 0;
@@ -3508,182 +3723,133 @@
         font-size: 14px;
         cursor: pointer;
       }
-      .photo-stepper {
-        display: flex;
-        gap: 6px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-sub);
+      .photo-actions .photo-file-btn .ico {
+        width: 18px;
+        height: 18px;
       }
-      .photo-stepper span {
-        flex: 1;
-        text-align: center;
-        padding: 6px 4px;
-        border-radius: 8px;
-        background: #0c121b;
-        border: 1px solid var(--border-color);
-      }
-      .photo-stepper span.is-on {
-        color: #e0f2fe;
-        border-color: #38bdf8;
-        background: rgba(14, 165, 233, 0.16);
-      }
-      .photo-step {
-        display: none;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .photo-step.is-on {
-        display: flex;
-      }
-      .photo-target-row {
-        display: flex;
-        gap: 8px;
-      }
-      .photo-target-btn {
-        flex: 1;
-        min-height: 52px;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        background: #0c121b;
-        color: #e2e8f0;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .photo-target-btn.is-on {
-        border-color: #38bdf8;
-        background: rgba(14, 165, 233, 0.18);
-        color: #fff;
-      }
-      .photo-match {
-        min-height: 22px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #86efac;
-      }
-      .photo-match.is-miss {
-        color: #fca5a5;
-      }
-      .photo-nav {
-        display: flex;
-        gap: 8px;
-      }
-      .photo-nav button {
-        flex: 1;
-        min-height: 44px;
-        margin: 0;
-        height: auto;
-      }
-      .photo-nav .photo-btn-ghost {
-        background: #1e293b;
-        color: #e2e8f0;
-        border-color: #334155;
-        box-shadow: none;
-      }
-      .photo-slots {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-      .photo-slot {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-height: 56px;
-        padding: 8px 10px;
-        text-align: left;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        background: #0c121b;
-        color: #e2e8f0;
-        cursor: pointer;
-      }
-      .photo-slot.is-on {
-        border-color: #38bdf8;
-      }
-      .photo-slot-preview {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
-        background: #1e293b;
-        object-fit: cover;
-        flex-shrink: 0;
-      }
-      .photo-slot-preview.is-empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        color: var(--text-sub);
-      }
-      .photo-slot-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
-      }
-      .photo-slot-title {
-        font-size: 13px;
-        font-weight: 700;
-      }
-      .photo-slot-state {
-        font-size: 11px;
-        color: var(--text-sub);
-      }
-      .photo-overwrite {
-        display: none;
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.72);
-        border-radius: 14px;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
-        z-index: 2;
-      }
-      .photo-overwrite.is-on {
-        display: flex;
-      }
-      .photo-overwrite-card {
-        width: 100%;
-        max-width: 320px;
-        background: #131b2e;
-        border: 1px solid rgba(148, 163, 184, 0.28);
-        border-radius: 14px;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .photo-overwrite-card p {
-        margin: 0;
-        font-size: 15px;
-        font-weight: 600;
-        color: #f8fafc;
-        text-align: center;
-      }
-      .photo-modal .settings-card {
-        position: relative;
-      }
-      #photo-id {
+      #photo-save {
         width: 100%;
         min-height: 48px;
-        height: 48px;
-        padding: 0 12px;
-        background: #080d14;
-        border: 2px solid #475569;
-        border-radius: 10px;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 600;
-        outline: none;
+        height: auto;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
       }
-      #photo-id:focus {
-        border-color: #38bdf8;
+      #photo-save .ico {
+        width: 18px;
+        height: 18px;
+      }
+      #photo-save:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
       }
       .photo-osk-wrap .osk {
-        margin-top: 4px;
+        margin-top: 2px;
+      }
+
+      .photo-tab,
+      .photo-slot,
+      .photo-file-btn,
+      #photo-save,
+      #btn-osk-photo,
+      .photo-preview-clear {
+        touch-action: manipulation;
+      }
+      #btnPhotoCapture {
+        flex-shrink: 0;
+      }
+
+      @media (pointer: coarse) {
+        .photo-close {
+          width: 44px;
+          height: 44px;
+        }
+        .photo-preview-clear {
+          width: 44px;
+          height: 44px;
+        }
+        .photo-slot {
+          min-height: 92px;
+        }
+      }
+
+      @media (max-width: 899px) {
+        #btnPhotoCapture .btn-quick-label {
+          display: none;
+        }
+        #btnPhotoCapture {
+          min-width: 44px;
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .photo-close {
+          width: 44px;
+          height: 44px;
+        }
+        .photo-preview-clear {
+          width: 44px;
+          height: 44px;
+        }
+        .photo-tabs {
+          min-height: 48px;
+        }
+        .photo-tab {
+          font-size: 12px;
+          letter-spacing: 0.04em;
+        }
+        .photo-tab .ico {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .photo-modal {
+          padding:
+            max(10px, env(safe-area-inset-top, 0px))
+            max(10px, env(safe-area-inset-right, 0px))
+            max(10px, env(safe-area-inset-bottom, 0px))
+            max(10px, env(safe-area-inset-left, 0px));
+          align-items: flex-start;
+          padding-top: max(12px, env(safe-area-inset-top, 0px));
+        }
+        .photo-modal .photo-card {
+          padding: 12px 12px 16px;
+          gap: 10px;
+          border-radius: 16px;
+        }
+        .photo-slots:not(.is-single) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .photo-slot-title {
+          font-size: 10px;
+        }
+        .photo-slot-state {
+          font-size: 9px;
+        }
+        .photo-file-btn {
+          min-height: 48px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-height: 720px) {
+        .photo-modal .photo-card {
+          max-height: min(96vh, 96dvh);
+          gap: 8px;
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
+        .photo-preview {
+          min-height: 80px;
+          max-height: 140px;
+        }
+        .photo-slot {
+          min-height: 72px;
+        }
       }
 
       @keyframes spin {
@@ -3808,6 +3974,16 @@
       </symbol>
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"/>
+      </symbol>
+      <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="m21 15-5-5L5 21"/>
+      </symbol>
+      <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+        <polyline points="17 21 17 13 7 13 7 21"/>
+        <polyline points="7 3 7 8 15 8"/>
       </symbol>
     </svg>
 
@@ -3961,6 +4137,9 @@
           type="button"
           class="btn-quick admin-only"
           id="btnPhotoCapture"
+          data-i18n-title="photo_capture"
+          title="Foto erfassen"
+          aria-label="Foto erfassen"
           hidden
         >
           <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
@@ -4514,36 +4693,25 @@
       </div>
     </div>
 
-    <div id="photo-dialog" class="photo-modal" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
-      <div class="settings-card" onclick="event.stopPropagation()">
-        <div class="settings-title">
-          <span data-i18n="photo_title">Foto erfassen</span>
-          <button type="button" onclick="closePhotoCapture()" aria-label="Close" style="background:none;border:none;color:#fff;cursor:pointer">
+    <div id="photo-dialog" class="photo-modal" data-photo-target="artikel" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
+      <div class="photo-card" onclick="event.stopPropagation()">
+        <div class="photo-head">
+          <span class="photo-head-title" data-i18n="modalTitle">Foto erfassen</span>
+          <button type="button" class="photo-close" id="photo-close" aria-label="Close">
             <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
           </button>
         </div>
-        <div class="photo-stepper" id="photo-stepper" aria-hidden="true">
-          <span data-step="1">1</span>
-          <span data-step="2">2</span>
-          <span data-step="3">3</span>
-          <span data-step="4">4</span>
+        <div class="photo-tabs">
+          <button type="button" class="photo-tab is-on" id="photo-target-artikel" data-target="artikel">
+            <svg class="ico" aria-hidden="true"><use href="#i-box"></use></svg>
+            <span data-i18n="tabArtikel">ARTIKEL</span>
+          </button>
+          <button type="button" class="photo-tab" id="photo-target-farben" data-target="farben">
+            <svg class="ico" aria-hidden="true"><use href="#i-palette"></use></svg>
+            <span data-i18n="tabFarben">FARBEN</span>
+          </button>
         </div>
-
-        <div class="photo-step is-on" data-photo-step="1">
-          <div class="photo-target-row">
-            <button type="button" class="photo-target-btn is-on" id="photo-target-artikel" data-target="artikel">
-              📦 <span data-i18n="lbl_profiles">Artikel</span>
-            </button>
-            <button type="button" class="photo-target-btn" id="photo-target-farben" data-target="farben">
-              🎨 <span data-i18n="lbl_colors">Farben</span>
-            </button>
-          </div>
-          <div class="photo-nav">
-            <button type="button" class="login-btn" id="photo-next-1" data-i18n="photo_next">Weiter</button>
-          </div>
-        </div>
-
-        <div class="photo-step" data-photo-step="2">
+        <div class="input-box photo-search">
           <input
             type="text"
             id="photo-id"
@@ -4552,55 +4720,51 @@
             autocorrect="off"
             autocapitalize="off"
             spellcheck="false"
-            inputmode="none"
+            inputmode="numeric"
             enterkeyhint="search"
-            data-i18n-placeholder="photo_id_ph_artikel"
-            placeholder="Artikelnummer"
+            data-i18n-placeholder="phArtikel"
+            placeholder="Artikelnummer eingeben..."
           />
-          <div id="photo-match" class="photo-match"></div>
-          <div class="photo-osk-wrap">
-            <div class="osk" id="osk-photo" data-target="photo-id"></div>
-          </div>
-          <div class="photo-nav">
-            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-2" data-i18n="photo_back">Zurück</button>
-            <button type="button" class="login-btn" id="photo-next-2" data-i18n="photo_next" disabled>Weiter</button>
-          </div>
-        </div>
-
-        <div class="photo-step" data-photo-step="3">
-          <img id="photo-preview" class="photo-preview" alt="" hidden />
-          <div class="photo-actions">
-            <label class="login-btn photo-file-btn">
-              <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
-              <span data-i18n="photo_camera">📷 Foto aufnehmen</span>
-            </label>
-            <label class="login-btn photo-file-btn">
-              <input type="file" id="photo-input-gallery" accept="image/*" hidden />
-              <span data-i18n="photo_gallery">📁 Aus Galerie wählen</span>
-            </label>
-          </div>
-          <div class="photo-nav">
-            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-3" data-i18n="photo_back">Zurück</button>
-            <button type="button" class="login-btn" id="photo-next-3" data-i18n="photo_next" disabled>Weiter</button>
+          <div class="search-field-actions">
+            <button
+              type="button"
+              class="search-icon-btn osk-toggle"
+              id="btn-osk-photo"
+              data-osk="osk-photo"
+              aria-label="Keyboard"
+              aria-pressed="false"
+            >
+              <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+            </button>
           </div>
         </div>
-
-        <div class="photo-step" data-photo-step="4">
-          <div id="photo-slots" class="photo-slots"></div>
-          <div class="photo-nav">
-            <button type="button" class="login-btn photo-btn-ghost" id="photo-back-4" data-i18n="photo_back">Zurück</button>
-            <button type="button" class="login-btn" id="photo-save" data-i18n="photo_save">Speichern</button>
-          </div>
+        <div id="photo-match" class="photo-match"></div>
+        <div id="photo-slots" class="photo-slots"></div>
+        <p id="photo-warn" class="photo-warn" data-i18n="warnOverwrite">⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.</p>
+        <div class="photo-actions">
+          <label class="login-btn photo-file-btn">
+            <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
+            <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
+            <span data-i18n="btnCamera">Foto aufnehmen</span>
+          </label>
+          <label class="login-btn photo-file-btn">
+            <input type="file" id="photo-input-gallery" accept="image/*" hidden />
+            <svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg>
+            <span data-i18n="btnGallery">Aus Galerie</span>
+          </label>
         </div>
-
-        <div id="photo-overwrite" class="photo-overwrite" aria-hidden="true">
-          <div class="photo-overwrite-card">
-            <p data-i18n="photo_overwrite">Foto existiert bereits. Ersetzen?</p>
-            <div class="photo-nav">
-              <button type="button" class="login-btn photo-btn-ghost" id="photo-overwrite-no" data-i18n="photo_no">Nein</button>
-              <button type="button" class="login-btn" id="photo-overwrite-yes" data-i18n="photo_yes">Ja</button>
-            </div>
-          </div>
+        <div id="photo-preview-wrap" class="photo-preview-wrap">
+          <img id="photo-preview" class="photo-preview" alt="" />
+          <button type="button" class="photo-preview-clear" id="photo-preview-clear" aria-label="Clear">
+            <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+          </button>
+        </div>
+          <button type="button" class="login-btn" id="photo-save" disabled>
+            <svg class="ico" aria-hidden="true"><use href="#i-save"></use></svg>
+            <span data-i18n="btnSave">Foto speichern</span>
+          </button>
+        <div class="photo-osk-wrap">
+          <div class="osk is-hidden" id="osk-photo" data-target="photo-id"></div>
         </div>
       </div>
     </div>
@@ -4647,30 +4811,26 @@
           nav_scrap: "Ausschuss",
           nav_info: "Auskunft",
           photo_capture: "Foto erfassen",
+          modalTitle: "Foto erfassen",
+          tabArtikel: "ARTIKEL",
+          tabFarben: "FARBEN",
+          phArtikel: "Artikelnummer eingeben...",
+          phFarben: "Farbnummer eingeben...",
+          itemNotFound: "Eintrag nicht gefunden",
+          slotMain: "Hauptbild",
+          slotPhoto: "Foto",
+          slotReal: "Echtes Foto",
+          slotStatusEmpty: "Leer",
+          slotStatusOccupied: "Belegt",
+          warnOverwrite: "⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.",
+          btnCamera: "Foto aufnehmen",
+          btnGallery: "Aus Galerie",
+          btnSave: "Foto speichern",
+          toastAdded: "Foto erfolgreich hinzugefügt ({slot})",
+          toastUpdated: "Foto in {slot} erfolgreich aktualisiert",
+          toastOffline: "Lokal gespeichert (Offline bereit)",
           photo_title: "Foto erfassen",
-          photo_hint: "Foto lokal auf dem Gerät aufnehmen. Wird nicht hochgeladen.",
-          photo_pick: "Kamera öffnen",
-          photo_saved: "Foto erfasst (nur lokal).",
-          photo_next: "Weiter",
-          photo_back: "Zurück",
-          photo_save: "Speichern",
-          photo_camera: "📷 Foto aufnehmen",
-          photo_gallery: "📁 Aus Galerie wählen",
-          photo_id_ph_artikel: "Artikelnummer",
-          photo_id_ph_farben: "Farbcode",
           photo_not_found: "Eintrag nicht gefunden",
-          photo_slot_main: "Hauptbild (img_url)",
-          photo_slot_1: "Foto 1 (img_1)",
-          photo_slot_2: "Foto 2 (img_2)",
-          photo_slot_3: "Foto 3 (img_3)",
-          photo_slot_4: "Foto 4 (img_4)",
-          photo_slot_color: "Echtes Foto (echtes_foto)",
-          photo_slot_empty: "leer",
-          photo_slot_full: "belegt",
-          photo_overwrite: "Foto existiert bereits. Ersetzen?",
-          photo_yes: "Ja",
-          photo_no: "Nein",
-          photo_saved_offline: "Lokal gespeichert (Offline bereit)",
           photo_sync_fail: "Foto-Upload fehlgeschlagen",
           photo_need_photo: "Bitte ein Foto wählen",
           photo_compress_fail: "Foto konnte nicht verarbeitet werden",
@@ -4779,31 +4939,27 @@
           nav_search_hotkey: "Search [/]",
           nav_scrap: "Scrap",
           nav_info: "Info",
-          photo_capture: "Take photo",
-          photo_title: "Take photo",
-          photo_hint: "Capture a photo on this device. It is not uploaded.",
-          photo_pick: "Open camera",
-          photo_saved: "Photo captured (local only).",
-          photo_next: "Next",
-          photo_back: "Back",
-          photo_save: "Save",
-          photo_camera: "📷 Take photo",
-          photo_gallery: "📁 Choose from gallery",
-          photo_id_ph_artikel: "Article number",
-          photo_id_ph_farben: "Colour code",
-          photo_not_found: "Entry not found",
-          photo_slot_main: "Main image (img_url)",
-          photo_slot_1: "Photo 1 (img_1)",
-          photo_slot_2: "Photo 2 (img_2)",
-          photo_slot_3: "Photo 3 (img_3)",
-          photo_slot_4: "Photo 4 (img_4)",
-          photo_slot_color: "Real photo (echtes_foto)",
-          photo_slot_empty: "empty",
-          photo_slot_full: "occupied",
-          photo_overwrite: "Photo already exists. Replace?",
-          photo_yes: "Yes",
-          photo_no: "No",
-          photo_saved_offline: "Saved locally (ready offline)",
+          photo_capture: "Capture photo",
+          modalTitle: "Capture photo",
+          tabArtikel: "ARTICLES",
+          tabFarben: "COLORS",
+          phArtikel: "Enter article number...",
+          phFarben: "Enter color code...",
+          itemNotFound: "Item not found",
+          slotMain: "Main image",
+          slotPhoto: "Photo",
+          slotReal: "Real photo",
+          slotStatusEmpty: "Empty",
+          slotStatusOccupied: "Occupied",
+          warnOverwrite: "⚠️ Slot already occupied. Photo will be overwritten on save.",
+          btnCamera: "Take photo",
+          btnGallery: "From gallery",
+          btnSave: "Save photo",
+          toastAdded: "Photo successfully added ({slot})",
+          toastUpdated: "Photo in {slot} successfully updated",
+          toastOffline: "Saved locally (Offline ready)",
+          photo_title: "Capture photo",
+          photo_not_found: "Item not found",
           photo_sync_fail: "Photo upload failed",
           photo_need_photo: "Please choose a photo",
           photo_compress_fail: "Could not process the photo",
@@ -4912,31 +5068,27 @@
           nav_search_hotkey: "Поиск [/]",
           nav_scrap: "Брак",
           nav_info: "Справка",
-          photo_capture: "Сделать фото",
-          photo_title: "Сделать фото",
-          photo_hint: "Снимок только на этом устройстве. Не загружается на сервер.",
-          photo_pick: "Открыть камеру",
-          photo_saved: "Фото сохранено локально.",
-          photo_next: "Далее",
-          photo_back: "Назад",
-          photo_save: "Сохранить",
-          photo_camera: "📷 Сделать фото",
-          photo_gallery: "📁 Выбрать из галереи",
-          photo_id_ph_artikel: "Артикул",
-          photo_id_ph_farben: "Код цвета",
+          photo_capture: "Захват фото",
+          modalTitle: "Захват фото",
+          tabArtikel: "АРТИКУЛЫ",
+          tabFarben: "КРАСКИ",
+          phArtikel: "Введите номер артикула...",
+          phFarben: "Введите номер краски...",
+          itemNotFound: "Запись не найдена",
+          slotMain: "Главное фото",
+          slotPhoto: "Фото",
+          slotReal: "Реальное фото",
+          slotStatusEmpty: "Свободно",
+          slotStatusOccupied: "Занято",
+          warnOverwrite: "⚠️ Слот уже занят. Фото будет заменено при сохранении.",
+          btnCamera: "Сделать фото",
+          btnGallery: "Из галереи",
+          btnSave: "Сохранить фото",
+          toastAdded: "Фото успешно добавлено ({slot})",
+          toastUpdated: "Фото в {slot} успешно обновлено",
+          toastOffline: "Сохранено локально (Оффлайн режим)",
+          photo_title: "Захват фото",
           photo_not_found: "Запись не найдена",
-          photo_slot_main: "Главное фото (img_url)",
-          photo_slot_1: "Фото 1 (img_1)",
-          photo_slot_2: "Фото 2 (img_2)",
-          photo_slot_3: "Фото 3 (img_3)",
-          photo_slot_4: "Фото 4 (img_4)",
-          photo_slot_color: "Реальное фото (echtes_foto)",
-          photo_slot_empty: "пусто",
-          photo_slot_full: "занято",
-          photo_overwrite: "Фото уже есть. Заменить?",
-          photo_yes: "Да",
-          photo_no: "Нет",
-          photo_saved_offline: "Сохранено локально (готово офлайн)",
           photo_sync_fail: "Не удалось загрузить фото",
           photo_need_photo: "Выберите фото",
           photo_compress_fail: "Не удалось обработать фото",
@@ -5187,6 +5339,7 @@
           logoutBtn.setAttribute("aria-label", label);
         }
         if (typeof syncMediaModeButtons === "function") syncMediaModeButtons();
+        if (typeof refreshPhotoCaptureUi === "function") refreshPhotoCaptureUi();
       }
 
       function setLanguage(lang) {
@@ -5894,13 +6047,11 @@
         { field: "img_4", suffix: "4", labelKey: "photo_slot_4" },
       ];
       const photoCaptureState = {
-        step: 1,
         target: "artikel",
         recordId: "",
         recordName: "",
         dataUrl: "",
-        field: "",
-        overwriteField: "",
+        field: "img_url",
         bound: false,
       };
       let photoSyncCtl = { running: false };
@@ -8099,75 +8250,98 @@
         });
       }
 
-      function setPhotoStep(step) {
-        photoCaptureState.step = step;
-        document.querySelectorAll("[data-photo-step]").forEach((el) => {
-          el.classList.toggle("is-on", Number(el.getAttribute("data-photo-step")) === step);
-        });
-        document.querySelectorAll("#photo-stepper span").forEach((el) => {
-          el.classList.toggle("is-on", Number(el.getAttribute("data-step")) === step);
-        });
-        hidePhotoOverwrite();
-        if (step === 2) {
-          remountSearchKeypads();
-          const input = document.getElementById("photo-id");
-          if (input) setTimeout(() => input.focus(), 0);
-        }
-        if (step === 4) renderPhotoSlots();
+      function photoSlotTitle(field) {
+        if (field === "echtes_foto") return t("slotReal");
+        if (field === "img_url") return t("slotMain");
+        const slot = ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field);
+        if (slot && slot.suffix) return t("slotPhoto") + " " + slot.suffix;
+        return t("slotMain");
       }
 
-      function resetPhotoCaptureState() {
-        photoCaptureState.step = 1;
-        photoCaptureState.target = "artikel";
-        photoCaptureState.recordId = "";
-        photoCaptureState.recordName = "";
-        photoCaptureState.dataUrl = "";
-        photoCaptureState.field = "";
-        photoCaptureState.overwriteField = "";
-        const input = document.getElementById("photo-id");
-        if (input) input.value = "";
-        const preview = document.getElementById("photo-preview");
-        if (preview) {
-          preview.hidden = true;
-          preview.removeAttribute("src");
+      function currentPhotoSlotOccupied() {
+        if (!photoCaptureState.recordId || !photoCaptureState.field) return false;
+        const catalog =
+          photoCaptureState.target === "farben"
+            ? appDB.farben || {}
+            : appDB.artikel || {};
+        const record = catalog[photoCaptureState.recordId];
+        return !!recordPhotoValue(record, photoCaptureState.field);
+      }
+
+      function updatePhotoSaveState() {
+        const save = document.getElementById("photo-save");
+        if (!save) return;
+        save.disabled = !(
+          photoCaptureState.recordId &&
+          photoCaptureState.field &&
+          photoCaptureState.dataUrl
+        );
+      }
+
+      function updatePhotoWarn() {
+        const warn = document.getElementById("photo-warn");
+        if (!warn) return;
+        const on =
+          !!photoCaptureState.recordId && currentPhotoSlotOccupied();
+        warn.classList.toggle("is-on", on);
+      }
+
+      function refreshPhotoCaptureUi() {
+        const dlg = document.getElementById("photo-dialog");
+        if (!dlg || !dlg.classList.contains("active")) {
+          syncPhotoTargetButtons();
+          return;
         }
+        syncPhotoTargetButtons();
+        updatePhotoMatch();
+      }
+
+      function clearPhotoPreview() {
+        photoCaptureState.dataUrl = "";
+        const preview = document.getElementById("photo-preview");
+        const wrap = document.getElementById("photo-preview-wrap");
+        if (preview) preview.removeAttribute("src");
+        if (wrap) wrap.classList.remove("is-on");
         const cam = document.getElementById("photo-input-camera");
         const gal = document.getElementById("photo-input-gallery");
         if (cam) cam.value = "";
         if (gal) gal.value = "";
-        const next3 = document.getElementById("photo-next-3");
-        if (next3) next3.disabled = true;
-        hidePhotoOverwrite();
+        updatePhotoSaveState();
+      }
+
+      function resetPhotoCaptureState() {
+        photoCaptureState.target = "artikel";
+        photoCaptureState.recordId = "";
+        photoCaptureState.recordName = "";
+        photoCaptureState.dataUrl = "";
+        photoCaptureState.field = "img_url";
+        const input = document.getElementById("photo-id");
+        if (input) input.value = "";
+        clearPhotoPreview();
+        setSearchOskVisible("osk-photo", false);
         syncPhotoTargetButtons();
         updatePhotoMatch();
-        setPhotoStep(1);
       }
 
       function syncPhotoTargetButtons() {
+        const dlg = document.getElementById("photo-dialog");
+        if (dlg) dlg.setAttribute("data-photo-target", photoCaptureState.target);
         const art = document.getElementById("photo-target-artikel");
         const far = document.getElementById("photo-target-farben");
         if (art) art.classList.toggle("is-on", photoCaptureState.target === "artikel");
         if (far) far.classList.toggle("is-on", photoCaptureState.target === "farben");
         const input = document.getElementById("photo-id");
         if (input) {
-          input.setAttribute(
-            "data-i18n-placeholder",
-            photoCaptureState.target === "farben"
-              ? "photo_id_ph_farben"
-              : "photo_id_ph_artikel",
-          );
-          input.placeholder = t(
-            photoCaptureState.target === "farben"
-              ? "photo_id_ph_farben"
-              : "photo_id_ph_artikel",
-          );
+          const phKey =
+            photoCaptureState.target === "farben" ? "phFarben" : "phArtikel";
+          input.setAttribute("data-i18n-placeholder", phKey);
+          input.placeholder = t(phKey);
         }
       }
 
       function updatePhotoMatch() {
         const input = document.getElementById("photo-id");
         const matchEl = document.getElementById("photo-match");
-        const nextBtn = document.getElementById("photo-next-2");
         const q = input ? input.value : "";
         const hit = lookupPhotoRecord(photoCaptureState.target, q);
         if (!String(q || "").trim()) {
@@ -8177,17 +8351,19 @@
             matchEl.textContent = "";
             matchEl.classList.remove("is-miss");
           }
-          if (nextBtn) nextBtn.disabled = true;
+          renderPhotoSlots();
+          updatePhotoSaveState();
           return;
         }
         if (!hit) {
           photoCaptureState.recordId = "";
           photoCaptureState.recordName = "";
           if (matchEl) {
-            matchEl.textContent = t("photo_not_found");
+            matchEl.textContent = t("itemNotFound");
             matchEl.classList.add("is-miss");
           }
-          if (nextBtn) nextBtn.disabled = true;
+          renderPhotoSlots();
+          updatePhotoSaveState();
           return;
         }
         photoCaptureState.recordId = hit.key;
@@ -8197,37 +8373,39 @@
           matchEl.textContent = photoCaptureState.recordName;
           matchEl.classList.remove("is-miss");
         }
-        if (nextBtn) nextBtn.disabled = false;
-      }
-
-      async function slotOccupied(target, recordId, field) {
-        const catalog =
-          target === "farben" ? appDB.farben || {} : appDB.artikel || {};
-        const record = catalog[recordId];
-        if (recordPhotoValue(record, field)) return true;
-        const items = await photoQueueAll();
-        return items.some(
-          (it) =>
-            it &&
-            it.target === target &&
-            String(it.recordId) === String(recordId) &&
-            it.field === field,
-        );
+        if (photoCaptureState.target === "farben") {
+          photoCaptureState.field = "echtes_foto";
+        } else if (
+          !ARTIKEL_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)
+        ) {
+          photoCaptureState.field = "img_url";
+        }
+        renderPhotoSlots();
+        updatePhotoSaveState();
       }
 
       function renderPhotoSlots() {
         const wrap = document.getElementById("photo-slots");
         if (!wrap) return;
         wrap.innerHTML = "";
+        if (!photoCaptureState.recordId) {
+          wrap.classList.remove("is-on", "is-single");
+          updatePhotoWarn();
+          return;
+        }
+        wrap.classList.add("is-on");
         if (photoCaptureState.target === "farben") {
           photoCaptureState.field = "echtes_foto";
+          wrap.classList.add("is-single");
           const col = (appDB.farben || {})[photoCaptureState.recordId];
           const url = recordPhotoValue(col, "echtes_foto");
           wrap.appendChild(
-            photoSlotButton("echtes_foto", t("photo_slot_color"), url, true),
+            photoSlotButton("echtes_foto", photoSlotTitle("echtes_foto"), url, true),
           );
+          updatePhotoWarn();
           return;
         }
+        wrap.classList.remove("is-single");
         if (!photoCaptureState.field) photoCaptureState.field = "img_url";
         const item = (appDB.artikel || {})[photoCaptureState.recordId];
         ARTIKEL_PHOTO_SLOTS.forEach((slot) => {
@@ -8235,35 +8413,41 @@
           wrap.appendChild(
             photoSlotButton(
               slot.field,
-              t(slot.labelKey),
+              photoSlotTitle(slot.field),
               url,
               photoCaptureState.field === slot.field,
             ),
           );
         });
+        updatePhotoWarn();
       }
 
       function photoSlotButton(field, title, url, selected) {
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "photo-slot" + (selected ? " is-on" : "");
+        btn.className =
+          "photo-slot" +
+          (selected ? " is-on" : "") +
+          (url ? " is-full" : "");
         btn.setAttribute("data-field", field);
         const occupied = !!url;
         const preview = occupied
           ? '<img class="photo-slot-preview" alt="" src="' +
             escapeHtml(url) +
             '">'
-          : '<span class="photo-slot-preview is-empty">—</span>';
+          : '<span class="photo-slot-preview is-empty"><svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg></span>';
         btn.innerHTML =
           preview +
-          '<span class="photo-slot-meta"><span class="photo-slot-title">' +
+          '<span class="photo-slot-title">' +
           escapeHtml(title) +
           '</span><span class="photo-slot-state">' +
-          escapeHtml(t(occupied ? "photo_slot_full" : "photo_slot_empty")) +
-          "</span></span>";
+          escapeHtml(t(occupied ? "slotStatusOccupied" : "slotStatusEmpty")) +
+          "</span>";
         btn.addEventListener("click", () => {
           photoCaptureState.field = field;
           wrapSelectPhotoSlot(field);
+          updatePhotoWarn();
+          updatePhotoSaveState();
         });
         return btn;
       }
@@ -8274,35 +8458,11 @@
         });
       }
 
-      function hidePhotoOverwrite() {
-        const el = document.getElementById("photo-overwrite");
-        if (!el) return;
-        el.classList.remove("is-on");
-        el.setAttribute("aria-hidden", "true");
-        photoCaptureState.overwriteField = "";
-      }
-
-      function showPhotoOverwrite(field) {
-        photoCaptureState.overwriteField = field;
-        const el = document.getElementById("photo-overwrite");
-        if (!el) return;
-        el.classList.add("is-on");
-        el.setAttribute("aria-hidden", "false");
-      }
-
       function refreshPhotoTargetViews() {
         const id = photoCaptureState.recordId;
         if (!id) return;
         if (photoCaptureState.target === "artikel") {
           if (lastActiveArticle === id) renderProfileCard(id);
-          if (typeof renderArtikelList === "function") {
-            try {
-              const q = document.getElementById("find-prof");
-              if (q && (q.value || "").trim()) {
-                /* list refresh via existing search */
-              }
-            } catch (e) {}
-          }
           const pIn = document.getElementById("find-prof");
           if (pIn) pIn.dispatchEvent(new Event("input"));
         } else {
@@ -8317,6 +8477,7 @@
         if (!photoCaptureState.dataUrl || !photoCaptureState.recordId) return;
         const target = photoCaptureState.target;
         const recordId = photoCaptureState.recordId;
+        const wasOccupied = currentPhotoSlotOccupied();
         const items = await photoQueueAll();
         await Promise.all(
           items
@@ -8343,7 +8504,11 @@
         await photoQueuePut(item);
         await idbSet("heroal_db", appDB);
         refreshPhotoTargetViews();
-        showToast(t("photo_saved_offline"), "ok");
+        const slotLabel = photoSlotTitle(field);
+        const msg = wasOccupied
+          ? tf("toastUpdated", { slot: slotLabel })
+          : tf("toastAdded", { slot: slotLabel });
+        showToast(msg + " · " + t("toastOffline"), "ok");
         closePhotoCapture();
         triggerPhotoSync();
       }
@@ -8353,12 +8518,12 @@
           field ||
           photoCaptureState.field ||
           (photoCaptureState.target === "farben" ? "echtes_foto" : "img_url");
-        if (!photoCaptureState.dataUrl) {
-          showToast(t("photo_need_photo"), "warn");
+        if (!photoCaptureState.recordId) {
+          showToast(t("itemNotFound"), "warn");
           return;
         }
-        if (await slotOccupied(photoCaptureState.target, photoCaptureState.recordId, useField)) {
-          showPhotoOverwrite(useField);
+        if (!photoCaptureState.dataUrl) {
+          showToast(t("photo_need_photo"), "warn");
           return;
         }
         await commitPhotoToQueue(useField);
@@ -8370,12 +8535,10 @@
           const dataUrl = await compressImageFile(file);
           photoCaptureState.dataUrl = dataUrl;
           const preview = document.getElementById("photo-preview");
-          if (preview) {
-            preview.src = dataUrl;
-            preview.hidden = false;
-          }
-          const next3 = document.getElementById("photo-next-3");
-          if (next3) next3.disabled = false;
+          const wrap = document.getElementById("photo-preview-wrap");
+          if (preview) preview.src = dataUrl;
+          if (wrap) wrap.classList.add("is-on");
+          updatePhotoSaveState();
         } catch (err) {
           console.warn("photo compress failed", err);
           showToast(t("photo_compress_fail"), "error");
@@ -8385,6 +8548,8 @@
       function bindPhotoCaptureUi() {
         if (photoCaptureState.bound) return;
         photoCaptureState.bound = true;
+        const closeBtn = document.getElementById("photo-close");
+        if (closeBtn) closeBtn.addEventListener("click", closePhotoCapture);
         const art = document.getElementById("photo-target-artikel");
         const far = document.getElementById("photo-target-farben");
         if (art) {
@@ -8405,45 +8570,12 @@
         }
         const idInput = document.getElementById("photo-id");
         if (idInput) idInput.addEventListener("input", updatePhotoMatch);
-        const n1 = document.getElementById("photo-next-1");
-        if (n1) n1.addEventListener("click", () => setPhotoStep(2));
-        const b2 = document.getElementById("photo-back-2");
-        if (b2) b2.addEventListener("click", () => setPhotoStep(1));
-        const n2 = document.getElementById("photo-next-2");
-        if (n2) {
-          n2.addEventListener("click", () => {
-            updatePhotoMatch();
-            if (photoCaptureState.recordId) setPhotoStep(3);
-          });
-        }
-        const b3 = document.getElementById("photo-back-3");
-        if (b3) b3.addEventListener("click", () => setPhotoStep(2));
-        const n3 = document.getElementById("photo-next-3");
-        if (n3) {
-          n3.addEventListener("click", () => {
-            if (!photoCaptureState.dataUrl) {
-              showToast(t("photo_need_photo"), "warn");
-              return;
-            }
-            setPhotoStep(4);
-          });
-        }
-        const b4 = document.getElementById("photo-back-4");
-        if (b4) b4.addEventListener("click", () => setPhotoStep(3));
         const save = document.getElementById("photo-save");
         if (save) {
           save.addEventListener("click", () => trySavePhoto(photoCaptureState.field));
         }
-        const yes = document.getElementById("photo-overwrite-yes");
-        if (yes) {
-          yes.addEventListener("click", async () => {
-            const field = photoCaptureState.overwriteField || photoCaptureState.field;
-            hidePhotoOverwrite();
-            await commitPhotoToQueue(field);
-          });
-        }
-        const no = document.getElementById("photo-overwrite-no");
-        if (no) no.addEventListener("click", hidePhotoOverwrite);
+        const clearBtn = document.getElementById("photo-preview-clear");
+        if (clearBtn) clearBtn.addEventListener("click", clearPhotoPreview);
         const cam = document.getElementById("photo-input-camera");
         const gal = document.getElementById("photo-input-gallery");
         if (cam) {
@@ -8470,13 +8602,15 @@
         dlg.setAttribute("aria-hidden", "false");
         syncHdrQuickTabs();
         remountSearchKeypads();
+        const input = document.getElementById("photo-id");
+        if (input) setTimeout(() => input.focus(), 0);
       }
       function closePhotoCapture() {
         const dlg = document.getElementById("photo-dialog");
         if (!dlg) return;
         dlg.classList.remove("active");
         dlg.setAttribute("aria-hidden", "true");
-        hidePhotoOverwrite();
+        setSearchOskVisible("osk-photo", false);
         syncHdrQuickTabs();
       }
 
@@ -8925,8 +9059,7 @@
 
       function remountSearchKeypads() {
         document.querySelectorAll(".osk[data-target]").forEach((pad) => {
-          const keepPhotoOpen = pad.id === "osk-photo";
-          const wasHidden = keepPhotoOpen ? false : pad.classList.contains("is-hidden");
+          const wasHidden = pad.classList.contains("is-hidden");
           const alphaEl = pad.querySelector(".osk-alpha");
           const symbolsEl = pad.querySelector(".osk-symbols");
           const alphaOn = !!(alphaEl && !alphaEl.classList.contains("is-hidden"));
@@ -9057,7 +9190,6 @@
             return;
           } else if (pad.id === "osk-photo") {
             updatePhotoMatch();
-            if (photoCaptureState.recordId) setPhotoStep(3);
             input.focus();
             return;
           } else {
