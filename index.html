@@ -1541,6 +1541,7 @@
       }
 
       .osk {
+        position: relative;
         margin-top: 0;
         width: 100%;
         user-select: none;
@@ -1608,10 +1609,11 @@
         color: #f8fafc;
         box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
       }
-      .numpad-key-space::after {
+      .osk-key-space::after {
         content: "";
         display: block;
-        width: 42%;
+        width: 33.6%;
+        max-width: 38px;
         height: 2px;
         margin: 0 auto;
         border-radius: 1px;
@@ -1851,10 +1853,16 @@
         max-width: none;
       }
       .osk-alpha .osk-letters .osk-row-fn .osk-key-num,
-      .osk-alpha .osk-letters .osk-row-fn .osk-key-enter {
+      .osk-alpha .osk-letters .osk-row-fn .osk-key-enter,
+      .osk-alpha .osk-letters .osk-row-fn .numpad-key-more {
         flex: 0 0 56px;
         width: 56px;
         max-width: 56px;
+      }
+      .osk-alpha .osk-letters .osk-row-fn .numpad-key-more {
+        font-size: 13px;
+        letter-spacing: 0;
+        white-space: nowrap;
       }
       .osk-alpha .osk-letters .osk-row-fn .osk-key[data-osk-char="."] {
         flex: 0 0 40px;
@@ -1965,10 +1973,16 @@
         min-width: 48px;
       }
       .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-num,
-      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-enter {
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key-enter,
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .numpad-key-more {
         flex: 0 0 56px;
         width: 56px;
         max-width: 56px;
+      }
+      .search-stack .osk-alpha .osk-letters .osk-row-fn .numpad-key-more {
+        font-size: 13px;
+        letter-spacing: 0;
+        white-space: nowrap;
       }
       .search-stack .osk-alpha .osk-letters .osk-row-fn .osk-key[data-osk-char="."] {
         flex: 0 0 40px;
@@ -9389,6 +9403,12 @@
         return [
           leading,
           ".",
+          {
+            act: "sympop",
+            label: "#+=",
+            cls: "osk-key-fn osk-key-num numpad-key-more",
+            aria: "#+=",
+          },
           { act: "space", label: "", cls: "osk-key-space osk-key-fn", aria: "Space" },
           oskEnterKey(),
         ];
@@ -9475,15 +9495,20 @@
             aria: "#+=",
           },
         ];
-        const popChars = ["-", "/", "@", "#", ":", "!", "€", "_", ",", "?", '"', ";"];
         return (
           '<div class="osk-num numpad is-hidden">' +
           '<div class="numpad-grid">' +
           keys.map(oskKeyHtml).join("") +
           "</div>" +
+          "</div>"
+        );
+      }
+
+      function oskSymPopHtml() {
+        const popChars = ["-", "/", "@", "#", ":", "!", "€", "_", ",", "?", '"', ";"];
+        return (
           '<div class="numpad-pop is-hidden" role="dialog" aria-label="#+=">' +
           popChars.map(oskKeyHtml).join("") +
-          "</div>" +
           "</div>"
         );
       }
@@ -9503,8 +9528,7 @@
       }
 
       function closeAllNumpadPops() {
-        document.querySelectorAll(".osk-num.numpad").forEach((wrap) => {
-          const pad = wrap.closest(".osk") || wrap;
+        document.querySelectorAll(".osk[data-target]").forEach((pad) => {
           closeNumpadPop(pad);
         });
       }
@@ -9513,8 +9537,7 @@
         const pop = numpadPopEl(pad);
         if (!pop) return;
         const open = pop.classList.contains("is-hidden");
-        document.querySelectorAll(".osk-num.numpad").forEach((wrap) => {
-          const other = wrap.closest(".osk") || wrap;
+        document.querySelectorAll(".osk[data-target]").forEach((other) => {
           if (other !== pad) closeNumpadPop(other);
         });
         pop.classList.toggle("is-hidden", !open);
@@ -9547,7 +9570,8 @@
           '<div class="osk-symbols is-hidden">' +
           symbols +
           "</div>" +
-          "</div>"
+          "</div>" +
+          oskSymPopHtml()
         );
       }
 
