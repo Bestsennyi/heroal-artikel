@@ -13,12 +13,13 @@
  *   "heroal-artikel - Artikel"  key column artnr or art_nr
  *     columns: img_url, img_1, img_2, img_3, img_4
  *   "heroal-artikel - Farben"   key column code
- *     column: echtes_foto
+ *     columns: echtes_foto, bild_dummyimage
  *
  * Drive filenames (stable, overwritten on replace):
  *   Artikel img_url → {artnr}.jpg
  *   Artikel img_1–img_4 → {artnr}_1.jpg … {artnr}_4.jpg
  *   Farben echtes_foto → {code}.jpg
+ *   Farben bild_dummyimage → {code}_dummy.jpg
  *
  * The PWA POSTs text/plain JSON (avoids a CORS preflight):
  *   { action, target, recordId, field, fileName, fileData, mimeType }

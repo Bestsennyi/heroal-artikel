@@ -517,10 +517,10 @@
           height: 42px;
           font-size: 14px;
         }
-        .login-box .osk-num .osk-key[data-osk-char] {
+        .login-box .numpad-grid .osk-key[data-osk-char] {
           font-size: 20px;
         }
-        .login-box .osk-num .osk-key-enter,
+        .login-box .numpad-grid .osk-key-enter,
         .login-box .osk-row .osk-key-enter {
           font-size: 22px;
         }
@@ -1549,10 +1549,74 @@
         display: none;
       }
       .osk-num {
+        position: relative;
+        display: block;
+        width: 100%;
+      }
+      .numpad-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
         width: 100%;
+      }
+      .numpad-grid .osk-key {
+        width: auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .numpad-grid .osk-key-enter {
+        grid-column: auto;
+        grid-row: auto;
+        font-size: 22px;
+      }
+      .numpad-grid .osk-key[data-osk-char] {
+        font-size: 23px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .numpad-pop {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - 12px);
+        z-index: 8;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-rows: repeat(2, auto);
+        gap: 6px;
+        padding: 8px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #0f172a;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        pointer-events: auto;
+      }
+      .numpad-pop.is-hidden {
+        display: none;
+      }
+      .numpad-pop .osk-key {
+        min-height: 40px;
+        height: 40px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+      .numpad-key-more.is-on {
+        background: #1e293b;
+        border: 2px solid var(--heroal-accent);
+        color: #f8fafc;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
+      }
+      .numpad-key-space::after {
+        content: "";
+        display: block;
+        width: 42%;
+        height: 2px;
+        margin: 0 auto;
+        border-radius: 1px;
+        background: currentColor;
+        opacity: 0.75;
       }
       .osk-alpha {
         display: flex;
@@ -1697,11 +1761,6 @@
         transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out,
           box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
       }
-      .osk-num .osk-key[data-osk-char] {
-        font-size: 23px;
-        font-weight: 700;
-        color: #ffffff;
-      }
       .osk-key:hover,
       .osk-key-fn:hover,
       .osk-key-enter:hover {
@@ -1834,24 +1893,28 @@
         width: 100%;
       }
       .search-stack .osk-num {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
+        position: relative;
+        display: block;
         width: 100%;
       }
-      .search-stack .osk-num .osk-key {
+      .search-stack .numpad-grid .osk-key {
         min-height: 46px;
         height: 46px;
       }
-      .search-stack .osk-num .osk-key[data-osk-char] {
+      .search-stack .numpad-grid .osk-key[data-osk-char] {
         font-size: 20px;
       }
-      .search-stack .osk-num .osk-key-enter {
-        grid-column: 4;
-        grid-row: 3 / span 2;
-        height: auto;
+      .search-stack .numpad-grid .osk-key-enter {
+        grid-column: auto;
+        grid-row: auto;
+        height: 46px;
         min-height: 46px;
-        font-size: 24px;
+        font-size: 22px;
+      }
+      .search-stack .numpad-pop .osk-key {
+        min-height: 38px;
+        height: 38px;
+        font-size: 15px;
       }
       .search-stack .osk-alpha {
         display: flex;
@@ -3088,7 +3151,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.72);
+        background: rgba(0, 0, 0, 0.94);
         z-index: 2500;
         justify-content: center;
         align-items: center;
@@ -3097,12 +3160,18 @@
       .sync-modal.active {
         display: flex;
       }
+      .sync-panel {
+        position: relative;
+        width: 100%;
+        max-width: calc(480px + 48px);
+        padding-top: 48px;
+        padding-right: 48px;
+      }
       .sync-box {
         width: 100%;
-        max-width: 480px;
-        background: #131b2e;
-        border: 1px solid rgba(96, 165, 250, 0.28);
-        border-radius: 18px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
         padding: 28px;
         display: flex;
         flex-direction: column;
@@ -3117,10 +3186,11 @@
       .sync-icon-wrap {
         width: 48px;
         height: 48px;
-        border-radius: 14px;
-        background: rgba(59, 130, 246, 0.16);
-        border: 1px solid rgba(96, 165, 250, 0.35);
+        border-radius: 12px;
+        background: rgba(147, 197, 253, 0.14);
+        border: 1px solid #93c5fd;
         color: #93c5fd;
+        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -3153,23 +3223,51 @@
       .sync-pct {
         font-size: 16px;
         font-weight: 700;
-        color: #60a5fa;
+        color: #93c5fd;
         font-variant-numeric: tabular-nums;
         flex-shrink: 0;
+      }
+      .sync-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 10px;
+        background: rgba(147, 197, 253, 0.14);
+        border: 1px solid #93c5fd;
+        color: #93c5fd;
+        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sync-close:hover {
+        color: #fff;
+        filter: none;
+        background: rgba(147, 197, 253, 0.22);
+      }
+      .sync-close .ico {
+        width: 16px;
+        height: 16px;
       }
       .sync-progress-bar-bg {
         width: 100%;
         height: 12px;
-        background: #080d14;
+        background: #0c121b;
         border-radius: 999px;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border-color);
       }
       .sync-progress-bar-fill {
         width: 0%;
         height: 100%;
         border-radius: 999px;
-        background: linear-gradient(90deg, #2563eb, #60a5fa);
+        background: linear-gradient(90deg, #93c5fd, #bfdbfe);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.35);
         transition: width 0.3s ease;
       }
 
@@ -3596,14 +3694,17 @@
       }
       .photo-slots {
         display: none;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 6px;
       }
       .photo-slots.is-on {
         display: grid;
       }
-      .photo-slots.is-single {
-        grid-template-columns: 1fr;
+      .photo-slots.is-artikel {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+      .photo-slots.is-farben {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
       }
       .photo-slot {
         display: flex;
@@ -3647,6 +3748,9 @@
         width: 16px;
         height: 16px;
       }
+      .photo-slot-preview.is-swatch {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
       .photo-slot-title {
         font-size: 11px;
         font-weight: 700;
@@ -3679,8 +3783,77 @@
         position: relative;
         display: none;
       }
-      .photo-preview-wrap.is-on {
-        display: block;
+      .photo-live {
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .photo-live.is-on {
+        display: flex;
+      }
+      .photo-live-video {
+        width: 100%;
+        min-height: 160px;
+        max-height: 240px;
+        object-fit: cover;
+        background: #000;
+        border: 1px solid var(--photo-accent);
+        border-radius: 10px;
+      }
+      .photo-live-bar {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+      }
+      .photo-live-bar #photo-live-snap,
+      .photo-live-bar #photo-live-cancel {
+        width: auto;
+        margin: 0;
+        min-height: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-sizing: border-box;
+      }
+      .photo-live-bar #photo-live-snap {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      .photo-live-bar #photo-live-snap .ico {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .photo-live-bar #photo-live-cancel {
+        flex: 0 0 48px;
+        width: 48px;
+        min-width: 48px;
+        max-width: 48px;
+        padding: 0;
+        background: var(--photo-accent-dim);
+        border: 1px solid var(--photo-accent);
+        color: var(--photo-accent);
+        box-shadow:
+          0 0 0 1px var(--photo-accent),
+          0 0 16px var(--photo-accent-dim);
+      }
+      .photo-live-bar #photo-live-cancel:hover,
+      .photo-live-bar #photo-live-cancel:active {
+        background: var(--photo-accent-dim);
+        border-color: var(--photo-accent);
+        color: #fff;
+        filter: none;
+        transform: none;
+        box-shadow:
+          0 0 0 1px var(--photo-accent),
+          0 0 22px var(--photo-accent-dim);
+      }
+      .photo-live-bar #photo-live-cancel .ico {
+        width: 18px;
+        height: 18px;
       }
       .photo-preview {
         width: 100%;
@@ -3754,6 +3927,9 @@
       .photo-slot,
       .photo-file-btn,
       #photo-save,
+      #photo-btn-camera,
+      #photo-live-snap,
+      #photo-live-cancel,
       #btn-osk-photo,
       .photo-preview-clear {
         touch-action: manipulation;
@@ -3821,8 +3997,8 @@
           gap: 10px;
           border-radius: 16px;
         }
-        .photo-slots:not(.is-single) {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+        .photo-slots.is-artikel {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
         }
         .photo-slot-title {
           font-size: 10px;
@@ -3845,6 +4021,10 @@
         }
         .photo-preview {
           min-height: 80px;
+          max-height: 140px;
+        }
+        .photo-live-video {
+          min-height: 100px;
           max-height: 140px;
         }
         .photo-slot {
@@ -4675,7 +4855,18 @@
     </div>
 
     <!-- 6. SYNC PROGRESS MODAL -->
-    <div id="sync-dialog" class="sync-modal">
+    <div id="sync-dialog" class="sync-modal" onclick="if(event.target===this)cancelManualSync()">
+      <div class="sync-panel" onclick="event.stopPropagation()">
+      <button
+        type="button"
+        class="sync-close"
+        id="sync-close"
+        data-i18n-title="sync_cancel"
+        title="Abbrechen"
+        aria-label="Abbrechen"
+      >
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       <div class="sync-box">
         <div class="sync-head">
           <div class="sync-icon-wrap" aria-hidden="true">
@@ -4690,6 +4881,7 @@
         <div class="sync-progress-bar-bg">
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -4742,16 +4934,34 @@
         <div id="photo-slots" class="photo-slots"></div>
         <p id="photo-warn" class="photo-warn" data-i18n="warnOverwrite">⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.</p>
         <div class="photo-actions">
-          <label class="login-btn photo-file-btn">
-            <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
+          <button type="button" class="login-btn photo-file-btn" id="photo-btn-camera">
             <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
             <span data-i18n="btnCamera">Foto aufnehmen</span>
-          </label>
+          </button>
+          <input type="file" id="photo-input-camera" accept="image/*" capture="environment" hidden />
           <label class="login-btn photo-file-btn">
             <input type="file" id="photo-input-gallery" accept="image/*" hidden />
             <svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg>
             <span data-i18n="btnGallery">Aus Galerie</span>
           </label>
+        </div>
+        <div id="photo-live" class="photo-live">
+          <video
+            id="photo-live-video"
+            class="photo-live-video"
+            autoplay
+            muted
+            playsinline
+          ></video>
+          <div class="photo-live-bar">
+            <button type="button" class="login-btn" id="photo-live-snap">
+              <svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg>
+              <span data-i18n="btnCameraSnap">Aufnehmen</span>
+            </button>
+            <button type="button" class="login-btn photo-live-cancel" id="photo-live-cancel" data-i18n-title="btnCameraCancel" title="Kamera schließen" aria-label="Kamera schließen">
+              <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+            </button>
+          </div>
         </div>
         <div id="photo-preview-wrap" class="photo-preview-wrap">
           <img id="photo-preview" class="photo-preview" alt="" />
@@ -4820,10 +5030,14 @@
           slotMain: "Hauptbild",
           slotPhoto: "Foto",
           slotReal: "Echtes Foto",
+          slotRealPhoto: "Echtes Foto",
+          slotDummyImage: "Farbmuster / Dummy",
           slotStatusEmpty: "Leer",
           slotStatusOccupied: "Belegt",
           warnOverwrite: "⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.",
           btnCamera: "Foto aufnehmen",
+          btnCameraSnap: "Aufnehmen",
+          btnCameraCancel: "Kamera schließen",
           btnGallery: "Aus Galerie",
           btnSave: "Foto speichern",
           toastAdded: "Foto erfolgreich hinzugefügt ({slot})",
@@ -4834,6 +5048,8 @@
           photo_sync_fail: "Foto-Upload fehlgeschlagen",
           photo_need_photo: "Bitte ein Foto wählen",
           photo_compress_fail: "Foto konnte nicht verarbeitet werden",
+          photo_camera_fail: "Kamera nicht verfügbar",
+          photo_camera_denied: "Kamerazugriff verweigert",
           role_admin: "Administrator",
           role_staff: "Mitarbeiter",
           role_customer: "Kunde",
@@ -4875,6 +5091,8 @@
           settings_reload: "Alle Zeichnungen neu laden",
           settings_urls: "Google Sheets CSV Publish URLs:",
           sync_dialog_title: "Aktualisieren",
+          sync_cancel: "Abbrechen",
+          sync_cancelled: "Aktualisierung abgebrochen",
           color_surface_fallback: "heroal Beschichtung",
           online: "Online",
           offline: "Offline",
@@ -4949,10 +5167,14 @@
           slotMain: "Main image",
           slotPhoto: "Photo",
           slotReal: "Real photo",
+          slotRealPhoto: "Real photo",
+          slotDummyImage: "Color swatch / Dummy",
           slotStatusEmpty: "Empty",
           slotStatusOccupied: "Occupied",
           warnOverwrite: "⚠️ Slot already occupied. Photo will be overwritten on save.",
           btnCamera: "Take photo",
+          btnCameraSnap: "Capture",
+          btnCameraCancel: "Close camera",
           btnGallery: "From gallery",
           btnSave: "Save photo",
           toastAdded: "Photo successfully added ({slot})",
@@ -4963,6 +5185,8 @@
           photo_sync_fail: "Photo upload failed",
           photo_need_photo: "Please choose a photo",
           photo_compress_fail: "Could not process the photo",
+          photo_camera_fail: "Camera not available",
+          photo_camera_denied: "Camera access denied",
           role_admin: "Administrator",
           role_staff: "Staff",
           role_customer: "Customer",
@@ -5004,6 +5228,8 @@
           settings_reload: "Reload all drawings",
           settings_urls: "Google Sheets CSV Publish URLs:",
           sync_dialog_title: "Updating",
+          sync_cancel: "Cancel",
+          sync_cancelled: "Update cancelled",
           color_surface_fallback: "heroal coating",
           online: "Online",
           offline: "Offline",
@@ -5078,10 +5304,14 @@
           slotMain: "Главное фото",
           slotPhoto: "Фото",
           slotReal: "Реальное фото",
+          slotRealPhoto: "Реальное фото",
+          slotDummyImage: "Образец цвета / Dummy",
           slotStatusEmpty: "Свободно",
           slotStatusOccupied: "Занято",
           warnOverwrite: "⚠️ Слот уже занят. Фото будет заменено при сохранении.",
           btnCamera: "Сделать фото",
+          btnCameraSnap: "Снять",
+          btnCameraCancel: "Закрыть камеру",
           btnGallery: "Из галереи",
           btnSave: "Сохранить фото",
           toastAdded: "Фото успешно добавлено ({slot})",
@@ -5092,6 +5322,8 @@
           photo_sync_fail: "Не удалось загрузить фото",
           photo_need_photo: "Выберите фото",
           photo_compress_fail: "Не удалось обработать фото",
+          photo_camera_fail: "Камера недоступна",
+          photo_camera_denied: "Доступ к камере запрещён",
           role_admin: "Администратор",
           role_staff: "Сотрудник",
           role_customer: "Клиент",
@@ -5133,6 +5365,8 @@
           settings_reload: "Загрузить все чертежи заново",
           settings_urls: "Google Sheets CSV Publish URLs:",
           sync_dialog_title: "Обновление",
+          sync_cancel: "Отмена",
+          sync_cancelled: "Синхронизация прервана",
           color_surface_fallback: "Покрытие heroal",
           online: "Онлайн",
           offline: "Офлайн",
@@ -6036,15 +6270,20 @@
       let artikelDetailOpen = false;
       let farbeDetailOpen = false;
       let searchOskTogglesBound = false;
+      let numpadPopOutsideBound = false;
       let idbFooterKey = "idb_ready";
       const PHOTO_JPEG_QUALITY = 0.82;
       const PHOTO_MAX_EDGE = 1600;
       const ARTIKEL_PHOTO_SLOTS = [
-        { field: "img_url", suffix: "", labelKey: "photo_slot_main" },
-        { field: "img_1", suffix: "1", labelKey: "photo_slot_1" },
-        { field: "img_2", suffix: "2", labelKey: "photo_slot_2" },
-        { field: "img_3", suffix: "3", labelKey: "photo_slot_3" },
-        { field: "img_4", suffix: "4", labelKey: "photo_slot_4" },
+        { field: "img_url", suffix: "", labelKey: "slotMain" },
+        { field: "img_1", suffix: "1", labelKey: "slotPhoto" },
+        { field: "img_2", suffix: "2", labelKey: "slotPhoto" },
+        { field: "img_3", suffix: "3", labelKey: "slotPhoto" },
+        { field: "img_4", suffix: "4", labelKey: "slotPhoto" },
+      ];
+      const FARBEN_PHOTO_SLOTS = [
+        { field: "echtes_foto", suffix: "", labelKey: "slotRealPhoto" },
+        { field: "bild_dummyimage", suffix: "dummy", labelKey: "slotDummyImage" },
       ];
       const photoCaptureState = {
         target: "artikel",
@@ -6053,6 +6292,7 @@
         dataUrl: "",
         field: "img_url",
         bound: false,
+        stream: null,
       };
       let photoSyncCtl = { running: false };
 
@@ -6203,7 +6443,7 @@
         const btn = document.getElementById("btn-numpad-toggle");
         if (pad) {
           pad.classList.toggle("is-hidden", !visible);
-          if (visible) setOskLayout(pad, "symbols");
+          if (visible) setOskLayout(pad, "num");
         }
         if (btn) {
           btn.classList.toggle("is-on", visible);
@@ -6758,6 +6998,10 @@
 
       function handleSearchEscape(active) {
         hideDrawingHover();
+        if (isSyncModalOpen()) {
+          cancelManualSync();
+          return;
+        }
         if (closeNoteModal()) return;
         if (isZoomOpen()) {
           closeZoom();
@@ -8103,6 +8347,7 @@
           });
         });
         bindPhotoCaptureUi();
+        bindSyncModalUi();
         syncHdrQuickTabs();
       }
 
@@ -8120,7 +8365,10 @@
       function photoFileName(target, recordId, field) {
         const id = safePhotoToken(recordId);
         if (!id) return "photo.jpg";
-        if (target === "farben" || field === "echtes_foto") return id + ".jpg";
+        if (target === "farben" || field === "echtes_foto" || field === "bild_dummyimage") {
+          if (field === "bild_dummyimage") return id + "_dummy.jpg";
+          return id + ".jpg";
+        }
         const slot =
           ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field) || ARTIKEL_PHOTO_SLOTS[0];
         return slot.suffix ? id + "_" + slot.suffix + ".jpg" : id + ".jpg";
@@ -8165,7 +8413,7 @@
         if (target === "farben") {
           const row = (appDB.farben || {})[id];
           if (!row) return;
-          row.echtes_foto = url;
+          row[field] = url;
           appDB.farben[id] = row;
           return;
         }
@@ -8214,30 +8462,37 @@
         return null;
       }
 
+      function rasterToJpegDataUrl(source, sw, sh) {
+        let w = sw;
+        let h = sh;
+        if (!w || !h) throw new Error("empty image");
+        const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(w, h));
+        w = Math.max(1, Math.round(w * scale));
+        h = Math.max(1, Math.round(h * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(source, 0, 0, w, h);
+        return canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY);
+      }
+
       function compressImageFile(file) {
         return new Promise((resolve, reject) => {
           const img = new Image();
           const objectUrl = URL.createObjectURL(file);
           img.onload = () => {
             URL.revokeObjectURL(objectUrl);
-            let w = img.naturalWidth || img.width;
-            let h = img.naturalHeight || img.height;
-            if (!w || !h) {
-              reject(new Error("empty image"));
-              return;
-            }
-            const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(w, h));
-            w = Math.max(1, Math.round(w * scale));
-            h = Math.max(1, Math.round(h * scale));
-            const canvas = document.createElement("canvas");
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, w, h);
-            ctx.drawImage(img, 0, 0, w, h);
             try {
-              resolve(canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY));
+              resolve(
+                rasterToJpegDataUrl(
+                  img,
+                  img.naturalWidth || img.width,
+                  img.naturalHeight || img.height,
+                ),
+              );
             } catch (err) {
               reject(err);
             }
@@ -8251,11 +8506,21 @@
       }
 
       function photoSlotTitle(field) {
-        if (field === "echtes_foto") return t("slotReal");
+        if (field === "echtes_foto") return t("slotRealPhoto");
+        if (field === "bild_dummyimage") return t("slotDummyImage");
         if (field === "img_url") return t("slotMain");
         const slot = ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field);
         if (slot && slot.suffix) return t("slotPhoto") + " " + slot.suffix;
         return t("slotMain");
+      }
+
+      function farbeDummySlotOccupied(col) {
+        if (!col) return false;
+        const raw =
+          recordPhotoValue(col, "bild_dummyimage") ||
+          String(col.bild_de || "").trim();
+        if (isDisplayableMediaUrl(raw)) return true;
+        return !!colorHex(col);
       }
 
       function currentPhotoSlotOccupied() {
@@ -8265,7 +8530,15 @@
             ? appDB.farben || {}
             : appDB.artikel || {};
         const record = catalog[photoCaptureState.recordId];
-        return !!recordPhotoValue(record, photoCaptureState.field);
+        if (
+          photoCaptureState.target === "farben" &&
+          photoCaptureState.field === "bild_dummyimage"
+        ) {
+          return farbeDummySlotOccupied(record);
+        }
+        return isDisplayableMediaUrl(
+          recordPhotoValue(record, photoCaptureState.field),
+        );
       }
 
       function updatePhotoSaveState() {
@@ -8310,6 +8583,7 @@
       }
 
       function resetPhotoCaptureState() {
+        stopPhotoLiveCamera();
         photoCaptureState.target = "artikel";
         photoCaptureState.recordId = "";
         photoCaptureState.recordName = "";
@@ -8374,7 +8648,9 @@
           matchEl.classList.remove("is-miss");
         }
         if (photoCaptureState.target === "farben") {
-          photoCaptureState.field = "echtes_foto";
+          if (!FARBEN_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)) {
+            photoCaptureState.field = "echtes_foto";
+          }
         } else if (
           !ARTIKEL_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)
         ) {
@@ -8388,25 +8664,47 @@
         const wrap = document.getElementById("photo-slots");
         if (!wrap) return;
         wrap.innerHTML = "";
+        wrap.classList.remove("is-on", "is-artikel", "is-farben");
         if (!photoCaptureState.recordId) {
-          wrap.classList.remove("is-on", "is-single");
           updatePhotoWarn();
           return;
         }
         wrap.classList.add("is-on");
         if (photoCaptureState.target === "farben") {
-          photoCaptureState.field = "echtes_foto";
-          wrap.classList.add("is-single");
+          if (!FARBEN_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)) {
+            photoCaptureState.field = "echtes_foto";
+          }
+          wrap.classList.add("is-farben");
           const col = (appDB.farben || {})[photoCaptureState.recordId];
-          const url = recordPhotoValue(col, "echtes_foto");
-          wrap.appendChild(
-            photoSlotButton("echtes_foto", photoSlotTitle("echtes_foto"), url, true),
-          );
+          FARBEN_PHOTO_SLOTS.forEach((slot) => {
+            const raw =
+              recordPhotoValue(col, slot.field) ||
+              (slot.field === "bild_dummyimage"
+                ? String((col && col.bild_de) || "").trim()
+                : "");
+            const url = isDisplayableMediaUrl(raw) ? raw : "";
+            const hex =
+              slot.field === "bild_dummyimage" ? colorHex(col) : "";
+            const occupied =
+              slot.field === "bild_dummyimage"
+                ? farbeDummySlotOccupied(col)
+                : isDisplayableMediaUrl(url);
+            wrap.appendChild(
+              photoSlotButton(
+                slot.field,
+                photoSlotTitle(slot.field),
+                url,
+                photoCaptureState.field === slot.field,
+                hex,
+                occupied,
+              ),
+            );
+          });
           updatePhotoWarn();
           return;
         }
-        wrap.classList.remove("is-single");
         if (!photoCaptureState.field) photoCaptureState.field = "img_url";
+        wrap.classList.add("is-artikel");
         const item = (appDB.artikel || {})[photoCaptureState.recordId];
         ARTIKEL_PHOTO_SLOTS.forEach((slot) => {
           const url = recordPhotoValue(item, slot.field);
@@ -8422,20 +8720,31 @@
         updatePhotoWarn();
       }
 
-      function photoSlotButton(field, title, url, selected) {
+      function photoSlotButton(field, title, url, selected, hexFallback, occupied) {
         const btn = document.createElement("button");
         btn.type = "button";
+        if (occupied == null) occupied = isDisplayableMediaUrl(url);
+        const hex = String(hexFallback || "").trim();
         btn.className =
           "photo-slot" +
           (selected ? " is-on" : "") +
-          (url ? " is-full" : "");
+          (occupied ? " is-full" : "");
         btn.setAttribute("data-field", field);
-        const occupied = !!url;
-        const preview = occupied
-          ? '<img class="photo-slot-preview" alt="" src="' +
+        let preview;
+        if (isDisplayableMediaUrl(url)) {
+          preview =
+            '<img class="photo-slot-preview" alt="" src="' +
             escapeHtml(url) +
-            '">'
-          : '<span class="photo-slot-preview is-empty"><svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg></span>';
+            '">';
+        } else if (hex) {
+          preview =
+            '<span class="photo-slot-preview is-swatch" style="background:' +
+            escapeHtml(hex) +
+            '"></span>';
+        } else {
+          preview =
+            '<span class="photo-slot-preview is-empty"><svg class="ico" aria-hidden="true"><use href="#i-image"></use></svg></span>';
+        }
         btn.innerHTML =
           preview +
           '<span class="photo-slot-title">' +
@@ -8532,15 +8841,134 @@
       async function handlePhotoFile(file) {
         if (!file) return;
         try {
-          const dataUrl = await compressImageFile(file);
-          photoCaptureState.dataUrl = dataUrl;
-          const preview = document.getElementById("photo-preview");
-          const wrap = document.getElementById("photo-preview-wrap");
-          if (preview) preview.src = dataUrl;
-          if (wrap) wrap.classList.add("is-on");
-          updatePhotoSaveState();
+          applyPhotoDataUrl(await compressImageFile(file));
         } catch (err) {
           console.warn("photo compress failed", err);
+          showToast(t("photo_compress_fail"), "error");
+        }
+      }
+
+      function applyPhotoDataUrl(dataUrl) {
+        photoCaptureState.dataUrl = dataUrl;
+        const preview = document.getElementById("photo-preview");
+        const wrap = document.getElementById("photo-preview-wrap");
+        if (preview) preview.src = dataUrl;
+        if (wrap) wrap.classList.add("is-on");
+        updatePhotoSaveState();
+      }
+
+      function stopPhotoLiveCamera() {
+        const stream = photoCaptureState.stream;
+        if (stream && stream.getTracks) {
+          stream.getTracks().forEach((track) => {
+            try {
+              track.stop();
+            } catch (e) {}
+          });
+        }
+        photoCaptureState.stream = null;
+        const video = document.getElementById("photo-live-video");
+        if (video) {
+          try {
+            video.pause();
+          } catch (e) {}
+          video.srcObject = null;
+        }
+        const live = document.getElementById("photo-live");
+        if (live) live.classList.remove("is-on");
+      }
+
+      function photoPrefersRearCamera() {
+        try {
+          return (
+            window.matchMedia("(pointer: coarse)").matches ||
+            window.matchMedia("(max-width: 899px)").matches
+          );
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function getPhotoCameraStream() {
+        const media = navigator.mediaDevices;
+        if (!media || typeof media.getUserMedia !== "function") {
+          const err = new Error("unsupported");
+          err.name = "NotSupportedError";
+          throw err;
+        }
+        const facing = photoPrefersRearCamera() ? "environment" : "user";
+        try {
+          return await media.getUserMedia({
+            audio: false,
+            video: {
+              facingMode: { ideal: facing },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+          });
+        } catch (err) {
+          return await media.getUserMedia({ audio: false, video: true });
+        }
+      }
+
+      async function startPhotoLiveCamera() {
+        stopPhotoLiveCamera();
+        const video = document.getElementById("photo-live-video");
+        const live = document.getElementById("photo-live");
+        if (!video || !live) throw new Error("missing ui");
+        const stream = await getPhotoCameraStream();
+        photoCaptureState.stream = stream;
+        video.setAttribute("playsinline", "true");
+        video.setAttribute("webkit-playsinline", "true");
+        video.muted = true;
+        video.srcObject = stream;
+        try {
+          await video.play();
+        } catch (e) {}
+        live.classList.add("is-on");
+      }
+
+      function openNativeCameraPicker() {
+        const cam = document.getElementById("photo-input-camera");
+        if (cam) cam.click();
+      }
+
+      async function requestPhotoCamera() {
+        if (!window.isSecureContext) {
+          openNativeCameraPicker();
+          return;
+        }
+        try {
+          await startPhotoLiveCamera();
+        } catch (err) {
+          const name = err && err.name;
+          if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+            showToast(t("photo_camera_denied"), "warn");
+            return;
+          }
+          try {
+            openNativeCameraPicker();
+          } catch (e2) {
+            showToast(t("photo_camera_fail"), "error");
+          }
+        }
+      }
+
+      function snapPhotoLiveCamera() {
+        const video = document.getElementById("photo-live-video");
+        if (!video) return;
+        const w = video.videoWidth;
+        const h = video.videoHeight;
+        if (!w || !h) {
+          showToast(t("photo_camera_fail"), "warn");
+          return;
+        }
+        try {
+          const dataUrl = rasterToJpegDataUrl(video, w, h);
+          stopPhotoLiveCamera();
+          applyPhotoDataUrl(dataUrl);
+        } catch (err) {
+          console.warn("photo snap failed", err);
           showToast(t("photo_compress_fail"), "error");
         }
       }
@@ -8576,6 +9004,12 @@
         }
         const clearBtn = document.getElementById("photo-preview-clear");
         if (clearBtn) clearBtn.addEventListener("click", clearPhotoPreview);
+        const camBtn = document.getElementById("photo-btn-camera");
+        if (camBtn) camBtn.addEventListener("click", () => requestPhotoCamera());
+        const snapBtn = document.getElementById("photo-live-snap");
+        if (snapBtn) snapBtn.addEventListener("click", snapPhotoLiveCamera);
+        const liveCancel = document.getElementById("photo-live-cancel");
+        if (liveCancel) liveCancel.addEventListener("click", stopPhotoLiveCamera);
         const cam = document.getElementById("photo-input-camera");
         const gal = document.getElementById("photo-input-gallery");
         if (cam) {
@@ -8606,6 +9040,7 @@
         if (input) setTimeout(() => input.focus(), 0);
       }
       function closePhotoCapture() {
+        stopPhotoLiveCamera();
         const dlg = document.getElementById("photo-dialog");
         if (!dlg) return;
         dlg.classList.remove("active");
@@ -9002,6 +9437,93 @@
         ];
       }
 
+      function oskNumpadHtml() {
+        const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
+        const back = oskBackKey();
+        back.cls += " numpad-key-back";
+        const enter = oskEnterKey();
+        enter.cls += " numpad-key-enter";
+        const keys = [
+          "1",
+          "2",
+          "3",
+          back,
+          "4",
+          "5",
+          "6",
+          {
+            act: "space",
+            label: "",
+            cls: "osk-key-space osk-key-fn numpad-key-space",
+            aria: "Space",
+          },
+          "7",
+          "8",
+          "9",
+          ".",
+          {
+            act: "abc",
+            label: abcLabel,
+            cls: "osk-key-fn osk-key-num numpad-key-abc",
+          },
+          "0",
+          enter,
+          {
+            act: "sympop",
+            label: "#+=",
+            cls: "osk-key-fn numpad-key-more",
+            aria: "#+=",
+          },
+        ];
+        const popChars = ["-", "/", "@", "#", ":", "!", "€", "_", ",", "?", '"', ";"];
+        return (
+          '<div class="osk-num numpad is-hidden">' +
+          '<div class="numpad-grid">' +
+          keys.map(oskKeyHtml).join("") +
+          "</div>" +
+          '<div class="numpad-pop is-hidden" role="dialog" aria-label="#+=">' +
+          popChars.map(oskKeyHtml).join("") +
+          "</div>" +
+          "</div>"
+        );
+      }
+
+      function numpadPopEl(pad) {
+        return pad ? pad.querySelector(".numpad-pop") : null;
+      }
+
+      function closeNumpadPop(pad) {
+        const pop = numpadPopEl(pad);
+        if (!pop) return;
+        pop.classList.add("is-hidden");
+        pad.querySelectorAll(".numpad-key-more").forEach((btn) => {
+          btn.classList.remove("is-on");
+          btn.setAttribute("aria-expanded", "false");
+        });
+      }
+
+      function closeAllNumpadPops() {
+        document.querySelectorAll(".osk-num.numpad").forEach((wrap) => {
+          const pad = wrap.closest(".osk") || wrap;
+          closeNumpadPop(pad);
+        });
+      }
+
+      function toggleNumpadPop(pad) {
+        const pop = numpadPopEl(pad);
+        if (!pop) return;
+        const open = pop.classList.contains("is-hidden");
+        document.querySelectorAll(".osk-num.numpad").forEach((wrap) => {
+          const other = wrap.closest(".osk") || wrap;
+          if (other !== pad) closeNumpadPop(other);
+        });
+        pop.classList.toggle("is-hidden", !open);
+        pad.querySelectorAll(".numpad-key-more").forEach((btn) => {
+          btn.classList.toggle("is-on", open);
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+
       function searchOskInnerHtml() {
         const abcLabel = appLang === "ru" ? "АБВ" : "ABC";
         const abcKey = { act: "abc", label: abcLabel, cls: "osk-key-fn osk-key-num" };
@@ -9015,7 +9537,7 @@
           .map((row, i) => oskRowHtml(row, i === 3 ? "osk-row-fn" : ""))
           .join("");
         return (
-          '<div class="osk-num is-hidden"></div>' +
+          oskNumpadHtml() +
           '<div class="osk-alpha is-hidden" data-osk-lang="' +
           (appLang || "de") +
           '">' +
@@ -9060,19 +9582,14 @@
       function remountSearchKeypads() {
         document.querySelectorAll(".osk[data-target]").forEach((pad) => {
           const wasHidden = pad.classList.contains("is-hidden");
-          const alphaEl = pad.querySelector(".osk-alpha");
-          const symbolsEl = pad.querySelector(".osk-symbols");
-          const alphaOn = !!(alphaEl && !alphaEl.classList.contains("is-hidden"));
-          const symbolsOn = !!(
-            symbolsEl && !symbolsEl.classList.contains("is-hidden")
+          const lettersEl = pad.querySelector(".osk-letters");
+          const lettersOn = !!(
+            lettersEl && !lettersEl.classList.contains("is-hidden")
           );
           pad.innerHTML = searchOskInnerHtml();
           bindOskPad(pad);
           pad.classList.toggle("is-hidden", wasHidden);
-          setOskLayout(
-            pad,
-            alphaOn && !symbolsOn ? "letters" : "symbols",
-          );
+          setOskLayout(pad, lettersOn ? "letters" : "num");
         });
       }
 
@@ -9086,6 +9603,20 @@
             toggleSearchOsk(id);
           });
         });
+        if (!numpadPopOutsideBound) {
+          numpadPopOutsideBound = true;
+          document.addEventListener("pointerdown", (e) => {
+            const t = e.target;
+            if (!(t instanceof Element)) {
+              closeAllNumpadPops();
+              return;
+            }
+            if (t.closest(".numpad-pop") || t.closest('[data-osk-act="sympop"]')) {
+              return;
+            }
+            closeAllNumpadPops();
+          });
+        }
       }
 
       function setSearchOskVisible(oskId, visible) {
@@ -9103,7 +9634,8 @@
           input.setAttribute("inputmode", visible ? "none" : fallback);
           if (visible) input.focus();
         }
-        if (visible) setOskLayout(pad, "symbols");
+        if (visible) setOskLayout(pad, "num");
+        else closeNumpadPop(pad);
         if (oskId === "osk-prof") {
           if (visible) artikelDetailOpen = false;
           applyArtikelWorkspace();
@@ -9133,11 +9665,12 @@
 
       function setOskLayout(pad, layout) {
         if (layout === "alpha") layout = "letters";
-        if (layout === "sym") layout = "symbols";
+        if (layout === "sym") layout = "num";
         const num = pad.querySelector(".osk-num");
         const alpha = pad.querySelector(".osk-alpha");
         const letters = pad.querySelector(".osk-letters");
         const symbols = pad.querySelector(".osk-symbols");
+        if (layout !== "num") closeNumpadPop(pad);
         if (num) num.classList.toggle("is-hidden", layout !== "num");
         if (alpha) {
           alpha.classList.toggle(
@@ -9160,13 +9693,13 @@
           input.focus();
           return;
         }
-        if (act === "sym") {
-          setOskLayout(pad, "symbols");
+        if (act === "sym" || act === "num") {
+          setOskLayout(pad, "num");
           input.focus();
           return;
         }
-        if (act === "num") {
-          setOskLayout(pad, "symbols");
+        if (act === "sympop") {
+          toggleNumpadPop(pad);
           input.focus();
           return;
         }
@@ -9223,6 +9756,7 @@
             }
           }
           oskInsert(input, out);
+          if (btn.closest(".numpad-pop")) closeNumpadPop(pad);
         }
       }
 
@@ -10755,6 +11289,8 @@
         running: false,
         silent: true,
         promise: null,
+        abort: null,
+        cancelled: false,
       };
 
       function fingerprintTable(value) {
@@ -10776,6 +11312,7 @@
       }
 
       function showSyncModalUi() {
+        bindSyncModalUi();
         const syncModal = document.getElementById("sync-dialog");
         if (syncModal) syncModal.classList.add("active");
         updateSyncProgress(0, t("sync_load_start"));
@@ -10791,7 +11328,7 @@
       }
 
       function updateSyncProgress(pct, label) {
-        if (syncCtl.silent) return;
+        if (syncCtl.silent || syncCtl.cancelled) return;
         const statusTxt = document.getElementById("sync-status-txt");
         const fillBar = document.getElementById("sync-progress-fill");
         const pctEl = document.getElementById("sync-pct");
@@ -10812,12 +11349,70 @@
         };
       }
 
+      function combineAbortSignals(first, second) {
+        if (!second) return first;
+        if (typeof AbortSignal.any === "function") {
+          return AbortSignal.any([first, second]);
+        }
+        const combo = new AbortController();
+        const fire = () => {
+          try {
+            combo.abort();
+          } catch (e) {}
+        };
+        if (first.aborted || second.aborted) {
+          fire();
+          return combo.signal;
+        }
+        first.addEventListener("abort", fire, { once: true });
+        second.addEventListener("abort", fire, { once: true });
+        return combo.signal;
+      }
+
+      function isSyncModalOpen() {
+        const dlg = document.getElementById("sync-dialog");
+        return !!(dlg && dlg.classList.contains("active"));
+      }
+
+      function isAbortError(err) {
+        return !!(err && (err.name === "AbortError" || err.name === "TimeoutError"));
+      }
+
+      function cancelManualSync() {
+        if (!isSyncModalOpen() && !syncCtl.running) return;
+        syncCtl.cancelled = true;
+        if (syncCtl.abort) {
+          try {
+            syncCtl.abort.abort();
+          } catch (e) {}
+        }
+        hideSyncModalUi();
+        setNetBadgeMode(null);
+        setSyncIconSpinning(false);
+        showToast(t("sync_cancelled"), "warn");
+      }
+
+      function bindSyncModalUi() {
+        const closeBtn = document.getElementById("sync-close");
+        if (closeBtn && !closeBtn.dataset.bound) {
+          closeBtn.dataset.bound = "1";
+          closeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            cancelManualSync();
+          });
+        }
+      }
+
       async function fetchCsvText(url, silent) {
         if (!url) return "";
         const timeout = silent ? SILENT_FETCH_TIMEOUT_MS : MANUAL_FETCH_TIMEOUT_MS;
         const gate = abortAfter(timeout);
+        const signal = combineAbortSignals(
+          gate.signal,
+          syncCtl.abort && syncCtl.abort.signal,
+        );
         try {
-          const r = await fetch(url, { signal: gate.signal, cache: "no-store" });
+          const r = await fetch(url, { signal, cache: "no-store" });
           if (!r.ok) throw new Error("HTTP " + r.status);
           return await r.text();
         } finally {
@@ -10870,6 +11465,8 @@
 
           syncCtl.running = true;
           syncCtl.silent = silent;
+          syncCtl.cancelled = false;
+          syncCtl.abort = new AbortController();
           const run = (async () => {
             setSyncIconSpinning(true);
             setNetBadgeMode("syncing");
@@ -10905,6 +11502,7 @@
                 if (Object.keys(parsed).length) {
                   staged.farben = mergeIncomingTablePhotos(parsed, appDB.farben, [
                     "echtes_foto",
+                    "bild_dummyimage",
                   ]);
                 }
               }
@@ -10972,7 +11570,9 @@
 
               updateSyncProgress(100, t("sync_done"));
 
-              if (syncCtl.silent) {
+              if (syncCtl.cancelled) {
+                setNetBadgeMode(null);
+              } else if (syncCtl.silent) {
                 if (mediaResult && mediaResult.aborted) setNetBadgeMode(null);
                 else flashSyncedBadge();
               } else {
@@ -10983,7 +11583,9 @@
                 }, 500);
               }
             } catch (err) {
-              if (syncCtl.silent) {
+              if (syncCtl.cancelled || isAbortError(err) && syncCtl.cancelled) {
+                setNetBadgeMode(null);
+              } else if (syncCtl.silent) {
                 console.warn("[sync] silent run ignored", err);
                 setNetBadgeMode(null);
               } else {
