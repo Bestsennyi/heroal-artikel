@@ -416,6 +416,38 @@
       "ar": "ابحث عن الموضوع...",
       "fr": "Rechercher un sujet..."
     },
+    "auskunft_empty": {
+      "de": "Keine Einträge gefunden.",
+      "en": "No entries found.",
+      "ru": "Ничего не найдено.",
+      "ro": "Nu s-au găsit înregistrări.",
+      "ar": "لا توجد نتائج.",
+      "fr": "Aucune entrée trouvée."
+    },
+    "auskunft_toggle": {
+      "de": "Anleitung ein- oder ausklappen",
+      "en": "Expand or collapse instructions",
+      "ru": "Развернуть или свернуть инструкцию",
+      "ro": "Extindeți sau restrângeți instrucțiunea",
+      "ar": "توسيع أو طي التعليمات",
+      "fr": "Déplier ou replier la consigne"
+    },
+    "auskunft_filters": {
+      "de": "Nach Kategorie filtern",
+      "en": "Filter by category",
+      "ru": "Фильтр по категории",
+      "ro": "Filtrați după categorie",
+      "ar": "تصفية حسب الفئة",
+      "fr": "Filtrer par catégorie"
+    },
+    "auskunft_cat_all": {
+      "de": "Alle Kategorien",
+      "en": "All categories",
+      "ru": "Все категории",
+      "ro": "Toate categoriile",
+      "ar": "كل الفئات",
+      "fr": "Toutes les catégories"
+    },
     "zoom_btn": {
       "de": "Zoom",
       "en": "Zoom",

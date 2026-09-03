@@ -1125,12 +1125,21 @@
         touch-action: pan-y;
       }
       .zone-empty {
-        color: var(--text-sub);
-        font-size: 12px;
-        font-weight: 500;
-        padding: 18px 8px;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 auto;
+        min-height: 0;
         width: 100%;
+        pointer-events: none;
+        user-select: none;
+      }
+      .zone-empty[hidden] {
+        display: none !important;
+      }
+      .zone-prof.is-kb-open .zone-empty,
+      .zone-color.is-kb-open .zone-empty {
+        display: none !important;
       }
       .result-list {
         display: flex;
@@ -2870,6 +2879,268 @@
         margin-top: 6px;
         font-size: 11px;
         color: #fdba74;
+      }
+
+      /* Auskunft: centered column, search + category select, cards */
+      .auskunft-shell {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
+        width: 100%;
+        max-width: 720px;
+        margin-inline: auto;
+      }
+      .auskunft-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px;
+        flex-shrink: 0;
+        margin-bottom: 10px;
+      }
+      .auskunft-toolbar .input-box {
+        flex: 1 1 14rem;
+        min-width: 0;
+        margin: 0;
+      }
+      .auskunft-cat-wrap {
+        position: relative;
+        flex: 0 1 13.5rem;
+        min-width: 10rem;
+        z-index: 8;
+      }
+      .auskunft-cat-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 48px;
+        height: 48px;
+        padding-inline: 12px 10px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        text-align: start;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      .auskunft-cat-trigger:hover {
+        border-color: #64748b;
+      }
+      .auskunft-cat-wrap.is-open .auskunft-cat-trigger,
+      .auskunft-cat-trigger:focus {
+        border-color: var(--heroal-accent);
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+      }
+      .auskunft-cat-label {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .auskunft-cat-caret {
+        flex: 0 0 auto;
+        width: 18px;
+        height: 18px;
+        color: var(--text-sub);
+        transition: transform 0.16s ease;
+      }
+      .auskunft-cat-wrap.is-open .auskunft-cat-caret {
+        transform: rotate(180deg);
+        color: var(--text-main);
+      }
+      .auskunft-cat-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        flex-direction: column;
+        gap: 2px;
+        padding: 6px;
+        border-radius: 12px;
+        border: 1px solid rgba(125, 211, 252, 0.28);
+        background: rgba(15, 23, 42, 0.96);
+        backdrop-filter: blur(16px) saturate(1.1);
+        -webkit-backdrop-filter: blur(16px) saturate(1.1);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+        z-index: 12;
+        max-height: min(50vh, 280px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+      }
+      .auskunft-cat-wrap.is-open .auskunft-cat-menu {
+        display: flex;
+      }
+      .auskunft-cat-option {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #e2e8f0;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        text-align: start;
+        cursor: pointer;
+      }
+      .auskunft-cat-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .auskunft-cat-option.is-active {
+        background: rgba(59, 130, 246, 0.28);
+        color: #fff;
+        box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.35);
+      }
+      .auskunft-list.acc-list {
+        gap: 10px;
+      }
+      .auskunft-card.acc-item {
+        padding: 0;
+        gap: 0;
+        cursor: default;
+        overflow: hidden;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+      .auskunft-card-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        min-height: 52px;
+        padding: 14px 16px;
+        margin: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: start;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .auskunft-card-head:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .auskunft-card .acc-title {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.35;
+        color: var(--text-main);
+      }
+      .auskunft-card .acc-badge.badge-guide {
+        flex: 0 0 auto;
+        font-size: 12.1px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 3.3px 8.8px;
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+      .auskunft-chevron {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        color: var(--text-sub);
+        font-size: 16px;
+        line-height: 1;
+        transition: transform 0.16s ease;
+      }
+      .auskunft-card.open .auskunft-chevron {
+        transform: rotate(180deg);
+      }
+      .auskunft-card .acc-body {
+        margin: 0 12px 12px;
+        padding: 12px 12px 14px;
+        border-top: 1px solid var(--border-color);
+        border-radius: 0 0 10px 10px;
+        background: var(--card-inner);
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.65;
+        font-weight: 400;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+      .auskunft-step {
+        margin: 0 0 0.55em;
+      }
+      .auskunft-step:last-child {
+        margin-bottom: 0;
+      }
+      .auskunft-callout {
+        background: rgba(251, 146, 60, 0.12);
+        border: 1px solid rgba(251, 146, 60, 0.4);
+        border-inline-start: 3px solid var(--accent-orange);
+        color: #fdba74;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin: 0.55em 0;
+        font-weight: 600;
+        line-height: 1.5;
+      }
+      .auskunft-callout:first-child {
+        margin-top: 0;
+      }
+      .auskunft-callout:last-child {
+        margin-bottom: 0;
+      }
+      .auskunft-empty {
+        padding: 28px 16px;
+        text-align: center;
+        color: var(--text-sub);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      @media (min-width: 900px) {
+        .auskunft-shell {
+          max-width: 760px;
+        }
+        .auskunft-card-head {
+          min-height: 56px;
+          padding: 16px 18px;
+        }
+        .auskunft-card .acc-title {
+          font-size: 16px;
+        }
+      }
+      @media (min-width: 1280px) {
+        .auskunft-shell {
+          max-width: 800px;
+        }
+      }
+      @media (max-width: 640px) {
+        .auskunft-cat-wrap {
+          flex: 1 1 100%;
+          min-width: 0;
+        }
+        .auskunft-card-head {
+          padding: 12px 12px 12px 14px;
+        }
+        .auskunft-card .acc-title {
+          font-size: 15px;
+        }
       }
 
       /* Mobile Navigation */
@@ -4667,6 +4938,7 @@
               </div>
             </div>
               <div id="prof-list" class="result-list"></div>
+              <div id="prof-empty" class="zone-empty" aria-hidden="true"></div>
             </div>
           </section>
 
@@ -4815,6 +5087,7 @@
               </div>
             </div>
               <div id="col-list" class="result-list"></div>
+              <div id="col-empty" class="zone-empty" aria-hidden="true"></div>
             </div>
           </section>
         </div>
@@ -4837,17 +5110,42 @@
 
       <!-- TAB 3: AUSKUNFT -->
       <div id="view-auskunft" class="tab-view">
-        <div class="input-box" style="margin-bottom: 8px">
-          <input
-            type="text"
-            id="find-guide"
-            class="search-field"
-            placeholder="Thema suchen..."
-            data-i18n-placeholder="catalog_ui.ph_guide"
-            oninput="renderAuskunft()"
-          />
+        <div class="auskunft-shell">
+          <div class="auskunft-toolbar">
+            <div class="input-box">
+              <input
+                type="text"
+                id="find-guide"
+                class="search-field"
+                placeholder="Thema suchen..."
+                data-i18n-placeholder="catalog_ui.ph_guide"
+                oninput="renderAuskunft()"
+              />
+            </div>
+            <div class="auskunft-cat-wrap" id="auskunft-cat-dd">
+              <button
+                type="button"
+                id="auskunft-cat-btn"
+                class="auskunft-cat-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="auskunft-cat-menu"
+                data-i18n-title="catalog_ui.auskunft_filters"
+              >
+                <span id="auskunft-cat-label" class="auskunft-cat-label"></span>
+                <svg class="ico auskunft-cat-caret" aria-hidden="true">
+                  <use href="#i-chevron-down"></use>
+                </svg>
+              </button>
+              <div
+                id="auskunft-cat-menu"
+                class="auskunft-cat-menu"
+                role="listbox"
+              ></div>
+            </div>
+          </div>
+          <div id="auskunft-container" class="acc-list auskunft-list"></div>
         </div>
-        <div id="auskunft-container" class="acc-list"></div>
       </div>
     </main>
 
@@ -5091,6 +5389,7 @@
       }
 
       let appLang = getCurrentLanguage();
+      let auskunftKatKey = "";
 
       function mergeTranslationBundle(bundle) {
         I18N.mergeOverlay(bundle);
@@ -5171,6 +5470,7 @@
         if (typeof syncMediaModeButtons === "function") syncMediaModeButtons();
         if (typeof refreshPhotoCaptureUi === "function") refreshPhotoCaptureUi();
         if (typeof applyNetBadge === "function") applyNetBadge();
+        syncAuskunftDir();
       }
 
       function setLanguage(lang) {
@@ -5251,13 +5551,16 @@
         }
       }
 
-      /** Localized field with fallback to the German `_de` column. */
+      /** Localized field: current language → German `_de` → English `_en`. */
       function locField(obj, stem, lang) {
         if (!obj) return "";
         const code = lang || appLang;
-        const chosen = usableText(obj[stem + "_" + code]);
-        if (chosen) return chosen;
-        return usableText(obj[stem + "_de"]);
+        return (
+          usableText(obj[stem + "_" + code]) ||
+          usableText(obj[stem + "_de"]) ||
+          usableText(obj[stem + "_en"]) ||
+          ""
+        );
       }
 
       function escapeHtml(value) {
@@ -5270,6 +5573,11 @@
 
       function articleNr(item, fallback) {
         return String((item && (item.art_nr || item.artnr)) || fallback || "").trim();
+      }
+
+      function syncAuskunftDir() {
+        const view = document.getElementById("view-auskunft");
+        if (view) view.setAttribute("dir", appLang === "ar" ? "rtl" : "ltr");
       }
 
       function articleCategory(item) {
@@ -5788,14 +6096,14 @@
             kategorie_de: "ERP 15",
             name_de: "Ausschuss richtig buchen",
             beschreibung_de:
-              "1. ERP Maske 15 öffnen.\n2. Packnummer scannen.\n3. Ausschussgrund-Code eingeben.\n4. Anzahl bestätigen.",
+              "Achtung: Nur mit gültiger Packnummer buchen.\n1. ERP Maske 15 öffnen.\n2. Packnummer scannen.\n3. Ausschussgrund-Code eingeben.\n4. Anzahl bestätigen.",
             kategorie_en: "",
             name_en: "",
             beschreibung_en: "",
             kategorie_ru: "",
             name_ru: "Списание брака в ERP 15",
             beschreibung_ru:
-              "1. Открыть меню ERP 15.\n2. Сканировать номер упаковки (Packnummer).\n3. Указать код причины дефекта.\n4. Подтвердить списание.",
+              "Внимание: Списывать только с действующим Packnummer.\n1. Открыть меню ERP 15.\n2. Сканировать номер упаковки (Packnummer).\n3. Указать код причины дефекта.\n4. Подтвердить списание.",
           },
           {
             kategorie_de: "Verpackung",
@@ -6309,17 +6617,25 @@
 
       function migrateAuskunftRow(it) {
         if (!it || typeof it !== "object") return null;
-        return {
+        const row = {
           kategorie_de: it.kategorie_de || it.kat || "",
           name_de: it.name_de || it.de_t || "",
           beschreibung_de: it.beschreibung_de || it.de_txt || "",
-          kategorie_en: it.kategorie_en || "",
-          name_en: it.name_en || "",
-          beschreibung_en: it.beschreibung_en || "",
-          kategorie_ru: it.kategorie_ru || "",
           name_ru: it.name_ru || it.ru_t || "",
           beschreibung_ru: it.beschreibung_ru || it.ru_txt || "",
         };
+        LANGS.forEach((code) => {
+          if (row["kategorie_" + code] == null) {
+            row["kategorie_" + code] = it["kategorie_" + code] || "";
+          }
+          if (row["name_" + code] == null) {
+            row["name_" + code] = it["name_" + code] || "";
+          }
+          if (row["beschreibung_" + code] == null) {
+            row["beschreibung_" + code] = it["beschreibung_" + code] || "";
+          }
+        });
+        return row;
       }
 
       function migrateAppDB(raw) {
@@ -7834,6 +8150,7 @@
       function navigate(viewId, btn) {
         closePhotoCapture();
         hideAllSearchOsk();
+        if (typeof closeAuskunftCatMenu === "function") closeAuskunftCatMenu();
         document
           .querySelectorAll(".tab-view")
           .forEach((v) => v.classList.remove("active"));
@@ -7936,6 +8253,7 @@
         });
         bindPhotoCaptureUi();
         bindSyncModalUi();
+        bindAuskunftUi();
         syncHdrQuickTabs();
       }
 
@@ -9620,7 +9938,7 @@
         }
 
         const hasQuery = !!query;
-        if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
+        if (emptyEl) emptyEl.hidden = !!(shown.length || hasQuery);
         if (!shown.length) {
           lastActiveArticle = "";
           articlePickedByUser = false;
@@ -9733,7 +10051,7 @@
         }
 
         const hasQuery = !!query;
-        if (emptyEl) emptyEl.style.display = shown.length || hasQuery ? "none" : "block";
+        if (emptyEl) emptyEl.hidden = !!(shown.length || hasQuery);
         if (!shown.length) {
           lastActiveColorCode = "";
           colorPickedByUser = false;
@@ -10618,48 +10936,189 @@
       }
 
       function renderAuskunft() {
-        const q = (
-          document.getElementById("find-guide").value || ""
-        ).toLowerCase();
-        const list = (appDB.auskunft || []).filter((a) => {
+        bindAuskunftUi();
+        const find = document.getElementById("find-guide");
+        const q = (find && find.value ? find.value : "").toLowerCase();
+        const items = appDB.auskunft || [];
+        const list = items.filter((a) => {
+          const katKey = auskunftCategoryKey(a);
+          if (auskunftKatKey && katKey !== auskunftKatKey) return false;
+          if (!q) return true;
           const hay = [
             locField(a, "kategorie", appLang),
             locField(a, "name", appLang),
             locField(a, "beschreibung", appLang),
-            a.kategorie_de,
-            a.name_de,
-            a.kategorie_en,
-            a.name_en,
-            a.kategorie_ru,
-            a.name_ru,
           ]
+            .concat(auskunftLangValues(a, "kategorie"))
+            .concat(auskunftLangValues(a, "name"))
+            .concat(auskunftLangValues(a, "beschreibung"))
             .join(" ")
             .toLowerCase();
           return hay.includes(q);
         });
+        renderAuskunftFilters(items);
         const cont = document.getElementById("auskunft-container");
+        if (!cont) return;
+        if (!list.length) {
+          cont.innerHTML =
+            '<div class="auskunft-empty">' +
+            escapeHtml(t("catalog_ui.auskunft_empty")) +
+            "</div>";
+          return;
+        }
+        const toggleLabel = escapeHtml(t("catalog_ui.auskunft_toggle"));
         cont.innerHTML = list
           .map((a) => {
             const kat = locField(a, "kategorie", appLang);
             const title = locField(a, "name", appLang);
-            const body = locField(a, "beschreibung", appLang).replace(
-              /\n/g,
-              "<br>",
+            const badge = kat
+              ? '<span class="acc-badge badge-guide">' +
+                escapeHtml(kat) +
+                "</span>"
+              : "";
+            return (
+              '<div class="acc-item auskunft-card">' +
+              '<button type="button" class="auskunft-card-head" aria-expanded="false" aria-label="' +
+              toggleLabel +
+              '">' +
+              badge +
+              '<span class="acc-title">' +
+              escapeHtml(title) +
+              "</span>" +
+              '<span class="auskunft-chevron" aria-hidden="true">▾</span>' +
+              "</button>" +
+              '<div class="acc-body">' +
+              formatAuskunftBody(locField(a, "beschreibung", appLang)) +
+              "</div>" +
+              "</div>"
             );
-            return `
-              <div class="acc-item" onclick="this.classList.toggle('open')">
-                <div class="acc-top">
-                  <span class="acc-badge badge-guide">${kat}</span>
-                  <div class="acc-title">${title}</div>
-                  <span>▾</span>
-                </div>
-                <div class="acc-body">
-                  <div>${body}</div>
-                </div>
-              </div>
-            `;
           })
           .join("");
+      }
+
+      function auskunftLangValues(obj, stem) {
+        return LANGS.map((code) => usableText(obj && obj[stem + "_" + code]));
+      }
+
+      function auskunftCategoryKey(a) {
+        return (
+          locField(a, "kategorie", "de") ||
+          locField(a, "kategorie", "en") ||
+          locField(a, "kategorie", appLang)
+        );
+      }
+
+      function renderAuskunftFilters(items) {
+        const menu = document.getElementById("auskunft-cat-menu");
+        const labelEl = document.getElementById("auskunft-cat-label");
+        if (!menu || !labelEl) return;
+        const seen = new Map();
+        (items || []).forEach((a) => {
+          const key = auskunftCategoryKey(a);
+          const label = locField(a, "kategorie", appLang);
+          if (!key || !label) return;
+          if (!seen.has(key)) seen.set(key, label);
+        });
+        if (auskunftKatKey && !seen.has(auskunftKatKey)) auskunftKatKey = "";
+        const options = [{ key: "", label: t("catalog_ui.auskunft_cat_all") }].concat(
+          Array.from(seen.entries())
+            .map(([key, label]) => ({ key, label }))
+            .sort((a, b) =>
+              a.label.localeCompare(b.label, appLang || "de", {
+                sensitivity: "base",
+              }),
+            ),
+        );
+        const current = options.find((opt) => opt.key === auskunftKatKey) || options[0];
+        labelEl.textContent = current ? current.label : t("catalog_ui.auskunft_cat_all");
+        menu.innerHTML = options
+          .map((opt) => {
+            const active = opt.key === auskunftKatKey;
+            return (
+              '<button type="button" class="auskunft-cat-option' +
+              (active ? " is-active" : "") +
+              '" role="option" data-key="' +
+              escapeHtml(opt.key) +
+              '" aria-selected="' +
+              (active ? "true" : "false") +
+              '">' +
+              escapeHtml(opt.label) +
+              "</button>"
+            );
+          })
+          .join("");
+      }
+
+      function closeAuskunftCatMenu() {
+        const dd = document.getElementById("auskunft-cat-dd");
+        const btn = document.getElementById("auskunft-cat-btn");
+        if (dd) dd.classList.remove("is-open");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleAuskunftCatMenu(e) {
+        if (e) e.stopPropagation();
+        const dd = document.getElementById("auskunft-cat-dd");
+        const btn = document.getElementById("auskunft-cat-btn");
+        if (!dd || !btn) return;
+        const open = !dd.classList.contains("is-open");
+        dd.classList.toggle("is-open", open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      function formatAuskunftBody(text) {
+        const raw = String(text || "");
+        if (!raw.trim()) return "";
+        const warnRe =
+          /^\s*(achtung|hinweis|warning|attention|aten[țt]ie|avertissement|внимание|важно|تنبيه|تحذير)\s*[:：\-–—]?\s+/i;
+        return raw
+          .split(/\r?\n/)
+          .map((line) => {
+            if (!line.trim()) return "";
+            const escaped = escapeHtml(line);
+            if (warnRe.test(line)) {
+              return '<div class="auskunft-callout">' + escaped + "</div>";
+            }
+            return '<p class="auskunft-step">' + escaped + "</p>";
+          })
+          .join("");
+      }
+
+      function bindAuskunftUi() {
+        const dd = document.getElementById("auskunft-cat-dd");
+        const btn = document.getElementById("auskunft-cat-btn");
+        const menu = document.getElementById("auskunft-cat-menu");
+        if (dd && btn && menu && !dd.dataset.bound) {
+          dd.dataset.bound = "1";
+          btn.addEventListener("click", toggleAuskunftCatMenu);
+          menu.addEventListener("click", (e) => {
+            const opt = e.target.closest(".auskunft-cat-option");
+            if (!opt || !menu.contains(opt)) return;
+            e.stopPropagation();
+            auskunftKatKey = opt.getAttribute("data-key") || "";
+            closeAuskunftCatMenu();
+            renderAuskunft();
+          });
+          document.addEventListener("click", (e) => {
+            if (!dd.contains(e.target)) closeAuskunftCatMenu();
+          });
+          window.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeAuskunftCatMenu();
+          });
+        }
+        const cont = document.getElementById("auskunft-container");
+        if (cont && !cont.dataset.bound) {
+          cont.dataset.bound = "1";
+          cont.addEventListener("click", (e) => {
+            const head = e.target.closest(".auskunft-card-head");
+            if (!head || !cont.contains(head)) return;
+            const card = head.closest(".auskunft-card");
+            if (!card) return;
+            const open = card.classList.toggle("open");
+            head.setAttribute("aria-expanded", open ? "true" : "false");
+          });
+        }
+        syncAuskunftDir();
       }
 
       function parseCSV(text) {
@@ -10814,20 +11273,23 @@
         const { map, rows } = parseCsvTable(text);
         const out = [];
         rows.forEach((row) => {
-          const item = {
-            kategorie_de: csvCell(row, map, "kategorie_de"),
-            name_de: csvCell(row, map, "name_de"),
-            beschreibung_de: csvCell(row, map, "beschreibung_de"),
-            kategorie_en: csvCell(row, map, "kategorie_en"),
-            name_en: csvCell(row, map, "name_en"),
-            beschreibung_en: csvCell(row, map, "beschreibung_en"),
-            kategorie_ru:
-              csvCell(row, map, "kategorie_ru") ||
-              csvCell(row, map, "kategorie_de.1"),
-            name_ru: csvCell(row, map, "name_ru"),
-            beschreibung_ru: csvCell(row, map, "beschreibung_ru"),
-          };
-          if (item.kategorie_de || item.name_de) out.push(item);
+          const item = {};
+          LANGS.forEach((code) => {
+            item["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
+            item["name_" + code] = csvCell(row, map, "name_" + code);
+            item["beschreibung_" + code] = csvCell(
+              row,
+              map,
+              "beschreibung_" + code,
+            );
+          });
+          if (!item.kategorie_ru) {
+            item.kategorie_ru = csvCell(row, map, "kategorie_de.1");
+          }
+          const hasText = LANGS.some(
+            (code) => item["kategorie_" + code] || item["name_" + code],
+          );
+          if (hasText) out.push(item);
         });
         return out;
       }
