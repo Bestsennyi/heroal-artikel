@@ -5447,16 +5447,49 @@
         );
       }
 
+      function placeholderDefault(key) {
+        if (key === "auth.login_placeholder") return "PIN";
+        if (key === "catalog_ui.ph_artikel") {
+          return "Artikelnummer oder Name eingeben...";
+        }
+        if (key === "catalog_ui.ph_farben") {
+          return "Farbnummer oder Farbname eingeben...";
+        }
+        if (key === "catalog_ui.ph_defect") return "Fehler suchen...";
+        if (key === "catalog_ui.ph_guide") return "Thema suchen...";
+        if (key === "photo.phArtikel" || key === "phArtikel") {
+          return "Artikelnummer eingeben...";
+        }
+        if (key === "photo.phFarben" || key === "phFarben") {
+          return "Farbnummer eingeben...";
+        }
+        return "";
+      }
+
       function setElPlaceholder(el, key, extra) {
         if (!el) return;
         const baked = bakedPlaceholder(el, extra);
         const fromI18n = usableText(t(key, baked));
         const fromDe = usableText(I18N.getBuiltin("de", key));
         const next =
-          (fromI18n && fromI18n !== key ? fromI18n : "") ||
-          (fromDe && fromDe !== key ? fromDe : "") ||
-          baked;
+          usableText(fromI18n && fromI18n !== key ? fromI18n : "") ||
+          usableText(fromDe && fromDe !== key ? fromDe : "") ||
+          usableText(baked) ||
+          usableText(placeholderDefault(key));
+        if (!next) return;
+        el.setAttribute("placeholder", next);
         el.placeholder = next;
+      }
+
+      function restoreSearchPlaceholders() {
+        ["find-prof", "find-color", "find-defect", "find-guide", "photo-id", "input-login-nr"].forEach(
+          (id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const key = el.getAttribute("data-i18n-placeholder");
+            if (key) setElPlaceholder(el, key);
+          },
+        );
       }
 
       function applyLanguage() {
@@ -6964,8 +6997,10 @@
           }
           if ((pIn.value || "").trim()) {
             clearInput("find-prof");
+            restoreSearchPlaceholders();
             return;
           }
+          restoreSearchPlaceholders();
           pIn.focus();
           return;
         }
@@ -6984,8 +7019,10 @@
           }
           if ((cIn.value || "").trim()) {
             clearInput("find-color");
+            restoreSearchPlaceholders();
             return;
           }
+          restoreSearchPlaceholders();
           cIn.focus();
           return;
         }
@@ -6997,6 +7034,7 @@
           farbeDetailOpen = false;
           applyFarbeWorkspace();
         }
+        restoreSearchPlaceholders();
         focusArtikelSearch(false);
       }
 
@@ -9694,6 +9732,8 @@
         }
         if (act === "clear") {
           input.value = "";
+          const key = input.getAttribute("data-i18n-placeholder");
+          if (key) setElPlaceholder(input, key);
           input.dispatchEvent(new Event("input"));
           input.focus();
           return;
@@ -10915,6 +10955,12 @@
         const el = document.getElementById(id);
         if (!el) return;
         el.value = "";
+        if (/^null$/i.test(String(el.getAttribute("placeholder") || "").trim())) {
+          el.removeAttribute("placeholder");
+        }
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (key) setElPlaceholder(el, key);
+        else restoreSearchPlaceholders();
         el.dispatchEvent(new Event("input"));
         el.focus();
       }
