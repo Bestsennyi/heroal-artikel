@@ -5434,14 +5434,38 @@
         if (el) el.textContent = t(idbFooterKey);
       }
 
+      function bakedPlaceholder(el, extra) {
+        if (!el) return usableText(extra);
+        if (!el.getAttribute("data-placeholder-fallback")) {
+          const initial = usableText(el.getAttribute("placeholder"));
+          if (initial) el.setAttribute("data-placeholder-fallback", initial);
+        }
+        return (
+          usableText(extra) ||
+          usableText(el.getAttribute("data-placeholder-fallback")) ||
+          usableText(el.getAttribute("placeholder"))
+        );
+      }
+
+      function setElPlaceholder(el, key, extra) {
+        if (!el) return;
+        const baked = bakedPlaceholder(el, extra);
+        const fromI18n = usableText(t(key, baked));
+        const fromDe = usableText(I18N.getBuiltin("de", key));
+        const next =
+          (fromI18n && fromI18n !== key ? fromI18n : "") ||
+          (fromDe && fromDe !== key ? fromDe : "") ||
+          baked;
+        el.placeholder = next;
+      }
+
       function applyLanguage() {
         document.documentElement.lang = appLang;
         document.querySelectorAll("[data-i18n]").forEach((el) => {
           el.textContent = t(el.getAttribute("data-i18n"));
         });
         document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-          const key = el.getAttribute("data-i18n-placeholder");
-          el.placeholder = t(key) || "";
+          setElPlaceholder(el, el.getAttribute("data-i18n-placeholder"));
         });
         document.querySelectorAll("[data-i18n-title]").forEach((el) => {
           const label = t(el.getAttribute("data-i18n-title"));
@@ -5452,7 +5476,7 @@
         const footerEl = document.getElementById("login-footer-txt");
         if (footerEl) footerEl.textContent = t("footer_text");
         const loginInput = document.getElementById("input-login-nr");
-        if (loginInput) loginInput.placeholder = t("login_placeholder") || "PIN";
+        if (loginInput) setElPlaceholder(loginInput, "auth.login_placeholder", "PIN");
         syncLangDropdown();
         syncNumpadVisibility();
         const setTxt = (id, value) => {
@@ -8521,10 +8545,13 @@
         if (far) far.classList.toggle("is-on", photoCaptureState.target === "farben");
         const input = document.getElementById("photo-id");
         if (input) {
-          const phKey =
-            photoCaptureState.target === "farben" ? "phFarben" : "phArtikel";
+          const farben = photoCaptureState.target === "farben";
+          const phKey = farben ? "photo.phFarben" : "photo.phArtikel";
+          const baked = farben
+            ? "Farbnummer eingeben..."
+            : "Artikelnummer eingeben...";
           input.setAttribute("data-i18n-placeholder", phKey);
-          input.placeholder = t(phKey);
+          setElPlaceholder(input, phKey, baked);
         }
       }
 

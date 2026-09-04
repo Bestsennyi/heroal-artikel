@@ -31,8 +31,14 @@
 
   function isLangLeaf(node) {
     if (!node || typeof node !== "object" || Array.isArray(node)) return false;
-    return SUPPORTED_LANGS.every(function (code) {
-      return typeof node[code] === "string";
+    var keys = Object.keys(node);
+    if (!keys.length) return false;
+    var hasText = keys.some(function (k) {
+      return typeof node[k] === "string" && usableText(node[k]);
+    });
+    if (!hasText) return false;
+    return keys.every(function (k) {
+      return typeof node[k] === "string";
     });
   }
 
@@ -141,8 +147,13 @@
     ) {
       return fromTree;
     }
-    var out = fromOverlay || fromTree || deTree || usableText(fallback) || k;
-    return out;
+    var out =
+      usableText(fromOverlay) ||
+      usableText(fromTree) ||
+      usableText(deTree) ||
+      usableText(fallback);
+    if (out && out !== k) return out;
+    return usableText(fallback) || usableText(deTree) || usableText(fromTree) || "";
   }
 
   function tf(path, vars, fallback) {
