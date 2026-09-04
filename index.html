@@ -1191,8 +1191,8 @@
         overflow-y: auto;
         max-height: none;
       }
-      .zone-prof .zone-scroll:has(.display-card-prof:not(.is-solo)) .result-list,
-      .zone-color .zone-scroll:has(.display-card-color:not(.is-solo)) .result-list {
+      .zone-prof .zone-scroll:has(.result-list .result-row) .result-list,
+      .zone-color .zone-scroll:has(.result-list .result-row) .result-list {
         flex: 1 1 auto;
         min-height: 0;
         overflow-x: hidden;
@@ -5068,7 +5068,7 @@
                 </button>
               </div>
             </div>
-              <div id="prof-list" class="result-list"></div>
+              <div id="prof-list" class="result-list" hidden></div>
               <div id="prof-empty" class="zone-empty" aria-hidden="true">
                 <img
                   class="zone-empty-img"
@@ -5226,7 +5226,7 @@
                 </button>
               </div>
             </div>
-              <div id="col-list" class="result-list"></div>
+              <div id="col-list" class="result-list" hidden></div>
               <div id="col-empty" class="zone-empty" aria-hidden="true">
                 <img
                   class="zone-empty-img"
