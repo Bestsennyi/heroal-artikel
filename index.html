@@ -4588,15 +4588,14 @@
               </span>
               <span data-i18n="lang.ru">Русский</span>
             </button>
-            <button type="button" class="lang-option" data-lang="ro" role="option">
+            <button type="button" class="lang-option" data-lang="pl" role="option">
               <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
-                  <rect width="1" height="2" x="0" fill="#002b7f" />
-                  <rect width="1" height="2" x="1" fill="#fcd116" />
-                  <rect width="1" height="2" x="2" fill="#ce1126" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" focusable="false">
+                  <rect width="8" height="2.5" y="0" fill="#ffffff" />
+                  <rect width="8" height="2.5" y="2.5" fill="#dc143c" />
                 </svg>
               </span>
-              <span data-i18n="lang.ro">Română</span>
+              <span data-i18n="lang.pl">Polski</span>
             </button>
             <button type="button" class="lang-option" data-lang="ar" role="option">
               <span class="lang-flag" aria-hidden="true">
@@ -4608,16 +4607,6 @@
                 </svg>
               </span>
               <span data-i18n="lang.ar">العربية</span>
-            </button>
-            <button type="button" class="lang-option" data-lang="fr" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
-                  <rect width="1" height="2" x="0" fill="#002395" />
-                  <rect width="1" height="2" x="1" fill="#ffffff" />
-                  <rect width="1" height="2" x="2" fill="#ed2939" />
-                </svg>
-              </span>
-              <span data-i18n="lang.fr">Français</span>
             </button>
           </div>
         </div>
@@ -4729,15 +4718,14 @@
               </span>
               <span>RU</span>
             </button>
-            <button type="button" class="hdr-lang-option" data-lang="ro" role="option">
+            <button type="button" class="hdr-lang-option" data-lang="pl" role="option">
               <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
-                  <rect width="1" height="2" x="0" fill="#002b7f" />
-                  <rect width="1" height="2" x="1" fill="#fcd116" />
-                  <rect width="1" height="2" x="2" fill="#ce1126" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" focusable="false">
+                  <rect width="8" height="2.5" y="0" fill="#ffffff" />
+                  <rect width="8" height="2.5" y="2.5" fill="#dc143c" />
                 </svg>
               </span>
-              <span>RO</span>
+              <span>PL</span>
             </button>
             <button type="button" class="hdr-lang-option" data-lang="ar" role="option">
               <span class="lang-flag" aria-hidden="true">
@@ -4749,16 +4737,6 @@
                 </svg>
               </span>
               <span>AR</span>
-            </button>
-            <button type="button" class="hdr-lang-option" data-lang="fr" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" focusable="false">
-                  <rect width="1" height="2" x="0" fill="#002395" />
-                  <rect width="1" height="2" x="1" fill="#ffffff" />
-                  <rect width="1" height="2" x="2" fill="#ed2939" />
-                </svg>
-              </span>
-              <span>FR</span>
             </button>
           </div>
         </div>
@@ -9354,14 +9332,7 @@
             [shift].concat("ئءؤرلاىةوزظ".split("")).concat([back]),
           ];
         }
-        if (appLang === "fr") {
-          return [
-            "azertyuiop".split(""),
-            "qsdfghjklm".split(""),
-            [shift].concat("wxcvbn".split("")).concat([back]),
-          ];
-        }
-        if (appLang === "en" || appLang === "ro") {
+        if (appLang === "en" || appLang === "pl") {
           return [
             "qwertyuiop".split(""),
             "asdfghjkl".split(""),

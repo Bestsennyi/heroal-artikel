@@ -4,113 +4,99 @@
       "de": "Speichern",
       "en": "Save",
       "ru": "Сохранить",
-      "ro": "Salvează",
-      "ar": "حفظ",
-      "fr": "Enregistrer"
+      "pl": "Zapisz",
+      "ar": "حفظ"
     },
     "cancel": {
       "de": "Abbrechen",
       "en": "Cancel",
       "ru": "Отмена",
-      "ro": "Anulează",
-      "ar": "إلغاء",
-      "fr": "Annuler"
+      "pl": "Anuluj",
+      "ar": "إلغاء"
     },
     "close": {
       "de": "Schließen",
       "en": "Close",
       "ru": "Закрыть",
-      "ro": "Închide",
-      "ar": "إغلاق",
-      "fr": "Fermer"
+      "pl": "Zamknij",
+      "ar": "إغلاق"
     },
     "clear": {
       "de": "Löschen",
       "en": "Clear",
       "ru": "Очистить",
-      "ro": "Șterge",
-      "ar": "مسح",
-      "fr": "Effacer"
+      "pl": "Wyczyść",
+      "ar": "مسح"
     },
     "copy": {
       "de": "Kopieren",
       "en": "Copy",
       "ru": "Копировать",
-      "ro": "Copiază",
-      "ar": "نسخ",
-      "fr": "Copier"
+      "pl": "Kopiuj",
+      "ar": "نسخ"
     },
     "zoom": {
       "de": "Zoom",
       "en": "Zoom",
       "ru": "Масштаб",
-      "ro": "Zoom",
-      "ar": "تكبير",
-      "fr": "Zoom"
+      "pl": "Zoom",
+      "ar": "تكبير"
     },
     "share": {
       "de": "Teilen",
       "en": "Share",
       "ru": "Поделиться",
-      "ro": "Partajează",
-      "ar": "مشاركة",
-      "fr": "Partager"
+      "pl": "Udostępnij",
+      "ar": "مشاركة"
     },
     "copied": {
       "de": "{label} kopiert!",
       "en": "{label} copied!",
       "ru": "{label} скопировано!",
-      "ro": "{label} copiat!",
-      "ar": "تم نسخ {label}!",
-      "fr": "{label} copié !"
+      "pl": "Skopiowano {label}!",
+      "ar": "تم نسخ {label}!"
     },
     "copied_short": {
       "de": "Kopiert!",
       "en": "Copied!",
       "ru": "Скопировано!",
-      "ro": "Copiat!",
-      "ar": "تم النسخ!",
-      "fr": "Copié !"
+      "pl": "Skopiowano!",
+      "ar": "تم النسخ!"
     },
     "previous": {
       "de": "Zurück",
       "en": "Previous",
       "ru": "Назад",
-      "ro": "Înapoi",
-      "ar": "السابق",
-      "fr": "Précédent"
+      "pl": "Wstecz",
+      "ar": "السابق"
     },
     "next": {
       "de": "Weiter",
       "en": "Next",
       "ru": "Далее",
-      "ro": "Înainte",
-      "ar": "التالي",
-      "fr": "Suivant"
+      "pl": "Dalej",
+      "ar": "التالي"
     },
     "online": {
       "de": "Online",
       "en": "Online",
       "ru": "Онлайн",
-      "ro": "Online",
-      "ar": "متصل",
-      "fr": "En ligne"
+      "pl": "Online",
+      "ar": "متصل"
     },
     "offline": {
       "de": "Offline",
       "en": "Offline",
       "ru": "Офлайн",
-      "ro": "Offline",
-      "ar": "غير متصل",
-      "fr": "Hors ligne"
+      "pl": "Offline",
+      "ar": "غير متصل"
     },
     "language": {
       "de": "Sprache",
       "en": "Language",
       "ru": "Язык",
-      "ro": "Limbă",
-      "ar": "اللغة",
-      "fr": "Langue"
+      "pl": "Język",
+      "ar": "اللغة"
     }
   },
   "nav": {
@@ -118,33 +104,29 @@
       "de": "Suche",
       "en": "Search",
       "ru": "Поиск",
-      "ro": "Căutare",
-      "ar": "بحث",
-      "fr": "Recherche"
+      "pl": "Szukaj",
+      "ar": "بحث"
     },
     "search_hotkey": {
       "de": "Suche [/]",
       "en": "Search [/]",
       "ru": "Поиск [/]",
-      "ro": "Căutare [/]",
-      "ar": "بحث [/]",
-      "fr": "Recherche [/]"
+      "pl": "Szukaj [/]",
+      "ar": "بحث [/]"
     },
     "scrap": {
       "de": "Ausschuss",
       "en": "Scrap",
       "ru": "Брак",
-      "ro": "Rebut",
-      "ar": "خردة",
-      "fr": "Rebuts"
+      "pl": "Brak",
+      "ar": "خردة"
     },
     "info": {
       "de": "Auskunft",
       "en": "Info",
       "ru": "Справка",
-      "ro": "Informații",
-      "ar": "معلومات",
-      "fr": "Infos"
+      "pl": "Informacje",
+      "ar": "معلومات"
     }
   },
   "auth": {
@@ -152,113 +134,99 @@
       "de": "Artikel",
       "en": "Artikel",
       "ru": "Artikel",
-      "ro": "Artikel",
-      "ar": "Artikel",
-      "fr": "Artikel"
+      "pl": "Artikel",
+      "ar": "Artikel"
     },
     "login_prompt": {
       "de": "PIN eingeben",
       "en": "Enter PIN",
       "ru": "Введите PIN",
-      "ro": "Introduceți PIN-ul",
-      "ar": "أدخل رمز PIN",
-      "fr": "Saisir le PIN"
+      "pl": "Wprowadź PIN",
+      "ar": "أدخل رمز PIN"
     },
     "login_placeholder": {
       "de": "PIN",
       "en": "PIN",
       "ru": "PIN",
-      "ro": "PIN",
-      "ar": "PIN",
-      "fr": "PIN"
+      "pl": "PIN",
+      "ar": "PIN"
     },
     "login_btn": {
       "de": "Anmelden",
       "en": "Sign in",
       "ru": "Войти",
-      "ro": "Autentificare",
-      "ar": "تسجيل الدخول",
-      "fr": "Connexion"
+      "pl": "Zaloguj",
+      "ar": "تسجيل الدخول"
     },
     "logout_btn": {
       "de": "Abmelden",
       "en": "Sign out",
       "ru": "Выйти",
-      "ro": "Deconectare",
-      "ar": "تسجيل الخروج",
-      "fr": "Déconnexion"
+      "pl": "Wyloguj",
+      "ar": "تسجيل الخروج"
     },
     "login_error_empty": {
       "de": "Bitte PIN eingeben!",
       "en": "Please enter a PIN!",
       "ru": "Пожалуйста, введите PIN!",
-      "ro": "Introduceți PIN-ul!",
-      "ar": "يرجى إدخال رمز PIN!",
-      "fr": "Veuillez saisir un PIN !"
+      "pl": "Wprowadź PIN!",
+      "ar": "يرجى إدخال رمز PIN!"
     },
     "login_error_wrong": {
       "de": "Falsche PIN-Nummer",
       "en": "Wrong PIN",
       "ru": "Неверный PIN",
-      "ro": "PIN greșit",
-      "ar": "رمز PIN غير صحيح",
-      "fr": "PIN incorrect"
+      "pl": "Nieprawidłowy PIN",
+      "ar": "رمز PIN غير صحيح"
     },
     "login_error_inactive": {
       "de": "Benutzerkonto ist inaktiv",
       "en": "Account is inactive",
       "ru": "Учётная запись неактивна",
-      "ro": "Contul este inactiv",
-      "ar": "الحساب غير نشط",
-      "fr": "Le compte est inactif"
+      "pl": "Konto jest nieaktywne",
+      "ar": "الحساب غير نشط"
     },
     "login_error_blocked": {
       "de": "Benutzerkonto ist inaktiv",
       "en": "Account is inactive",
       "ru": "Учётная запись неактивна",
-      "ro": "Contul este inactiv",
-      "ar": "الحساب غير نشط",
-      "fr": "Le compte est inactif"
+      "pl": "Konto jest nieaktywne",
+      "ar": "الحساب غير نشط"
     },
     "login_error_deactivated": {
       "de": "Benutzerkonto wurde deaktiviert",
       "en": "Account has been deactivated",
       "ru": "Учётная запись отключена",
-      "ro": "Contul a fost dezactivat",
-      "ar": "تم إلغاء تنشيط الحساب",
-      "fr": "Le compte a été désactivé"
+      "pl": "Konto zostało dezaktywowane",
+      "ar": "تم إلغاء تنشيط الحساب"
     },
     "idle_logout": {
       "de": "Sitzung wegen Inaktivität beendet.",
       "en": "Signed out due to inactivity.",
       "ru": "Сессия завершена из-за неактивности.",
-      "ro": "Sesiune încheiată din inactivitate.",
-      "ar": "تم إنهاء الجلسة بسبب عدم النشاط.",
-      "fr": "Session terminée pour inactivité."
+      "pl": "Sesja zakończona z powodu bezczynności.",
+      "ar": "تم إنهاء الجلسة بسبب عدم النشاط."
     },
     "role_admin": {
       "de": "Administrator",
       "en": "Administrator",
       "ru": "Администратор",
-      "ro": "Administrator",
-      "ar": "مسؤول",
-      "fr": "Administrateur"
+      "pl": "Administrator",
+      "ar": "مسؤول"
     },
     "role_staff": {
       "de": "Mitarbeiter",
       "en": "Staff",
       "ru": "Сотрудник",
-      "ro": "Angajat",
-      "ar": "موظف",
-      "fr": "Collaborateur"
+      "pl": "Pracownik",
+      "ar": "موظف"
     },
     "role_customer": {
       "de": "Kunde",
       "en": "Customer",
       "ru": "Клиент",
-      "ro": "Client",
-      "ar": "عميل",
-      "fr": "Client"
+      "pl": "Klient",
+      "ar": "عميل"
     }
   },
   "lang": {
@@ -266,49 +234,36 @@
       "de": "Deutsch",
       "en": "Deutsch",
       "ru": "Deutsch",
-      "ro": "Deutsch",
-      "ar": "Deutsch",
-      "fr": "Deutsch"
+      "pl": "Deutsch",
+      "ar": "Deutsch"
     },
     "en": {
       "de": "English",
       "en": "English",
       "ru": "English",
-      "ro": "English",
-      "ar": "English",
-      "fr": "English"
+      "pl": "English",
+      "ar": "English"
     },
     "ru": {
       "de": "Русский",
       "en": "Русский",
       "ru": "Русский",
-      "ro": "Русский",
-      "ar": "Русский",
-      "fr": "Русский"
+      "pl": "Русский",
+      "ar": "Русский"
     },
-    "ro": {
-      "de": "Română",
-      "en": "Română",
-      "ru": "Română",
-      "ro": "Română",
-      "ar": "Română",
-      "fr": "Română"
+    "pl": {
+      "de": "Polski",
+      "en": "Polski",
+      "ru": "Polski",
+      "pl": "Polski",
+      "ar": "Polski"
     },
     "ar": {
       "de": "العربية",
       "en": "العربية",
       "ru": "العربية",
-      "ro": "العربية",
-      "ar": "العربية",
-      "fr": "العربية"
-    },
-    "fr": {
-      "de": "Français",
-      "en": "Français",
-      "ru": "Français",
-      "ro": "Français",
-      "ar": "Français",
-      "fr": "Français"
+      "pl": "العربية",
+      "ar": "العربية"
     }
   },
   "catalog_ui": {
@@ -316,345 +271,302 @@
       "de": "Artikel",
       "en": "Articles",
       "ru": "Артикулы",
-      "ro": "Articole",
-      "ar": "المقالات",
-      "fr": "Articles"
+      "pl": "Artykuły",
+      "ar": "المقالات"
     },
     "lbl_artnr": {
       "de": "Art.-Nr. [/]",
       "en": "Art. no. [/]",
       "ru": "Артикул [/]",
-      "ro": "Nr. art. [/]",
-      "ar": "رقم المقال [/]",
-      "fr": "N° art. [/]"
+      "pl": "Nr art. [/]",
+      "ar": "رقم المقال [/]"
     },
     "lbl_colors": {
       "de": "Farben",
       "en": "Colours",
       "ru": "Цвета",
-      "ro": "Culori",
-      "ar": "الألوان",
-      "fr": "Couleurs"
+      "pl": "Kolory",
+      "ar": "الألوان"
     },
     "lbl_color_badge": {
       "de": "RAL / SD [Alt+C]",
       "en": "RAL / SD [Alt+C]",
       "ru": "RAL / SD [Alt+C]",
-      "ro": "RAL / SD [Alt+C]",
-      "ar": "RAL / SD [Alt+C]",
-      "fr": "RAL / SD [Alt+C]"
+      "pl": "RAL / SD [Alt+C]",
+      "ar": "RAL / SD [Alt+C]"
     },
     "cat_all": {
       "de": "Alle",
       "en": "All",
       "ru": "Все",
-      "ro": "Toate",
-      "ar": "الكل",
-      "fr": "Tous"
+      "pl": "Wszystkie",
+      "ar": "الكل"
     },
     "cat_ral": {
       "de": "RAL",
       "en": "RAL",
       "ru": "RAL",
-      "ro": "RAL",
-      "ar": "RAL",
-      "fr": "RAL"
+      "pl": "RAL",
+      "ar": "RAL"
     },
     "cat_sd": {
       "de": "SD",
       "en": "SD",
       "ru": "SD",
-      "ro": "SD",
-      "ar": "SD",
-      "fr": "SD"
+      "pl": "SD",
+      "ar": "SD"
     },
     "list_hint_artikel": {
       "de": "Artikelnummer oder Name suchen",
       "en": "Search article number or name",
       "ru": "Искать артикул или название",
-      "ro": "Căutați numărul sau numele articolului",
-      "ar": "ابحث عن رقم المقال أو الاسم",
-      "fr": "Rechercher un n° ou un nom d’article"
+      "pl": "Szukaj numeru lub nazwy artykułu",
+      "ar": "ابحث عن رقم المقال أو الاسم"
     },
     "list_hint_farben": {
       "de": "Farbnummer oder Farbname suchen",
       "en": "Search color number or name",
       "ru": "Искать номер или название краски",
-      "ro": "Căutați numărul sau numele culorii",
-      "ar": "ابحث عن رقم اللون أو الاسم",
-      "fr": "Rechercher un n° ou un nom de couleur"
+      "pl": "Szukaj numeru lub nazwy koloru",
+      "ar": "ابحث عن رقم اللون أو الاسم"
     },
     "ph_artikel": {
       "de": "Artikelnummer oder Name eingeben...",
       "en": "Enter article number or name...",
       "ru": "Введите артикул или название товара...",
-      "ro": "Introduceți numărul sau numele articolului...",
-      "ar": "أدخل رقم المقال أو الاسم...",
-      "fr": "Saisir le n° ou le nom d’article..."
+      "pl": "Wpisz numer lub nazwę artykułu...",
+      "ar": "أدخل رقم المقال أو الاسم..."
     },
     "ph_farben": {
       "de": "Farbnummer oder Farbname eingeben...",
       "en": "Enter color code or name...",
       "ru": "Введите номер или название краски...",
-      "ro": "Introduceți codul sau numele culorii...",
-      "ar": "أدخل رمز اللون أو الاسم...",
-      "fr": "Saisir le code ou le nom de couleur..."
+      "pl": "Wpisz kod lub nazwę koloru...",
+      "ar": "أدخل رمز اللون أو الاسم..."
     },
     "ph_defect": {
       "de": "Fehler suchen...",
       "en": "Search defect...",
       "ru": "Искать дефект...",
-      "ro": "Căutați defectul...",
-      "ar": "ابحث عن العيب...",
-      "fr": "Rechercher un défaut..."
+      "pl": "Szukaj wady...",
+      "ar": "ابحث عن العيب..."
     },
     "ph_guide": {
       "de": "Thema suchen...",
       "en": "Search topic...",
       "ru": "Искать тему...",
-      "ro": "Căutați tema...",
-      "ar": "ابحث عن الموضوع...",
-      "fr": "Rechercher un sujet..."
+      "pl": "Szukaj tematu...",
+      "ar": "ابحث عن الموضوع..."
     },
     "auskunft_empty": {
       "de": "Keine Einträge gefunden.",
       "en": "No entries found.",
       "ru": "Ничего не найдено.",
-      "ro": "Nu s-au găsit înregistrări.",
-      "ar": "لا توجد نتائج.",
-      "fr": "Aucune entrée trouvée."
+      "pl": "Nie znaleziono wpisów.",
+      "ar": "لا توجد نتائج."
     },
     "auskunft_toggle": {
       "de": "Anleitung ein- oder ausklappen",
       "en": "Expand or collapse instructions",
       "ru": "Развернуть или свернуть инструкцию",
-      "ro": "Extindeți sau restrângeți instrucțiunea",
-      "ar": "توسيع أو طي التعليمات",
-      "fr": "Déplier ou replier la consigne"
+      "pl": "Rozwiń lub zwiń instrukcję",
+      "ar": "توسيع أو طي التعليمات"
     },
     "auskunft_filters": {
       "de": "Nach Kategorie filtern",
       "en": "Filter by category",
       "ru": "Фильтр по категории",
-      "ro": "Filtrați după categorie",
-      "ar": "تصفية حسب الفئة",
-      "fr": "Filtrer par catégorie"
+      "pl": "Filtruj według kategorii",
+      "ar": "تصفية حسب الفئة"
     },
     "auskunft_cat_all": {
       "de": "Alle Kategorien",
       "en": "All categories",
       "ru": "Все категории",
-      "ro": "Toate categoriile",
-      "ar": "كل الفئات",
-      "fr": "Toutes les catégories"
+      "pl": "Wszystkie kategorie",
+      "ar": "كل الفئات"
     },
     "zoom_btn": {
       "de": "Zoom",
       "en": "Zoom",
       "ru": "Масштаб",
-      "ro": "Zoom",
-      "ar": "تكبير",
-      "fr": "Zoom"
+      "pl": "Zoom",
+      "ar": "تكبير"
     },
     "view_invert": {
       "de": "Invertieren",
       "en": "Invert",
       "ru": "Инверсия",
-      "ro": "Inversare",
-      "ar": "عكس",
-      "fr": "Inverser"
+      "pl": "Odwróć",
+      "ar": "عكس"
     },
     "view_original": {
       "de": "Original",
       "en": "Original",
       "ru": "Оригинал",
-      "ro": "Original",
-      "ar": "أصلي",
-      "fr": "Original"
+      "pl": "Oryginał",
+      "ar": "أصلي"
     },
     "hint_title": {
       "de": "Beschreibung",
       "en": "Description",
       "ru": "Описание",
-      "ro": "Descriere",
-      "ar": "الوصف",
-      "fr": "Description"
+      "pl": "Opis",
+      "ar": "الوصف"
     },
     "hint_system": {
       "de": "System",
       "en": "System",
       "ru": "Система",
-      "ro": "Sistem",
-      "ar": "النظام",
-      "fr": "Système"
+      "pl": "System",
+      "ar": "النظام"
     },
     "hint_masse": {
       "de": "Masse",
       "en": "Dimensions",
       "ru": "Размеры",
-      "ro": "Dimensiuni",
-      "ar": "الأبعاد",
-      "fr": "Dimensions"
+      "pl": "Wymiary",
+      "ar": "الأبعاد"
     },
     "hint_more": {
       "de": "Vollansicht",
       "en": "Full view",
       "ru": "Полный обзор",
-      "ro": "Vizualizare completă",
-      "ar": "عرض كامل",
-      "fr": "Vue complète"
+      "pl": "Pełny widok",
+      "ar": "عرض كامل"
     },
     "copy_artnr_title": {
       "de": "Artikelnummer kopieren",
       "en": "Copy article number",
       "ru": "Копировать артикул",
-      "ro": "Copiați numărul articolului",
-      "ar": "نسخ رقم المقال",
-      "fr": "Copier le n° d’article"
+      "pl": "Kopiuj numer artykułu",
+      "ar": "نسخ رقم المقال"
     },
     "copy_name_title": {
       "de": "Bezeichnung kopieren",
       "en": "Copy name",
       "ru": "Копировать название",
-      "ro": "Copiați denumirea",
-      "ar": "نسخ الاسم",
-      "fr": "Copier la désignation"
+      "pl": "Kopiuj nazwę",
+      "ar": "نسخ الاسم"
     },
     "copy_hint_title": {
       "de": "Beschreibung kopieren",
       "en": "Copy description",
       "ru": "Копировать описание",
-      "ro": "Copiați descrierea",
-      "ar": "نسخ الوصف",
-      "fr": "Copier la description"
+      "pl": "Kopiuj opis",
+      "ar": "نسخ الوصف"
     },
     "copy_farbnr_title": {
       "de": "Farbnummer kopieren",
       "en": "Copy colour number",
       "ru": "Копировать номер цвета",
-      "ro": "Copiați numărul culorii",
-      "ar": "نسخ رقم اللون",
-      "fr": "Copier le n° de couleur"
+      "pl": "Kopiuj numer koloru",
+      "ar": "نسخ رقم اللون"
     },
     "copy_hex_title": {
       "de": "HEX-Code kopieren",
       "en": "Copy HEX code",
       "ru": "Копировать HEX-код",
-      "ro": "Copiați codul HEX",
-      "ar": "نسخ رمز HEX",
-      "fr": "Copier le code HEX"
+      "pl": "Kopiuj kod HEX",
+      "ar": "نسخ رمز HEX"
     },
     "copy_artnr_btn": {
       "de": "Art.-Nr.",
       "en": "Art. no.",
       "ru": "Art.-Nr.",
-      "ro": "Art.-Nr.",
-      "ar": "Art.-Nr.",
-      "fr": "Art.-Nr."
+      "pl": "Art.-Nr.",
+      "ar": "Art.-Nr."
     },
     "copy_name_btn": {
       "de": "Name",
       "en": "Name",
       "ru": "Name",
-      "ro": "Name",
-      "ar": "Name",
-      "fr": "Name"
+      "pl": "Name",
+      "ar": "Name"
     },
     "copy_hint_btn": {
       "de": "Beschreibung",
       "en": "Description",
       "ru": "Описание",
-      "ro": "Descriere",
-      "ar": "الوصف",
-      "fr": "Description"
+      "pl": "Opis",
+      "ar": "الوصف"
     },
     "copy_farbnr_btn": {
       "de": "Farb-Nr.",
       "en": "Colour no.",
       "ru": "Farb-Nr.",
-      "ro": "Farb-Nr.",
-      "ar": "Farb-Nr.",
-      "fr": "Farb-Nr."
+      "pl": "Farb-Nr.",
+      "ar": "Farb-Nr."
     },
     "copy_hex_btn": {
       "de": "Hex",
       "en": "Hex",
       "ru": "Hex",
-      "ro": "Hex",
-      "ar": "Hex",
-      "fr": "Hex"
+      "pl": "Hex",
+      "ar": "Hex"
     },
     "finish_matt": {
       "de": "Matt",
       "en": "Matt",
       "ru": "Матовый",
-      "ro": "Mat",
-      "ar": "مطفي",
-      "fr": "Mat"
+      "pl": "Matowy",
+      "ar": "مطفي"
     },
     "finish_gloss": {
       "de": "Glänzend",
       "en": "Gloss",
       "ru": "Глянцевый",
-      "ro": "Lucios",
-      "ar": "لامع",
-      "fr": "Brillant"
+      "pl": "Błyszczący",
+      "ar": "لامع"
     },
     "finish_fine": {
       "de": "Feinstruktur",
       "en": "Fine texture",
       "ru": "Мелкая структура",
-      "ro": "Structură fină",
-      "ar": "بنية دقيقة",
-      "fr": "Fine structure"
+      "pl": "Drobna struktura",
+      "ar": "بنية دقيقة"
     },
     "finish_heroal": {
       "de": "heroal Color",
       "en": "heroal Color",
       "ru": "heroal Color",
-      "ro": "heroal Color",
-      "ar": "heroal Color",
-      "fr": "heroal Color"
+      "pl": "heroal Color",
+      "ar": "heroal Color"
     },
     "share_btn": {
       "de": "Teilen",
       "en": "Share",
       "ru": "Поделиться",
-      "ro": "Partajează",
-      "ar": "مشاركة",
-      "fr": "Partager"
+      "pl": "Udostępnij",
+      "ar": "مشاركة"
     },
     "share_title": {
       "de": "Karte teilen",
       "en": "Share card",
       "ru": "Поделиться карточкой",
-      "ro": "Partajați cardul",
-      "ar": "مشاركة البطاقة",
-      "fr": "Partager la fiche"
+      "pl": "Udostępnij kartę",
+      "ar": "مشاركة البطاقة"
     },
     "share_saved": {
       "de": "Screenshot gespeichert / kopiert",
       "en": "Screenshot saved / copied",
       "ru": "Скриншот сохранён / скопирован",
-      "ro": "Captură salvată / copiată",
-      "ar": "تم حفظ/نسخ لقطة الشاشة",
-      "fr": "Capture enregistrée / copiée"
+      "pl": "Zrzut ekranu zapisany / skopiowany",
+      "ar": "تم حفظ/نسخ لقطة الشاشة"
     },
     "drawing_missing": {
       "de": "Zeichnung nicht hinterlegt",
       "en": "No drawing on file",
       "ru": "Чертёж не задан",
-      "ro": "Nu există desen",
-      "ar": "لا يوجد رسم",
-      "fr": "Aucun plan enregistré"
+      "pl": "Brak rysunku",
+      "ar": "لا يوجد رسم"
     },
     "color_surface_fallback": {
       "de": "heroal Beschichtung",
       "en": "heroal coating",
       "ru": "Покрытие heroal",
-      "ro": "Acoperire heroal",
-      "ar": "طلاء heroal",
-      "fr": "Revêtement heroal"
+      "pl": "Powłoka heroal",
+      "ar": "طلاء heroal"
     }
   },
   "photo": {
@@ -662,241 +574,211 @@
       "de": "Foto erfassen",
       "en": "Capture photo",
       "ru": "Захват фото",
-      "ro": "Captură foto",
-      "ar": "التقاط صورة",
-      "fr": "Capturer une photo"
+      "pl": "Zrób zdjęcie",
+      "ar": "التقاط صورة"
     },
     "modalTitle": {
       "de": "Foto erfassen",
       "en": "Capture photo",
       "ru": "Захват фото",
-      "ro": "Captură foto",
-      "ar": "التقاط صورة",
-      "fr": "Capturer une photo"
+      "pl": "Zrób zdjęcie",
+      "ar": "التقاط صورة"
     },
     "tabArtikel": {
       "de": "ARTIKEL",
       "en": "ARTICLES",
       "ru": "АРТИКУЛЫ",
-      "ro": "ARTICOLE",
-      "ar": "المقالات",
-      "fr": "ARTICLES"
+      "pl": "ARTYKUŁY",
+      "ar": "المقالات"
     },
     "tabFarben": {
       "de": "FARBEN",
       "en": "COLOURS",
       "ru": "КРАСКИ",
-      "ro": "CULORI",
-      "ar": "الألوان",
-      "fr": "COULEURS"
+      "pl": "KOLORY",
+      "ar": "الألوان"
     },
     "phArtikel": {
       "de": "Artikelnummer eingeben...",
       "en": "Enter article number...",
       "ru": "Введите номер артикула...",
-      "ro": "Introduceți numărul articolului...",
-      "ar": "أدخل رقم المقال...",
-      "fr": "Saisir le n° d’article..."
+      "pl": "Wpisz numer artykułu...",
+      "ar": "أدخل رقم المقال..."
     },
     "phFarben": {
       "de": "Farbnummer eingeben...",
       "en": "Enter color code...",
       "ru": "Введите номер краски...",
-      "ro": "Introduceți codul culorii...",
-      "ar": "أدخل رمز اللون...",
-      "fr": "Saisir le code couleur..."
+      "pl": "Wpisz kod koloru...",
+      "ar": "أدخل رمز اللون..."
     },
     "itemNotFound": {
       "de": "Eintrag nicht gefunden",
       "en": "Item not found",
       "ru": "Запись не найдена",
-      "ro": "Înregistrarea nu a fost găsită",
-      "ar": "لم يتم العثور على العنصر",
-      "fr": "Élément introuvable"
+      "pl": "Nie znaleziono wpisu",
+      "ar": "لم يتم العثور على العنصر"
     },
     "slotMain": {
       "de": "Hauptbild",
       "en": "Main image",
       "ru": "Главное фото",
-      "ro": "Imagine principală",
-      "ar": "الصورة الرئيسية",
-      "fr": "Image principale"
+      "pl": "Zdjęcie główne",
+      "ar": "الصورة الرئيسية"
     },
     "slotPhoto": {
       "de": "Foto",
       "en": "Photo",
       "ru": "Фото",
-      "ro": "Foto",
-      "ar": "صورة",
-      "fr": "Photo"
+      "pl": "Zdjęcie",
+      "ar": "صورة"
     },
     "slotReal": {
       "de": "Echtes Foto",
       "en": "Real photo",
       "ru": "Реальное фото",
-      "ro": "Foto reală",
-      "ar": "صورة حقيقية",
-      "fr": "Photo réelle"
+      "pl": "Prawdziwe zdjęcie",
+      "ar": "صورة حقيقية"
     },
     "slotRealPhoto": {
       "de": "Echtes Foto",
       "en": "Real photo",
       "ru": "Реальное фото",
-      "ro": "Foto reală",
-      "ar": "صورة حقيقية",
-      "fr": "Photo réelle"
+      "pl": "Prawdziwe zdjęcie",
+      "ar": "صورة حقيقية"
     },
     "slotDummyImage": {
       "de": "Farbmuster / Dummy",
       "en": "Color swatch / Dummy",
       "ru": "Образец цвета / Dummy",
-      "ro": "Mostră culoare / Dummy",
-      "ar": "عينة لون / وهمي",
-      "fr": "Nuancier / factice"
+      "pl": "Wzornik koloru / Dummy",
+      "ar": "عينة لون / وهمي"
     },
     "slotStatusEmpty": {
       "de": "Leer",
       "en": "Empty",
       "ru": "Свободно",
-      "ro": "Gol",
-      "ar": "فارغ",
-      "fr": "Vide"
+      "pl": "Pusty",
+      "ar": "فارغ"
     },
     "slotStatusOccupied": {
       "de": "Belegt",
       "en": "Occupied",
       "ru": "Занято",
-      "ro": "Ocupat",
-      "ar": "مشغول",
-      "fr": "Occupé"
+      "pl": "Zajęty",
+      "ar": "مشغول"
     },
     "warnOverwrite": {
       "de": "⚠️ Slot bereits belegt. Foto wird beim Speichern überschrieben.",
       "en": "⚠️ Slot already occupied. Photo will be overwritten on save.",
       "ru": "⚠️ Слот уже занят. Фото будет заменено при сохранении.",
-      "ro": "⚠️ Slot ocupat. Fotografia va fi suprascrisă la salvare.",
-      "ar": "⚠️ الفتحة مشغولة. سيتم استبدال الصورة عند الحفظ.",
-      "fr": "⚠️ Emplacement occupé. La photo sera écrasée à l’enregistrement."
+      "pl": "⚠️ Slot już zajęty. Zdjęcie zostanie nadpisane przy zapisie.",
+      "ar": "⚠️ الفتحة مشغولة. سيتم استبدال الصورة عند الحفظ."
     },
     "btnCamera": {
       "de": "Foto aufnehmen",
       "en": "Take photo",
       "ru": "Сделать фото",
-      "ro": "Faceți o foto",
-      "ar": "التقاط صورة",
-      "fr": "Prendre une photo"
+      "pl": "Zrób zdjęcie",
+      "ar": "التقاط صورة"
     },
     "btnCameraSnap": {
       "de": "Aufnehmen",
       "en": "Capture",
       "ru": "Снять",
-      "ro": "Captură",
-      "ar": "التقاط",
-      "fr": "Capturer"
+      "pl": "Zrób",
+      "ar": "التقاط"
     },
     "btnCameraCancel": {
       "de": "Kamera schließen",
       "en": "Close camera",
       "ru": "Закрыть камеру",
-      "ro": "Închideți camera",
-      "ar": "إغلاق الكاميرا",
-      "fr": "Fermer la caméra"
+      "pl": "Zamknij kamerę",
+      "ar": "إغلاق الكاميرا"
     },
     "btnGallery": {
       "de": "Aus Galerie",
       "en": "From gallery",
       "ru": "Из галереи",
-      "ro": "Din galerie",
-      "ar": "من المعرض",
-      "fr": "Depuis la galerie"
+      "pl": "Z galerii",
+      "ar": "من المعرض"
     },
     "btnSave": {
       "de": "Foto speichern",
       "en": "Save photo",
       "ru": "Сохранить фото",
-      "ro": "Salvați fotografia",
-      "ar": "حفظ الصورة",
-      "fr": "Enregistrer la photo"
+      "pl": "Zapisz zdjęcie",
+      "ar": "حفظ الصورة"
     },
     "toastAdded": {
       "de": "Foto erfolgreich hinzugefügt ({slot})",
       "en": "Photo successfully added ({slot})",
       "ru": "Фото успешно добавлено ({slot})",
-      "ro": "Fotografie adăugată ({slot})",
-      "ar": "تمت إضافة الصورة ({slot})",
-      "fr": "Photo ajoutée ({slot})"
+      "pl": "Zdjęcie dodane ({slot})",
+      "ar": "تمت إضافة الصورة ({slot})"
     },
     "toastUpdated": {
       "de": "Foto in {slot} erfolgreich aktualisiert",
       "en": "Photo in {slot} successfully updated",
       "ru": "Фото в {slot} успешно обновлено",
-      "ro": "Fotografie din {slot} actualizată",
-      "ar": "تم تحديث الصورة في {slot}",
-      "fr": "Photo de {slot} mise à jour"
+      "pl": "Zdjęcie w {slot} zaktualizowane",
+      "ar": "تم تحديث الصورة في {slot}"
     },
     "toastOffline": {
       "de": "Lokal gespeichert (Offline bereit)",
       "en": "Saved locally (Offline ready)",
       "ru": "Сохранено локально (офлайн)",
-      "ro": "Salvat local (offline)",
-      "ar": "حُفظ محلياً (جاهز دون اتصال)",
-      "fr": "Enregistré localement (hors ligne)"
+      "pl": "Zapisano lokalnie (offline)",
+      "ar": "حُفظ محلياً (جاهز دون اتصال)"
     },
     "photo_title": {
       "de": "Foto erfassen",
       "en": "Capture photo",
       "ru": "Захват фото",
-      "ro": "Captură foto",
-      "ar": "التقاط صورة",
-      "fr": "Capturer une photo"
+      "pl": "Zrób zdjęcie",
+      "ar": "التقاط صورة"
     },
     "photo_not_found": {
       "de": "Eintrag nicht gefunden",
       "en": "Item not found",
       "ru": "Запись не найдена",
-      "ro": "Înregistrarea nu a fost găsită",
-      "ar": "لم يتم العثور على العنصر",
-      "fr": "Élément introuvable"
+      "pl": "Nie znaleziono wpisu",
+      "ar": "لم يتم العثور على العنصر"
     },
     "photo_sync_fail": {
       "de": "Foto-Upload fehlgeschlagen",
       "en": "Photo upload failed",
       "ru": "Не удалось загрузить фото",
-      "ro": "Încărcarea fotografiei a eșuat",
-      "ar": "فشل رفع الصورة",
-      "fr": "Échec du téléversement"
+      "pl": "Przesyłanie zdjęcia nie powiodło się",
+      "ar": "فشل رفع الصورة"
     },
     "photo_need_photo": {
       "de": "Bitte ein Foto wählen",
       "en": "Please choose a photo",
       "ru": "Выберите фото",
-      "ro": "Alegeți o fotografie",
-      "ar": "يرجى اختيار صورة",
-      "fr": "Veuillez choisir une photo"
+      "pl": "Wybierz zdjęcie",
+      "ar": "يرجى اختيار صورة"
     },
     "photo_compress_fail": {
       "de": "Foto konnte nicht verarbeitet werden",
       "en": "Could not process the photo",
       "ru": "Не удалось обработать фото",
-      "ro": "Fotografia nu a putut fi procesată",
-      "ar": "تعذر معالجة الصورة",
-      "fr": "Impossible de traiter la photo"
+      "pl": "Nie udało się przetworzyć zdjęcia",
+      "ar": "تعذر معالجة الصورة"
     },
     "photo_camera_fail": {
       "de": "Kamera nicht verfügbar",
       "en": "Camera not available",
       "ru": "Камера недоступна",
-      "ro": "Camera nu este disponibilă",
-      "ar": "الكاميرا غير متاحة",
-      "fr": "Caméra indisponible"
+      "pl": "Kamera niedostępna",
+      "ar": "الكاميرا غير متاحة"
     },
     "photo_camera_denied": {
       "de": "Kamerazugriff verweigert",
       "en": "Camera access denied",
       "ru": "Доступ к камере запрещён",
-      "ro": "Accesul la cameră a fost refuzat",
-      "ar": "تم رفض الوصول إلى الكاميرا",
-      "fr": "Accès caméra refusé"
+      "pl": "Odmowa dostępu do kamery",
+      "ar": "تم رفض الوصول إلى الكاميرا"
     }
   },
   "modal": {
@@ -904,57 +786,50 @@
       "de": "Einstellungen",
       "en": "Settings",
       "ru": "Настройки",
-      "ro": "Setări",
-      "ar": "الإعدادات",
-      "fr": "Paramètres"
+      "pl": "Ustawienia",
+      "ar": "الإعدادات"
     },
     "settings_save": {
       "de": "Speichern",
       "en": "Save",
       "ru": "Сохранить",
-      "ro": "Salvează",
-      "ar": "حفظ",
-      "fr": "Enregistrer"
+      "pl": "Zapisz",
+      "ar": "حفظ"
     },
     "settings_reload": {
       "de": "Alle Zeichnungen neu laden",
       "en": "Reload all drawings",
       "ru": "Загрузить все чертежи заново",
-      "ro": "Reîncărcați toate desenele",
-      "ar": "إعادة تحميل جميع الرسوم",
-      "fr": "Recharger tous les plans"
+      "pl": "Wczytaj ponownie wszystkie rysunki",
+      "ar": "إعادة تحميل جميع الرسوم"
     },
     "settings_urls": {
       "de": "Google Sheets CSV Publish URLs:",
       "en": "Google Sheets CSV Publish URLs:",
       "ru": "Google Sheets CSV Publish URLs:",
-      "ro": "URL-uri CSV Google Sheets:",
-      "ar": "عناوين CSV في Google Sheets:",
-      "fr": "URL CSV Google Sheets :"
+      "pl": "Adresy CSV Google Sheets:",
+      "ar": "عناوين CSV في Google Sheets:"
     },
     "sync_dialog_title": {
       "de": "Aktualisieren",
       "en": "Updating",
       "ru": "Обновление",
-      "ro": "Actualizare",
-      "ar": "تحديث",
-      "fr": "Mise à jour"
+      "pl": "Aktualizacja",
+      "ar": "تحديث"
     },
     "sync_cancel": {
       "de": "Abbrechen",
       "en": "Cancel",
       "ru": "Отмена",
-      "ro": "Anulează",
-      "ar": "إلغاء",
-      "fr": "Annuler"
+      "pl": "Anuluj",
+      "ar": "إلغاء"
     },
     "note_title": {
       "de": "Beschreibung",
       "en": "Description",
       "ru": "Описание",
-      "ro": "Descriere",
-      "ar": "الوصف",
-      "fr": "Description"
+      "pl": "Opis",
+      "ar": "الوصف"
     }
   },
   "sync": {
@@ -962,201 +837,176 @@
       "de": "Sync",
       "en": "Sync",
       "ru": "Sync",
-      "ro": "Sincronizare",
-      "ar": "مزامنة",
-      "fr": "Sync"
+      "pl": "Sync",
+      "ar": "مزامنة"
     },
     "syncing": {
       "de": "Aktualisieren…",
       "en": "Updating…",
       "ru": "Обновление…",
-      "ro": "Se actualizează…",
-      "ar": "جارٍ التحديث…",
-      "fr": "Mise à jour…"
+      "pl": "Aktualizacja…",
+      "ar": "جارٍ التحديث…"
     },
     "synced": {
       "de": "Aktuell",
       "en": "Up to date",
       "ru": "Актуально",
-      "ro": "La zi",
-      "ar": "محدّث",
-      "fr": "À jour"
+      "pl": "Aktualne",
+      "ar": "محدّث"
     },
     "sync_title": {
       "de": "Daten aktualisieren",
       "en": "Update data",
       "ru": "Обновить данные",
-      "ro": "Actualizați datele",
-      "ar": "تحديث البيانات",
-      "fr": "Mettre à jour les données"
+      "pl": "Aktualizuj dane",
+      "ar": "تحديث البيانات"
     },
     "sync_offline": {
       "de": "Offline — nicht verfügbar",
       "en": "Offline — unavailable",
       "ru": "Офлайн — недоступно",
-      "ro": "Offline — indisponibil",
-      "ar": "غير متصل — غير متاح",
-      "fr": "Hors ligne — indisponible"
+      "pl": "Offline — niedostępne",
+      "ar": "غير متصل — غير متاح"
     },
     "sync_cancelled": {
       "de": "Aktualisierung abgebrochen",
       "en": "Update cancelled",
       "ru": "Синхронизация прервана",
-      "ro": "Actualizare anulată",
-      "ar": "تم إلغاء التحديث",
-      "fr": "Mise à jour annulée"
+      "pl": "Aktualizacja anulowana",
+      "ar": "تم إلغاء التحديث"
     },
     "sync_drawings_missing": {
       "de": "{n} Zeichnungen fehlen",
       "en": "{n} drawings missing",
       "ru": "Нет {n} чертежей",
-      "ro": "Lipsesc {n} desene",
-      "ar": "هناك {n} رسوم ناقصة",
-      "fr": "{n} plans manquants"
+      "pl": "Brakuje {n} rysunków",
+      "ar": "هناك {n} رسوم ناقصة"
     },
     "drawings_check": {
       "de": "Zeichnungen prüfen…",
       "en": "Checking drawings…",
       "ru": "Проверка чертежей…",
-      "ro": "Se verifică desenele…",
-      "ar": "جارٍ التحقق من الرسوم…",
-      "fr": "Vérification des plans…"
+      "pl": "Sprawdzanie rysunków…",
+      "ar": "جارٍ التحقق من الرسوم…"
     },
     "drawings_load": {
       "de": "Zeichnungen {done}/{total}",
       "en": "Drawings {done}/{total}",
       "ru": "Чертежи {done}/{total}",
-      "ro": "Desene {done}/{total}",
-      "ar": "الرسوم {done}/{total}",
-      "fr": "Plans {done}/{total}"
+      "pl": "Rysunki {done}/{total}",
+      "ar": "الرسوم {done}/{total}"
     },
     "offline_no_net": {
       "de": "Keine Verbindung",
       "en": "No connection",
       "ru": "Нет соединения",
-      "ro": "Fără conexiune",
-      "ar": "لا يوجد اتصال",
-      "fr": "Pas de connexion"
+      "pl": "Brak połączenia",
+      "ar": "لا يوجد اتصال"
     },
     "sync_load_start": {
       "de": "Katalog wird geladen…",
       "en": "Loading catalogue…",
       "ru": "Загрузка каталога…",
-      "ro": "Se încarcă catalogul…",
-      "ar": "جارٍ تحميل الكتالوج…",
-      "fr": "Chargement du catalogue…"
+      "pl": "Ładowanie katalogu…",
+      "ar": "جارٍ تحميل الكتالوج…"
     },
     "sync_load_profiles": {
       "de": "Artikel…",
       "en": "Articles…",
       "ru": "Артикулы…",
-      "ro": "Articole…",
-      "ar": "المقالات…",
-      "fr": "Articles…"
+      "pl": "Artykuły…",
+      "ar": "المقالات…"
     },
     "sync_load_colors": {
       "de": "Farben…",
       "en": "Colours…",
       "ru": "Цвета…",
-      "ro": "Culori…",
-      "ar": "الألوان…",
-      "fr": "Couleurs…"
+      "pl": "Kolory…",
+      "ar": "الألوان…"
     },
     "sync_load_auskunft": {
       "de": "Auskunft…",
       "en": "Info…",
       "ru": "Справка…",
-      "ro": "Informații…",
-      "ar": "المعلومات…",
-      "fr": "Infos…"
+      "pl": "Informacje…",
+      "ar": "المعلومات…"
     },
     "sync_load_users": {
       "de": "Benutzer…",
       "en": "Users…",
       "ru": "Сотрудники…",
-      "ro": "Utilizatori…",
-      "ar": "المستخدمون…",
-      "fr": "Utilisateurs…"
+      "pl": "Użytkownicy…",
+      "ar": "المستخدمون…"
     },
     "sync_load_i18n": {
       "de": "Sprache…",
       "en": "Language…",
       "ru": "Язык…",
-      "ro": "Limbă…",
-      "ar": "اللغة…",
-      "fr": "Langue…"
+      "pl": "Język…",
+      "ar": "اللغة…"
     },
     "sync_save": {
       "de": "Speichern…",
       "en": "Saving…",
       "ru": "Сохранение…",
-      "ro": "Se salvează…",
-      "ar": "جارٍ الحفظ…",
-      "fr": "Enregistrement…"
+      "pl": "Zapisywanie…",
+      "ar": "جارٍ الحفظ…"
     },
     "sync_done": {
       "de": "Fertig",
       "en": "Done",
       "ru": "Готово",
-      "ro": "Gata",
-      "ar": "تم",
-      "fr": "Terminé"
+      "pl": "Gotowe",
+      "ar": "تم"
     },
     "sync_abort_net": {
       "de": "Verbindung unterbrochen · {cached}/{total}",
       "en": "Connection lost · {cached}/{total}",
       "ru": "Нет связи · {cached}/{total}",
-      "ro": "Conexiune întreruptă · {cached}/{total}",
-      "ar": "انقطع الاتصال · {cached}/{total}",
-      "fr": "Connexion perdue · {cached}/{total}"
+      "pl": "Połączenie przerwane · {cached}/{total}",
+      "ar": "انقطع الاتصال · {cached}/{total}"
     },
     "sync_abort_throttle": {
       "de": "Server ausgelastet · {cached}/{total}",
       "en": "Server busy · {cached}/{total}",
       "ru": "Сервер занят · {cached}/{total}",
-      "ro": "Server ocupat · {cached}/{total}",
-      "ar": "الخادم مشغول · {cached}/{total}",
-      "fr": "Serveur occupé · {cached}/{total}"
+      "pl": "Serwer zajęty · {cached}/{total}",
+      "ar": "الخادم مشغول · {cached}/{total}"
     },
     "sync_partial": {
       "de": "{artikel} Artikel · {farben} Farben · {missing} Zeichnungen fehlen",
       "en": "{artikel} articles · {farben} colours · {missing} drawings missing",
       "ru": "{artikel} артикулов · {farben} красок · нет {missing} чертежей",
-      "ro": "{artikel} articole · {farben} culori · lipsesc {missing} desene",
-      "ar": "{artikel} مقالات · {farben} ألوان · {missing} رسوم ناقصة",
-      "fr": "{artikel} articles · {farben} couleurs · {missing} plans manquants"
+      "pl": "{artikel} artykułów · {farben} kolorów · brakuje {missing} rysunków",
+      "ar": "{artikel} مقالات · {farben} ألوان · {missing} رسوم ناقصة"
     },
     "sync_ok": {
       "de": "{artikel} Artikel · {farben} Farben · {cached} Zeichnungen{newly}",
       "en": "{artikel} articles · {farben} colours · {cached} drawings{newly}",
       "ru": "{artikel} артикулов · {farben} красок · {cached} чертежей{newly}",
-      "ro": "{artikel} articole · {farben} culori · {cached} desene{newly}",
-      "ar": "{artikel} مقالات · {farben} ألوان · {cached} رسوم{newly}",
-      "fr": "{artikel} articles · {farben} couleurs · {cached} plans{newly}"
+      "pl": "{artikel} artykułów · {farben} kolorów · {cached} rysunków{newly}",
+      "ar": "{artikel} مقالات · {farben} ألوان · {cached} رسوم{newly}"
     },
     "sync_newly": {
       "de": " · {n} neu",
       "en": " · {n} new",
       "ru": " · {n} новых",
-      "ro": " · {n} noi",
-      "ar": " · {n} جديد",
-      "fr": " · {n} nouveaux"
+      "pl": " · {n} nowych",
+      "ar": " · {n} جديد"
     },
     "reload_drawings_confirm": {
       "de": "{n} Zeichnungen komplett neu laden? Das dauert deutlich länger als ein normaler Sync.",
       "en": "Re-download all {n} drawings? This takes longer than a normal sync.",
       "ru": "Перекачать все {n} чертежей заново? Это заметно дольше обычной синхронизации.",
-      "ro": "Reîncărcați toate cele {n} desene? Durează mai mult decât o sincronizare normală.",
-      "ar": "هل تريد إعادة تنزيل جميع الرسوم البالغ عددها {n}؟ يستغرق ذلك وقتاً أطول من المزامنة العادية.",
-      "fr": "Retélécharger les {n} plans ? Plus long qu’une sync normale."
+      "pl": "Pobrać ponownie wszystkie {n} rysunków? To trwa dłużej niż zwykła synchronizacja.",
+      "ar": "هل تريد إعادة تنزيل جميع الرسوم البالغ عددها {n}؟ يستغرق ذلك وقتاً أطول من المزامنة العادية."
     },
     "urls_saved": {
       "de": "URLs gespeichert! Drücken Sie Sync.",
       "en": "URLs saved! Press Sync.",
       "ru": "Ссылки сохранены! Нажмите Sync.",
-      "ro": "URL-uri salvate! Apăsați Sync.",
-      "ar": "تم حفظ العناوين! اضغط مزامنة.",
-      "fr": "URL enregistrées ! Appuyez sur Sync."
+      "pl": "Adresy zapisane! Naciśnij Sync.",
+      "ar": "تم حفظ العناوين! اضغط مزامنة."
     }
   },
   "errors": {
@@ -1164,25 +1014,22 @@
       "de": "Aktualisierung fehlgeschlagen",
       "en": "Update failed",
       "ru": "Не удалось обновить",
-      "ro": "Actualizarea a eșuat",
-      "ar": "فشل التحديث",
-      "fr": "Échec de la mise à jour"
+      "pl": "Aktualizacja nie powiodła się",
+      "ar": "فشل التحديث"
     },
     "share_error": {
       "de": "Screenshot fehlgeschlagen",
       "en": "Screenshot failed",
       "ru": "Не удалось создать скриншот",
-      "ro": "Captura a eșuat",
-      "ar": "فشل التقاط الشاشة",
-      "fr": "Échec de la capture"
+      "pl": "Zrzut ekranu nie powiódł się",
+      "ar": "فشل التقاط الشاشة"
     },
     "idb_error": {
       "de": "IndexedDB: Fehler",
       "en": "IndexedDB: Error",
       "ru": "IndexedDB: Ошибка",
-      "ro": "IndexedDB: eroare",
-      "ar": "IndexedDB: خطأ",
-      "fr": "IndexedDB : erreur"
+      "pl": "IndexedDB: błąd",
+      "ar": "IndexedDB: خطأ"
     }
   },
   "defects": {
@@ -1190,17 +1037,15 @@
       "de": "Beschreibung:",
       "en": "Description:",
       "ru": "Описание:",
-      "ro": "Descriere:",
-      "ar": "الوصف:",
-      "fr": "Description :"
+      "pl": "Opis:",
+      "ar": "الوصف:"
     },
     "defect_action": {
       "de": "Vorgehen (Aktion):",
       "en": "Action:",
       "ru": "Инструкция по действию:",
-      "ro": "Acțiune:",
-      "ar": "الإجراء:",
-      "fr": "Action :"
+      "pl": "Postępowanie (akcja):",
+      "ar": "الإجراء:"
     }
   },
   "a11y": {
@@ -1208,113 +1053,99 @@
       "de": "Tastatur",
       "en": "Keyboard",
       "ru": "Клавиатура",
-      "ro": "Tastatură",
-      "ar": "لوحة المفاتيح",
-      "fr": "Clavier"
+      "pl": "Klawiatura",
+      "ar": "لوحة المفاتيح"
     },
     "clear": {
       "de": "Eingabe löschen",
       "en": "Clear input",
       "ru": "Очистить поле",
-      "ro": "Ștergeți câmpul",
-      "ar": "مسح الإدخال",
-      "fr": "Effacer la saisie"
+      "pl": "Wyczyść pole",
+      "ar": "مسح الإدخال"
     },
     "numpad": {
       "de": "Ziffernblock",
       "en": "Numpad",
       "ru": "Цифровая клавиатура",
-      "ro": "Tastatură numerică",
-      "ar": "لوحة الأرقام",
-      "fr": "Pavé numérique"
+      "pl": "Klawiatura numeryczna",
+      "ar": "لوحة الأرقام"
     },
     "previous": {
       "de": "Vorheriges Bild",
       "en": "Previous image",
       "ru": "Предыдущее изображение",
-      "ro": "Imaginea anterioară",
-      "ar": "الصورة السابقة",
-      "fr": "Image précédente"
+      "pl": "Poprzedni obraz",
+      "ar": "الصورة السابقة"
     },
     "next": {
       "de": "Nächstes Bild",
       "en": "Next image",
       "ru": "Следующее изображение",
-      "ro": "Imaginea următoare",
-      "ar": "الصورة التالية",
-      "fr": "Image suivante"
+      "pl": "Następny obraz",
+      "ar": "الصورة التالية"
     },
     "close": {
       "de": "Schließen",
       "en": "Close",
       "ru": "Закрыть",
-      "ro": "Închide",
-      "ar": "إغلاق",
-      "fr": "Fermer"
+      "pl": "Zamknij",
+      "ar": "إغلاق"
     },
     "language": {
       "de": "Sprache wählen",
       "en": "Choose language",
       "ru": "Выбор языка",
-      "ro": "Alegeți limba",
-      "ar": "اختر اللغة",
-      "fr": "Choisir la langue"
+      "pl": "Wybierz język",
+      "ar": "اختر اللغة"
     },
     "drawing": {
       "de": "Zeichnung",
       "en": "Drawing",
       "ru": "Чертёж",
-      "ro": "Desen",
-      "ar": "الرسم",
-      "fr": "Plan"
+      "pl": "Rysunek",
+      "ar": "الرسم"
     },
     "zoom": {
       "de": "Zoom",
       "en": "Zoom",
       "ru": "Масштаб",
-      "ro": "Zoom",
-      "ar": "تكبير",
-      "fr": "Zoom"
+      "pl": "Zoom",
+      "ar": "تكبير"
     },
     "space": {
       "de": "Leertaste",
       "en": "Space",
       "ru": "Пробел",
-      "ro": "Spațiu",
-      "ar": "مسافة",
-      "fr": "Espace"
+      "pl": "Spacja",
+      "ar": "مسافة"
     },
     "backspace": {
       "de": "Zurück",
       "en": "Backspace",
       "ru": "Клавиша удаления",
-      "ro": "Backspace",
-      "ar": "رجوع",
-      "fr": "Retour arrière"
+      "pl": "Backspace",
+      "ar": "رجوع"
     },
     "shift": {
       "de": "Umschalttaste",
       "en": "Shift",
       "ru": "Shift",
-      "ro": "Shift",
-      "ar": "Shift",
-      "fr": "Maj"
+      "pl": "Shift",
+      "ar": "Shift"
     },
     "enter": {
       "de": "Eingabe",
       "en": "Enter",
       "ru": "Ввод",
-      "ro": "Enter",
-      "ar": "إدخال",
-      "fr": "Entrée"
+      "pl": "Enter",
+      "ar": "إدخال"
     },
     "brand": {
       "de": "heroal Artikel",
       "en": "heroal Artikel",
       "ru": "heroal Artikel",
-      "ro": "heroal Artikel",
-      "ar": "heroal Artikel",
-      "fr": "heroal Artikel"
+      "pl": "heroal Artikel",
+      "ar": "heroal Artikel"
     }
   },
   "footer": {
@@ -1322,33 +1153,29 @@
       "de": "heroal Artikel • v1.2.0 • © 2026",
       "en": "heroal Artikel • v1.2.0 • © 2026",
       "ru": "heroal Artikel • v1.2.0 • © 2026",
-      "ro": "heroal Artikel • v1.2.0 • © 2026",
-      "ar": "heroal Artikel • v1.2.0 • © 2026",
-      "fr": "heroal Artikel • v1.2.0 • © 2026"
+      "pl": "heroal Artikel • v1.2.0 • © 2026",
+      "ar": "heroal Artikel • v1.2.0 • © 2026"
     },
     "footer_brand": {
       "de": "heroal Artikel App • PWA Offline Ready",
       "en": "heroal Artikel App • PWA Offline Ready",
       "ru": "heroal Artikel App • PWA Offline Ready",
-      "ro": "heroal Artikel App • PWA Offline Ready",
-      "ar": "heroal Artikel App • PWA Offline Ready",
-      "fr": "heroal Artikel App • PWA Offline Ready"
+      "pl": "heroal Artikel App • PWA Offline Ready",
+      "ar": "heroal Artikel App • PWA Offline Ready"
     },
     "idb_ready": {
       "de": "IndexedDB: Bereit (Synchronisiert)",
       "en": "IndexedDB: Ready (Synced)",
       "ru": "IndexedDB: Готово (синхронизировано)",
-      "ro": "IndexedDB: gata (sincronizat)",
-      "ar": "IndexedDB: جاهز (تمت المزامنة)",
-      "fr": "IndexedDB : prêt (synchronisé)"
+      "pl": "IndexedDB: gotowe (zsynchronizowano)",
+      "ar": "IndexedDB: جاهز (تمت المزامنة)"
     },
     "idb_error": {
       "de": "IndexedDB: Fehler",
       "en": "IndexedDB: Error",
       "ru": "IndexedDB: Ошибка",
-      "ro": "IndexedDB: eroare",
-      "ar": "IndexedDB: خطأ",
-      "fr": "IndexedDB : erreur"
+      "pl": "IndexedDB: błąd",
+      "ar": "IndexedDB: خطأ"
     }
   }
 }
