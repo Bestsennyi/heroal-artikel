@@ -2911,15 +2911,54 @@
       .auskunft-toolbar {
         display: flex;
         flex-wrap: wrap;
-        align-items: stretch;
+        align-items: flex-start;
         gap: 8px;
         flex-shrink: 0;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
-      .auskunft-toolbar .input-box {
+      .auskunft-search {
         flex: 1 1 14rem;
         min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .auskunft-search .input-box {
+        --search-icon-slot: 88px;
         margin: 0;
+        width: 100%;
+      }
+      .auskunft-search .search-field {
+        padding: 0 var(--search-icon-slot) 0 14px;
+      }
+      .auskunft-search .search-field-actions {
+        right: 6px;
+        left: auto;
+        inset-inline-end: 6px;
+        inset-inline-start: auto;
+      }
+      #view-auskunft[dir="rtl"] .auskunft-search .search-field {
+        padding: 0 14px 0 var(--search-icon-slot);
+      }
+      #view-auskunft[dir="rtl"] .auskunft-search .search-field-actions {
+        right: auto;
+        left: 6px;
+        inset-inline-end: auto;
+        inset-inline-start: 6px;
+      }
+      .auskunft-search .search-icon-btn,
+      .auskunft-cat-trigger,
+      .auskunft-cat-option {
+        touch-action: manipulation;
+      }
+      .auskunft-osk-stack {
+        width: 100%;
+        max-width: 460px;
+        margin-inline: auto;
+        flex-shrink: 0;
+      }
+      .auskunft-osk-stack .osk:not(.is-hidden) {
+        margin-bottom: 2px;
       }
       .auskunft-cat-wrap {
         position: relative;
@@ -2945,15 +2984,18 @@
         text-align: start;
         cursor: pointer;
         outline: none;
+        touch-action: manipulation;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       }
       .auskunft-cat-trigger:hover {
         border-color: #64748b;
       }
       .auskunft-cat-wrap.is-open .auskunft-cat-trigger,
-      .auskunft-cat-trigger:focus {
+      .auskunft-cat-trigger:focus,
+      .auskunft-cat-trigger:focus-visible {
         border-color: var(--heroal-accent);
         box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+        outline: none;
       }
       .auskunft-cat-label {
         flex: 1 1 auto;
@@ -3002,7 +3044,7 @@
         display: flex;
         align-items: center;
         width: 100%;
-        min-height: 42px;
+        min-height: 44px;
         padding: 8px 12px;
         border: 0;
         border-radius: 8px;
@@ -3013,6 +3055,7 @@
         font-family: inherit;
         text-align: start;
         cursor: pointer;
+        touch-action: manipulation;
       }
       .auskunft-cat-option:hover {
         background: rgba(255, 255, 255, 0.1);
@@ -3036,6 +3079,11 @@
         border-radius: 14px;
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
       }
+      .auskunft-card:has(.auskunft-card-head:focus-visible),
+      .auskunft-card.is-kb {
+        border-color: var(--heroal-accent);
+        box-shadow: inset 0 0 0 2px var(--heroal-accent);
+      }
       .auskunft-card-head {
         display: flex;
         align-items: center;
@@ -3054,6 +3102,19 @@
       }
       .auskunft-card-head:hover {
         background: rgba(255, 255, 255, 0.03);
+      }
+      .auskunft-card-head:focus {
+        outline: none;
+      }
+      .auskunft-card-head:focus-visible,
+      .auskunft-card.is-kb .auskunft-card-head {
+        outline: none;
+        background: rgba(59, 130, 246, 0.08);
+      }
+      .auskunft-cat-option:focus-visible {
+        outline: none;
+        background: rgba(59, 130, 246, 0.28);
+        color: #fff;
       }
       .auskunft-card .acc-title {
         flex: 1 1 auto;
@@ -3148,6 +3209,7 @@
         }
       }
       @media (max-width: 640px) {
+        .auskunft-search,
         .auskunft-cat-wrap {
           flex: 1 1 100%;
           min-width: 0;
@@ -5121,15 +5183,50 @@
       <div id="view-auskunft" class="tab-view">
         <div class="auskunft-shell">
           <div class="auskunft-toolbar">
-            <div class="input-box">
-              <input
-                type="text"
-                id="find-guide"
-                class="search-field"
-                placeholder="Thema suchen..."
-                data-i18n-placeholder="catalog_ui.ph_guide"
-                oninput="renderAuskunft()"
-              />
+            <div class="auskunft-search">
+              <div class="input-box">
+                <input
+                  type="text"
+                  id="find-guide"
+                  class="search-field"
+                  placeholder="Thema suchen..."
+                  data-i18n-placeholder="catalog_ui.ph_guide"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  inputmode="search"
+                  enterkeyhint="search"
+                  oninput="renderAuskunft()"
+                />
+                <div class="search-field-actions">
+                  <button
+                    type="button"
+                    class="search-icon-btn btn-clear"
+                    id="clr-guide"
+                    tabindex="-1"
+                    aria-label="Clear"
+                    data-i18n-title="a11y.clear"
+                  >
+                    <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="search-icon-btn osk-toggle"
+                    id="btn-osk-guide"
+                    data-osk="osk-guide"
+                    tabindex="-1"
+                    aria-label="Numpad"
+                    data-i18n-title="a11y.numpad"
+                    aria-pressed="false"
+                  >
+                    <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="search-stack auskunft-osk-stack">
+                <div class="osk is-hidden" id="osk-guide" data-target="find-guide"></div>
+              </div>
             </div>
             <div class="auskunft-cat-wrap" id="auskunft-cat-dd">
               <button
@@ -5399,6 +5496,8 @@
 
       let appLang = getCurrentLanguage();
       let auskunftKatKey = "";
+      let auskunftKbIndex = -1;
+      let lastAuskunftQuery = "";
 
       function mergeTranslationBundle(bundle) {
         I18N.mergeOverlay(bundle);
@@ -6804,6 +6903,11 @@
         return !!(view && view.classList.contains("active"));
       }
 
+      function isAuskunftView() {
+        const view = document.getElementById("view-auskunft");
+        return !!(view && view.classList.contains("active"));
+      }
+
       function isModalBlockingKeys() {
         const ids = [
           "zoom-dialog",
@@ -7038,6 +7142,219 @@
         focusArtikelSearch(false);
       }
 
+      function auskunftCards() {
+        return Array.from(
+          document.querySelectorAll("#auskunft-container .auskunft-card"),
+        );
+      }
+
+      function auskunftCatOptions() {
+        return Array.from(
+          document.querySelectorAll("#auskunft-cat-menu .auskunft-cat-option"),
+        );
+      }
+
+      function focusAuskunftSearch(select) {
+        const g = document.getElementById("find-guide");
+        if (!g) return;
+        auskunftKbIndex = -1;
+        auskunftCards().forEach((c) => c.classList.remove("is-kb"));
+        g.focus();
+        if (select) g.select();
+      }
+
+      function focusAuskunftCategory() {
+        auskunftKbIndex = -1;
+        auskunftCards().forEach((c) => c.classList.remove("is-kb"));
+        closeAuskunftCatMenu();
+        const btn = document.getElementById("auskunft-cat-btn");
+        if (btn) btn.focus();
+      }
+
+      function collapseAuskunftCards(exceptCard) {
+        auskunftCards().forEach((c) => {
+          if (exceptCard && c === exceptCard) return;
+          if (!c.classList.contains("open")) return;
+          c.classList.remove("open");
+          const head = c.querySelector(".auskunft-card-head");
+          if (head) head.setAttribute("aria-expanded", "false");
+        });
+      }
+
+      function setAuskunftCardOpen(card, open) {
+        if (!card) return;
+        if (open) collapseAuskunftCards(card);
+        card.classList.toggle("open", !!open);
+        const head = card.querySelector(".auskunft-card-head");
+        if (head) head.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      function syncAuskunftKb(index) {
+        const cards = auskunftCards();
+        if (!cards.length) {
+          auskunftKbIndex = -1;
+          return;
+        }
+        if (index < 0) {
+          auskunftKbIndex = -1;
+          cards.forEach((c) => c.classList.remove("is-kb"));
+          return;
+        }
+        auskunftKbIndex = Math.max(0, Math.min(index, cards.length - 1));
+        cards.forEach((c, i) => {
+          const on = i === auskunftKbIndex;
+          c.classList.toggle("is-kb", on);
+          if (on) {
+            const head = c.querySelector(".auskunft-card-head");
+            if (head) {
+              head.focus();
+              c.scrollIntoView({ block: "nearest" });
+            }
+          }
+        });
+      }
+
+      function moveAuskunftHighlight(delta) {
+        const cards = auskunftCards();
+        if (!cards.length) return;
+        closeAuskunftCatMenu();
+        collapseAuskunftCards();
+        if (auskunftKbIndex < 0) {
+          auskunftKbIndex = delta > 0 ? 0 : cards.length - 1;
+        } else {
+          const next = auskunftKbIndex + delta;
+          if (next < 0) {
+            focusAuskunftSearch(false);
+            return;
+          }
+          auskunftKbIndex = Math.min(next, cards.length - 1);
+        }
+        syncAuskunftKb(auskunftKbIndex);
+      }
+
+      function handleAuskunftEscape() {
+        hideDrawingHover();
+        if (isSyncModalOpen()) {
+          cancelManualSync();
+          return;
+        }
+        if (isZoomOpen()) {
+          closeZoom();
+          return;
+        }
+        closePhotoCapture();
+        closeHdrLangDropdown();
+        const dd = document.getElementById("auskunft-cat-dd");
+        if (dd && dd.classList.contains("is-open")) {
+          closeAuskunftCatMenu();
+          const btn = document.getElementById("auskunft-cat-btn");
+          if (btn) btn.focus();
+          return;
+        }
+        const g = document.getElementById("find-guide");
+        if (g && String(g.value || "").length) {
+          clearInput("find-guide");
+          return;
+        }
+        const openCard = document.querySelector(
+          "#auskunft-container .auskunft-card.open",
+        );
+        if (openCard) {
+          collapseAuskunftCards();
+          return;
+        }
+        if (hideAllSearchOsk()) return;
+        focusAuskunftSearch(false);
+      }
+
+      function handleAuskunftKeys(e, active) {
+        const g = document.getElementById("find-guide");
+        const dd = document.getElementById("auskunft-cat-dd");
+        const menuOpen = !!(dd && dd.classList.contains("is-open"));
+        const inGuide = active === g;
+        const inCat = !!(
+          active &&
+          active.closest &&
+          active.closest("#auskunft-cat-dd")
+        );
+        const inCard = !!(
+          active &&
+          active.closest &&
+          active.closest("#auskunft-container .auskunft-card")
+        );
+
+        if (inGuide && e.key === "ArrowRight") {
+          const empty = !String((g && g.value) || "").length;
+          const atEnd = caretCollapsedAt(g, String((g && g.value) || "").length);
+          if (empty || atEnd) {
+            e.preventDefault();
+            focusAuskunftCategory();
+            return true;
+          }
+          return false;
+        }
+        if (inCat && e.key === "ArrowLeft") {
+          e.preventDefault();
+          closeAuskunftCatMenu();
+          focusAuskunftSearch(false);
+          return true;
+        }
+
+        if (menuOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+          e.preventDefault();
+          const opts = auskunftCatOptions();
+          if (!opts.length) return true;
+          const i = opts.indexOf(active);
+          let next;
+          if (i < 0) next = e.key === "ArrowDown" ? 0 : opts.length - 1;
+          else {
+            next =
+              (i + (e.key === "ArrowDown" ? 1 : -1) + opts.length) %
+              opts.length;
+          }
+          opts[next].focus();
+          return true;
+        }
+        if (
+          menuOpen &&
+          (e.key === "Enter" || e.key === " ") &&
+          active &&
+          active.classList.contains("auskunft-cat-option")
+        ) {
+          e.preventDefault();
+          active.click();
+          return true;
+        }
+        if (inCat && !menuOpen && e.key === "ArrowDown") {
+          e.preventDefault();
+          moveAuskunftHighlight(1);
+          return true;
+        }
+        if (inCat && !menuOpen && e.key === "ArrowUp") {
+          e.preventDefault();
+          focusAuskunftSearch(false);
+          return true;
+        }
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          if (inGuide || inCard) {
+            e.preventDefault();
+            if (inGuide && e.key === "ArrowUp") return true;
+            moveAuskunftHighlight(e.key === "ArrowDown" ? 1 : -1);
+            return true;
+          }
+        }
+        if (e.key === "Enter" && inGuide) {
+          e.preventDefault();
+          const pad = document.getElementById("osk-guide");
+          if (pad && !pad.classList.contains("is-hidden")) {
+            setSearchOskVisible("osk-guide", false);
+          }
+          moveAuskunftHighlight(1);
+          return true;
+        }
+        return false;
+      }
+
       // Hotkeys Handler
       function initHotkeys() {
         window.addEventListener("keydown", (e) => {
@@ -7045,14 +7362,16 @@
           const active = document.activeElement;
           const pIn = document.getElementById("find-prof");
           const cIn = document.getElementById("find-color");
+          const gIn = document.getElementById("find-guide");
           const tag = active && active.tagName;
-          const inSearch = active === pIn || active === cIn;
+          const inSearch = active === pIn || active === cIn || active === gIn;
           const inOtherField =
             (tag === "INPUT" || tag === "TEXTAREA") && !inSearch;
 
           if (e.key === "Escape") {
             e.preventDefault();
-            handleSearchEscape(active);
+            if (isAuskunftView()) handleAuskunftEscape();
+            else handleSearchEscape(active);
             return;
           }
 
@@ -7068,6 +7387,11 @@
           }
 
           if (isModalBlockingKeys() || inOtherField) return;
+
+          if (isAuskunftView()) {
+            if (handleAuskunftKeys(e, active)) return;
+            if (e.key === "Enter" || e.key.startsWith("Arrow")) return;
+          }
 
           if (e.key === "/") {
             if (!inSearch) {
@@ -7086,7 +7410,11 @@
             return;
           }
 
-          if (!isSucheView() && (e.key === "Enter" || e.key.startsWith("Arrow"))) {
+          if (
+            !isSucheView() &&
+            !isAuskunftView() &&
+            (e.key === "Enter" || e.key.startsWith("Arrow"))
+          ) {
             if (e.key === "Enter" && !inSearch && !inOtherField) {
               e.preventDefault();
               focusArtikelSearch(false);
@@ -8246,7 +8574,10 @@
         syncHdrQuickTabs(viewId);
 
         if (viewId === "view-ausschuss") renderDefects();
-        if (viewId === "view-auskunft") renderAuskunft();
+        if (viewId === "view-auskunft") {
+          renderAuskunft();
+          setTimeout(() => focusAuskunftSearch(false), 0);
+        }
       }
 
       function currentWorkspaceViewId() {
@@ -9629,12 +9960,16 @@
         }
         const input = document.getElementById(pad.getAttribute("data-target"));
         if (input) {
-          const fallback = oskId === "osk-color" ? "search" : "numeric";
+          const fallback =
+            oskId === "osk-color" || oskId === "osk-guide" || oskId === "osk-photo"
+              ? "search"
+              : "numeric";
           input.setAttribute("inputmode", visible ? "none" : fallback);
           if (visible) input.focus();
         }
         if (visible) setOskLayout(pad, "num");
         else closeNumpadPop(pad);
+        if (visible && oskId === "osk-guide") closeAuskunftCatMenu();
         if (oskId === "osk-prof") {
           if (visible) artikelDetailOpen = false;
           applyArtikelWorkspace();
@@ -9722,6 +10057,10 @@
             return;
           } else if (pad.id === "osk-photo") {
             updatePhotoMatch();
+            input.focus();
+            return;
+          } else if (pad.id === "osk-guide") {
+            setSearchOskVisible("osk-guide", false);
             input.focus();
             return;
           } else {
@@ -11014,6 +11353,15 @@
         bindAuskunftUi();
         const find = document.getElementById("find-guide");
         const q = (find && find.value ? find.value : "").toLowerCase();
+        const clr = document.getElementById("clr-guide");
+        if (clr) clr.classList.toggle("is-on", !!(find && find.value));
+        if (q !== lastAuskunftQuery) {
+          auskunftKbIndex = -1;
+          lastAuskunftQuery = q;
+        }
+        const keepKb = auskunftKbIndex;
+        const activeEl = document.activeElement;
+        const stayOnSearch = activeEl === find;
         const items = appDB.auskunft || [];
         const list = items.filter((a) => {
           const katKey = auskunftCategoryKey(a);
@@ -11069,6 +11417,9 @@
             );
           })
           .join("");
+        if (!stayOnSearch && keepKb >= 0 && list.length) {
+          syncAuskunftKb(Math.min(keepKb, list.length - 1));
+        }
       }
 
       function auskunftLangValues(obj, stem) {
@@ -11163,6 +11514,11 @@
         const dd = document.getElementById("auskunft-cat-dd");
         const btn = document.getElementById("auskunft-cat-btn");
         const menu = document.getElementById("auskunft-cat-menu");
+        const clr = document.getElementById("clr-guide");
+        if (clr && !clr.dataset.bound) {
+          clr.dataset.bound = "1";
+          clr.addEventListener("click", () => clearInput("find-guide"));
+        }
         if (dd && btn && menu && !dd.dataset.bound) {
           dd.dataset.bound = "1";
           btn.addEventListener("click", toggleAuskunftCatMenu);
@@ -11173,12 +11529,10 @@
             auskunftKatKey = opt.getAttribute("data-key") || "";
             closeAuskunftCatMenu();
             renderAuskunft();
+            focusAuskunftSearch(false);
           });
           document.addEventListener("click", (e) => {
             if (!dd.contains(e.target)) closeAuskunftCatMenu();
-          });
-          window.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeAuskunftCatMenu();
           });
         }
         const cont = document.getElementById("auskunft-container");
@@ -11189,8 +11543,10 @@
             if (!head || !cont.contains(head)) return;
             const card = head.closest(".auskunft-card");
             if (!card) return;
-            const open = card.classList.toggle("open");
-            head.setAttribute("aria-expanded", open ? "true" : "false");
+            setAuskunftCardOpen(card, !card.classList.contains("open"));
+            const cards = auskunftCards();
+            auskunftKbIndex = cards.indexOf(card);
+            cards.forEach((c, i) => c.classList.toggle("is-kb", i === auskunftKbIndex));
           });
         }
         syncAuskunftDir();
