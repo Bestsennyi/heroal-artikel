@@ -4014,6 +4014,13 @@
         --photo-accent: #38bdf8;
         --photo-accent-dim: rgba(56, 189, 248, 0.18);
       }
+      .photo-modal .photo-panel {
+        position: relative;
+        width: 100%;
+        max-width: calc(560px + 48px);
+        padding-top: 48px;
+        padding-right: 48px;
+      }
       .photo-modal .photo-card {
         width: 100%;
         max-width: 560px;
@@ -4036,7 +4043,7 @@
       .photo-head {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 12px;
       }
       .photo-head-title {
@@ -4045,6 +4052,10 @@
         color: #fff;
       }
       .photo-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
         width: 40px;
         height: 40px;
         padding: 0;
@@ -5453,12 +5464,13 @@
     </div>
 
     <div id="photo-dialog" class="photo-modal" data-photo-target="artikel" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
-      <div class="photo-card" onclick="event.stopPropagation()">
+      <div class="photo-panel" onclick="event.stopPropagation()">
+        <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
+        <div class="photo-card">
         <div class="photo-head">
           <span class="photo-head-title" data-i18n="photo.modalTitle">Foto erfassen</span>
-          <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
-            <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-          </button>
         </div>
         <div class="photo-tabs">
           <button type="button" class="photo-tab is-on" id="photo-target-artikel" data-target="artikel">
@@ -5543,6 +5555,7 @@
           </button>
         <div class="photo-osk-wrap">
           <div class="osk is-hidden" id="osk-photo" data-target="photo-id"></div>
+        </div>
         </div>
       </div>
     </div>
