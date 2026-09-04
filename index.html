@@ -2246,8 +2246,34 @@
         margin: 0;
       }
       .zoom-stage .media-mode-btn {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+      }
+      .zoom-nr {
+        display: none;
+        position: absolute;
         top: 10px;
         right: 10px;
+        z-index: 3;
+        pointer-events: none;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        padding: 5px 10px;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        border-radius: 4px;
+        background: rgba(2, 6, 23, 0.8);
+        color: #38bdf8;
+        backdrop-filter: blur(4px);
+      }
+      .zoom-nr:not([hidden]) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
       .btn-zoom-hint {
         position: absolute;
@@ -3839,11 +3865,19 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
         z-index: 50;
         pointer-events: none;
-        overflow: hidden;
+        overflow: visible;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
         justify-content: center;
         backdrop-filter: blur(12px);
+      }
+      .drawing-hover-pop.is-article,
+      .drawing-hover-pop.is-color {
+        height: auto;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 8px 8px 10px;
       }
       .drawing-hover-pop[hidden] {
         display: none;
@@ -3858,8 +3892,37 @@
         position: relative;
         width: 100%;
         height: 100%;
+        min-height: 0;
+        flex: 1;
         overflow: hidden;
         border-radius: 8px;
+      }
+      .drawing-hover-pop.is-article .drawing-hover-pop-stage,
+      .drawing-hover-pop.is-color .drawing-hover-pop-stage {
+        flex: none;
+        height: 216px;
+      }
+      .drawing-hover-pop-nr {
+        display: none;
+      }
+      .drawing-hover-pop.is-article .drawing-hover-pop-nr:not([hidden]),
+      .drawing-hover-pop.is-color .drawing-hover-pop-nr:not([hidden]) {
+        display: inline-flex;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        padding: 3px 8px;
+        border: 1px solid rgba(56, 189, 248, 0.5);
+        border-radius: 4px;
+        background: rgba(14, 165, 233, 0.1);
+        color: #38bdf8;
       }
       .drawing-hover-pop.is-color img {
         object-fit: cover;
@@ -3867,32 +3930,23 @@
       .drawing-hover-pop-code {
         display: none;
       }
-      .drawing-hover-pop.is-color .drawing-hover-pop-code:not([hidden]) {
-        display: block;
-        font-size: 0.845rem;
-        padding: 5.2px 10.4px;
-        border-radius: 6.4px;
-        top: 10px;
-        right: 10px;
-      }
-      .drawing-hover-pop.is-color.is-sticky .drawing-hover-pop-close {
-        left: 6px;
-        right: auto;
-      }
       .drawing-hover-pop-close {
         display: none;
         position: absolute;
-        top: 6px;
-        right: 6px;
+        left: 50%;
+        top: calc(100% + 8px);
+        transform: translateX(-50%);
         z-index: 2;
         pointer-events: auto;
         width: 32px;
         height: 32px;
+        margin: 0;
         padding: 0;
         border: 1px solid rgba(56, 189, 248, 0.5);
         border-radius: 999px;
-        background: rgba(2, 6, 23, 0.85);
+        background: rgba(2, 6, 23, 0.92);
         color: #e2e8f0;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         cursor: pointer;
         align-items: center;
         justify-content: center;
@@ -5283,6 +5337,7 @@
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
       <div class="zoom-stage" id="zoom-stage">
+        <span class="zoom-nr" id="zoom-nr" hidden></span>
         <button
           type="button"
           class="media-mode-btn"
@@ -5298,14 +5353,6 @@
     </div>
 
     <div id="drawing-hover-pop" class="drawing-hover-pop" hidden>
-      <button
-        type="button"
-        class="drawing-hover-pop-close"
-        id="drawing-hover-pop-close"
-        aria-label="Close" data-i18n-title="a11y.close"
-      >
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
       <div class="drawing-hover-pop-stage">
         <img alt="" />
         <span
@@ -5314,6 +5361,15 @@
           hidden
         ></span>
       </div>
+      <span class="drawing-hover-pop-nr" id="drawing-hover-pop-nr" hidden></span>
+      <button
+        type="button"
+        class="drawing-hover-pop-close"
+        id="drawing-hover-pop-close"
+        aria-label="Close" data-i18n-title="a11y.close"
+      >
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
     </div>
 
     <div id="note-dialog" class="note-modal" aria-hidden="true">
@@ -10883,12 +10939,17 @@
         const pop = document.getElementById("drawing-hover-pop");
         if (pop) {
           pop.hidden = true;
-          pop.classList.remove("is-sticky", "is-color");
+          pop.classList.remove("is-sticky", "is-color", "is-article");
         }
         const codeEl = document.getElementById("drawing-hover-pop-code");
         if (codeEl) {
           codeEl.textContent = "";
           codeEl.hidden = true;
+        }
+        const nrEl = document.getElementById("drawing-hover-pop-nr");
+        if (nrEl) {
+          nrEl.textContent = "";
+          nrEl.hidden = true;
         }
         const stage = pop && pop.querySelector(".drawing-hover-pop-stage");
         if (stage) stage.style.backgroundColor = "";
@@ -10897,15 +10958,17 @@
       function positionDrawingHover(anchor) {
         const pop = document.getElementById("drawing-hover-pop");
         if (!pop || !anchor) return;
-        const size = 240;
+        const w = pop.offsetWidth || 240;
+        const h = pop.offsetHeight || 240;
+        const extra = pop.classList.contains("is-sticky") ? 40 : 0;
         const r = anchor.getBoundingClientRect();
         let left = r.right + 12;
-        let top = r.top + r.height / 2 - size / 2;
-        if (left + size > window.innerWidth - 8) left = r.left - 12 - size;
+        let top = r.top + r.height / 2 - h / 2;
+        if (left + w > window.innerWidth - 8) left = r.left - 12 - w;
         if (left < 8) left = 8;
         if (top < 8) top = 8;
-        if (top + size > window.innerHeight - 8) {
-          top = window.innerHeight - 8 - size;
+        if (top + h + extra > window.innerHeight - 8) {
+          top = window.innerHeight - 8 - h - extra;
         }
         pop.style.left = left + "px";
         pop.style.top = top + "px";
@@ -10930,30 +10993,47 @@
         }
         drawingPreviewAnchor = anchor;
         const row = anchor.closest("[data-col]");
+        const artRow = anchor.closest("[data-art]");
         const codeEl = document.getElementById("drawing-hover-pop-code");
+        const nrEl = document.getElementById("drawing-hover-pop-nr");
         const stage = pop.querySelector(".drawing-hover-pop-stage");
         const colKey = row && row.dataset.col;
         const col = colKey && (appDB.farben || {})[colKey];
-        if (col && codeEl) {
-          const nr = colorCode(col, colKey);
-          const hex = colorHex(col) || "#64748b";
-          const bright = getLuminance(hex) > 130;
-          const photos = farbePreviewEntries(col);
-          codeEl.textContent = nr || "";
-          codeEl.hidden = !nr;
-          codeEl.style.color =
-            photos.length || !bright ? "#ffffff" : "#000000";
-          codeEl.style.background =
-            photos.length || !bright
-              ? "rgba(0, 0, 0, 0.4)"
-              : "rgba(255, 255, 255, 0.45)";
-          if (stage) stage.style.backgroundColor = hex;
-          pop.classList.add("is-color");
-        } else if (codeEl) {
+        if (codeEl) {
           codeEl.textContent = "";
           codeEl.hidden = true;
+          codeEl.style.color = "";
+          codeEl.style.background = "";
+        }
+        if (nrEl) {
+          nrEl.textContent = "";
+          nrEl.hidden = true;
+        }
+        pop.classList.remove("is-article");
+        if (col) {
+          const nr = colorCode(col, colKey);
+          const hex = colorHex(col) || "#64748b";
+          if (nrEl) {
+            nrEl.textContent = nr || "";
+            nrEl.hidden = !nr;
+          }
+          if (stage) stage.style.backgroundColor = hex;
+          pop.classList.add("is-color");
+        } else {
+          if (codeEl) {
+            codeEl.textContent = "";
+            codeEl.hidden = true;
+          }
           if (stage) stage.style.backgroundColor = "";
           pop.classList.remove("is-color");
+          if (artRow && nrEl) {
+            const artKey = artRow.dataset.art;
+            const item = (appDB.artikel || {})[artKey];
+            const nr = articleNr(item, artKey);
+            nrEl.textContent = nr || "";
+            nrEl.hidden = !nr;
+            pop.classList.toggle("is-article", !!nr);
+          }
         }
         pop.classList.toggle("is-sticky", !!forced);
         pop.hidden = false;
@@ -11080,13 +11160,36 @@
           dlg.classList.toggle("is-color", zoomMediaKind === "color");
           dlg.classList.add("active");
         }
+        syncZoomCaption();
         applyMediaInvertUi();
+      }
+
+      function syncZoomCaption() {
+        const el = document.getElementById("zoom-nr");
+        if (!el) return;
+        let nr = "";
+        if (zoomMediaKind === "color") {
+          const key = lastActiveColorCode;
+          const col = key && (appDB.farben || {})[key];
+          nr = colorCode(col, key);
+        } else {
+          const key = lastActiveArticle;
+          const item = key && (appDB.artikel || {})[key];
+          nr = articleNr(item, key);
+        }
+        el.textContent = nr || "";
+        el.hidden = !nr;
       }
 
       function closeZoom() {
         const dlg = document.getElementById("zoom-dialog");
         if (!dlg) return;
         dlg.classList.remove("active");
+        const nrEl = document.getElementById("zoom-nr");
+        if (nrEl) {
+          nrEl.textContent = "";
+          nrEl.hidden = true;
+        }
         resetZoomTransform();
       }
 
