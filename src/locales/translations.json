@@ -114,13 +114,6 @@
       "pl": "Szukaj [/]",
       "ar": "بحث [/]"
     },
-    "scrap": {
-      "de": "Ausschuss",
-      "en": "Scrap",
-      "ru": "Брак",
-      "pl": "Brak",
-      "ar": "خردة"
-    },
     "info": {
       "de": "Auskunft",
       "en": "Info",
@@ -213,6 +206,20 @@
       "ru": "Администратор",
       "pl": "Administrator",
       "ar": "مسؤول"
+    },
+    "role_admin_short": {
+      "de": "Admin",
+      "en": "Admin",
+      "ru": "Админ",
+      "pl": "Admin",
+      "ar": "أدمن"
+    },
+    "account_title": {
+      "de": "Konto",
+      "en": "Account",
+      "ru": "Аккаунт",
+      "pl": "Konto",
+      "ar": "الحساب"
     },
     "role_staff": {
       "de": "Mitarbeiter",
@@ -343,13 +350,6 @@
       "ru": "Введите номер или название краски...",
       "pl": "Wpisz kod lub nazwę koloru...",
       "ar": "أدخل رمز اللون أو الاسم..."
-    },
-    "ph_defect": {
-      "de": "Fehler suchen...",
-      "en": "Search defect...",
-      "ru": "Искать дефект...",
-      "pl": "Szukaj wady...",
-      "ar": "ابحث عن العيب..."
     },
     "ph_guide": {
       "de": "Thema suchen...",
@@ -1032,22 +1032,6 @@
       "ar": "IndexedDB: خطأ"
     }
   },
-  "defects": {
-    "defect_desc": {
-      "de": "Beschreibung:",
-      "en": "Description:",
-      "ru": "Описание:",
-      "pl": "Opis:",
-      "ar": "الوصف:"
-    },
-    "defect_action": {
-      "de": "Vorgehen (Aktion):",
-      "en": "Action:",
-      "ru": "Инструкция по действию:",
-      "pl": "Postępowanie (akcja):",
-      "ar": "الإجراء:"
-    }
-  },
   "a11y": {
     "keyboard": {
       "de": "Tastatur",
@@ -1146,6 +1130,13 @@
       "ru": "heroal Artikel",
       "pl": "heroal Artikel",
       "ar": "heroal Artikel"
+    },
+    "profile": {
+      "de": "Konto",
+      "en": "Account",
+      "ru": "Аккаунт",
+      "pl": "Konto",
+      "ar": "الحساب"
     }
   },
   "footer": {

@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <meta
       name="description"
-      content="Lager- und Verpackungsassistent für heroal Profilsysteme: Artikelsuche mit Zeichnungen, Farbkatalog (RAL/SD), Ausschussgründe für ERP-Maske 15 und Verpackungsvorgaben. Offline-fähig."
+      content="Lager- und Verpackungsassistent für heroal Profilsysteme: Artikelsuche mit Zeichnungen, Farbkatalog (RAL/SD) und Verpackungsvorgaben. Offline-fähig."
     />
     <meta name="theme-color" content="#003a79" />
     <meta name="robots" content="noindex, nofollow" />
@@ -126,6 +126,7 @@
       html:not(.authed) #zoom-dialog,
       html:not(.authed) #note-dialog,
       html:not(.authed) #photo-dialog,
+      html:not(.authed) #account-sheet,
       html:not(.authed) #drawing-hover-pop {
         visibility: hidden;
         pointer-events: none;
@@ -755,7 +756,9 @@
         color: #ffffff;
       }
       .btn-quick.admin-only[hidden],
-      #btnPhotoCapture[hidden] {
+      #btnPhotoCapture[hidden],
+      #nav-photo[hidden],
+      #bottom-nav .nav-item[hidden] {
         display: none !important;
       }
       .hdr-user {
@@ -783,6 +786,15 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 200px;
+      }
+      .hdr-user-short {
+        display: none;
+        font-size: 13px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.04em;
+        line-height: 1.15;
+        white-space: nowrap;
       }
       .hdr-user-role {
         font-size: 12px;
@@ -836,6 +848,30 @@
       }
       .hdr-logout:active {
         transform: scale(0.95);
+      }
+      #btn-hdr-account {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        padding: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      #btn-hdr-account .ico {
+        width: 20px;
+        height: 20px;
+      }
+      #btn-hdr-account:hover,
+      #btn-hdr-account[aria-expanded="true"] {
+        background: rgba(255, 255, 255, 0.18);
       }
 
       .btn-hdr {
@@ -1049,10 +1085,12 @@
         flex: 1;
         min-height: 0;
       }
-      #view-ausschuss,
       #view-auskunft {
         overflow: hidden;
         padding: 10px 12px 8px;
+      }
+      .suche-pane-tabs {
+        display: none;
       }
 
       /* Phone: stacked 60 / 40. Tablet+Desktop: 50 / 50 columns. */
@@ -2894,11 +2932,6 @@
         padding: 3px 7px;
         border-radius: 4px;
       }
-      .badge-defect {
-        background: #3c1618;
-        color: #f87171;
-        border: 1px solid #7f1d1d;
-      }
       .badge-guide {
         background: #064e3b;
         color: #34d399;
@@ -3255,20 +3288,9 @@
         }
       }
 
-      /* Mobile Navigation */
+      /* Mobile Navigation — visible only at <= 600px */
       nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 56px;
-        background: #0a1118;
-        border-top: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        z-index: 50;
-        padding-bottom: env(safe-area-inset-bottom);
+        display: none;
       }
       .nav-item {
         flex: 1;
@@ -3300,11 +3322,27 @@
         height: 18px;
       }
 
-      /* Tablet + Desktop: exact 50/50 split, independent column scroll */
-      @media (min-width: 768px) {
-        nav {
-          display: none;
+      /* Tablet portrait (601–900): stacked full-width columns, no squeeze */
+      @media (min-width: 601px) and (max-width: 900px) {
+        .suche-grid {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
         }
+        .zone-prof,
+        .zone-color {
+          flex: 1 1 50%;
+          width: 100%;
+          height: auto;
+          min-height: 0;
+        }
+        .zone-prof {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+      }
+
+      /* Tablet landscape + desktop: exact 50/50 split, independent column scroll */
+      @media (min-width: 901px) {
         main {
           padding: 0;
           height: auto;
@@ -3386,7 +3424,6 @@
         .acc-title {
           font-size: 13px;
         }
-        #view-ausschuss,
         #view-auskunft {
           padding: 14px 16px;
         }
@@ -3463,6 +3500,250 @@
           max-width: min(160px, 36vw);
         }
       }
+
+      /* Tablet (and below desktop): compact header, no overlapping coords */
+      @media (max-width: 1024px) {
+        header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: nowrap;
+          padding: 0 12px;
+          position: relative;
+        }
+        .header-left,
+        .header-center,
+        .header-right {
+          position: static;
+          left: auto;
+          right: auto;
+          margin: 0;
+        }
+        .header-left {
+          justify-self: auto;
+          max-width: min(180px, 28vw);
+          flex: 0 1 auto;
+        }
+        .header-center {
+          justify-self: auto;
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+        .header-right {
+          justify-self: auto;
+          flex: 0 1 auto;
+          gap: 8px;
+        }
+        .net-cluster {
+          width: 28px;
+          height: 28px;
+          min-height: 28px;
+          padding: 0;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          gap: 0;
+        }
+        .net-cluster:hover {
+          background: transparent;
+        }
+        .net-cluster .net-text,
+        .net-cluster .ico {
+          display: none;
+        }
+        .net-dot {
+          width: 10px;
+          height: 10px;
+        }
+        .hdr-user {
+          padding: 0 10px;
+          min-width: 44px;
+        }
+        .hdr-user-name {
+          display: none;
+        }
+        .hdr-user-short {
+          display: inline;
+        }
+        .hdr-user-role {
+          display: none;
+        }
+        .zone-empty-img {
+          max-width: 100%;
+          height: auto;
+          pointer-events: none;
+          opacity: 0.15;
+        }
+      }
+
+      @media (max-width: 899px) {
+        #btnPhotoCapture .btn-quick-label,
+        .hdr-logout > span {
+          display: none;
+        }
+        #btnPhotoCapture,
+        .hdr-logout {
+          min-width: 44px;
+          width: 44px;
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+
+      /* Phone */
+      @media (max-width: 600px) {
+        header {
+          height: 56px;
+          min-height: 56px;
+          padding: 0 12px;
+        }
+        .header-center,
+        header #btnPhotoCapture,
+        .header-right > .hdr-lang-dd,
+        header .hdr-user,
+        header .hdr-logout {
+          display: none !important;
+        }
+        .header-left {
+          max-width: min(200px, 58vw);
+        }
+        .header-right {
+          gap: 4px;
+        }
+        #btn-hdr-account {
+          display: inline-flex;
+        }
+        main {
+          padding-bottom: 72px;
+        }
+        #app-footer {
+          display: none !important;
+        }
+        #bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 100;
+          height: auto;
+          min-height: 56px;
+          background: #0a1118;
+          border-top: 1px solid var(--border-color);
+          justify-content: space-around;
+          align-items: center;
+          padding-bottom: env(safe-area-inset-bottom, 12px);
+        }
+        #bottom-nav .nav-item {
+          min-height: 56px;
+          height: auto;
+          padding: 8px 4px 6px;
+          white-space: normal;
+          line-height: 1.15;
+        }
+        .suche-pane-tabs {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          flex-shrink: 0;
+          position: relative;
+          isolation: isolate;
+          margin: 10px 12px 2px;
+          padding: 3px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: none;
+        }
+        .suche-pane-tabs::before {
+          content: "";
+          position: absolute;
+          z-index: 0;
+          top: 3px;
+          bottom: 3px;
+          left: 3px;
+          width: calc(50% - 3px);
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: none;
+          transition: transform 0.22s ease;
+          pointer-events: none;
+        }
+        .suche-pane-tabs:has(.suche-pane-tab[data-pane="farben"].active)::before {
+          transform: translateX(100%);
+        }
+        .suche-pane-tab {
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+          min-height: 40px;
+          border: none;
+          border-radius: 10px;
+          background: transparent;
+          color: #94a3b8;
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+          cursor: pointer;
+          font-family: inherit;
+          -webkit-tap-highlight-color: transparent;
+          transition: color 0.2s ease;
+        }
+        .suche-pane-tab .ico {
+          width: 16px;
+          height: 16px;
+          opacity: 0.7;
+          transition: opacity 0.2s ease, color 0.2s ease;
+        }
+        .suche-pane-tab:hover {
+          color: #e2e8f0;
+        }
+        .suche-pane-tab:focus-visible {
+          outline: 2px solid #38bdf8;
+          outline-offset: 2px;
+        }
+        .suche-pane-tab.active {
+          background: transparent;
+          color: #f8fafc;
+          text-shadow: none;
+        }
+        .suche-pane-tab.active .ico {
+          opacity: 1;
+          color: #7dd3fc;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .suche-pane-tabs::before {
+            transition: none;
+          }
+        }
+        #view-suche.tab-view.active {
+          overflow: hidden;
+        }
+        .suche-grid {
+          flex: 1;
+          min-height: 0;
+        }
+        .suche-grid.pane-artikel .zone-color,
+        .suche-grid.pane-farben .zone-prof {
+          display: none;
+        }
+        .suche-grid .zone-prof,
+        .suche-grid .zone-color {
+          flex: 1 1 auto;
+          width: 100%;
+          height: auto;
+          min-height: 0;
+          border-bottom: none;
+        }
+        #app-toast {
+          bottom: calc(72px + env(safe-area-inset-bottom, 12px));
+        }
+      }
+
       @media (min-width: 1280px) {
         .color-showcase-code,
         .color-showcase-hex {
@@ -3755,6 +4036,87 @@
         line-height: 1.55;
         color: #e2e8f0;
         white-space: pre-wrap;
+      }
+      .account-sheet {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.62);
+        z-index: 2100;
+        justify-content: flex-end;
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0;
+      }
+      .account-sheet.active {
+        display: flex;
+      }
+      .account-sheet-card {
+        width: 100%;
+        max-height: min(86vh, 520px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: #131b2e;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 16px 16px 0 0;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 12px));
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .account-sheet-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #f8fafc;
+      }
+      .account-sheet-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .account-sheet-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .account-sheet-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .account-sheet-status {
+        font-size: 12px;
+        color: #cbd5e1;
+        line-height: 1.45;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+      .account-sheet .hdr-lang-dd {
+        display: block;
+        width: 100%;
+      }
+      .account-sheet .hdr-lang-trigger {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .account-sheet .hdr-lang-menu {
+        left: 0;
+        right: 0;
+        transform: none;
+        width: 100%;
+      }
+      .account-sheet .hdr-logout {
+        width: 100%;
+        display: inline-flex;
+      }
+      .account-sheet .hdr-logout > span {
+        display: inline;
       }
       .zoom-modal {
         flex-direction: column;
@@ -4402,14 +4764,6 @@
       }
 
       @media (max-width: 899px) {
-        #btnPhotoCapture .btn-quick-label {
-          display: none;
-        }
-        #btnPhotoCapture {
-          min-width: 44px;
-          padding-left: 12px;
-          padding-right: 12px;
-        }
         .photo-close {
           width: 44px;
           height: 44px;
@@ -4516,6 +4870,10 @@
         <polyline points="23 4 23 10 17 10"/>
         <polyline points="1 20 1 14 7 14"/>
         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
       </symbol>
       <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -4890,11 +5248,23 @@
 
         <div class="hdr-user" id="hdr-user">
           <span class="hdr-user-name" id="hdr-user-name"></span>
+          <span class="hdr-user-short" id="hdr-user-short"></span>
           <span class="hdr-user-role" id="hdr-user-role"></span>
         </div>
         <button type="button" class="hdr-logout" id="btn-logout" title="Abmelden" aria-label="Abmelden" data-i18n-title="auth.logout_btn">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
           <span data-i18n="auth.logout_btn">Abmelden</span>
+        </button>
+        <button
+          type="button"
+          id="btn-hdr-account"
+          data-i18n-title="a11y.profile"
+          title="Konto"
+          aria-label="Konto"
+          aria-expanded="false"
+          aria-controls="account-sheet"
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-user"></use></svg>
         </button>
       </div>
     </header>
@@ -4903,7 +5273,31 @@
     <main>
       <!-- TAB 1: SUCHE (Profile & Farben) -->
       <div id="view-suche" class="tab-view active">
-        <div class="suche-grid">
+        <div class="suche-pane-tabs" role="tablist">
+          <button
+            type="button"
+            class="suche-pane-tab active"
+            id="suche-tab-artikel"
+            role="tab"
+            aria-selected="true"
+            data-pane="artikel"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-box"></use></svg>
+            <span data-i18n="catalog_ui.lbl_profiles">Artikel</span>
+          </button>
+          <button
+            type="button"
+            class="suche-pane-tab"
+            id="suche-tab-farben"
+            role="tab"
+            aria-selected="false"
+            data-pane="farben"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-palette"></use></svg>
+            <span data-i18n="catalog_ui.lbl_colors">Farben</span>
+          </button>
+        </div>
+        <div class="suche-grid pane-artikel">
           <!-- Zone 1: Profile & Zubehör (60% on Mobile) -->
           <section class="zone-prof">
             <div class="zone-toolbar">
@@ -5253,22 +5647,7 @@
         </div>
       </div>
 
-      <!-- TAB 2: AUSSCHUSS -->
-      <div id="view-ausschuss" class="tab-view">
-        <div class="input-box" style="margin-bottom: 8px">
-          <input
-            type="text"
-            id="find-defect"
-            class="search-field"
-            placeholder="Fehler suchen..."
-            data-i18n-placeholder="catalog_ui.ph_defect"
-            oninput="renderDefects()"
-          />
-        </div>
-        <div id="defect-container" class="acc-list"></div>
-      </div>
-
-      <!-- TAB 3: AUSKUNFT -->
+      <!-- TAB 2: AUSKUNFT -->
       <div id="view-auskunft" class="tab-view">
         <div class="auskunft-shell">
           <div class="auskunft-toolbar">
@@ -5346,17 +5725,17 @@
 
     <!-- 4. BOTTOM NAVIGATION (Mobile Only) -->
     <nav id="bottom-nav">
-      <button class="nav-item active" onclick="navigate('view-suche', this)">
+      <button type="button" class="nav-item active" id="nav-suche">
         <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg></span>
-        <span id="nav-lbl-suche">Suche</span>
+        <span id="nav-lbl-suche" data-i18n="nav.search">Suche</span>
       </button>
-      <button class="nav-item" onclick="navigate('view-ausschuss', this)">
-        <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-alert"></use></svg></span>
-        <span id="nav-lbl-ausschuss">Ausschuss</span>
-      </button>
-      <button class="nav-item" onclick="navigate('view-auskunft', this)">
+      <button type="button" class="nav-item" id="nav-auskunft">
         <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg></span>
-        <span id="nav-lbl-auskunft">Auskunft</span>
+        <span id="nav-lbl-auskunft" data-i18n="nav.info">Auskunft</span>
+      </button>
+      <button type="button" class="nav-item admin-only" id="nav-photo" hidden>
+        <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg></span>
+        <span id="nav-lbl-photo" data-i18n="photo.photo_capture">Foto erfassen</span>
       </button>
     </nav>
 
@@ -5365,6 +5744,46 @@
       <span class="app-footer-center" id="idb-status">IndexedDB: Bereit (Synchronisiert)</span>
       <span class="app-footer-right">v1.2.0</span>
     </footer>
+
+    <div id="account-sheet" class="account-sheet" aria-hidden="true">
+      <div class="account-sheet-card" role="dialog" aria-modal="true" aria-labelledby="account-sheet-title">
+        <div class="account-sheet-head">
+          <span id="account-sheet-title" data-i18n="auth.account_title">Konto</span>
+          <button type="button" class="note-modal-close" id="account-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
+            <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+          </button>
+        </div>
+        <div class="account-sheet-row">
+          <span class="account-sheet-label" data-i18n="common.language">Sprache</span>
+          <div class="hdr-lang-dd" id="account-lang-dropdown">
+            <button
+              type="button"
+              class="hdr-lang-trigger"
+              id="btn-account-lang"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-controls="account-lang-menu"
+            >
+              <span class="lang-flag" id="account-lang-flag" aria-hidden="true"></span>
+              <span id="account-lang-code">DE</span>
+              <svg class="ico hdr-lang-caret" aria-hidden="true"><use href="#i-chevron-down"></use></svg>
+            </button>
+            <div class="hdr-lang-menu" id="account-lang-menu" role="listbox" aria-label="Language" data-i18n-title="a11y.language"></div>
+          </div>
+        </div>
+        <div class="account-sheet-row">
+          <span class="account-sheet-name" id="account-user-name"></span>
+        </div>
+        <div class="account-sheet-row">
+          <span class="account-sheet-status" id="account-pwa-status" data-i18n="footer.footer_brand">heroal Artikel App • PWA Offline Ready</span>
+          <span class="account-sheet-status" id="account-idb-status">IndexedDB: Bereit (Synchronisiert)</span>
+        </div>
+        <button type="button" class="hdr-logout" id="btn-account-logout" data-i18n-title="auth.logout_btn">
+          <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
+          <span data-i18n="auth.logout_btn">Abmelden</span>
+        </button>
+      </div>
+    </div>
 
     <!-- 5. ZOOM MODAL -->
     <div id="zoom-dialog" class="zoom-modal">
@@ -5604,7 +6023,6 @@
         var findColor = document.getElementById("find-color");
         if (findProf) findProf.dispatchEvent(new Event("input"));
         if (findColor) findColor.dispatchEvent(new Event("input"));
-        if (typeof renderDefects === "function") renderDefects();
         if (typeof renderAuskunft === "function") renderAuskunft();
       });
 
@@ -5622,8 +6040,11 @@
 
       function setIdbFooter(key) {
         if (key) idbFooterKey = key;
-        const el = document.getElementById("idb-status");
-        if (el) el.textContent = t(idbFooterKey);
+        const text = t(idbFooterKey);
+        ["idb-status", "account-idb-status"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        });
       }
 
       function bakedPlaceholder(el, extra) {
@@ -5648,7 +6069,6 @@
         if (key === "catalog_ui.ph_farben") {
           return "Farbnummer oder Farbname eingeben...";
         }
-        if (key === "catalog_ui.ph_defect") return "Fehler suchen...";
         if (key === "catalog_ui.ph_guide") return "Thema suchen...";
         if (key === "photo.phArtikel" || key === "phArtikel") {
           return "Artikelnummer eingeben...";
@@ -5727,8 +6147,8 @@
         setTxt("lbl-prof-head", t("lbl_profiles"));
         setTxt("lbl-color-head", t("lbl_colors"));
         setTxt("nav-lbl-suche", t("nav_search"));
-        setTxt("nav-lbl-ausschuss", t("nav_scrap"));
         setTxt("nav-lbl-auskunft", t("nav_info"));
+        setTxt("nav-lbl-photo", t("photo.photo_capture"));
         remountSearchKeypads();
         syncNumpadVisibility();
         const footerBrand = document.querySelector(".app-footer-left");
@@ -6645,8 +7065,14 @@
           '.hdr-lang-option[data-lang="' + appLang + '"] .lang-flag',
         );
         if (hdrFlag && hdrSrc) hdrFlag.innerHTML = hdrSrc.innerHTML;
+        const acctCode = document.getElementById("account-lang-code");
+        if (acctCode) acctCode.textContent = appLang.toUpperCase();
+        const acctFlag = document.getElementById("account-lang-flag");
+        if (acctFlag && hdrSrc) acctFlag.innerHTML = hdrSrc.innerHTML;
         const hdrTrigger = document.getElementById("btn-hdr-lang");
         if (hdrTrigger) hdrTrigger.setAttribute("aria-label", t(meta.nameKey));
+        const acctTrigger = document.getElementById("btn-account-lang");
+        if (acctTrigger) acctTrigger.setAttribute("aria-label", t(meta.nameKey));
         document.querySelectorAll(".hdr-lang-option").forEach((btn) => {
           const on = btn.dataset.lang === appLang;
           btn.classList.toggle("active", on);
@@ -6663,19 +7089,33 @@
       }
 
       function closeHdrLangDropdown() {
-        const dd = document.getElementById("hdr-lang-dropdown");
-        const trigger = document.getElementById("btn-hdr-lang");
-        if (dd) dd.classList.remove("is-open");
-        if (trigger) trigger.setAttribute("aria-expanded", "false");
+        [
+          ["hdr-lang-dropdown", "btn-hdr-lang"],
+          ["account-lang-dropdown", "btn-account-lang"],
+        ].forEach(([ddId, btnId]) => {
+          const dd = document.getElementById(ddId);
+          const trigger = document.getElementById(btnId);
+          if (dd) dd.classList.remove("is-open");
+          if (trigger) trigger.setAttribute("aria-expanded", "false");
+        });
+      }
+
+      function toggleLangMenu(ddId, btnId) {
+        const dd = document.getElementById(ddId);
+        const trigger = document.getElementById(btnId);
+        if (!dd) return;
+        const open = !dd.classList.contains("is-open");
+        closeHdrLangDropdown();
+        dd.classList.toggle("is-open", open);
+        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
       }
 
       function toggleHdrLangDropdown() {
-        const dd = document.getElementById("hdr-lang-dropdown");
-        const trigger = document.getElementById("btn-hdr-lang");
-        if (!dd) return;
-        const open = !dd.classList.contains("is-open");
-        dd.classList.toggle("is-open", open);
-        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
+        toggleLangMenu("hdr-lang-dropdown", "btn-hdr-lang");
+      }
+
+      function toggleAccountLangDropdown() {
+        toggleLangMenu("account-lang-dropdown", "btn-account-lang");
       }
 
       function toggleLangDropdown() {
@@ -6691,8 +7131,12 @@
         const input = document.getElementById("input-login-nr");
         const submit = document.getElementById("btn-login-submit");
         const logoutBtn = document.getElementById("btn-logout");
+        const accountLogout = document.getElementById("btn-account-logout");
         if (submit) submit.addEventListener("click", () => handleLogin());
         if (logoutBtn) logoutBtn.addEventListener("click", () => handleLogout());
+        if (accountLogout) {
+          accountLogout.addEventListener("click", () => handleLogout());
+        }
         if (input) {
           input.addEventListener("input", () => {
             sanitizePackInput();
@@ -6728,7 +7172,17 @@
             if (trigger) trigger.setAttribute("aria-expanded", "false");
           }
           const hdrDd = document.getElementById("hdr-lang-dropdown");
-          if (hdrDd && !hdrDd.contains(e.target)) closeHdrLangDropdown();
+          if (hdrDd && !hdrDd.contains(e.target)) {
+            hdrDd.classList.remove("is-open");
+            const hdrBtn = document.getElementById("btn-hdr-lang");
+            if (hdrBtn) hdrBtn.setAttribute("aria-expanded", "false");
+          }
+          const acctDd = document.getElementById("account-lang-dropdown");
+          if (acctDd && !acctDd.contains(e.target)) {
+            acctDd.classList.remove("is-open");
+            const acctBtn = document.getElementById("btn-account-lang");
+            if (acctBtn) acctBtn.setAttribute("aria-expanded", "false");
+          }
         });
         window.addEventListener("keydown", (e) => {
           if (!isLoginVisible()) return;
@@ -7029,6 +7483,7 @@
           "sync-dialog",
           "note-dialog",
           "photo-dialog",
+          "account-sheet",
         ];
         return ids.some((id) => {
           const el = document.getElementById(id);
@@ -7042,6 +7497,7 @@
       }
 
       function focusArtikelSearch(select) {
+        setSuchePane("artikel");
         navigate("view-suche");
         hideDrawingHover();
         const p = document.getElementById("find-prof");
@@ -7051,6 +7507,7 @@
       }
 
       function focusColorSearch() {
+        setSuchePane("farben");
         navigate("view-suche");
         hideDrawingHover();
         const c = document.getElementById("find-color");
@@ -7192,6 +7649,7 @@
           cancelManualSync();
           return;
         }
+        if (closeAccountSheet()) return;
         if (closeNoteModal()) return;
         if (isZoomOpen()) {
           closeZoom();
@@ -7355,6 +7813,7 @@
           cancelManualSync();
           return;
         }
+        if (closeAccountSheet()) return;
         if (isZoomOpen()) {
           closeZoom();
           return;
@@ -8431,6 +8890,17 @@
         return name || user.benutzer_de || String(user.nummer || "");
       }
 
+      function userShortLabel(user) {
+        if (!user) return "";
+        if (isAdministrator(user)) return t("auth.role_admin_short") || t("role_admin_short") || "Admin";
+        const first = String(user.vorname_de || "").trim();
+        const last = String(user.nachname_de || "").trim();
+        const initials = (first.charAt(0) + last.charAt(0)).toUpperCase();
+        if (initials) return initials;
+        const name = userDisplayName(user);
+        return name.slice(0, 2).toUpperCase() || "—";
+      }
+
       function usersTable() {
         const users = appDB && appDB.users;
         const benutzer = appDB && appDB.benutzer;
@@ -8531,7 +9001,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog",
+            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog, #account-sheet",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -8541,24 +9011,34 @@
 
       function renderHeaderUser() {
         const nameEl = document.getElementById("hdr-user-name");
+        const shortEl = document.getElementById("hdr-user-short");
         const roleEl = document.getElementById("hdr-user-role");
         const wrap = document.getElementById("hdr-user");
         const photoBtn = document.getElementById("btnPhotoCapture");
+        const navPhoto = document.getElementById("nav-photo");
+        const accountName = document.getElementById("account-user-name");
         if (!nameEl || !roleEl) return;
         if (!currentUser) {
           nameEl.textContent = "";
+          if (shortEl) shortEl.textContent = "";
           roleEl.textContent = "";
           applyRoleBadgeClass(roleEl, null);
           if (wrap) wrap.hidden = true;
           if (photoBtn) photoBtn.hidden = true;
+          if (navPhoto) navPhoto.hidden = true;
+          if (accountName) accountName.textContent = "";
           return;
         }
         if (wrap) wrap.hidden = false;
-        nameEl.textContent = userDisplayName(currentUser);
+        const fullName = userDisplayName(currentUser);
+        nameEl.textContent = fullName;
+        if (shortEl) shortEl.textContent = userShortLabel(currentUser);
+        if (accountName) accountName.textContent = fullName;
         const admin = isAdministrator(currentUser);
         roleEl.textContent = roleLabel(currentUser);
         applyRoleBadgeClass(roleEl, currentUser);
         if (photoBtn) photoBtn.hidden = !admin;
+        if (navPhoto) navPhoto.hidden = !admin;
       }
 
       function shakeLogin() {
@@ -8667,6 +9147,7 @@
         currentUser = null;
         clearStoredUser();
         closePhotoCapture();
+        closeAccountSheet();
         restoreLoginPack();
         clearLoginFeedback();
         setNumpadVisible(false);
@@ -8696,20 +9177,9 @@
         const target = document.getElementById(viewId);
         if (target) target.classList.add("active");
         if (btn) btn.classList.add("active");
-        else {
-          const map = {
-            "view-suche": 0,
-            "view-ausschuss": 1,
-            "view-auskunft": 2,
-          };
-          const items = document.querySelectorAll("#bottom-nav .nav-item");
-          const idx = map[viewId];
-          if (items[idx]) items[idx].classList.add("active");
-        }
 
         syncHdrQuickTabs(viewId);
 
-        if (viewId === "view-ausschuss") renderDefects();
         if (viewId === "view-auskunft") {
           renderAuskunft();
           setTimeout(() => focusAuskunftSearch(false), 0);
@@ -8739,6 +9209,79 @@
           );
         }
         if (photoBtn) photoBtn.classList.toggle("active", !!photoOpen);
+        const navSuche = document.getElementById("nav-suche");
+        const navAuskunft = document.getElementById("nav-auskunft");
+        const navPhoto = document.getElementById("nav-photo");
+        if (navSuche) {
+          navSuche.classList.toggle("active", !photoOpen && view === "view-suche");
+        }
+        if (navAuskunft) {
+          navAuskunft.classList.toggle(
+            "active",
+            !photoOpen && view === "view-auskunft",
+          );
+        }
+        if (navPhoto) navPhoto.classList.toggle("active", !!photoOpen);
+      }
+
+      function setSuchePane(pane) {
+        const next = pane === "farben" ? "farben" : "artikel";
+        const grid = document.querySelector(".suche-grid");
+        if (grid) {
+          grid.classList.toggle("pane-artikel", next === "artikel");
+          grid.classList.toggle("pane-farben", next === "farben");
+        }
+        const artBtn = document.getElementById("suche-tab-artikel");
+        const colBtn = document.getElementById("suche-tab-farben");
+        if (artBtn) {
+          artBtn.classList.toggle("active", next === "artikel");
+          artBtn.setAttribute("aria-selected", next === "artikel" ? "true" : "false");
+        }
+        if (colBtn) {
+          colBtn.classList.toggle("active", next === "farben");
+          colBtn.setAttribute("aria-selected", next === "farben" ? "true" : "false");
+        }
+      }
+
+      function isAccountSheetOpen() {
+        const el = document.getElementById("account-sheet");
+        return !!(el && el.classList.contains("active"));
+      }
+
+      function closeAccountSheet() {
+        const el = document.getElementById("account-sheet");
+        const btn = document.getElementById("btn-hdr-account");
+        if (!el || !el.classList.contains("active")) return false;
+        el.classList.remove("active");
+        el.setAttribute("aria-hidden", "true");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        closeHdrLangDropdown();
+        return true;
+      }
+
+      function openAccountSheet() {
+        ensureAccountLangMenu();
+        const el = document.getElementById("account-sheet");
+        const btn = document.getElementById("btn-hdr-account");
+        if (!el) return;
+        el.classList.add("active");
+        el.setAttribute("aria-hidden", "false");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        syncLangDropdown();
+        setIdbFooter();
+      }
+
+      function ensureAccountLangMenu() {
+        const src = document.getElementById("hdr-lang-menu");
+        const dest = document.getElementById("account-lang-menu");
+        if (!src || !dest || dest.childElementCount) return;
+        dest.innerHTML = src.innerHTML;
+        dest.querySelectorAll(".hdr-lang-option").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setLanguage(btn.dataset.lang);
+          });
+        });
       }
 
       function bindWorkspaceChrome() {
@@ -8776,6 +9319,59 @@
         }
         const photoBtn = document.getElementById("btnPhotoCapture");
         if (photoBtn) photoBtn.addEventListener("click", openPhotoCapture);
+        const navSuche = document.getElementById("nav-suche");
+        if (navSuche) {
+          navSuche.addEventListener("click", () => navigate("view-suche", navSuche));
+        }
+        const navAuskunft = document.getElementById("nav-auskunft");
+        if (navAuskunft) {
+          navAuskunft.addEventListener("click", () =>
+            navigate("view-auskunft", navAuskunft),
+          );
+        }
+        const navPhoto = document.getElementById("nav-photo");
+        if (navPhoto) {
+          navPhoto.addEventListener("click", () => {
+            const dlg = document.getElementById("photo-dialog");
+            if (dlg && dlg.classList.contains("active")) closePhotoCapture();
+            else openPhotoCapture();
+          });
+        }
+        document.querySelectorAll(".suche-pane-tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setSuchePane(btn.getAttribute("data-pane"));
+            const pane = btn.getAttribute("data-pane");
+            const input = document.getElementById(
+              pane === "farben" ? "find-color" : "find-prof",
+            );
+            if (input) setTimeout(() => input.focus(), 0);
+          });
+        });
+        const accountBtn = document.getElementById("btn-hdr-account");
+        if (accountBtn) {
+          accountBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (isAccountSheetOpen()) closeAccountSheet();
+            else openAccountSheet();
+          });
+        }
+        const accountClose = document.getElementById("account-sheet-close");
+        if (accountClose) {
+          accountClose.addEventListener("click", () => closeAccountSheet());
+        }
+        const accountSheet = document.getElementById("account-sheet");
+        if (accountSheet) {
+          accountSheet.addEventListener("click", (e) => {
+            if (e.target === accountSheet) closeAccountSheet();
+          });
+        }
+        const acctLangBtn = document.getElementById("btn-account-lang");
+        if (acctLangBtn) {
+          acctLangBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleAccountLangDropdown();
+          });
+        }
         const hdrLangBtn = document.getElementById("btn-hdr-lang");
         if (hdrLangBtn) {
           hdrLangBtn.addEventListener("click", (e) => {
@@ -11500,38 +12096,6 @@
         return (r * 299 + g * 587 + b * 114) / 1000;
       }
 
-      function renderDefects() {
-        const q = (
-          document.getElementById("find-defect").value || ""
-        ).toLowerCase();
-        const list = appDB.defects.filter(
-          (d) =>
-            d.code.toLowerCase().includes(q) ||
-            d.de.toLowerCase().includes(q) ||
-            (d.ru && d.ru.toLowerCase().includes(q)),
-        );
-        const cont = document.getElementById("defect-container");
-        cont.innerHTML = list
-          .map(
-            (d) => `
-              <div class="acc-item" onclick="this.classList.toggle('open')">
-                <div class="acc-top">
-                  <span class="acc-badge badge-defect">${d.code}</span>
-                  <div class="acc-title">${appLang === "ru" ? d.ru || d.de : d.de}</div>
-                  <span>▾</span>
-                </div>
-                <div class="acc-body">
-                  <div><strong>${t("defect_desc")}</strong> ${appLang === "ru" ? d.ru || d.de : d.de}</div>
-                  <div class="action-block">
-                    <strong>${t("defect_action")}</strong><br>${d.act}
-                  </div>
-                </div>
-              </div>
-            `,
-          )
-          .join("");
-      }
-
       function renderAuskunft() {
         bindAuskunftUi();
         const find = document.getElementById("find-guide");
@@ -12002,7 +12566,6 @@
         const cIn = document.getElementById("find-color");
         if (cIn) cIn.dispatchEvent(new Event("input"));
         const active = document.querySelector(".tab-view.active");
-        if (active && active.id === "view-ausschuss") renderDefects();
         if (active && active.id === "view-auskunft") renderAuskunft();
       }
 
