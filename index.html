@@ -3591,6 +3591,31 @@
         }
       }
 
+      /* Dock in-app keypad above the footer on tablet and phone */
+      @media (max-width: 1024px) {
+        .search-stack .osk[data-target]:not(.is-hidden) {
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 30px;
+          z-index: 90;
+          width: auto;
+          max-width: none;
+          margin: 0;
+          padding: 10px 10px 8px;
+          background: #070a12;
+          border-top: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.45);
+        }
+        .zone-prof.is-kb-open .result-list,
+        .zone-color.is-kb-open .result-list {
+          padding-bottom: 220px;
+        }
+        #view-auskunft:has(#osk-guide:not(.is-hidden)) .auskunft-list {
+          padding-bottom: 220px;
+        }
+      }
+
       @media (max-width: 899px) {
         #btnPhotoCapture .btn-quick-label,
         .hdr-logout > span {
@@ -3731,6 +3756,9 @@
           padding: 6px 4px 8px;
           white-space: normal;
           line-height: 1.15;
+        }
+        .search-stack .osk[data-target]:not(.is-hidden) {
+          bottom: calc(65px + env(safe-area-inset-bottom, 0px));
         }
         .zone-scroll {
           padding-bottom: calc(12px + 64px + env(safe-area-inset-bottom, 0px));
@@ -5223,14 +5251,14 @@
             placeholder="PIN"
             data-i18n-placeholder="auth.login_placeholder"
             value=""
-            inputmode="numeric"
+            inputmode="text"
             autocomplete="off"
+            autocorrect="off"
             autocapitalize="off"
             spellcheck="false"
             data-lpignore="true"
             data-1p-ignore="true"
             data-form-type="other"
-            pattern="[0-9]*"
             maxlength="4"
             enterkeyhint="done"
           />
@@ -5882,7 +5910,7 @@
                   autocorrect="off"
                   autocapitalize="off"
                   spellcheck="false"
-                  inputmode="search"
+                  inputmode="text"
                   enterkeyhint="search"
                   oninput="renderAuskunft()"
                 />
@@ -6131,7 +6159,7 @@
             autocorrect="off"
             autocapitalize="off"
             spellcheck="false"
-            inputmode="numeric"
+            inputmode="text"
             enterkeyhint="search"
             data-i18n-placeholder="photo.phArtikel"
             placeholder="Artikelnummer eingeben..."
@@ -10942,11 +10970,7 @@
         }
         const input = document.getElementById(pad.getAttribute("data-target"));
         if (input) {
-          const fallback =
-            oskId === "osk-prof" || oskId === "osk-color"
-              ? "text"
-              : "search";
-          input.setAttribute("inputmode", visible ? "none" : fallback);
+          input.setAttribute("inputmode", visible ? "none" : "text");
           if (visible) input.focus();
         }
         if (visible) setOskLayout(pad, "num");
