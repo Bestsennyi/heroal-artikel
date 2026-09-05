@@ -3298,28 +3298,38 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 2px;
+        gap: 4px;
         color: #64748b;
         background: none;
         border: none;
         font-size: 10px;
         font-weight: 700;
-        height: 100%;
+        height: auto;
+        min-height: 56px;
         cursor: pointer;
       }
       .nav-item.active {
         color: #38bdf8;
       }
       .nav-icon {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
       }
       .nav-icon .ico {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
+      }
+      .nav-label {
+        display: block;
+        max-width: 100%;
+        text-align: center;
+        line-height: 1.2;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
       }
 
       /* Tablet portrait (601–900): stacked full-width columns, no squeeze */
@@ -3593,10 +3603,15 @@
 
       /* Phone */
       @media (max-width: 600px) {
+        /* Phone: logo centered, sync left, account right */
         header {
-          height: 56px;
-          min-height: 56px;
-          padding: 0 12px;
+          display: grid;
+          grid-template-columns: 48px minmax(0, 1fr) 48px;
+          align-items: center;
+          column-gap: 8px;
+          height: 64px;
+          min-height: 64px;
+          padding: 0 10px;
         }
         .header-center,
         header #btnPhotoCapture,
@@ -3606,19 +3621,68 @@
           display: none !important;
         }
         .header-left {
-          max-width: min(200px, 58vw);
+          grid-column: 2;
+          justify-self: center;
+          max-width: min(220px, 56vw);
+          overflow: hidden;
+        }
+        .header-left .brand-title {
+          padding: 0;
+        }
+        .header-left .brand-title .heroal-logo {
+          height: 24px;
+          max-height: 24px;
+          object-position: center;
+          transform-origin: center center;
         }
         .header-right {
-          gap: 4px;
+          display: contents;
+        }
+        #netStatus.net-cluster {
+          grid-column: 1;
+          grid-row: 1;
+          justify-self: start;
+          width: auto;
+          height: 40px;
+          min-height: 40px;
+          padding: 0 10px;
+          gap: 7px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        #netStatus.net-cluster:hover {
+          background: rgba(255, 255, 255, 0.15);
+        }
+        #netStatus.net-cluster .net-text {
+          display: none;
+        }
+        #netStatus.net-cluster .ico {
+          display: block;
+          width: 18px;
+          height: 18px;
+          color: #ffffff;
+        }
+        #netStatus .net-dot {
+          width: 8px;
+          height: 8px;
         }
         #btn-hdr-account {
           display: inline-flex;
+          grid-column: 3;
+          grid-row: 1;
+          justify-self: end;
         }
         main {
-          padding-bottom: 72px;
+          padding-bottom: 0;
         }
         #app-footer {
           display: none !important;
+          height: 0 !important;
+          min-height: 0 !important;
+          border: none !important;
+          padding: 0 !important;
+          overflow: hidden !important;
         }
         #bottom-nav {
           display: flex;
@@ -3628,19 +3692,26 @@
           right: 0;
           z-index: 100;
           height: auto;
-          min-height: 56px;
-          background: #0a1118;
-          border-top: 1px solid var(--border-color);
+          min-height: 64px;
+          background: #070a12;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
           justify-content: space-around;
-          align-items: center;
-          padding-bottom: env(safe-area-inset-bottom, 12px);
+          align-items: stretch;
+          padding-top: 4px;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         #bottom-nav .nav-item {
-          min-height: 56px;
+          min-height: 60px;
           height: auto;
-          padding: 8px 4px 6px;
+          padding: 6px 4px 8px;
           white-space: normal;
           line-height: 1.15;
+        }
+        .zone-scroll {
+          padding-bottom: calc(12px + 64px + env(safe-area-inset-bottom, 0px));
+        }
+        #view-auskunft {
+          padding-bottom: calc(8px + 64px + env(safe-area-inset-bottom, 0px));
         }
         .suche-pane-tabs {
           display: grid;
@@ -5727,15 +5798,15 @@
     <nav id="bottom-nav">
       <button type="button" class="nav-item active" id="nav-suche">
         <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg></span>
-        <span id="nav-lbl-suche" data-i18n="nav.search">Suche</span>
+        <span class="nav-label" id="nav-lbl-suche" data-i18n="nav.search">Suche</span>
       </button>
       <button type="button" class="nav-item" id="nav-auskunft">
         <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg></span>
-        <span id="nav-lbl-auskunft" data-i18n="nav.info">Auskunft</span>
+        <span class="nav-label" id="nav-lbl-auskunft" data-i18n="nav.info">Auskunft</span>
       </button>
       <button type="button" class="nav-item admin-only" id="nav-photo" hidden>
         <span class="nav-icon"><svg class="ico" aria-hidden="true"><use href="#i-camera"></use></svg></span>
-        <span id="nav-lbl-photo" data-i18n="photo.photo_capture">Foto erfassen</span>
+        <span class="nav-label" id="nav-lbl-photo" data-i18n="photo.photo_capture">Foto erfassen</span>
       </button>
     </nav>
 
@@ -6146,8 +6217,8 @@
         };
         setTxt("lbl-prof-head", t("lbl_profiles"));
         setTxt("lbl-color-head", t("lbl_colors"));
-        setTxt("nav-lbl-suche", t("nav_search"));
-        setTxt("nav-lbl-auskunft", t("nav_info"));
+        setTxt("nav-lbl-suche", t("nav.search"));
+        setTxt("nav-lbl-auskunft", t("nav.info"));
         setTxt("nav-lbl-photo", t("photo.photo_capture"));
         remountSearchKeypads();
         syncNumpadVisibility();
