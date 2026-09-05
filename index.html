@@ -3606,7 +3606,7 @@
         /* Phone: logo centered, sync left, account right */
         header {
           display: grid;
-          grid-template-columns: 48px minmax(0, 1fr) 48px;
+          grid-template-columns: 44px minmax(0, 1fr) 44px;
           align-items: center;
           column-gap: 8px;
           height: 64px;
@@ -3642,11 +3642,12 @@
           grid-column: 1;
           grid-row: 1;
           justify-self: start;
-          width: auto;
-          height: 40px;
-          min-height: 40px;
-          padding: 0 10px;
-          gap: 7px;
+          width: 44px;
+          height: 44px;
+          min-height: 44px;
+          padding: 0;
+          gap: 0;
+          justify-content: center;
           border-radius: 12px;
           background: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.15);
@@ -3654,18 +3655,13 @@
         #netStatus.net-cluster:hover {
           background: rgba(255, 255, 255, 0.15);
         }
-        #netStatus.net-cluster .net-text {
-          display: none;
-        }
+        #netStatus.net-cluster .net-text,
         #netStatus.net-cluster .ico {
-          display: block;
-          width: 18px;
-          height: 18px;
-          color: #ffffff;
+          display: none !important;
         }
         #netStatus .net-dot {
-          width: 8px;
-          height: 8px;
+          width: 10px;
+          height: 10px;
         }
         #btn-hdr-account {
           display: inline-flex;
@@ -3694,7 +3690,7 @@
           height: auto;
           min-height: 64px;
           background: #070a12;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-top: 1px solid rgba(255, 255, 255, 0.18);
           justify-content: space-around;
           align-items: stretch;
           padding-top: 4px;
