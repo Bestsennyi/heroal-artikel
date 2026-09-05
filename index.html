@@ -4435,8 +4435,8 @@
       }
       .zoom-modal {
         flex-direction: column;
-        gap: 12px;
-        padding: 63px 16px 16px;
+        gap: 14px;
+        padding: 16px;
       }
       .zoom-stage {
         position: relative;
@@ -4448,7 +4448,7 @@
         justify-content: center;
         overflow: hidden;
         touch-action: none;
-        cursor: grab;
+        cursor: pointer;
         background: #0f172a;
         border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 12px;
@@ -4505,12 +4505,15 @@
         border-color: #38bdf8;
       }
       .zoom-close {
-        position: absolute;
-        top: 14px;
-        right: 16px;
+        position: relative;
+        top: auto;
+        right: auto;
         z-index: 4;
         width: 40px;
         height: 40px;
+        margin: 0 auto;
+        flex: 0 0 auto;
+        align-self: center;
         padding: 0;
         border: 1px solid rgba(56, 189, 248, 0.45);
         border-radius: 999px;
@@ -4538,6 +4541,11 @@
       .zoom-close .ico {
         width: 18px;
         height: 18px;
+      }
+      @media (max-width: 1024px), (any-pointer: coarse) {
+        .zoom-close {
+          display: none;
+        }
       }
       .drawing-hover-pop {
         position: fixed;
@@ -4615,33 +4623,30 @@
       .drawing-hover-pop-code {
         display: none;
       }
-      .drawing-hover-pop-close {
-        display: none;
-        position: absolute;
-        left: 50%;
-        top: calc(100% + 8px);
-        transform: translateX(-50%);
-        z-index: 2;
+      .drawing-hover-pop.is-sticky {
         pointer-events: auto;
-        width: 32px;
-        height: 32px;
-        margin: 0;
-        padding: 0;
-        border: 1px solid rgba(56, 189, 248, 0.5);
-        border-radius: 999px;
-        background: rgba(2, 6, 23, 0.92);
-        color: #e2e8f0;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         cursor: pointer;
-        align-items: center;
-        justify-content: center;
       }
-      .drawing-hover-pop-close .ico {
-        width: 16px;
-        height: 16px;
+      @media (max-width: 600px) {
+        .drawing-hover-pop {
+          width: 288px;
+          height: 288px;
+          z-index: 150;
+        }
+        .drawing-hover-pop.is-article .drawing-hover-pop-stage,
+        .drawing-hover-pop.is-color .drawing-hover-pop-stage {
+          height: 259px;
+        }
       }
-      .drawing-hover-pop.is-sticky .drawing-hover-pop-close {
-        display: flex;
+      @media (min-width: 901px) {
+        .drawing-hover-pop {
+          width: 312px;
+          height: 312px;
+        }
+        .drawing-hover-pop.is-article .drawing-hover-pop-stage,
+        .drawing-hover-pop.is-color .drawing-hover-pop-stage {
+          height: 281px;
+        }
       }
       .settings-card {
         width: 100%;
@@ -6105,9 +6110,6 @@
 
     <!-- 5. ZOOM MODAL -->
     <div id="zoom-dialog" class="zoom-modal">
-      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
-        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
       <div class="zoom-stage" id="zoom-stage">
         <span class="zoom-nr" id="zoom-nr" hidden></span>
         <button
@@ -6121,6 +6123,9 @@
         </button>
         <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" data-i18n-title="a11y.zoom" />
       </div>
+      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       <div id="zoom-thumbs" class="zoom-thumbs"></div>
     </div>
 
@@ -6134,14 +6139,6 @@
         ></span>
       </div>
       <span class="drawing-hover-pop-nr" id="drawing-hover-pop-nr" hidden></span>
-      <button
-        type="button"
-        class="drawing-hover-pop-close"
-        id="drawing-hover-pop-close"
-        aria-label="Close" data-i18n-title="a11y.close"
-      >
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
     </div>
 
     <div id="note-dialog" class="note-modal" aria-hidden="true">
@@ -7171,6 +7168,7 @@
       let zoomPinchStart = 0;
       let zoomPinchScale = 1;
       let zoomBound = false;
+      let zoomTapDismiss = null;
       const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
       let farbeDetailOpen = false;
@@ -10642,14 +10640,24 @@
         bindColorGalleryUi();
         bindZoomUi();
         window.addEventListener("scroll", hideDrawingHover, true);
-        const popClose = document.getElementById("drawing-hover-pop-close");
-        if (popClose) {
-          popClose.addEventListener("click", (e) => {
+        const drawingPop = document.getElementById("drawing-hover-pop");
+        if (drawingPop) {
+          drawingPop.addEventListener("click", (e) => {
+            if (!drawingPreviewSticky) return;
             e.preventDefault();
             e.stopPropagation();
             hideDrawingHover();
           });
         }
+        document.addEventListener("click", (e) => {
+          if (!drawingPreviewSticky) return;
+          const pop = document.getElementById("drawing-hover-pop");
+          if (pop && pop.contains(e.target)) return;
+          if (drawingPreviewAnchor && drawingPreviewAnchor.contains(e.target)) {
+            return;
+          }
+          hideDrawingHover();
+        });
       }
 
       const RESULT_LIMIT = 80;
@@ -11979,15 +11987,23 @@
         if (!pop || !anchor) return;
         const w = pop.offsetWidth || 240;
         const h = pop.offsetHeight || 240;
-        const extra = pop.classList.contains("is-sticky") ? 40 : 0;
+        let phone = false;
+        try {
+          phone = window.matchMedia("(max-width: 600px)").matches;
+        } catch (e) {}
+        if (phone) {
+          pop.style.left = Math.max(8, (window.innerWidth - w) / 2) + "px";
+          pop.style.top = Math.max(8, (window.innerHeight - h) / 2) + "px";
+          return;
+        }
         const r = anchor.getBoundingClientRect();
         let left = r.right + 12;
         let top = r.top + r.height / 2 - h / 2;
         if (left + w > window.innerWidth - 8) left = r.left - 12 - w;
         if (left < 8) left = 8;
         if (top < 8) top = 8;
-        if (top + h + extra > window.innerHeight - 8) {
-          top = window.innerHeight - 8 - h - extra;
+        if (top + h > window.innerHeight - 8) {
+          top = window.innerHeight - 8 - h;
         }
         pop.style.left = left + "px";
         pop.style.top = top + "px";
@@ -12057,6 +12073,7 @@
         pop.classList.toggle("is-sticky", !!forced);
         pop.hidden = false;
         positionDrawingHover(anchor);
+        requestAnimationFrame(() => positionDrawingHover(anchor));
       }
 
       function bindDrawingHover(thumb) {
@@ -12075,6 +12092,10 @@
           if (!drawingPreviewTouch) return;
           e.preventDefault();
           e.stopPropagation();
+          if (drawingPreviewSticky && drawingPreviewAnchor === thumb) {
+            hideDrawingHover();
+            return;
+          }
           drawingPreviewSticky = true;
           showDrawingHover(thumb, true);
         });
@@ -12092,6 +12113,7 @@
         zoomX = 0;
         zoomY = 0;
         zoomPointers.clear();
+        zoomTapDismiss = null;
         applyZoomTransform();
       }
 
@@ -12257,9 +12279,15 @@
         stage.addEventListener("pointerdown", (e) => {
           if (!isZoomOpen()) return;
           if (e.target.closest && e.target.closest(".media-mode-btn")) return;
+          if (zoomPointers.size === 0) {
+            zoomTapDismiss = { x: e.clientX, y: e.clientY, moved: false, pinch: false };
+          } else if (zoomTapDismiss) {
+            zoomTapDismiss.pinch = true;
+          }
           stage.setPointerCapture(e.pointerId);
           zoomPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
           if (zoomPointers.size === 2) {
+            if (zoomTapDismiss) zoomTapDismiss.pinch = true;
             zoomPinchStart = pointerDistance();
             zoomPinchScale = zoomScale;
           } else if (zoomScale > 1) {
@@ -12270,6 +12298,12 @@
           if (!zoomPointers.has(e.pointerId)) return;
           const prev = zoomPointers.get(e.pointerId);
           zoomPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (
+            zoomTapDismiss &&
+            Math.hypot(e.clientX - zoomTapDismiss.x, e.clientY - zoomTapDismiss.y) > 12
+          ) {
+            zoomTapDismiss.moved = true;
+          }
           if (zoomPointers.size === 2 && zoomPinchStart) {
             const dist = pointerDistance();
             zoomScale = Math.min(6, Math.max(1, zoomPinchScale * (dist / zoomPinchStart)));
@@ -12290,7 +12324,12 @@
         const endPtr = (e) => {
           zoomPointers.delete(e.pointerId);
           if (zoomPointers.size < 2) zoomPinchStart = 0;
-          if (!zoomPointers.size) stage.classList.remove("is-panning");
+          if (!zoomPointers.size) {
+            stage.classList.remove("is-panning");
+            const tap = zoomTapDismiss;
+            zoomTapDismiss = null;
+            if (tap && !tap.moved && !tap.pinch) closeZoom();
+          }
         };
         stage.addEventListener("pointerup", endPtr);
         stage.addEventListener("pointercancel", endPtr);
