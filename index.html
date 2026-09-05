@@ -4158,61 +4158,146 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.62);
+        background: rgba(0, 20, 48, 0.72);
         z-index: 2100;
-        justify-content: flex-end;
-        align-items: stretch;
-        flex-direction: column;
-        padding: 0;
+        justify-content: center;
+        align-items: center;
+        padding: 24px 16px;
       }
       .account-sheet.active {
         display: flex;
       }
       .account-sheet-card {
-        width: 100%;
-        max-height: min(86vh, 520px);
-        overflow-x: hidden;
-        overflow-y: auto;
-        background: #131b2e;
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        border-radius: 16px 16px 0 0;
-        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 12px));
+        position: relative;
+        width: min(100%, 340px);
+        overflow: visible;
+        background: #001c44;
+        border: 1px solid rgba(125, 211, 252, 0.35);
+        border-radius: 20px;
+        padding: 20px 18px 18px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
       }
-      .account-sheet-head {
+      .account-sheet-handle {
+        display: none;
+      }
+      .account-sheet-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        width: 36px;
+        height: 36px;
+        border: 2px solid #7dd3fc;
+        background: rgba(56, 189, 248, 0.08);
+        color: #7dd3fc;
+        border-radius: 10px;
+      }
+      .account-sheet-close:hover {
+        background: rgba(56, 189, 248, 0.16);
+        border-color: #7dd3fc;
+        color: #ffffff;
+      }
+      .account-sheet-identity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 28px 2px;
+      }
+      .account-sheet-avatar {
+        flex-shrink: 0;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        font-size: 16px;
+        justify-content: center;
+        font-size: 18px;
         font-weight: 700;
-        color: #f8fafc;
+        letter-spacing: 0.04em;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(147, 197, 253, 0.35);
+      }
+      .account-sheet-who {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .account-sheet-name {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #ffffff;
+        word-break: break-word;
+        text-align: center;
+      }
+      .account-sheet-role {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: #7ecfeb;
+        background: rgba(126, 207, 235, 0.14);
+        border: 1px solid rgba(126, 207, 235, 0.28);
+      }
+      .account-sheet-role.is-admin {
+        color: #f88f8f;
+        background: rgba(248, 143, 143, 0.14);
+        border-color: rgba(248, 143, 143, 0.32);
+      }
+      .account-sheet-role.is-staff {
+        color: #7ecfeb;
+        background: rgba(126, 207, 235, 0.14);
+        border-color: rgba(126, 207, 235, 0.28);
+      }
+      .account-sheet-role.is-customer {
+        color: #e771b5;
+        background: rgba(231, 113, 181, 0.14);
+        border-color: rgba(231, 113, 181, 0.3);
+      }
+      .account-sheet-role:empty {
+        display: none;
       }
       .account-sheet-row {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
       }
       .account-sheet-label {
         font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: #94a3b8;
-      }
-      .account-sheet-name {
-        font-size: 16px;
         font-weight: 700;
-        color: #ffffff;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #93c5fd;
+      }
+      .account-sheet-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
       }
       .account-sheet-status {
-        font-size: 12px;
-        color: #cbd5e1;
+        font-size: 11px;
+        color: #94a3b8;
         line-height: 1.45;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
+        text-align: center;
       }
       .account-sheet .hdr-lang-dd {
         display: block;
@@ -4220,17 +4305,33 @@
       }
       .account-sheet .hdr-lang-trigger {
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(147, 197, 253, 0.28);
       }
       .account-sheet .hdr-lang-menu {
+        top: calc(100% + 6px);
+        bottom: auto;
         left: 0;
         right: 0;
         transform: none;
         width: 100%;
+        text-align: left;
       }
       .account-sheet .hdr-logout {
         width: 100%;
+        min-width: 0;
+        height: 48px;
+        min-height: 48px;
         display: inline-flex;
+        justify-content: center;
+        background: rgba(248, 143, 143, 0.12);
+        border-color: rgba(248, 143, 143, 0.38);
+        color: #fecaca;
+        font-weight: 600;
+      }
+      .account-sheet .hdr-logout:hover {
+        background: rgba(248, 143, 143, 0.2);
       }
       .account-sheet .hdr-logout > span {
         display: inline;
@@ -5864,12 +5965,17 @@
     </footer>
 
     <div id="account-sheet" class="account-sheet" aria-hidden="true">
-      <div class="account-sheet-card" role="dialog" aria-modal="true" aria-labelledby="account-sheet-title">
-        <div class="account-sheet-head">
-          <span id="account-sheet-title" data-i18n="auth.account_title">Konto</span>
-          <button type="button" class="note-modal-close" id="account-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
-            <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-          </button>
+      <div class="account-sheet-card" role="dialog" aria-modal="true" aria-labelledby="account-user-name">
+        <span class="account-sheet-handle" aria-hidden="true"></span>
+        <button type="button" class="note-modal-close account-sheet-close" id="account-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
+        <div class="account-sheet-identity">
+          <span class="account-sheet-avatar" id="account-sheet-avatar" aria-hidden="true"></span>
+          <div class="account-sheet-who">
+            <span class="account-sheet-name" id="account-user-name"></span>
+            <span class="account-sheet-role" id="account-user-role"></span>
+          </div>
         </div>
         <div class="account-sheet-row">
           <span class="account-sheet-label" data-i18n="common.language">Sprache</span>
@@ -5889,17 +5995,14 @@
             <div class="hdr-lang-menu" id="account-lang-menu" role="listbox" aria-label="Language" data-i18n-title="a11y.language"></div>
           </div>
         </div>
-        <div class="account-sheet-row">
-          <span class="account-sheet-name" id="account-user-name"></span>
-        </div>
-        <div class="account-sheet-row">
-          <span class="account-sheet-status" id="account-pwa-status" data-i18n="footer.footer_brand">heroal Artikel App • PWA Offline Ready</span>
-          <span class="account-sheet-status" id="account-idb-status">IndexedDB: Bereit (Synchronisiert)</span>
-        </div>
         <button type="button" class="hdr-logout" id="btn-account-logout" data-i18n-title="auth.logout_btn">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
           <span data-i18n="auth.logout_btn">Abmelden</span>
         </button>
+        <div class="account-sheet-meta">
+          <span class="account-sheet-status" id="account-pwa-status" data-i18n="footer.footer_brand">heroal Artikel App • PWA Offline Ready</span>
+          <span class="account-sheet-status" id="account-idb-status">IndexedDB: Bereit (Synchronisiert)</span>
+        </div>
       </div>
     </div>
 
@@ -9145,14 +9248,21 @@
         const photoBtn = document.getElementById("btnPhotoCapture");
         const navPhoto = document.getElementById("nav-photo");
         const accountName = document.getElementById("account-user-name");
+        const accountRole = document.getElementById("account-user-role");
+        const accountAvatar = document.getElementById("account-sheet-avatar");
         const accountInitials = document.getElementById("hdr-account-initials");
         if (!nameEl || !roleEl) return;
         if (!currentUser) {
           nameEl.textContent = "";
           if (shortEl) shortEl.textContent = "";
           if (accountInitials) accountInitials.textContent = "";
+          if (accountAvatar) accountAvatar.textContent = "";
           roleEl.textContent = "";
           applyRoleBadgeClass(roleEl, null);
+          if (accountRole) {
+            accountRole.textContent = "";
+            applyRoleBadgeClass(accountRole, null);
+          }
           if (wrap) wrap.hidden = true;
           if (photoBtn) photoBtn.hidden = true;
           if (navPhoto) navPhoto.hidden = true;
@@ -9161,13 +9271,19 @@
         }
         if (wrap) wrap.hidden = false;
         const fullName = userDisplayName(currentUser);
+        const letters = userAvatarLetters(currentUser);
         nameEl.textContent = fullName;
         if (shortEl) shortEl.textContent = userShortLabel(currentUser);
-        if (accountInitials) accountInitials.textContent = userAvatarLetters(currentUser);
+        if (accountInitials) accountInitials.textContent = letters;
+        if (accountAvatar) accountAvatar.textContent = letters;
         if (accountName) accountName.textContent = fullName;
         const admin = isAdministrator(currentUser);
         roleEl.textContent = roleLabel(currentUser);
         applyRoleBadgeClass(roleEl, currentUser);
+        if (accountRole) {
+          accountRole.textContent = roleLabel(currentUser);
+          applyRoleBadgeClass(accountRole, currentUser);
+        }
         if (photoBtn) photoBtn.hidden = !admin;
         if (navPhoto) navPhoto.hidden = !admin;
       }
