@@ -3887,6 +3887,75 @@
         #app-toast {
           bottom: calc(72px + env(safe-area-inset-bottom, 12px));
         }
+        .display-card-prof.is-solo .profile-drawing-box,
+        .display-card-color.is-solo .color-showcase-box {
+          flex: 1 1 0;
+          min-height: 220px;
+          max-height: none;
+        }
+        .media-mode-btn .media-mode-label {
+          display: none;
+        }
+        .media-mode-btn {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          gap: 0;
+          justify-content: center;
+        }
+        .btn-zoom-hint > span:not(.ico) {
+          display: none;
+        }
+        .btn-zoom-hint {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          gap: 0;
+          justify-content: center;
+        }
+        .btn-note-full span {
+          display: none;
+        }
+        .btn-note-full {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          justify-content: center;
+        }
+        .info-copy-bar {
+          gap: 6px;
+          margin-top: 2px;
+          flex-wrap: nowrap;
+        }
+        .info-copy-bar .btn-copy-action,
+        .info-copy-bar .btn-share-action {
+          height: 28px;
+          min-height: 28px;
+          padding: 0 8px;
+          font-size: 11px;
+          gap: 4px;
+        }
+        .info-copy-bar .btn-copy-action .ico,
+        .info-copy-bar .btn-share-action .ico {
+          width: 12px;
+          height: 12px;
+        }
+        .info-copy-bar .btn-copy-action span,
+        .info-copy-bar .btn-share-action span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 6.8em;
+        }
+        .display-card-prof.is-solo .profile-note.is-on,
+        .display-card-color.is-solo .profile-note.is-on {
+          max-height: min(96px, 16vh);
+          padding: 8px 10px;
+        }
+        .zone-prof .zone-scroll:has(.display-card-prof.is-solo),
+        .zone-color .zone-scroll:has(.display-card-color.is-solo) {
+          padding-bottom: calc(12px + 65px + env(safe-area-inset-bottom, 0px));
+        }
       }
 
       @media (min-width: 1280px) {
