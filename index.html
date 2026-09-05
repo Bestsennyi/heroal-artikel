@@ -865,9 +865,13 @@
         cursor: pointer;
         flex-shrink: 0;
       }
-      #btn-hdr-account .ico {
-        width: 20px;
-        height: 20px;
+      #btn-hdr-account .hdr-account-initials {
+        display: none;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        line-height: 1;
+        color: #ffffff;
       }
       #btn-hdr-account:hover,
       #btn-hdr-account[aria-expanded="true"] {
@@ -3606,7 +3610,7 @@
         /* Phone: logo centered, sync left, account right */
         header {
           display: grid;
-          grid-template-columns: 44px minmax(0, 1fr) 44px;
+          grid-template-columns: 1fr auto 1fr;
           align-items: center;
           column-gap: 8px;
           height: 64px;
@@ -3622,8 +3626,9 @@
         }
         .header-left {
           grid-column: 2;
+          grid-row: 1;
           justify-self: center;
-          max-width: min(220px, 56vw);
+          max-width: min(220px, calc(100vw - 120px));
           overflow: hidden;
         }
         .header-left .brand-title {
@@ -3642,6 +3647,8 @@
           grid-column: 1;
           grid-row: 1;
           justify-self: start;
+          position: relative;
+          overflow: visible;
           width: 44px;
           height: 44px;
           min-height: 44px;
@@ -3655,19 +3662,41 @@
         #netStatus.net-cluster:hover {
           background: rgba(255, 255, 255, 0.15);
         }
-        #netStatus.net-cluster .net-text,
-        #netStatus.net-cluster .ico {
+        #netStatus.net-cluster .net-text {
           display: none !important;
         }
+        #netStatus.net-cluster .ico {
+          display: block !important;
+          width: 20px;
+          height: 20px;
+          color: #ffffff;
+        }
         #netStatus .net-dot {
-          width: 10px;
-          height: 10px;
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          border: 2px solid #003366;
+          box-sizing: content-box;
+          box-shadow: none;
+        }
+        #netStatus.net-cluster.offline .net-dot,
+        #netStatus.net-cluster.syncing .net-dot,
+        #netStatus.net-cluster.synced .net-dot {
+          box-shadow: none;
         }
         #btn-hdr-account {
           display: inline-flex;
           grid-column: 3;
           grid-row: 1;
           justify-self: end;
+        }
+        #btn-hdr-account .ico {
+          display: none;
+        }
+        #btn-hdr-account .hdr-account-initials {
+          display: flex;
         }
         main {
           padding-bottom: 0;
@@ -3714,7 +3743,7 @@
           flex-shrink: 0;
           gap: 12px;
           width: auto;
-          margin: 8px 12px 12px;
+          margin: 12px;
           padding: 0;
           border: none;
           border-radius: 0;
@@ -5353,6 +5382,7 @@
           aria-controls="account-sheet"
         >
           <svg class="ico" aria-hidden="true"><use href="#i-user"></use></svg>
+          <span class="hdr-account-initials" id="hdr-account-initials" aria-hidden="true"></span>
         </button>
       </div>
     </header>
@@ -8978,6 +9008,16 @@
         return name || user.benutzer_de || String(user.nummer || "");
       }
 
+      function userAvatarLetters(user) {
+        if (!user) return "";
+        const first = String(user.vorname_de || "").trim();
+        const last = String(user.nachname_de || "").trim();
+        const initials = (first.charAt(0) + last.charAt(0)).toUpperCase();
+        if (initials) return initials;
+        const name = userDisplayName(user);
+        return name.slice(0, 2).toUpperCase() || "—";
+      }
+
       function userShortLabel(user) {
         if (!user) return "";
         if (isAdministrator(user)) return t("auth.role_admin_short") || t("role_admin_short") || "Admin";
@@ -9105,10 +9145,12 @@
         const photoBtn = document.getElementById("btnPhotoCapture");
         const navPhoto = document.getElementById("nav-photo");
         const accountName = document.getElementById("account-user-name");
+        const accountInitials = document.getElementById("hdr-account-initials");
         if (!nameEl || !roleEl) return;
         if (!currentUser) {
           nameEl.textContent = "";
           if (shortEl) shortEl.textContent = "";
+          if (accountInitials) accountInitials.textContent = "";
           roleEl.textContent = "";
           applyRoleBadgeClass(roleEl, null);
           if (wrap) wrap.hidden = true;
@@ -9121,6 +9163,7 @@
         const fullName = userDisplayName(currentUser);
         nameEl.textContent = fullName;
         if (shortEl) shortEl.textContent = userShortLabel(currentUser);
+        if (accountInitials) accountInitials.textContent = userAvatarLetters(currentUser);
         if (accountName) accountName.textContent = fullName;
         const admin = isAdministrator(currentUser);
         roleEl.textContent = roleLabel(currentUser);
