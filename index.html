@@ -3949,12 +3949,51 @@
         }
         .display-card-prof.is-solo .profile-note.is-on,
         .display-card-color.is-solo .profile-note.is-on {
-          max-height: min(96px, 16vh);
+          max-height: none;
+          flex: 0 0 auto;
+          padding: 0;
+          gap: 0;
+        }
+        .profile-note-body {
+          display: none;
+        }
+        .profile-note-head {
           padding: 8px 10px;
+        }
+        .profile-note.is-on {
+          cursor: pointer;
         }
         .zone-prof .zone-scroll:has(.display-card-prof.is-solo),
         .zone-color .zone-scroll:has(.display-card-color.is-solo) {
           padding-bottom: calc(12px + 65px + env(safe-area-inset-bottom, 0px));
+        }
+      }
+
+      @media (min-width: 601px) and (max-width: 1024px) {
+        .display-card-prof.is-solo .profile-note.is-on,
+        .display-card-color.is-solo .profile-note.is-on {
+          max-height: none;
+          flex: 0 0 auto;
+          padding: 0;
+          gap: 0;
+        }
+        .profile-note-body {
+          display: none;
+        }
+        .profile-note-head {
+          padding: 8px 10px;
+        }
+        .profile-note.is-on {
+          cursor: pointer;
+        }
+        .btn-note-full span {
+          display: none;
+        }
+        .btn-note-full {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          justify-content: center;
         }
       }
 
@@ -4193,14 +4232,16 @@
         inset: 0;
         background: rgba(0, 0, 0, 0.72);
         z-index: 2000;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        gap: 12px;
         padding: 16px;
       }
       .note-modal-card {
         width: 100%;
         max-width: 560px;
-        max-height: min(80vh, 640px);
+        max-height: min(calc(80vh - 70px), 640px);
         overflow-x: hidden;
         overflow-y: auto;
         background: #131b2e;
@@ -4210,6 +4251,7 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+        cursor: pointer;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
       }
@@ -4229,20 +4271,48 @@
         flex-shrink: 0;
       }
       .note-modal-close {
-        width: 32px;
-        height: 32px;
-        flex-shrink: 0;
-        border: none;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
+        width: 40px;
+        height: 40px;
+        flex: 0 0 auto;
+        align-self: center;
+        margin: 0;
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        border-radius: 999px;
+        background: rgba(2, 6, 23, 0.88);
+        color: #7dd3fc;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: background-color 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
       }
       .note-modal-close:hover {
-        background: rgba(255, 255, 255, 0.16);
+        background: rgba(14, 165, 233, 0.22);
+        border-color: rgba(56, 189, 248, 0.75);
+        color: #e0f2fe;
+      }
+      .note-modal-close .ico {
+        width: 18px;
+        height: 18px;
+      }
+      @media (max-width: 1024px) {
+        .note-modal-close {
+          display: none;
+        }
+      }
+      #note-dialog-copy {
+        width: 36px;
+        height: 36px;
+        min-height: 36px;
+        padding: 0;
+        gap: 0;
+      }
+      #note-dialog-copy span {
+        display: none;
       }
       .note-modal-body {
         margin: 0;
@@ -6157,13 +6227,13 @@
               <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
               <span data-i18n="catalog_ui.copy_hint_btn">Beschreibung</span>
             </button>
-            <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close" data-i18n-title="a11y.close">
-              <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-            </button>
           </div>
         </div>
         <p id="note-dialog-body" class="note-modal-body"></p>
       </div>
+      <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close" data-i18n-title="a11y.close">
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
     </div>
 
     <!-- 6. SYNC PROGRESS MODAL -->
@@ -10566,8 +10636,21 @@
             openNoteModal(lastProfileHint);
           });
         }
-        if (noteClose) noteClose.addEventListener("click", closeNoteModal);
+        const noteEl = document.getElementById("prof-note");
+        if (noteEl) {
+          noteEl.addEventListener("click", () => {
+            if (!lastProfileHint || !isCompactNoteRow()) return;
+            openNoteModal(lastProfileHint);
+          });
+        }
+        if (noteClose) {
+          noteClose.addEventListener("click", (e) => {
+            e.stopPropagation();
+            closeNoteModal();
+          });
+        }
         if (noteCopy) {
+          noteCopy.addEventListener("pointerdown", (e) => e.stopPropagation());
           noteCopy.addEventListener("click", (e) => {
             e.stopPropagation();
             if (!lastNoteText) return;
@@ -10579,6 +10662,29 @@
           noteDlg.addEventListener("click", (e) => {
             if (e.target === noteDlg) closeNoteModal();
           });
+          const noteCard = noteDlg.querySelector(".note-modal-card");
+          if (noteCard) {
+            let noteTap = null;
+            noteCard.addEventListener("pointerdown", (e) => {
+              if (e.target.closest && e.target.closest("#note-dialog-copy")) return;
+              noteTap = { x: e.clientX, y: e.clientY, moved: false };
+            });
+            noteCard.addEventListener("pointermove", (e) => {
+              if (!noteTap) return;
+              if (Math.hypot(e.clientX - noteTap.x, e.clientY - noteTap.y) > 12) {
+                noteTap.moved = true;
+              }
+            });
+            const endNoteTap = () => {
+              const tap = noteTap;
+              noteTap = null;
+              if (tap && !tap.moved) closeNoteModal();
+            };
+            noteCard.addEventListener("pointerup", endNoteTap);
+            noteCard.addEventListener("pointercancel", () => {
+              noteTap = null;
+            });
+          }
         }
 
         if (copyColBtn) {
@@ -10640,6 +10746,7 @@
         bindColorGalleryUi();
         bindZoomUi();
         window.addEventListener("scroll", hideDrawingHover, true);
+        window.addEventListener("resize", updateNoteClamp);
         const drawingPop = document.getElementById("drawing-hover-pop");
         if (drawingPop) {
           drawingPop.addEventListener("click", (e) => {
@@ -11680,15 +11787,25 @@
         requestAnimationFrame(updateNoteClamp);
       }
 
+      function isCompactNoteRow() {
+        try {
+          return window.matchMedia("(max-width: 1024px)").matches;
+        } catch (e) {
+          return false;
+        }
+      }
+
       function updateNoteClamp() {
         const pairs = [["prof-note-text", "prof-note-more"]];
+        const compact = isCompactNoteRow();
         pairs.forEach(([textId, btnId]) => {
           const textEl = document.getElementById(textId);
           const moreBtn = document.getElementById(btnId);
           if (!textEl || !moreBtn) return;
-          const visible = textEl.style.display !== "none" && !!textEl.textContent;
+          const hasText = !!textEl.textContent;
+          const visible = textEl.style.display !== "none" && hasText;
           const overflow = visible && textEl.scrollHeight > textEl.clientHeight + 1;
-          moreBtn.classList.toggle("is-on", overflow);
+          moreBtn.classList.toggle("is-on", compact ? hasText : overflow);
         });
       }
 
