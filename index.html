@@ -5536,7 +5536,7 @@
                     autocorrect="off"
                     autocapitalize="off"
                     spellcheck="false"
-                    inputmode="decimal"
+                    inputmode="text"
                     enterkeyhint="search"
                   />
                   <div class="search-field-actions">
@@ -5724,7 +5724,7 @@
                     autocorrect="off"
                     autocapitalize="off"
                     spellcheck="false"
-                    inputmode="decimal"
+                    inputmode="text"
                     enterkeyhint="search"
                   />
                   <div class="search-field-actions">
@@ -10944,7 +10944,7 @@
         if (input) {
           const fallback =
             oskId === "osk-prof" || oskId === "osk-color"
-              ? "decimal"
+              ? "text"
               : "search";
           input.setAttribute("inputmode", visible ? "none" : fallback);
           if (visible) input.focus();
