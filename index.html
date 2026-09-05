@@ -4325,7 +4325,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 20, 48, 0.72);
+        background: rgba(0, 0, 0, 0.78);
         z-index: 2100;
         justify-content: center;
         align-items: center;
@@ -4338,8 +4338,8 @@
         position: relative;
         width: min(100%, 340px);
         overflow: visible;
-        background: #001c44;
-        border: 1px solid rgba(125, 211, 252, 0.35);
+        background: #0f172a;
+        border: 1px solid #93c5fd;
         border-radius: 20px;
         padding: 20px 18px 18px;
         display: flex;
@@ -4347,7 +4347,8 @@
         align-items: center;
         gap: 14px;
         text-align: center;
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4),
+          0 18px 40px rgba(0, 0, 0, 0.55);
       }
       .account-sheet-handle {
         display: none;
@@ -4359,15 +4360,17 @@
         z-index: 2;
         width: 36px;
         height: 36px;
-        border: 2px solid #7dd3fc;
-        background: rgba(56, 189, 248, 0.08);
-        color: #7dd3fc;
+        border: 1px solid #93c5fd;
+        background: #131b2e;
+        color: #93c5fd;
         border-radius: 10px;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
       }
       .account-sheet-close:hover {
-        background: rgba(56, 189, 248, 0.16);
-        border-color: #7dd3fc;
-        color: #ffffff;
+        background: #1a2438;
+        border-color: #93c5fd;
+        color: #e0f2fe;
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.5);
       }
       .account-sheet-identity {
         display: flex;
@@ -4388,8 +4391,9 @@
         font-weight: 700;
         letter-spacing: 0.04em;
         color: #ffffff;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(147, 197, 253, 0.35);
+        background: #131b2e;
+        border: 1px solid #93c5fd;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
       }
       .account-sheet-who {
         min-width: 0;
@@ -4449,7 +4453,7 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #93c5fd;
+        color: #94a3b8;
       }
       .account-sheet-meta {
         display: flex;
@@ -4458,7 +4462,7 @@
         gap: 4px;
         width: 100%;
         padding-top: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid rgba(147, 197, 253, 0.35);
       }
       .account-sheet-status {
         font-size: 11px;
@@ -4473,8 +4477,15 @@
       .account-sheet .hdr-lang-trigger {
         width: 100%;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(147, 197, 253, 0.28);
+        background: #131b2e;
+        border-color: #93c5fd;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
+      }
+      .account-sheet .hdr-lang-trigger:hover,
+      .account-sheet .hdr-lang-dd.is-open .hdr-lang-trigger {
+        background: #1a2438;
+        border-color: #93c5fd;
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.5);
       }
       .account-sheet .hdr-lang-menu {
         top: calc(100% + 6px);
@@ -4483,7 +4494,18 @@
         right: 0;
         transform: none;
         width: 100%;
-        text-align: left;
+        text-align: center;
+        background: #0b0f19;
+        border-color: #93c5fd;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
+      }
+      .account-sheet .hdr-lang-option {
+        justify-content: center;
+        text-align: center;
+      }
+      .account-sheet .hdr-lang-option:hover,
+      .account-sheet .hdr-lang-option.active {
+        background: rgba(255, 255, 255, 0.08);
       }
       .account-sheet .hdr-logout {
         width: 100%;
@@ -9776,6 +9798,37 @@
           accountSheet.addEventListener("click", (e) => {
             if (e.target === accountSheet) closeAccountSheet();
           });
+          const accountCard = accountSheet.querySelector(".account-sheet-card");
+          if (accountCard) {
+            let accountTap = null;
+            accountCard.addEventListener("pointerdown", (e) => {
+              if (e.pointerType !== "touch") return;
+              if (
+                e.target.closest &&
+                e.target.closest(
+                  "button, .hdr-lang-dd, .hdr-lang-menu, .hdr-lang-option",
+                )
+              ) {
+                return;
+              }
+              accountTap = { x: e.clientX, y: e.clientY, moved: false };
+            });
+            accountCard.addEventListener("pointermove", (e) => {
+              if (!accountTap) return;
+              if (Math.hypot(e.clientX - accountTap.x, e.clientY - accountTap.y) > 12) {
+                accountTap.moved = true;
+              }
+            });
+            const endAccountTap = () => {
+              const tap = accountTap;
+              accountTap = null;
+              if (tap && !tap.moved) closeAccountSheet();
+            };
+            accountCard.addEventListener("pointerup", endAccountTap);
+            accountCard.addEventListener("pointercancel", () => {
+              accountTap = null;
+            });
+          }
         }
         const acctLangBtn = document.getElementById("btn-account-lang");
         if (acctLangBtn) {
