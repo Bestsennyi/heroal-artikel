@@ -5536,7 +5536,7 @@
                     autocorrect="off"
                     autocapitalize="off"
                     spellcheck="false"
-                    inputmode="numeric"
+                    inputmode="decimal"
                     enterkeyhint="search"
                   />
                   <div class="search-field-actions">
@@ -5724,7 +5724,7 @@
                     autocorrect="off"
                     autocapitalize="off"
                     spellcheck="false"
-                    inputmode="search"
+                    inputmode="decimal"
                     enterkeyhint="search"
                   />
                   <div class="search-field-actions">
@@ -10943,9 +10943,9 @@
         const input = document.getElementById(pad.getAttribute("data-target"));
         if (input) {
           const fallback =
-            oskId === "osk-color" || oskId === "osk-guide" || oskId === "osk-photo"
-              ? "search"
-              : "numeric";
+            oskId === "osk-prof" || oskId === "osk-color"
+              ? "decimal"
+              : "search";
           input.setAttribute("inputmode", visible ? "none" : fallback);
           if (visible) input.focus();
         }
