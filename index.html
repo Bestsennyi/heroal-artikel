@@ -4091,7 +4091,7 @@
         z-index: 2500;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 16px;
       }
       .sync-modal.active {
         display: flex;
@@ -4099,12 +4099,18 @@
       .sync-panel {
         position: relative;
         width: 100%;
-        max-width: calc(480px + 48px);
-        padding-top: 48px;
-        padding-right: 48px;
+        max-width: 480px;
+        max-height: 100%;
+        min-width: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
       }
       .sync-box {
         width: 100%;
+        min-width: 0;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: 14px;
@@ -4118,6 +4124,7 @@
         display: flex;
         align-items: center;
         gap: 16px;
+        min-width: 0;
       }
       .sync-icon-wrap {
         width: 48px;
@@ -4155,6 +4162,7 @@
         color: #94a3b8;
         margin-top: 4px;
         line-height: 1.35;
+        overflow-wrap: anywhere;
       }
       .sync-pct {
         font-size: 16px;
@@ -4164,12 +4172,15 @@
         flex-shrink: 0;
       }
       .sync-close {
-        position: absolute;
-        top: 0;
-        right: 0;
+        position: relative;
+        top: auto;
+        right: auto;
         z-index: 2;
         width: 40px;
         height: 40px;
+        margin: 0 auto;
+        flex: 0 0 auto;
+        align-self: center;
         padding: 0;
         border-radius: 10px;
         background: rgba(147, 197, 253, 0.14);
@@ -4205,6 +4216,52 @@
         background: linear-gradient(90deg, #93c5fd, #bfdbfe);
         box-shadow: 0 0 12px rgba(147, 197, 253, 0.35);
         transition: width 0.3s ease;
+      }
+      @media (max-width: 540px) {
+        .sync-modal {
+          padding:
+            max(12px, env(safe-area-inset-top, 0px))
+            max(12px, env(safe-area-inset-right, 0px))
+            max(12px, env(safe-area-inset-bottom, 0px))
+            max(12px, env(safe-area-inset-left, 0px));
+        }
+        .sync-box {
+          padding: 18px 14px;
+          gap: 14px;
+          border-radius: 16px;
+        }
+        .sync-head {
+          gap: 10px;
+        }
+        .sync-icon-wrap {
+          width: 40px;
+          height: 40px;
+        }
+        .sync-icon-wrap .ico {
+          width: 20px;
+          height: 20px;
+        }
+        #sync-title {
+          font-size: 17px;
+        }
+        #sync-status-txt {
+          font-size: 13px;
+        }
+        .sync-pct {
+          font-size: 14px;
+        }
+        .sync-close {
+          width: 44px;
+          height: 44px;
+        }
+      }
+      @media (max-width: 380px) {
+        .sync-head {
+          flex-wrap: wrap;
+        }
+        .sync-pct {
+          margin-left: auto;
+        }
       }
 
       /* Modals */
@@ -4797,14 +4854,20 @@
       .photo-modal .photo-panel {
         position: relative;
         width: 100%;
-        max-width: calc(560px + 48px);
-        padding-top: 48px;
-        padding-right: 48px;
+        max-width: 560px;
+        max-height: 100%;
+        min-width: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
       }
       .photo-modal .photo-card {
         width: 100%;
         max-width: 560px;
-        max-height: min(92vh, 92dvh, 820px);
+        min-width: 0;
+        max-height: min(calc(100vh - 32px - 12px - 44px), calc(100dvh - 32px - 12px - 44px), 820px);
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -4832,14 +4895,16 @@
         color: #fff;
       }
       .photo-close {
-        position: absolute;
-        top: 0;
-        right: 0;
+        position: relative;
+        top: auto;
+        right: auto;
         z-index: 2;
         width: 40px;
         height: 40px;
+        margin: 0 auto;
         padding: 0;
-        flex-shrink: 0;
+        flex: 0 0 auto;
+        align-self: center;
         border-radius: 10px;
         background: rgba(147, 197, 253, 0.14);
         border: 1px solid #93c5fd;
@@ -4865,7 +4930,9 @@
       }
       .photo-tab {
         flex: 1;
+        min-width: 0;
         min-height: 48px;
+        padding: 8px 10px;
         border-radius: 12px;
         border: 1px solid var(--border-color);
         background: #0c121b;
@@ -4879,6 +4946,12 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+      }
+      .photo-tab span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .photo-tab .ico {
         width: 18px;
@@ -5114,16 +5187,25 @@
         flex-wrap: wrap;
       }
       .photo-actions .photo-file-btn {
-        flex: 1 1 140px;
+        flex: 1 1 0;
+        min-width: 0;
         min-height: 48px;
         height: auto;
         margin: 0;
+        padding: 10px 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         font-size: 14px;
+        line-height: 1.2;
+        white-space: normal;
+        text-align: center;
         cursor: pointer;
+      }
+      .photo-actions .photo-file-btn span {
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
       .photo-actions .photo-file-btn .ico {
         width: 18px;
@@ -5134,10 +5216,18 @@
         min-height: 48px;
         height: auto;
         margin: 0;
+        padding: 10px 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+      }
+      #photo-save span {
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
       #photo-save .ico {
         width: 18px;
@@ -5206,17 +5296,21 @@
       @media (max-width: 540px) {
         .photo-modal {
           padding:
-            max(10px, env(safe-area-inset-top, 0px))
-            max(10px, env(safe-area-inset-right, 0px))
-            max(10px, env(safe-area-inset-bottom, 0px))
-            max(10px, env(safe-area-inset-left, 0px));
-          align-items: flex-start;
-          padding-top: max(12px, env(safe-area-inset-top, 0px));
+            max(12px, env(safe-area-inset-top, 0px))
+            max(12px, env(safe-area-inset-right, 0px))
+            max(12px, env(safe-area-inset-bottom, 0px))
+            max(12px, env(safe-area-inset-left, 0px));
+          align-items: center;
+          justify-content: center;
         }
         .photo-modal .photo-card {
           padding: 12px 12px 16px;
           gap: 10px;
           border-radius: 16px;
+          max-height: min(
+            calc(100vh - 24px - 12px - 44px),
+            calc(100dvh - 24px - 12px - 44px)
+          );
         }
         .photo-slots.is-artikel {
           grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -5227,15 +5321,30 @@
         .photo-slot-state {
           font-size: 9px;
         }
-        .photo-file-btn {
+        .photo-actions {
+          flex-direction: column;
+          flex-wrap: nowrap;
+        }
+        .photo-actions .photo-file-btn {
+          flex: 0 0 auto;
+          width: 100%;
           min-height: 48px;
-          font-size: 13px;
+          font-size: 14px;
+        }
+        .photo-tab {
+          font-size: 12px;
+          letter-spacing: 0.03em;
+          gap: 6px;
+          padding: 8px 6px;
         }
       }
 
       @media (max-height: 720px) {
         .photo-modal .photo-card {
-          max-height: min(96vh, 96dvh);
+          max-height: min(
+            calc(100vh - 24px - 12px - 44px),
+            calc(100dvh - 24px - 12px - 44px)
+          );
           gap: 8px;
           padding-top: 12px;
           padding-bottom: 12px;
@@ -6226,16 +6335,6 @@
     <!-- 6. SYNC PROGRESS MODAL -->
     <div id="sync-dialog" class="sync-modal" onclick="if(event.target===this)cancelManualSync()">
       <div class="sync-panel" onclick="event.stopPropagation()">
-      <button
-        type="button"
-        class="sync-close"
-        id="sync-close"
-        data-i18n-title="modal.sync_cancel"
-        title="Abbrechen"
-        aria-label="Abbrechen"
-      >
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
       <div class="sync-box">
         <div class="sync-head">
           <div class="sync-icon-wrap" aria-hidden="true">
@@ -6251,14 +6350,21 @@
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
         </div>
       </div>
+      <button
+        type="button"
+        class="sync-close"
+        id="sync-close"
+        data-i18n-title="modal.sync_cancel"
+        title="Abbrechen"
+        aria-label="Abbrechen"
+      >
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       </div>
     </div>
 
     <div id="photo-dialog" class="photo-modal" data-photo-target="artikel" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
       <div class="photo-panel" onclick="event.stopPropagation()">
-        <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
-          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-        </button>
         <div class="photo-card">
         <div class="photo-head">
           <span class="photo-head-title" data-i18n="photo.modalTitle">Foto erfassen</span>
@@ -6348,6 +6454,9 @@
           <div class="osk is-hidden" id="osk-photo" data-target="photo-id"></div>
         </div>
         </div>
+        <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
       </div>
     </div>
 
