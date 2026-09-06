@@ -4529,6 +4529,11 @@
         flex-direction: column;
         gap: 14px;
         padding: 16px;
+        pointer-events: auto;
+        overscroll-behavior: none;
+        isolation: isolate;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
       }
       .zoom-stage {
         position: relative;
@@ -4544,6 +4549,7 @@
         background: #0f172a;
         border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 12px;
+        pointer-events: auto;
       }
       .zoom-stage.is-panning {
         cursor: grabbing;
@@ -7280,6 +7286,8 @@
       let zoomPinchScale = 1;
       let zoomBound = false;
       let zoomTapDismiss = null;
+      let zoomDismissBlocked = false;
+      let zoomGhostGuard = null;
       const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
       let farbeDetailOpen = false;
@@ -12517,6 +12525,27 @@
         el.hidden = !nr;
       }
 
+      function disarmZoomGhostGuard() {
+        if (!zoomGhostGuard) return;
+        document.removeEventListener("click", zoomGhostGuard.fn, true);
+        clearTimeout(zoomGhostGuard.timer);
+        zoomGhostGuard = null;
+      }
+
+      function armZoomGhostGuard() {
+        disarmZoomGhostGuard();
+        const fn = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+        };
+        document.addEventListener("click", fn, true);
+        zoomGhostGuard = {
+          fn,
+          timer: setTimeout(disarmZoomGhostGuard, 400),
+        };
+      }
+
       function closeZoom() {
         const dlg = document.getElementById("zoom-dialog");
         if (!dlg) return;
@@ -12527,6 +12556,15 @@
           nrEl.hidden = true;
         }
         resetZoomTransform();
+        zoomDismissBlocked = false;
+      }
+
+      function isZoomChrome(el) {
+        return !!(
+          el &&
+          el.closest &&
+          el.closest(".zoom-close, .zoom-thumb, .media-mode-btn")
+        );
       }
 
       function bindZoomUi() {
@@ -12537,6 +12575,7 @@
         const closeBtn = document.getElementById("zoom-close");
         if (closeBtn) closeBtn.addEventListener("click", (e) => {
           e.stopPropagation();
+          armZoomGhostGuard();
           closeZoom();
         });
         const zoomMode = document.getElementById("zoom-media-mode");
@@ -12550,8 +12589,20 @@
           profMode.addEventListener("pointerdown", (e) => e.stopPropagation());
         }
         if (dlg) {
+          ["pointerdown", "pointerup", "pointercancel", "touchstart", "touchend"].forEach(
+            (type) => {
+              dlg.addEventListener(type, (e) => e.stopPropagation());
+            },
+          );
           dlg.addEventListener("click", (e) => {
-            if (e.target === dlg) closeZoom();
+            e.stopPropagation();
+            if (isZoomChrome(e.target)) return;
+            if (zoomDismissBlocked) {
+              zoomDismissBlocked = false;
+              return;
+            }
+            armZoomGhostGuard();
+            closeZoom();
           });
         }
         if (!stage) return;
@@ -12574,6 +12625,7 @@
         stage.addEventListener("pointerdown", (e) => {
           if (!isZoomOpen()) return;
           if (e.target.closest && e.target.closest(".media-mode-btn")) return;
+          zoomDismissBlocked = false;
           if (zoomPointers.size === 0) {
             zoomTapDismiss = { x: e.clientX, y: e.clientY, moved: false, pinch: false };
           } else if (zoomTapDismiss) {
@@ -12617,18 +12669,24 @@
           }
         });
         const endPtr = (e) => {
+          if (!zoomPointers.has(e.pointerId)) return;
           zoomPointers.delete(e.pointerId);
           if (zoomPointers.size < 2) zoomPinchStart = 0;
           if (!zoomPointers.size) {
             stage.classList.remove("is-panning");
             const tap = zoomTapDismiss;
             zoomTapDismiss = null;
-            if (tap && !tap.moved && !tap.pinch) closeZoom();
+            if (!tap || tap.moved || tap.pinch) zoomDismissBlocked = true;
           }
         };
         stage.addEventListener("pointerup", endPtr);
         stage.addEventListener("pointercancel", endPtr);
-        stage.addEventListener("lostpointercapture", endPtr);
+        stage.addEventListener("lostpointercapture", (e) => {
+          if (!zoomPointers.has(e.pointerId)) return;
+          zoomPointers.delete(e.pointerId);
+          if (zoomPointers.size < 2) zoomPinchStart = 0;
+          if (!zoomPointers.size) stage.classList.remove("is-panning");
+        });
       }
 
       function bindProfileGalleryUi() {
