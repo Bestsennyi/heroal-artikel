@@ -6672,8 +6672,24 @@
           .replace(/"/g, "&quot;");
       }
 
+      function pickFirstText() {
+        for (let i = 0; i < arguments.length; i++) {
+          const s = String(arguments[i] == null ? "" : arguments[i]).trim();
+          if (s) return s;
+        }
+        return "";
+      }
+
       function articleNr(item, fallback) {
-        return String((item && (item.art_nr || item.artnr)) || fallback || "").trim();
+        return String(
+          (item && (item.artikel_nr || item.art_nr || item.artnr)) ||
+            fallback ||
+            "",
+        ).trim();
+      }
+
+      function articleBarcode(item) {
+        return String((item && (item.barcode || item.ean || item.ean13)) || "").trim();
       }
 
       function syncAuskunftDir() {
@@ -6694,7 +6710,7 @@
       }
 
       function articleHint(item) {
-        return locField(item, "hinweis", appLang);
+        return locField(item, "hinweis", appLang) || locField(item, "beschreibung", appLang);
       }
 
       function colorCode(col, fallback) {
@@ -6721,6 +6737,8 @@
           col && col.oberflaeche_de,
           col && col.oberflaeche_en,
           col && col.oberflaeche_ru,
+          col && col.oberflaeche_pl,
+          col && col.oberflaeche_ar,
         ]
           .join(" ")
           .toLowerCase()
@@ -6742,6 +6760,8 @@
           col && col.oberflaeche_de,
           col && col.oberflaeche_en,
           col && col.oberflaeche_ru,
+          col && col.oberflaeche_pl,
+          col && col.oberflaeche_ar,
           locField(col, "hinweis", appLang),
         ]
           .join(" ")
@@ -6820,16 +6840,23 @@
 
       function articleMainImage(item) {
         if (!item) return null;
+        const type = item.image_type || item.type;
         return (
-          normalizeImageEntry(item.img_url, item.image_type || item.type) ||
-          normalizeImageEntry(item.image_url, item.image_type || item.type)
+          normalizeImageEntry(item.bild_haupt, type) ||
+          normalizeImageEntry(item.img_url, type) ||
+          normalizeImageEntry(item.image_url, type)
         );
       }
 
       function articleSlotImages(item) {
         if (!item) return [];
-        return ["img_1", "img_2", "img_3", "img_4"]
-          .map((key) => normalizeImageEntry(item[key], item[key + "_type"]))
+        return [1, 2, 3, 4]
+          .map((n) =>
+            normalizeImageEntry(
+              item["bild_" + n] || item["img_" + n],
+              item["img_" + n + "_type"],
+            ),
+          )
           .filter(Boolean);
       }
 
@@ -7110,6 +7137,8 @@
           1371: {
             id: "1",
             art_nr: "1371",
+            artikel_nr: "1371",
+            barcode: "",
             name_de: "Blende FMR HC oben",
             category: "Blenden",
             system: "FMR HC",
@@ -7123,6 +7152,8 @@
           5044: {
             id: "2",
             art_nr: "5044",
+            artikel_nr: "5044",
+            barcode: "",
             name_de: "F-HTF-IS DRP (Insektenschutz)",
             category: "Führungen",
             system: "Rollladen + ISG",
@@ -7291,6 +7322,7 @@
       };
       let photoSyncCtl = { running: false };
 
+      // Keep in sync with links_heroal_artikel.txt (CSV gid exports + web-application).
       const GAS_PHOTO_UPLOAD_URL =
         "https://script.google.com/macros/s/AKfycbwaX5aZ072Di_QuwSI0rI88EyvRLwiAtxnZlu6-VJgWkCn9lOHHpsrNEe4vsJEtwaQxeA/exec";
 
@@ -7306,6 +7338,7 @@
         translations: "",
         photoUpload: GAS_PHOTO_UPLOAD_URL,
       };
+      DEFAULT_URLS.benutzer = DEFAULT_URLS.users;
       let appUrls = readStoredUrls();
 
       function readStoredUser() {
@@ -7373,7 +7406,7 @@
             artikel: merged.artikel || DEFAULT_URLS.artikel,
             farben: merged.farben || DEFAULT_URLS.farben,
             auskunft: merged.auskunft || DEFAULT_URLS.auskunft,
-            users: merged.users || DEFAULT_URLS.users,
+            users: merged.users || merged.benutzer || DEFAULT_URLS.users,
             translations: merged.translations || "",
             photoUpload:
               String(merged.photoUpload || "").trim() || GAS_PHOTO_UPLOAD_URL,
@@ -7667,55 +7700,79 @@
         const extra = Array.isArray(it.extra) ? it.extra : [];
         const artNr = articleNr(it, key);
         if (!artNr && !it.name_de && !it.de) return null;
-        const image =
-          it.image_url ||
-          it.img_url ||
-          it.img ||
-          extra[0] ||
-          "";
-        return {
+        const image = pickFirstText(
+          it.bild_haupt,
+          it.img_url,
+          it.image_url,
+          it.img,
+          extra[0],
+        );
+        const row = {
           id: String(it.id || ""),
+          artikel_nr: artNr || String(key),
           art_nr: artNr || String(key),
+          barcode: articleBarcode(it),
           name_de: it.name_de || it.de || "",
           name_en: it.name_en || "",
           name_ru: it.name_ru || "",
           category: it.category || it.kategorie_de || it.kat || "",
+          kategorie_de: it.kategorie_de || it.category || it.kat || "",
           system: it.system || "",
           masse_de: it.masse_de || it.size || "",
-          hinweis_de: it.hinweis_de || it.hinweis || "",
-          hinweis_en: it.hinweis_en || "",
-          hinweis_ru: it.hinweis_ru || "",
+          hinweis_de: pickFirstText(it.hinweis_de, it.beschreibung_de, it.hinweis),
+          hinweis_en: pickFirstText(it.hinweis_en, it.beschreibung_en),
+          hinweis_ru: pickFirstText(it.hinweis_ru, it.beschreibung_ru),
+          beschreibung_de: pickFirstText(it.beschreibung_de, it.hinweis_de, it.hinweis),
           image_url: image,
-          img_url: String(it.img_url || image || "").trim(),
+          img_url: image,
+          bild_haupt: image,
           image_type: String(it.image_type || it.type || "").trim(),
-          img_1: String(it.img_1 || extra[1] || "").trim(),
-          img_2: String(it.img_2 || extra[2] || "").trim(),
-          img_3: String(it.img_3 || extra[3] || "").trim(),
-          img_4: String(it.img_4 || extra[4] || "").trim(),
-          img_1_type: String(it.img_1_type || "").trim(),
-          img_2_type: String(it.img_2_type || "").trim(),
-          img_3_type: String(it.img_3_type || "").trim(),
-          img_4_type: String(it.img_4_type || "").trim(),
           extra: extra.slice(),
           images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
           drive_folder_id: String(it.drive_folder_id || ""),
         };
+        LANGS.forEach((code) => {
+          if (row["name_" + code] == null) row["name_" + code] = it["name_" + code] || "";
+          if (row["kategorie_" + code] == null) {
+            row["kategorie_" + code] = it["kategorie_" + code] || "";
+          }
+          if (row["masse_" + code] == null) row["masse_" + code] = it["masse_" + code] || "";
+          const text = pickFirstText(
+            it["beschreibung_" + code],
+            it["hinweis_" + code],
+          );
+          row["beschreibung_" + code] = text;
+          row["hinweis_" + code] = text;
+        });
+        for (let n = 1; n <= 4; n++) {
+          const slot = pickFirstText(it["bild_" + n], it["img_" + n], extra[n]);
+          row["bild_" + n] = slot;
+          row["img_" + n] = slot;
+          row["img_" + n + "_type"] = String(it["img_" + n + "_type"] || "").trim();
+        }
+        return row;
       }
 
       function migrateUser(key, it) {
         if (!it || typeof it !== "object") return null;
         const role =
+          it.rolle_de ||
           it.benutzer_de ||
           it.rolle ||
           it.role ||
           it.benutzer ||
           it.dept ||
           "";
+        const pin = String(it.pin || key || "");
+        const nummer = String(it.benutzername || it.nummer || it.nr || pin || "");
         return {
-          nummer: String(it.nummer || it.nr || it.id || ""),
-          pin: String(it.pin || key || ""),
+          id: String(it.id || ""),
+          benutzername: String(it.benutzername || nummer),
+          nummer,
+          pin,
           vorname_de: it.vorname_de || it.vorname || it.first || "",
           nachname_de: it.nachname_de || it.nachname || it.last || "",
+          rolle_de: role,
           benutzer_de: role,
           status_de: it.status_de || it.status || "Aktiv",
         };
@@ -7728,38 +7785,39 @@
           : Array.isArray(it.images)
             ? it.images.slice()
             : [];
-        return {
+        const row = {
+          id: String(it.id || ""),
           code: String(it.code || key || ""),
           hex: it.hex || "#ffffff",
           bild_dummyimage: it.bild_dummyimage || it.bild_de || "",
           echtes_foto: it.echtes_foto || it.foto || it.photo || "",
           image_url: it.image_url || it.img_url || "",
           image_type: String(it.image_type || it.type || "").trim(),
-          img_1: String(it.img_1 || extra[0] || "").trim(),
-          img_2: String(it.img_2 || extra[1] || "").trim(),
-          img_3: String(it.img_3 || extra[2] || "").trim(),
-          img_4: String(it.img_4 || extra[3] || "").trim(),
-          img_1_type: String(it.img_1_type || "").trim(),
-          img_2_type: String(it.img_2_type || "").trim(),
-          img_3_type: String(it.img_3_type || "").trim(),
-          img_4_type: String(it.img_4_type || "").trim(),
           extra: extra.slice(),
           images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
           name_de: it.name_de || it.name || "",
           oberflaeche_de: it.oberflaeche_de || it.desc || "",
-          name_en: it.name_en || "",
-          oberflaeche_en: it.oberflaeche_en || "",
-          name_ru: it.name_ru || "",
-          oberflaeche_ru: it.oberflaeche_ru || "",
-          hinweis_de: it.hinweis_de || it.beschreibung_de || it.hinweis || "",
-          hinweis_en: it.hinweis_en || it.beschreibung_en || "",
-          hinweis_ru: it.hinweis_ru || it.beschreibung_ru || "",
         };
+        LANGS.forEach((code) => {
+          row["name_" + code] = it["name_" + code] || row["name_" + code] || "";
+          row["oberflaeche_" + code] =
+            it["oberflaeche_" + code] || row["oberflaeche_" + code] || "";
+          row["hinweis_" + code] = pickFirstText(
+            it["hinweis_" + code],
+            it["beschreibung_" + code],
+          );
+        });
+        for (let n = 1; n <= 4; n++) {
+          row["img_" + n] = String(it["img_" + n] || extra[n - 1] || "").trim();
+          row["img_" + n + "_type"] = String(it["img_" + n + "_type"] || "").trim();
+        }
+        return row;
       }
 
       function migrateAuskunftRow(it) {
         if (!it || typeof it !== "object") return null;
         const row = {
+          id: String(it.id || ""),
           kategorie_de: it.kategorie_de || it.kat || "",
           name_de: it.name_de || it.de_t || "",
           beschreibung_de: it.beschreibung_de || it.de_txt || "",
@@ -9412,7 +9470,12 @@
         return (
           Object.keys(usersTable())
             .map((k) => usersTable()[k])
-            .find((u) => u && String(u.nummer || "") === id) || null
+            .find(
+              (u) =>
+                u &&
+                (String(u.nummer || "") === id ||
+                  String(u.benutzername || "") === id),
+            ) || null
         );
       }
 
@@ -9874,15 +9937,47 @@
           if (field === "bild_dummyimage") return id + "_dummy.jpg";
           return id + ".jpg";
         }
+        if (field === "bild_haupt" || field === "img_url" || field === "image_url") {
+          return id + ".jpg";
+        }
         const slot =
           ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field) || ARTIKEL_PHOTO_SLOTS[0];
+        const suffixMatch = String(field || "").match(/(\d+)$/);
+        if (suffixMatch) return id + "_" + suffixMatch[1] + ".jpg";
         return slot.suffix ? id + "_" + slot.suffix + ".jpg" : id + ".jpg";
+      }
+
+      function sheetPhotoField(target, field) {
+        if (target === "farben") return field;
+        if (field === "img_url" || field === "image_url") return "bild_haupt";
+        const slot = String(field || "").match(/^img_([1-4])$/);
+        if (slot) return "bild_" + slot[1];
+        return field;
+      }
+
+      function syncArticlePhotoAliases(row) {
+        if (!row || typeof row !== "object") return row;
+        const main = pickFirstText(row.bild_haupt, row.img_url, row.image_url);
+        row.bild_haupt = main;
+        row.img_url = main;
+        row.image_url = main;
+        for (let n = 1; n <= 4; n++) {
+          const slot = pickFirstText(row["bild_" + n], row["img_" + n]);
+          row["bild_" + n] = slot;
+          row["img_" + n] = slot;
+        }
+        return row;
       }
 
       function recordPhotoValue(record, field) {
         if (!record) return "";
-        if (field === "img_url") {
-          return String(record.img_url || record.image_url || "").trim();
+        if (field === "img_url" || field === "bild_haupt" || field === "image_url") {
+          return pickFirstText(record.bild_haupt, record.img_url, record.image_url);
+        }
+        const slot = String(field || "").match(/^(?:bild|img)_([1-4])$/);
+        if (slot) {
+          const n = slot[1];
+          return pickFirstText(record["bild_" + n], record["img_" + n]);
         }
         return String(record[field] || "").trim();
       }
@@ -9903,10 +9998,13 @@
           fields.forEach((field) => {
             next[field] = mergePhotoField(prev[field], next[field]);
           });
-          if (fields.indexOf("img_url") !== -1) {
+          if (
+            fields.indexOf("img_url") !== -1 ||
+            fields.indexOf("bild_haupt") !== -1
+          ) {
             next.image_url = mergePhotoField(prev.image_url, next.image_url);
-            if (!next.img_url && next.image_url) next.img_url = next.image_url;
-            if (!next.image_url && next.img_url) next.image_url = next.img_url;
+            next.bild_haupt = mergePhotoField(prev.bild_haupt, next.bild_haupt);
+            syncArticlePhotoAliases(next);
           }
         });
         return out;
@@ -9924,11 +10022,17 @@
         }
         const row = (appDB.artikel || {})[id];
         if (!row) return;
-        if (field === "img_url") {
+        if (field === "img_url" || field === "bild_haupt" || field === "image_url") {
           row.img_url = url;
           row.image_url = url;
+          row.bild_haupt = url;
         } else {
           row[field] = url;
+          const slot = String(field || "").match(/^(?:bild|img)_([1-4])$/);
+          if (slot) {
+            row["bild_" + slot[1]] = url;
+            row["img_" + slot[1]] = url;
+          }
         }
         appDB.artikel[id] = row;
       }
@@ -9954,7 +10058,10 @@
         if (target === "artikel") {
           const byNr = keys.find((k) => {
             const item = catalog[k];
-            return String(articleNr(item, k)).toLowerCase() === lower;
+            return (
+              String(articleNr(item, k)).toLowerCase() === lower ||
+              articleBarcode(item).toLowerCase() === lower
+            );
           });
           if (byNr) return { key: byNr, item: catalog[byNr] };
         } else {
@@ -10013,7 +10120,7 @@
       function photoSlotTitle(field) {
         if (field === "echtes_foto") return t("slotRealPhoto");
         if (field === "bild_dummyimage") return t("slotDummyImage");
-        if (field === "img_url") return t("slotMain");
+        if (field === "img_url" || field === "bild_haupt") return t("slotMain");
         const slot = ARTIKEL_PHOTO_SLOTS.find((s) => s.field === field);
         if (slot && slot.suffix) return t("slotPhoto") + " " + slot.suffix;
         return t("slotMain");
@@ -10570,7 +10677,7 @@
           action: "uploadPhoto",
           target: item.target,
           recordId: item.recordId,
-          field: item.field,
+          field: sheetPhotoField(item.target, item.field),
           fileName: item.fileName,
           fileData: item.base64Data,
           mimeType: "image/jpeg",
@@ -11381,10 +11488,14 @@
         const hay = [
           key,
           articleNr(item, key),
+          articleBarcode(item),
           locField(item, "name", appLang),
+          locField(item, "kategorie", appLang),
           item.name_de,
           item.name_en,
           item.name_ru,
+          item.name_pl,
+          item.name_ar,
         ]
           .join(" ")
           .toLowerCase();
@@ -11405,6 +11516,8 @@
           col.name_de,
           col.name_en,
           col.name_ru,
+          col.name_pl,
+          col.name_ar,
           col.hex,
           hex,
         ]
@@ -11418,8 +11531,12 @@
         if (!q) return "";
         const catalog = appDB.artikel || {};
         for (const key of Object.keys(catalog)) {
-          const nr = articleNr(catalog[key], key).toLowerCase();
-          if (key.toLowerCase() === q || nr === q) return key;
+          const item = catalog[key];
+          const nr = articleNr(item, key).toLowerCase();
+          const barcode = articleBarcode(item).toLowerCase();
+          if (key.toLowerCase() === q || nr === q || (barcode && barcode === q)) {
+            return key;
+          }
         }
         return "";
       }
@@ -12899,6 +13016,7 @@
       }
 
       function parseCsvTable(text) {
+        if (looksLikeHtmlDocument(text)) return { map: {}, rows: [] };
         const rows = parseCSV(String(text || "").replace(/^\uFEFF/, ""));
         if (!rows.length) return { map: {}, rows: [] };
         return { map: csvHeaderMap(rows[0]), rows: rows.slice(1) };
@@ -12916,37 +13034,54 @@
         const { map, rows } = parseCsvTable(text);
         const out = {};
         rows.forEach((row) => {
-          const artNr = csvCellAny(row, map, ["art_nr", "artnr"]);
+          const artNr = csvCellAny(row, map, [
+            "artikel_nr",
+            "art_nr",
+            "artnr",
+            "art-nr",
+          ]);
           if (!artNr) return;
-          out[artNr] = {
+          const bildHaupt = csvCellAny(row, map, [
+            "bild_haupt",
+            "img_url",
+            "image_url",
+          ]);
+          const rec = {
             id: csvCell(row, map, "id"),
+            artikel_nr: artNr,
             art_nr: artNr,
-            name_de: csvCell(row, map, "name_de"),
-            name_en: csvCell(row, map, "name_en"),
-            name_ru: csvCell(row, map, "name_ru"),
-            category: csvCellAny(row, map, ["category", "kategorie_de"]),
+            barcode: csvCellAny(row, map, ["barcode", "ean", "ean13"]),
+            category: csvCellAny(row, map, ["kategorie_de", "category"]),
             system: csvCell(row, map, "system"),
-            masse_de: csvCellAny(row, map, ["masse_de", "masse", "size"]),
-            hinweis_de: csvCellAny(row, map, [
-              "hinweis_de",
-              "hinweis",
-              "beschreibung_de",
-            ]),
-            hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
-            hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
-            image_url: csvCellAny(row, map, ["image_url", "img_url"]),
-            img_url: csvCellAny(row, map, ["img_url", "image_url"]),
+            image_url: bildHaupt,
+            img_url: bildHaupt,
+            bild_haupt: bildHaupt,
             image_type: csvCellAny(row, map, ["image_type", "type"]),
-            img_1: csvCell(row, map, "img_1"),
-            img_2: csvCell(row, map, "img_2"),
-            img_3: csvCell(row, map, "img_3"),
-            img_4: csvCell(row, map, "img_4"),
-            img_1_type: csvCell(row, map, "img_1_type"),
-            img_2_type: csvCell(row, map, "img_2_type"),
-            img_3_type: csvCell(row, map, "img_3_type"),
-            img_4_type: csvCell(row, map, "img_4_type"),
             drive_folder_id: csvCell(row, map, "drive_folder_id"),
           };
+          LANGS.forEach((code) => {
+            rec["name_" + code] = csvCell(row, map, "name_" + code);
+            rec["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
+            rec["masse_" + code] = csvCellAny(row, map, [
+              "masse_" + code,
+              code === "de" ? "masse" : "",
+              code === "de" ? "size" : "",
+            ].filter(Boolean));
+            const text = csvCellAny(row, map, [
+              "beschreibung_" + code,
+              "hinweis_" + code,
+            ]);
+            rec["beschreibung_" + code] = text;
+            rec["hinweis_" + code] = text;
+          });
+          if (!rec.kategorie_de) rec.kategorie_de = rec.category;
+          for (let n = 1; n <= 4; n++) {
+            const slot = csvCellAny(row, map, ["bild_" + n, "img_" + n]);
+            rec["bild_" + n] = slot;
+            rec["img_" + n] = slot;
+            rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
+          }
+          out[artNr] = rec;
         });
         return out;
       }
@@ -12957,7 +13092,8 @@
         rows.forEach((row) => {
           const code = csvCell(row, map, "code");
           if (!code) return;
-          out[code] = {
+          const rec = {
+            id: csvCell(row, map, "id"),
             code,
             hex: (function (h) {
               h = String(h || "").trim();
@@ -12968,30 +13104,22 @@
               csvCell(row, map, "bild_dummyimage") ||
               csvCell(row, map, "bild_de"),
             echtes_foto: csvCell(row, map, "echtes_foto"),
-            name_de: csvCell(row, map, "name_de"),
-            oberflaeche_de: csvCell(row, map, "oberflaeche_de"),
-            name_en: csvCell(row, map, "name_en"),
-            oberflaeche_en: csvCell(row, map, "oberflaeche_en"),
-            name_ru: csvCell(row, map, "name_ru"),
-            oberflaeche_ru: csvCell(row, map, "oberflaeche_ru"),
-            hinweis_de: csvCellAny(row, map, [
-              "hinweis_de",
-              "hinweis",
-              "beschreibung_de",
-            ]),
-            hinweis_en: csvCellAny(row, map, ["hinweis_en", "beschreibung_en"]),
-            hinweis_ru: csvCellAny(row, map, ["hinweis_ru", "beschreibung_ru"]),
             image_url: csvCellAny(row, map, ["image_url", "img_url"]),
             image_type: csvCellAny(row, map, ["image_type", "type"]),
-            img_1: csvCell(row, map, "img_1"),
-            img_2: csvCell(row, map, "img_2"),
-            img_3: csvCell(row, map, "img_3"),
-            img_4: csvCell(row, map, "img_4"),
-            img_1_type: csvCell(row, map, "img_1_type"),
-            img_2_type: csvCell(row, map, "img_2_type"),
-            img_3_type: csvCell(row, map, "img_3_type"),
-            img_4_type: csvCell(row, map, "img_4_type"),
           };
+          LANGS.forEach((lang) => {
+            rec["name_" + lang] = csvCell(row, map, "name_" + lang);
+            rec["oberflaeche_" + lang] = csvCell(row, map, "oberflaeche_" + lang);
+            rec["hinweis_" + lang] = csvCellAny(row, map, [
+              "hinweis_" + lang,
+              "beschreibung_" + lang,
+            ]);
+          });
+          for (let n = 1; n <= 4; n++) {
+            rec["img_" + n] = csvCell(row, map, "img_" + n);
+            rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
+          }
+          out[code] = rec;
         });
         return out;
       }
@@ -13000,7 +13128,7 @@
         const { map, rows } = parseCsvTable(text);
         const out = [];
         rows.forEach((row) => {
-          const item = {};
+          const item = { id: csvCell(row, map, "id") };
           LANGS.forEach((code) => {
             item["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
             item["name_" + code] = csvCell(row, map, "name_" + code);
@@ -13026,10 +13154,23 @@
         const out = {};
         rows.forEach((row) => {
           const pin = csvCellAny(row, map, ["pin"]);
-          const nummer = csvCellAny(row, map, ["nummer", "nr", "id"]);
+          const nummer = csvCellAny(row, map, [
+            "benutzername",
+            "nummer",
+            "nr",
+          ]);
           const key = pin || nummer;
           if (!key) return;
+          const role = csvCellAny(row, map, [
+            "rolle_de",
+            "benutzer_de",
+            "rolle",
+            "role",
+            "benutzer",
+          ]);
           out[key] = {
+            id: csvCell(row, map, "id"),
+            benutzername: nummer || key,
             nummer: nummer || key,
             pin: pin || key,
             vorname_de: csvCellAny(row, map, [
@@ -13042,12 +13183,8 @@
               "nachname",
               "last",
             ]),
-            benutzer_de: csvCellAny(row, map, [
-              "benutzer_de",
-              "rolle",
-              "role",
-              "benutzer",
-            ]),
+            rolle_de: role,
+            benutzer_de: role,
             status_de:
               csvCellAny(row, map, ["status_de", "status"]) || "Aktiv",
           };
@@ -13210,6 +13347,11 @@
         }
       }
 
+      function looksLikeHtmlDocument(text) {
+        const s = String(text || "").replace(/^\uFEFF/, "").trim();
+        return /^<!DOCTYPE html/i.test(s) || /^<html[\s>]/i.test(s);
+      }
+
       async function fetchCsvText(url, silent) {
         if (!url) return "";
         const timeout = silent ? SILENT_FETCH_TIMEOUT_MS : MANUAL_FETCH_TIMEOUT_MS;
@@ -13221,7 +13363,11 @@
         try {
           const r = await fetch(url, { signal, cache: "no-store" });
           if (!r.ok) throw new Error("HTTP " + r.status);
-          return await r.text();
+          const text = await r.text();
+          if (looksLikeHtmlDocument(text)) {
+            throw new Error("CSV expected, got HTML");
+          }
+          return text;
         } finally {
           gate.cancel();
         }
@@ -13293,11 +13439,16 @@
                 );
                 if (Object.keys(parsed).length) {
                   staged.artikel = mergeIncomingTablePhotos(parsed, appDB.artikel, [
+                    "bild_haupt",
                     "img_url",
                     "img_1",
                     "img_2",
                     "img_3",
                     "img_4",
+                    "bild_1",
+                    "bild_2",
+                    "bild_3",
+                    "bild_4",
                   ]);
                 }
               }
