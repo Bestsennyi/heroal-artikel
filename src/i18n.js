@@ -2,11 +2,11 @@
  * heroal Artikel — UI i18n helper (static chrome only).
  *
  * Dictionary: src/locales/translations.json
- * Nested leaves: { de, en, ru, pl, ar }
+ * Nested leaves: { de, en, ru }
  * Lookup: t("auth.login_btn") or legacy flat t("login_btn")
  */
 (function (global) {
-  var SUPPORTED_LANGS = ["de", "en", "ru", "pl", "ar"];
+  var SUPPORTED_LANGS = ["de", "en", "ru"];
   var DEFAULT_LANG = "de";
   var STORAGE_KEY = "lagerguide_lang";
   var LEGACY_STORAGE_KEY = "heroal_lang";
@@ -49,8 +49,6 @@
     if (v === "deutsch" || v === "ger" || v === "german") return "de";
     if (v === "english") return "en";
     if (v === "рус" || v === "russian") return "ru";
-    if (v === "polish" || v === "polski") return "pl";
-    if (v === "arabic" || v === "عربي") return "ar";
     return DEFAULT_LANG;
   }
 

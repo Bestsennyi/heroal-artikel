@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Recursively checks src/locales/translations.json:
- * every leaf must contain the same set of language codes, none empty.
+ * every leaf must have non-empty strings for SUPPORTED_LANGS (de, en, ru).
+ * Extra locale keys (e.g. leftover pl/ar) are warnings, not errors.
  *
  * Usage: node scripts/validate-i18n.js
  */
@@ -41,7 +42,12 @@ function walk(node, prefix, langs, issues) {
       issues.push({ path: prefix, kind: "missing_langs", missing });
     }
     if (extra.length) {
-      issues.push({ path: prefix, kind: "extra_langs", extra });
+      issues.push({
+        path: prefix,
+        kind: "extra_langs",
+        extra,
+        hint: "optional leftover locale(s); required set is " + expected.join(", "),
+      });
     }
     expected.forEach((code) => {
       const val = node[code];
@@ -78,8 +84,12 @@ function main() {
   const dict = JSON.parse(fs.readFileSync(DICT_PATH, "utf8"));
   const issues = [];
   walk(dict, "", langs, issues);
-  const hard = issues.filter((i) => i.kind !== "same_as_de");
-  const soft = issues.filter((i) => i.kind === "same_as_de");
+  const hard = issues.filter(
+    (i) => i.kind !== "same_as_de" && i.kind !== "extra_langs",
+  );
+  const soft = issues.filter(
+    (i) => i.kind === "same_as_de" || i.kind === "extra_langs",
+  );
   if (soft.length) {
     console.warn("Warnings (" + soft.length + " possible untranslated strings):");
     soft.forEach((i) => console.warn("  -", i.path, i.hint));

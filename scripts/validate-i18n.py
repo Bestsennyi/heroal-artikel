@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Recursively validate src/locales/translations.json language matrix."""
+"""Validate translations.json: required non-empty de/en/ru from SUPPORTED_LANGS."""
 import json
 import re
 import sys
@@ -30,7 +30,15 @@ def walk(node, prefix, langs, issues):
         if missing:
             issues.append({"path": prefix, "kind": "missing_langs", "missing": missing})
         if extra:
-            issues.append({"path": prefix, "kind": "extra_langs", "extra": extra})
+            issues.append(
+                {
+                    "path": prefix,
+                    "kind": "extra_langs",
+                    "extra": extra,
+                    "hint": "optional leftover locale(s); required set is "
+                    + ", ".join(langs),
+                }
+            )
         de = str(node.get("de", "")).strip() if isinstance(node.get("de"), str) else ""
         for code in langs:
             val = node.get(code)
@@ -62,8 +70,8 @@ def main():
     dict_data = json.loads(DICT_PATH.read_text(encoding="utf-8"))
     issues = []
     walk(dict_data, "", langs, issues)
-    hard = [i for i in issues if i["kind"] != "same_as_de"]
-    soft = [i for i in issues if i["kind"] == "same_as_de"]
+    hard = [i for i in issues if i["kind"] not in ("same_as_de", "extra_langs")]
+    soft = [i for i in issues if i["kind"] in ("same_as_de", "extra_langs")]
     for i in soft:
         print("WARN", i["path"], i.get("hint", ""), file=sys.stderr)
     if hard:

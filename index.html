@@ -5503,26 +5503,6 @@
               </span>
               <span data-i18n="lang.ru">Русский</span>
             </button>
-            <button type="button" class="lang-option" data-lang="pl" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" focusable="false">
-                  <rect width="8" height="2.5" y="0" fill="#ffffff" />
-                  <rect width="8" height="2.5" y="2.5" fill="#dc143c" />
-                </svg>
-              </span>
-              <span data-i18n="lang.pl">Polski</span>
-            </button>
-            <button type="button" class="lang-option" data-lang="ar" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" focusable="false">
-                  <rect width="3" height="6" fill="#ff0000" />
-                  <rect x="3" width="9" height="2" fill="#00732f" />
-                  <rect x="3" y="2" width="9" height="2" fill="#ffffff" />
-                  <rect x="3" y="4" width="9" height="2" fill="#000000" />
-                </svg>
-              </span>
-              <span data-i18n="lang.ar">العربية</span>
-            </button>
           </div>
         </div>
         <div class="login-footer" id="login-footer-txt" data-i18n="footer.footer_text">
@@ -5634,26 +5614,6 @@
                 </svg>
               </span>
               <span>RU</span>
-            </button>
-            <button type="button" class="hdr-lang-option" data-lang="pl" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" focusable="false">
-                  <rect width="8" height="2.5" y="0" fill="#ffffff" />
-                  <rect width="8" height="2.5" y="2.5" fill="#dc143c" />
-                </svg>
-              </span>
-              <span>PL</span>
-            </button>
-            <button type="button" class="hdr-lang-option" data-lang="ar" role="option">
-              <span class="lang-flag" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" focusable="false">
-                  <rect width="3" height="6" fill="#ff0000" />
-                  <rect x="3" width="9" height="2" fill="#00732f" />
-                  <rect x="3" y="2" width="9" height="2" fill="#ffffff" />
-                  <rect x="3" y="4" width="9" height="2" fill="#000000" />
-                </svg>
-              </span>
-              <span>AR</span>
             </button>
           </div>
         </div>
@@ -6652,14 +6612,15 @@
         }
       }
 
-      /** Localized field: current language → German `_de` → English `_en`. */
+      /** Localized field: active app language (`_de` / `_en` / `_ru`) → German `_de` → English `_en`. */
       function locField(obj, stem, lang) {
         if (!obj) return "";
-        const code = lang || appLang;
+        const code = I18N.normalizeLang(lang || appLang);
         return (
           usableText(obj[stem + "_" + code]) ||
           usableText(obj[stem + "_de"]) ||
           usableText(obj[stem + "_en"]) ||
+          usableText(obj[stem + "_ru"]) ||
           ""
         );
       }
@@ -6694,7 +6655,7 @@
 
       function syncAuskunftDir() {
         const view = document.getElementById("view-auskunft");
-        if (view) view.setAttribute("dir", appLang === "ar" ? "rtl" : "ltr");
+        if (view) view.setAttribute("dir", "ltr");
       }
 
       function articleCategory(item) {
@@ -6737,8 +6698,6 @@
           col && col.oberflaeche_de,
           col && col.oberflaeche_en,
           col && col.oberflaeche_ru,
-          col && col.oberflaeche_pl,
-          col && col.oberflaeche_ar,
         ]
           .join(" ")
           .toLowerCase()
@@ -6760,8 +6719,6 @@
           col && col.oberflaeche_de,
           col && col.oberflaeche_en,
           col && col.oberflaeche_ru,
-          col && col.oberflaeche_pl,
-          col && col.oberflaeche_ar,
           locField(col, "hinweis", appLang),
         ]
           .join(" ")
@@ -11075,14 +11032,7 @@
             [shift].concat("ячсмитьбю".split("")).concat([back]),
           ];
         }
-        if (appLang === "ar") {
-          return [
-            "ضصثقفغعهخحجد".split(""),
-            "شسيبلاتنمكط".split(""),
-            [shift].concat("ئءؤرلاىةوزظ".split("")).concat([back]),
-          ];
-        }
-        if (appLang === "en" || appLang === "pl") {
+        if (appLang === "en") {
           return [
             "qwertyuiop".split(""),
             "asdfghjkl".split(""),
@@ -11117,7 +11067,7 @@
 
       function oskNumpadHtml() {
         const abcLabel =
-          appLang === "ru" ? "АБВ" : appLang === "ar" ? "أبج" : "ABC";
+          appLang === "ru" ? "АБВ" : "ABC";
         const back = oskBackKey();
         back.cls += " numpad-key-back";
         const enter = oskEnterKey();
@@ -11208,7 +11158,7 @@
 
       function searchOskInnerHtml() {
         const abcLabel =
-          appLang === "ru" ? "АБВ" : appLang === "ar" ? "أبج" : "ABC";
+          appLang === "ru" ? "АБВ" : "ABC";
         const abcKey = { act: "abc", label: abcLabel, cls: "osk-key-fn osk-key-num" };
         const symKey = { act: "sym", label: "123", cls: "osk-key-fn osk-key-num" };
         const letters =
@@ -11494,8 +11444,6 @@
           item.name_de,
           item.name_en,
           item.name_ru,
-          item.name_pl,
-          item.name_ar,
         ]
           .join(" ")
           .toLowerCase();
@@ -11516,8 +11464,6 @@
           col.name_de,
           col.name_en,
           col.name_ru,
-          col.name_pl,
-          col.name_ar,
           col.hex,
           hex,
         ]
