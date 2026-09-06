@@ -7258,11 +7258,11 @@
       const PHOTO_JPEG_QUALITY = 0.82;
       const PHOTO_MAX_EDGE = 1600;
       const ARTIKEL_PHOTO_SLOTS = [
-        { field: "img_url", suffix: "", labelKey: "slotMain" },
-        { field: "img_1", suffix: "1", labelKey: "slotPhoto" },
-        { field: "img_2", suffix: "2", labelKey: "slotPhoto" },
-        { field: "img_3", suffix: "3", labelKey: "slotPhoto" },
-        { field: "img_4", suffix: "4", labelKey: "slotPhoto" },
+        { field: "bild_haupt", suffix: "", labelKey: "slotMain" },
+        { field: "bild_1", suffix: "1", labelKey: "slotPhoto" },
+        { field: "bild_2", suffix: "2", labelKey: "slotPhoto" },
+        { field: "bild_3", suffix: "3", labelKey: "slotPhoto" },
+        { field: "bild_4", suffix: "4", labelKey: "slotPhoto" },
       ];
       const FARBEN_PHOTO_SLOTS = [
         { field: "echtes_foto", suffix: "", labelKey: "slotRealPhoto" },
@@ -7273,7 +7273,7 @@
         recordId: "",
         recordName: "",
         dataUrl: "",
-        field: "img_url",
+        field: "bild_haupt",
         bound: false,
         stream: null,
       };
@@ -7731,7 +7731,7 @@
           nachname_de: it.nachname_de || it.nachname || it.last || "",
           rolle_de: role,
           benutzer_de: role,
-          status_de: it.status_de || it.status || "Aktiv",
+          status_de: pickFirstText(it.status_de, it.status),
         };
       }
 
@@ -9408,7 +9408,11 @@
       }
 
       function isUserActive(user) {
-        return String((user && user.status_de) || "").trim() === "Aktiv";
+        return (
+          String((user && user.status_de) || "")
+            .trim()
+            .toLowerCase() === "aktiv"
+        );
       }
 
       function findUserByPin(val) {
@@ -9904,12 +9908,23 @@
         return slot.suffix ? id + "_" + slot.suffix + ".jpg" : id + ".jpg";
       }
 
+      function canonicalArtikelPhotoField(field) {
+        const name = String(field || "").trim();
+        if (
+          name === "bild_haupt" ||
+          name === "img_url" ||
+          name === "image_url"
+        ) {
+          return "bild_haupt";
+        }
+        const slot = name.match(/^(?:bild|img)_([1-4])$/);
+        if (slot) return "bild_" + slot[1];
+        return name;
+      }
+
       function sheetPhotoField(target, field) {
         if (target === "farben") return field;
-        if (field === "img_url" || field === "image_url") return "bild_haupt";
-        const slot = String(field || "").match(/^img_([1-4])$/);
-        if (slot) return "bild_" + slot[1];
-        return field;
+        return canonicalArtikelPhotoField(field);
       }
 
       function syncArticlePhotoAliases(row) {
@@ -9998,7 +10013,11 @@
         const items = await photoQueueAll();
         items.forEach((item) => {
           if (!item || !item.base64Data) return;
-          patchRecordPhoto(item.target, item.recordId, item.field, item.base64Data);
+          const field =
+            item.target === "farben"
+              ? item.field
+              : canonicalArtikelPhotoField(item.field);
+          patchRecordPhoto(item.target, item.recordId, field, item.base64Data);
         });
       }
 
@@ -10157,7 +10176,7 @@
         photoCaptureState.recordId = "";
         photoCaptureState.recordName = "";
         photoCaptureState.dataUrl = "";
-        photoCaptureState.field = "img_url";
+        photoCaptureState.field = "bild_haupt";
         const input = document.getElementById("photo-id");
         if (input) input.value = "";
         clearPhotoPreview();
@@ -10223,10 +10242,17 @@
           if (!FARBEN_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)) {
             photoCaptureState.field = "echtes_foto";
           }
-        } else if (
-          !ARTIKEL_PHOTO_SLOTS.some((s) => s.field === photoCaptureState.field)
-        ) {
-          photoCaptureState.field = "img_url";
+        } else {
+          photoCaptureState.field = canonicalArtikelPhotoField(
+            photoCaptureState.field,
+          );
+          if (
+            !ARTIKEL_PHOTO_SLOTS.some(
+              (s) => s.field === photoCaptureState.field,
+            )
+          ) {
+            photoCaptureState.field = "bild_haupt";
+          }
         }
         renderPhotoSlots();
         updatePhotoSaveState();
@@ -10275,7 +10301,7 @@
           updatePhotoWarn();
           return;
         }
-        if (!photoCaptureState.field) photoCaptureState.field = "img_url";
+        if (!photoCaptureState.field) photoCaptureState.field = "bild_haupt";
         wrap.classList.add("is-artikel");
         const item = (appDB.artikel || {})[photoCaptureState.recordId];
         ARTIKEL_PHOTO_SLOTS.forEach((slot) => {
@@ -10358,34 +10384,38 @@
         if (!photoCaptureState.dataUrl || !photoCaptureState.recordId) return;
         const target = photoCaptureState.target;
         const recordId = photoCaptureState.recordId;
+        const slotField =
+          target === "farben" ? field : canonicalArtikelPhotoField(field);
         const wasOccupied = currentPhotoSlotOccupied();
         const items = await photoQueueAll();
         await Promise.all(
           items
-            .filter(
-              (it) =>
-                it &&
-                it.target === target &&
-                String(it.recordId) === String(recordId) &&
-                it.field === field,
-            )
+            .filter((it) => {
+              if (!it || it.target !== target) return false;
+              if (String(it.recordId) !== String(recordId)) return false;
+              const queued =
+                target === "farben"
+                  ? it.field
+                  : canonicalArtikelPhotoField(it.field);
+              return queued === slotField;
+            })
             .map((it) => photoQueueDelete(it.id)),
         );
         const item = {
           id: newPhotoId(),
           target: target,
           recordId: recordId,
-          field: field,
-          fileName: photoFileName(target, recordId, field),
+          field: slotField,
+          fileName: photoFileName(target, recordId, slotField),
           base64Data: photoCaptureState.dataUrl,
           status: "pending",
           createdAt: Date.now(),
         };
-        patchRecordPhoto(target, recordId, field, item.base64Data);
+        patchRecordPhoto(target, recordId, slotField, item.base64Data);
         await photoQueuePut(item);
         await idbSet("heroal_db", appDB);
         refreshPhotoTargetViews();
-        const slotLabel = photoSlotTitle(field);
+        const slotLabel = photoSlotTitle(slotField);
         const msg = wasOccupied
           ? tf("toastUpdated", { slot: slotLabel })
           : tf("toastAdded", { slot: slotLabel });
@@ -10398,7 +10428,7 @@
         const useField =
           field ||
           photoCaptureState.field ||
-          (photoCaptureState.target === "farben" ? "echtes_foto" : "img_url");
+          (photoCaptureState.target === "farben" ? "echtes_foto" : "bild_haupt");
         if (!photoCaptureState.recordId) {
           showToast(t("itemNotFound"), "warn");
           return;
@@ -10555,7 +10585,7 @@
         if (art) {
           art.addEventListener("click", () => {
             photoCaptureState.target = "artikel";
-            photoCaptureState.field = "img_url";
+            photoCaptureState.field = "bild_haupt";
             syncPhotoTargetButtons();
             updatePhotoMatch();
           });
@@ -13131,8 +13161,7 @@
             ]),
             rolle_de: role,
             benutzer_de: role,
-            status_de:
-              csvCellAny(row, map, ["status_de", "status"]) || "Aktiv",
+            status_de: csvCellAny(row, map, ["status_de", "status"]),
           };
         });
         return out;

@@ -569,8 +569,8 @@
     },
     "settings_urls": {
       "de": "Google Sheets CSV Publish URLs:",
-      "en": "Google Sheets CSV Publish URLs:",
-      "ru": "Google Sheets CSV Publish URLs:"
+      "en": "Published Google Sheets CSV URLs:",
+      "ru": "URL опубликованных CSV Google Таблиц:"
     },
     "sync_dialog_title": {
       "de": "Aktualisieren",

@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v283";
+const SHELL_VERSION = "v284";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.
@@ -154,10 +154,12 @@ async function handleImage(request) {
 
   try {
     const response = await fetch(request);
-    // Only verifiable responses are stored. Cross-origin drawings arrive here as
-    // unreadable opaque responses, so they are cached exclusively by the
-    // validated precache path below rather than gambling on an error page.
-    if (response.ok) {
+    // Only verifiable image responses are stored. Opaque cross-origin bodies
+    // and HTML/error pages must not land in the media cache (same rule as
+    // downloadDrawing). Icons still hit this path when uncached; they are
+    // image/* and belong in MEDIA_CACHE until the next shell install.
+    const type = response.headers.get("Content-Type") || "";
+    if (response.ok && type.startsWith("image/")) {
       const cache = await caches.open(MEDIA_CACHE);
       await cache.put(request, response.clone());
     }
