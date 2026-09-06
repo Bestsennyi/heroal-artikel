@@ -6038,7 +6038,6 @@
                   spellcheck="false"
                   inputmode="text"
                   enterkeyhint="search"
-                  oninput="renderAuskunft()"
                 />
                 <div class="search-field-actions">
                   <button
@@ -6371,6 +6370,38 @@
         const s = String(val).trim();
         if (!s || /^null$/i.test(s) || /^undefined$/i.test(s)) return "";
         return s;
+      }
+
+      function debounce(fn, delayMs = 150) {
+        let timer = null;
+        function wrapped(...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn.apply(this, args), delayMs);
+        }
+        wrapped.flush = function (...args) {
+          clearTimeout(timer);
+          timer = null;
+          return fn.apply(this, args);
+        };
+        return wrapped;
+      }
+
+      let debouncedRefreshArticleResults;
+      let debouncedRefreshColorResults;
+      let debouncedRenderAuskunft;
+
+      function ensureSearchDebouncers() {
+        if (debouncedRefreshArticleResults) return;
+        debouncedRefreshArticleResults = debounce(refreshArticleResults, 150);
+        debouncedRefreshColorResults = debounce(refreshColorResults, 150);
+        debouncedRenderAuskunft = debounce(renderAuskunft, 150);
+      }
+
+      function flushSearchInput(id) {
+        ensureSearchDebouncers();
+        if (id === "find-prof") debouncedRefreshArticleResults.flush();
+        else if (id === "find-color") debouncedRefreshColorResults.flush();
+        else if (id === "find-guide") debouncedRenderAuskunft.flush();
       }
 
       let appLang = getCurrentLanguage();
@@ -10735,6 +10766,7 @@
       }
 
       function initSearchHandlers() {
+        ensureSearchDebouncers();
         const pIn = document.getElementById("find-prof");
         const copyProfBtn = document.getElementById("btn-copy-prof");
         const copyProfNameBtn = document.getElementById("btn-copy-prof-name");
@@ -10865,7 +10897,7 @@
           });
         }
 
-        pIn.addEventListener("input", refreshArticleResults);
+        pIn.addEventListener("input", debouncedRefreshArticleResults);
         pIn.addEventListener("focus", () => {
           setElPlaceholder(pIn, pIn.getAttribute("data-i18n-placeholder"));
         });
@@ -10876,7 +10908,7 @@
         });
         document
           .getElementById("find-color")
-          .addEventListener("input", refreshColorResults);
+          .addEventListener("input", debouncedRefreshColorResults);
         document.getElementById("find-color").addEventListener("pointerdown", () => {
           if (!farbeDetailOpen) return;
           farbeDetailOpen = false;
@@ -12721,7 +12753,7 @@
         const key = el.getAttribute("data-i18n-placeholder");
         if (key) setElPlaceholder(el, key);
         else restoreSearchPlaceholders();
-        el.dispatchEvent(new Event("input"));
+        flushSearchInput(id);
         el.focus();
       }
 
@@ -12904,6 +12936,12 @@
         const btn = document.getElementById("auskunft-cat-btn");
         const menu = document.getElementById("auskunft-cat-menu");
         const clr = document.getElementById("clr-guide");
+        const find = document.getElementById("find-guide");
+        if (find && !find.dataset.boundInput) {
+          find.dataset.boundInput = "1";
+          ensureSearchDebouncers();
+          find.addEventListener("input", debouncedRenderAuskunft);
+        }
         if (clr && !clr.dataset.bound) {
           clr.dataset.bound = "1";
           clr.addEventListener("click", () => clearInput("find-guide"));
