@@ -7093,6 +7093,240 @@
         ).trim();
       }
 
+      const MEDIA_CACHE_NAME = "heroal-media-v2";
+      const PRECACHE_CHUNK_SIZE = 6;
+      const PRECACHE_CHUNK_DELAY_MS = 120;
+      const PRECACHE_IMAGE_TIMEOUT_MS = 20000;
+
+      function isPrecacheableDrawingUrl(value) {
+        const url = String(value || "").trim();
+        if (!url) return false;
+        if (isLocalMediaUrl(url)) return false;
+        return /^https:\/\/lh3\.googleusercontent\.com\//i.test(url);
+      }
+
+      function collectArtikelDrawingUrls() {
+        const urls = new Set();
+        Object.values(appDB.artikel || {}).forEach((item) => {
+          if (!item) return;
+          const slots = [
+            item.bild_haupt || item.img_url || item.image_url,
+            item.bild_1 || item.img_1,
+            item.bild_2 || item.img_2,
+            item.bild_3 || item.img_3,
+            item.bild_4 || item.img_4,
+          ];
+          slots.forEach((raw) => {
+            const url = catalogMediaUrl(raw);
+            if (isPrecacheableDrawingUrl(url)) urls.add(url);
+          });
+        });
+        return [...urls];
+      }
+
+      function sleepWithAbort(ms, signal) {
+        return new Promise((resolve, reject) => {
+          if (signal && signal.aborted) {
+            const err = new Error("Aborted");
+            err.name = "AbortError";
+            reject(err);
+            return;
+          }
+          const timer = setTimeout(resolve, Math.max(0, Number(ms) || 0));
+          if (!signal) return;
+          signal.addEventListener(
+            "abort",
+            () => {
+              clearTimeout(timer);
+              const err = new Error("Aborted");
+              err.name = "AbortError";
+              reject(err);
+            },
+            { once: true },
+          );
+        });
+      }
+
+      function isImageResponse(response) {
+        if (!response || !response.ok || response.status !== 200) return false;
+        const type = String(response.headers.get("Content-Type") || "").toLowerCase();
+        return type.indexOf("image/") === 0;
+      }
+
+      async function putDrawingInMediaCache(cache, url, signal) {
+        const gate = abortAfter(PRECACHE_IMAGE_TIMEOUT_MS);
+        const combined = combineAbortSignals(gate.signal, signal);
+        try {
+          const response = await fetch(url, {
+            mode: "cors",
+            cache: "default",
+            signal: combined,
+          });
+          if (!isImageResponse(response)) return false;
+          await cache.put(url, response);
+          return true;
+        } catch (err) {
+          if (signal && signal.aborted) throw err;
+          return false;
+        } finally {
+          gate.cancel();
+        }
+      }
+
+      /**
+       * Incremental chunked precache of article drawings into heroal-media-v2.
+       * Cached URLs are skipped. Network work runs in small parallel batches
+       * with a pause between batches so terminals are not flooded.
+       */
+      async function precacheCatalogMediaChunked(options) {
+        const opts = options || {};
+        const chunkSize = Math.max(1, Number(opts.chunkSize) || PRECACHE_CHUNK_SIZE);
+        const delayMs =
+          opts.delayMs == null ? PRECACHE_CHUNK_DELAY_MS : Math.max(0, Number(opts.delayMs) || 0);
+        const force = Boolean(opts.force);
+        const signal =
+          opts.signal || (syncCtl.abort && syncCtl.abort.signal) || null;
+        const onProgress = opts.onProgress;
+        const wanted = collectArtikelDrawingUrls();
+        const emptyResult = {
+          total: wanted.length,
+          cached: 0,
+          failed: wanted.length,
+          downloaded: 0,
+          reused: 0,
+          aborted: false,
+          reason: null,
+        };
+
+        if (!wanted.length) return emptyResult;
+        if (typeof caches === "undefined" || !caches.open) {
+          emptyResult.aborted = true;
+          emptyResult.reason = "cache";
+          return emptyResult;
+        }
+
+        const report = (ready, downloaded, reused) => {
+          if (onProgress) {
+            onProgress({
+              ready,
+              total: wanted.length,
+              done: ready,
+              downloaded,
+              reused,
+            });
+            return;
+          }
+          const pct = wanted.length
+            ? 60 + Math.round((ready / wanted.length) * 38)
+            : 98;
+          updateSyncProgress(pct, drawingProgressLabel(ready, wanted.length));
+        };
+
+        let cache;
+        try {
+          cache = await caches.open(MEDIA_CACHE_NAME);
+        } catch (err) {
+          emptyResult.aborted = true;
+          emptyResult.reason = "cache";
+          return emptyResult;
+        }
+
+        if (signal && signal.aborted) {
+          return {
+            total: wanted.length,
+            cached: 0,
+            failed: wanted.length,
+            downloaded: 0,
+            reused: 0,
+            aborted: true,
+            reason: "abort",
+          };
+        }
+
+        let reused = 0;
+        const pending = [];
+        for (let i = 0; i < wanted.length; i++) {
+          const url = wanted[i];
+          if (signal && signal.aborted) {
+            return {
+              total: wanted.length,
+              cached: reused,
+              failed: wanted.length - reused,
+              downloaded: 0,
+              reused,
+              aborted: true,
+              reason: "abort",
+            };
+          }
+          if (!force && (await cache.match(url))) reused++;
+          else pending.push(url);
+        }
+
+        let downloaded = 0;
+        let failed = 0;
+        let aborted = false;
+        let abortReason = null;
+        report(reused, downloaded, reused);
+
+        const throwIfAborted = () => {
+          if (signal && signal.aborted) {
+            const err = new Error("Aborted");
+            err.name = "AbortError";
+            throw err;
+          }
+        };
+
+        try {
+          for (let offset = 0; offset < pending.length; offset += chunkSize) {
+            throwIfAborted();
+            if (!navigator.onLine) {
+              aborted = true;
+              abortReason = "network";
+              break;
+            }
+            const chunk = pending.slice(offset, offset + chunkSize);
+            const outcomes = await Promise.all(
+              chunk.map(async (url) => {
+                try {
+                  throwIfAborted();
+                  return await putDrawingInMediaCache(cache, url, signal);
+                } catch (err) {
+                  if (isAbortError(err)) throw err;
+                  return false;
+                }
+              }),
+            );
+            outcomes.forEach((ok) => {
+              if (ok) downloaded++;
+              else failed++;
+            });
+            report(reused + downloaded, downloaded, reused);
+            if (offset + chunkSize < pending.length && delayMs > 0) {
+              await sleepWithAbort(delayMs, signal);
+            }
+          }
+        } catch (err) {
+          if (isAbortError(err)) {
+            aborted = true;
+            abortReason = "abort";
+          } else {
+            aborted = true;
+            abortReason = "network";
+          }
+        }
+
+        const cached = reused + downloaded;
+        return {
+          total: wanted.length,
+          cached,
+          failed: wanted.length - cached,
+          downloaded,
+          reused,
+          aborted,
+          reason: abortReason,
+        };
+      }
+
       /** Every distinct drawing URL referenced by the article database. */
       function collectDrawingUrls() {
         const urls = new Set();
@@ -14049,22 +14283,25 @@
                 fingerprintTable(appDB.farben) !== beforeFarben;
               if (catalogChanged || staged.auskunft) refreshLiveViews();
 
-              const drawings = collectDrawingUrls();
+              const drawings = collectArtikelDrawingUrls();
               let mediaResult = null;
               if (drawings.length > 0) {
-                updateSyncProgress(60, drawingProgressLabel(0, 0));
-                mediaResult = await swRequest(
-                  { type: "PRECACHE_MEDIA", urls: drawings, force },
-                  ({ done, total }) => {
+                updateSyncProgress(60, drawingProgressLabel(0, drawings.length));
+                mediaResult = await precacheCatalogMediaChunked({
+                  chunkSize: PRECACHE_CHUNK_SIZE,
+                  delayMs: PRECACHE_CHUNK_DELAY_MS,
+                  force,
+                  signal: syncCtl.abort && syncCtl.abort.signal,
+                  onProgress: ({ ready, total }) => {
                     const pct = total
-                      ? 60 + Math.round((done / total) * 38)
+                      ? 60 + Math.round((ready / total) * 38)
                       : 98;
                     updateSyncProgress(
                       pct,
-                      drawingProgressLabel(done, total),
+                      drawingProgressLabel(ready, total),
                     );
                   },
-                );
+                });
               }
 
               updateSyncProgress(100, t("sync_done"));
