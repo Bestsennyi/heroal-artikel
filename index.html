@@ -7444,6 +7444,9 @@
 
       let appDB = DEFAULT_DATA;
       DEFAULT_DATA.benutzer = DEFAULT_DATA.users;
+      let artikelSearchIndex = [];
+      let farbenSearchIndex = [];
+      let auskunftSearchIndex = [];
       let currentUser = readStoredUser();
       let loginInFlight = false;
       let lastActiveArticle = "";
@@ -8126,6 +8129,7 @@
           appDB = DEFAULT_DATA;
           setIdbFooter("idb_error");
         }
+        rebuildAllSearchIndexes();
       }
 
       async function loadTranslationsFromIdb() {
@@ -8278,15 +8282,15 @@
       }
 
       function findExactColorKey(query) {
-        const q = String(query || "")
-          .trim()
-          .toLowerCase()
-          .replace(/^(ral|sd)\s+/i, "");
+        const q = compactSearchToken(
+          String(query || "")
+            .trim()
+            .replace(/^(ral|sd)\s+/i, ""),
+        );
         if (!q) return "";
-        const catalog = appDB.farben || {};
-        for (const key of Object.keys(catalog)) {
-          const code = String((catalog[key] && catalog[key].code) || key).toLowerCase();
-          if (key.toLowerCase() === q || code === q) return key;
+        for (let i = 0; i < farbenSearchIndex.length; i++) {
+          const row = farbenSearchIndex[i];
+          if (row.codeNorm === q) return row.key;
         }
         return "";
       }
@@ -11845,56 +11849,157 @@
         input.focus();
       }
 
-      function articleMatches(key, item, query) {
-        if (!query) return false;
-        const hay = [
-          key,
-          articleNr(item, key),
-          articleBarcode(item),
-          locField(item, "name", appLang),
-          locField(item, "kategorie", appLang),
-          item.name_de,
-          item.name_en,
-          item.name_ru,
-        ]
-          .join(" ")
-          .toLowerCase();
-        return hay.includes(query);
+      const ARTIKEL_INDEX_FIELDS = [
+        "artikel_nr",
+        "barcode",
+        "system",
+        "kategorie_de",
+        "name_de",
+        "masse_de",
+        "beschreibung_de",
+        "beschreibung_en",
+        "beschreibung_ru",
+      ];
+      const FARBEN_INDEX_FIELDS = [
+        "code",
+        "name_de",
+        "oberflaeche_de",
+        "name_ru",
+        "oberflaeche_ru",
+        "name_en",
+        "oberflaeche_en",
+      ];
+      const AUSKUNFT_INDEX_FIELDS = [
+        "kategorie_de",
+        "name_de",
+        "beschreibung_de",
+        "kategorie_ru",
+        "name_ru",
+        "beschreibung_ru",
+        "kategorie_en",
+        "name_en",
+        "beschreibung_en",
+      ];
+
+      function usableSearchPart(value) {
+        if (value == null) return "";
+        if (typeof value === "number" && !Number.isFinite(value)) return "";
+        const s = String(value).trim();
+        return s;
       }
 
-      function colorMatches(key, col, query) {
-        if (!query) return false;
-        const hex = colorHex(col).replace(/^#/, "").toLowerCase();
-        const hay = [
-          key,
-          col.code,
-          "ral " + (col.code || key),
-          "sd " + (col.code || key),
-          locField(col, "name", appLang),
-          locField(col, "oberflaeche", appLang),
-          colorHint(col),
-          col.name_de,
-          col.name_en,
-          col.name_ru,
-          col.hex,
-          hex,
-        ]
-          .join(" ")
-          .toLowerCase();
-        return hay.includes(query);
+      function normalizeSearchText(value) {
+        return usableSearchPart(value)
+          .toLowerCase()
+          .replace(/[-._/\\,;:!?()[\]{}'"`~]+/g, " ")
+          .replace(/[^\p{L}\p{N}\s]+/gu, " ")
+          .replace(/\s+/g, " ")
+          .trim();
       }
+
+      function compactSearchToken(value) {
+        return normalizeSearchText(value).replace(/\s+/g, "");
+      }
+
+      function querySearchTokens(query) {
+        return normalizeSearchText(query).split(/\s+/).filter(Boolean);
+      }
+
+      function indexStringFromFields(obj, fields) {
+        const parts = [];
+        for (let i = 0; i < fields.length; i++) {
+          const part = usableSearchPart(obj && obj[fields[i]]);
+          if (part) parts.push(part);
+        }
+        return normalizeSearchText(parts.join(" "));
+      }
+
+      function searchIndexMatches(entry, tokens) {
+        if (!tokens.length) return false;
+        const hay = entry.indexStr;
+        for (let i = 0; i < tokens.length; i++) {
+          if (!hay.includes(tokens[i])) return false;
+        }
+        return true;
+      }
+
+      function promoteExactKey(keys, exact) {
+        if (!exact) return keys;
+        const pos = keys.indexOf(exact);
+        if (pos > 0) {
+          keys.splice(pos, 1);
+          keys.unshift(exact);
+        } else if (pos < 0) {
+          keys.unshift(exact);
+        }
+        return keys;
+      }
+
+      function rebuildArtikelSearchIndex() {
+        const catalog = (appDB && appDB.artikel) || {};
+        const index = [];
+        Object.keys(catalog).forEach((key) => {
+          const item = catalog[key];
+          if (!item) return;
+          const nr = usableSearchPart(item.artikel_nr) || articleNr(item, key);
+          if (!nr) return;
+          const row = Object.assign({}, item, { artikel_nr: nr });
+          index.push({
+            key,
+            item,
+            indexStr: indexStringFromFields(row, ARTIKEL_INDEX_FIELDS),
+            nrNorm: compactSearchToken(nr),
+          });
+        });
+        artikelSearchIndex = index;
+      }
+
+      function rebuildFarbenSearchIndex() {
+        const catalog = (appDB && appDB.farben) || {};
+        const index = [];
+        Object.keys(catalog).forEach((key) => {
+          const item = catalog[key];
+          const code = usableSearchPart(item && item.code) || usableSearchPart(key);
+          if (!code) return;
+          const row = Object.assign({}, item, { code });
+          index.push({
+            key,
+            item,
+            indexStr: indexStringFromFields(row, FARBEN_INDEX_FIELDS),
+            codeNorm: compactSearchToken(code),
+          });
+        });
+        farbenSearchIndex = index;
+      }
+
+      function rebuildAuskunftSearchIndex() {
+        const rows = (appDB && appDB.auskunft) || [];
+        const index = [];
+        for (let i = 0; i < rows.length; i++) {
+          const item = rows[i];
+          if (!item) continue;
+          index.push({
+            item,
+            indexStr: indexStringFromFields(item, AUSKUNFT_INDEX_FIELDS),
+          });
+        }
+        auskunftSearchIndex = index;
+      }
+
+      function rebuildAllSearchIndexes() {
+        rebuildArtikelSearchIndex();
+        rebuildFarbenSearchIndex();
+        rebuildAuskunftSearchIndex();
+      }
+
+      rebuildAllSearchIndexes();
 
       function findExactArticleKey(query) {
-        const q = String(query || "").trim().toLowerCase();
+        const q = compactSearchToken(query);
         if (!q) return "";
-        const catalog = appDB.artikel || {};
-        for (const key of Object.keys(catalog)) {
-          const item = catalog[key];
-          const nr = articleNr(item, key).toLowerCase();
-          const barcode = articleBarcode(item).toLowerCase();
-          if (key.toLowerCase() === q || nr === q || (barcode && barcode === q)) {
-            return key;
-          }
+        for (let i = 0; i < artikelSearchIndex.length; i++) {
+          const row = artikelSearchIndex[i];
+          if (row.nrNorm === q) return row.key;
         }
         return "";
       }
@@ -12003,14 +12108,26 @@
         }
 
         const catalog = appDB.artikel || {};
-        const keys = Object.keys(catalog).filter((key) =>
-          articleMatches(key, catalog[key], query),
-        );
+        if (
+          !artikelSearchIndex.length &&
+          Object.keys(catalog).length
+        ) {
+          rebuildAllSearchIndexes();
+        }
+        const tokens = querySearchTokens(query);
+        const keys = [];
+        if (tokens.length) {
+          for (let i = 0; i < artikelSearchIndex.length; i++) {
+            const row = artikelSearchIndex[i];
+            if (searchIndexMatches(row, tokens)) keys.push(row.key);
+          }
+        }
+        const exact = findExactArticleKey(query);
+        promoteExactKey(keys, exact);
         const shown = keys.slice(0, RESULT_LIMIT);
         lastArticleHits = shown.slice();
         if (kbArtikelIndex >= lastArticleHits.length) kbArtikelIndex = -1;
         hideDrawingHover();
-        const exact = findExactArticleKey(query);
         if (exact) {
           lastActiveArticle = exact;
         } else {
@@ -12107,14 +12224,26 @@
         }
 
         const catalog = appDB.farben || {};
-        const keys = Object.keys(catalog).filter((k) =>
-          colorMatches(k, catalog[k], query),
-        );
+        if (
+          !farbenSearchIndex.length &&
+          Object.keys(catalog).length
+        ) {
+          rebuildAllSearchIndexes();
+        }
+        const tokens = querySearchTokens(query);
+        const keys = [];
+        if (tokens.length) {
+          for (let i = 0; i < farbenSearchIndex.length; i++) {
+            const row = farbenSearchIndex[i];
+            if (searchIndexMatches(row, tokens)) keys.push(row.key);
+          }
+        }
+        const exact = findExactColorKey(query);
+        promoteExactKey(keys, exact);
         const shown = keys.slice(0, RESULT_LIMIT);
         lastColorHits = shown.slice();
         if (kbColorIndex >= lastColorHits.length) kbColorIndex = -1;
         hideDrawingHover();
-        const exact = findExactColorKey(query);
         if (exact) {
           lastActiveColorCode = exact;
         } else {
@@ -13184,22 +13313,19 @@
         const activeEl = document.activeElement;
         const stayOnSearch = activeEl === find;
         const items = appDB.auskunft || [];
-        const list = items.filter((a) => {
+        if (!auskunftSearchIndex.length && items.length) {
+          rebuildAllSearchIndexes();
+        }
+        const tokens = querySearchTokens(q);
+        const list = [];
+        for (let i = 0; i < auskunftSearchIndex.length; i++) {
+          const entry = auskunftSearchIndex[i];
+          const a = entry.item;
           const katKey = auskunftCategoryKey(a);
-          if (auskunftKatKey && katKey !== auskunftKatKey) return false;
-          if (!q) return true;
-          const hay = [
-            locField(a, "kategorie", appLang),
-            locField(a, "name", appLang),
-            locField(a, "beschreibung", appLang),
-          ]
-            .concat(auskunftLangValues(a, "kategorie"))
-            .concat(auskunftLangValues(a, "name"))
-            .concat(auskunftLangValues(a, "beschreibung"))
-            .join(" ")
-            .toLowerCase();
-          return hay.includes(q);
-        });
+          if (auskunftKatKey && katKey !== auskunftKatKey) continue;
+          if (tokens.length && !searchIndexMatches(entry, tokens)) continue;
+          list.push(a);
+        }
         renderAuskunftFilters(items);
         const cont = document.getElementById("auskunft-container");
         if (!cont) return;
@@ -13913,6 +14039,7 @@
 
               updateSyncProgress(55, t("sync_save"));
               appDB = migrateAppDB({ ...appDB, ...staged });
+              rebuildAllSearchIndexes();
               await idbSet("heroal_db", appDB);
               applyLanguage();
               revalidateSession();

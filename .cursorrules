@@ -12,7 +12,7 @@
 
 ## 2. Service Worker (`sw.js`) и Политика Кэширования
 - **Двухуровневая структура кэша:**
-  1. `heroal-shell-v*` (текущая: `heroal-shell-v289`): кэш оболочки (HTML, `manifest.json`, `src/i18n.js`, `translations.json`, иконки, логотипы).
+  1. `heroal-shell-v*` (текущая: `heroal-shell-v291`): кэш оболочки (HTML, `manifest.json`, `src/i18n.js`, `translations.json`, иконки, логотипы).
   2. `heroal-media-v*` (текущая: `heroal-media-v2`): кэш чертежей и медиа. Сохраняется и переживает обновление версии оболочки (`bump`).
 - **Строгие правила версионирования кэшей:**
   - При любых правках UI, стилей, логики или добавлении файлов в массив `SHELL_ASSETS` — **обязательно инкрементировать `SHELL_VERSION`**.
@@ -104,7 +104,7 @@
 ## 6. Поиск и Производительность
 - **Поля:** `#find-prof` (артикулы), `#find-color` (цвета), `#find-guide` (справочник). Событие `input`.
 - **Лимиты рендера:** Выдача строго ограничена `RESULT_LIMIT = 80`.
-- **Ограничения:** Запрещено выполнять перерисовку DOM на весь массив без ограничения выборки. Поиск по подстроке `hay.includes(query)` с подъемом точного совпадения наверх (`findExactArticleKey`).
+- **Ограничения:** Запрещено выполнять перерисовку DOM на весь массив без ограничения выборки. Поиск идёт по RAM-индексам `artikelSearchIndex` / `farbenSearchIndex` / `auskunftSearchIndex` (все токены запроса должны быть в `indexStr`). Точный `artikel_nr` / `code` поднимается в начало выдачи. Индексы пересобирает `rebuildAllSearchIndexes()`.
 
 ## 7. Бэкенд загрузки Фото (`gas/Code.gs`)
 - **Контракт вызова:** PWA отправляет `POST text/plain JSON` на `GAS_PHOTO_UPLOAD_URL` (обходит CORS preflight):
