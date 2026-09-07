@@ -6909,6 +6909,7 @@
         const add = (raw, type) => {
           const entry = normalizeImageEntry(raw, type);
           if (!entry || seen[entry.url]) return;
+          if (isHeavyInlinePhoto(entry.url) && !/^blob:/i.test(entry.url)) return;
           seen[entry.url] = true;
           out.push(entry);
         };
@@ -6936,30 +6937,97 @@
         return /^(data:image\/|blob:)/i.test(String(value || "").trim());
       }
 
+      function isHeavyInlinePhoto(value) {
+        const url = String(value || "").trim();
+        if (!url) return false;
+        if (/^blob:/i.test(url)) return true;
+        if (!/^data:/i.test(url)) return false;
+        if (/^data:image\/svg/i.test(url)) return false;
+        return /^data:image\//i.test(url) || url.length > 4096;
+      }
+
+      function catalogMediaUrl(value) {
+        const url = String(value || "").trim();
+        if (!url || isHeavyInlinePhoto(url)) return "";
+        return url;
+      }
+
+      function sanitizeStoredMedia(value) {
+        if (value == null || value === "") return "";
+        if (typeof value === "object") {
+          return catalogMediaUrl(
+            value.url || value.src || value.image_url || "",
+          );
+        }
+        return catalogMediaUrl(value);
+      }
+
       function isDisplayableMediaUrl(value) {
         const url = String(value || "").trim();
         return isHttpUrl(url) || isLocalMediaUrl(url);
       }
 
+      const photoPreviewUrls = Object.create(null);
+
+      function photoPreviewKey(target, recordId, field) {
+        const f =
+          target === "farben"
+            ? String(field || "").trim()
+            : canonicalArtikelPhotoField(field);
+        return String(target || "") + ":" + String(recordId || "") + ":" + f;
+      }
+
+      function queuedPhotoPreview(target, recordId, field) {
+        if (!recordId) return "";
+        return photoPreviewUrls[photoPreviewKey(target, recordId, field)] || "";
+      }
+
+      function revokePhotoPreview(target, recordId, field) {
+        const key = photoPreviewKey(target, recordId, field);
+        const url = photoPreviewUrls[key];
+        if (url) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (e) {}
+          delete photoPreviewUrls[key];
+        }
+      }
+
+      function setPhotoPreview(target, recordId, field, objectUrl) {
+        revokePhotoPreview(target, recordId, field);
+        const url = String(objectUrl || "").trim();
+        if (!url) return;
+        photoPreviewUrls[photoPreviewKey(target, recordId, field)] = url;
+      }
+
       function articleMainImage(item) {
         if (!item) return null;
         const type = item.image_type || item.type;
+        const queued = queuedPhotoPreview(
+          "artikel",
+          articleNr(item),
+          "bild_haupt",
+        );
+        if (queued) return normalizeImageEntry(queued, type || "photo");
         return (
-          normalizeImageEntry(item.bild_haupt, type) ||
-          normalizeImageEntry(item.img_url, type) ||
-          normalizeImageEntry(item.image_url, type)
+          normalizeImageEntry(catalogMediaUrl(item.bild_haupt), type) ||
+          normalizeImageEntry(catalogMediaUrl(item.img_url), type) ||
+          normalizeImageEntry(catalogMediaUrl(item.image_url), type)
         );
       }
 
       function articleSlotImages(item) {
         if (!item) return [];
+        const id = articleNr(item);
         return [1, 2, 3, 4]
-          .map((n) =>
-            normalizeImageEntry(
-              item["bild_" + n] || item["img_" + n],
+          .map((n) => {
+            const queued = queuedPhotoPreview("artikel", id, "bild_" + n);
+            if (queued) return normalizeImageEntry(queued, "photo");
+            return normalizeImageEntry(
+              catalogMediaUrl(item["bild_" + n] || item["img_" + n]),
               item["img_" + n + "_type"],
-            ),
-          )
+            );
+          })
           .filter(Boolean);
       }
 
@@ -6975,8 +7043,11 @@
           seen[entry.url] = true;
           out.push(entry);
         };
-        add(col.echtes_foto);
-        add(col.bild_dummyimage || col.bild_de);
+        const code = colorCode(col);
+        add(queuedPhotoPreview("farben", code, "echtes_foto"));
+        add(catalogMediaUrl(col.echtes_foto));
+        add(queuedPhotoPreview("farben", code, "bild_dummyimage"));
+        add(catalogMediaUrl(col.bild_dummyimage || col.bild_de));
         return out;
       }
 
@@ -7208,6 +7279,21 @@
         return idbRun("readwrite", (store) => store.delete(id), "photoQueue");
       }
 
+      function photoQueueGet(id) {
+        return idbRun("readonly", (store) => store.get(id), "photoQueue");
+      }
+
+      function photoQueueKeys() {
+        return idbRun(
+          "readonly",
+          (store) => store.getAllKeys(),
+          "photoQueue",
+        ).then(
+          (keys) => (Array.isArray(keys) ? keys : []),
+          () => [],
+        );
+      }
+
       // Default Seed Data
       const DEFAULT_DATA = {
         users: {
@@ -7420,7 +7506,8 @@
         target: "artikel",
         recordId: "",
         recordName: "",
-        dataUrl: "",
+        blob: null,
+        previewUrl: "",
         field: "bild_haupt",
         bound: false,
         stream: null,
@@ -7805,12 +7892,14 @@
         const extra = Array.isArray(it.extra) ? it.extra : [];
         const artNr = articleNr(it, key);
         if (!artNr && !it.name_de && !it.de) return null;
-        const image = pickFirstText(
-          it.bild_haupt,
-          it.img_url,
-          it.image_url,
-          it.img,
-          extra[0],
+        const image = catalogMediaUrl(
+          pickFirstText(
+            it.bild_haupt,
+            it.img_url,
+            it.image_url,
+            it.img,
+            extra[0],
+          ),
         );
         const row = {
           id: String(it.id || ""),
@@ -7832,8 +7921,10 @@
           img_url: image,
           bild_haupt: image,
           image_type: String(it.image_type || it.type || "").trim(),
-          extra: extra.slice(),
-          images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
+          extra: extra.map(sanitizeStoredMedia).filter(Boolean),
+          images: (Array.isArray(it.images) ? it.images : extra)
+            .map(sanitizeStoredMedia)
+            .filter(Boolean),
           drive_folder_id: String(it.drive_folder_id || ""),
         };
         LANGS.forEach((code) => {
@@ -7850,7 +7941,9 @@
           row["hinweis_" + code] = text;
         });
         for (let n = 1; n <= 4; n++) {
-          const slot = pickFirstText(it["bild_" + n], it["img_" + n], extra[n]);
+          const slot = catalogMediaUrl(
+            pickFirstText(it["bild_" + n], it["img_" + n], extra[n]),
+          );
           row["bild_" + n] = slot;
           row["img_" + n] = slot;
           row["img_" + n + "_type"] = String(it["img_" + n + "_type"] || "").trim();
@@ -7894,12 +7987,18 @@
           id: String(it.id || ""),
           code: String(it.code || key || ""),
           hex: it.hex || "#ffffff",
-          bild_dummyimage: it.bild_dummyimage || it.bild_de || "",
-          echtes_foto: it.echtes_foto || it.foto || it.photo || "",
-          image_url: it.image_url || it.img_url || "",
+          bild_dummyimage: catalogMediaUrl(
+            it.bild_dummyimage || it.bild_de || "",
+          ),
+          echtes_foto: catalogMediaUrl(
+            it.echtes_foto || it.foto || it.photo || "",
+          ),
+          image_url: catalogMediaUrl(it.image_url || it.img_url || ""),
           image_type: String(it.image_type || it.type || "").trim(),
-          extra: extra.slice(),
-          images: Array.isArray(it.images) ? it.images.slice() : extra.slice(),
+          extra: extra.map(sanitizeStoredMedia).filter(Boolean),
+          images: (Array.isArray(it.images) ? it.images : extra)
+            .map(sanitizeStoredMedia)
+            .filter(Boolean),
           name_de: it.name_de || it.name || "",
           oberflaeche_de: it.oberflaeche_de || it.desc || "",
         };
@@ -7913,7 +8012,9 @@
           );
         });
         for (let n = 1; n <= 4; n++) {
-          row["img_" + n] = String(it["img_" + n] || extra[n - 1] || "").trim();
+          row["img_" + n] = catalogMediaUrl(
+            it["img_" + n] || extra[n - 1] || "",
+          );
           row["img_" + n + "_type"] = String(it["img_" + n + "_type"] || "").trim();
         }
         return row;
@@ -8005,18 +8106,18 @@
           const cachedDB = await idbGet("heroal_db");
           if (cachedDB) {
             appDB = migrateAppDB(cachedDB);
-            await applyPhotoQueueToCatalog();
+            await hydratePhotoQueuePreviews();
             await idbSet("heroal_db", appDB);
           } else {
             const legacy = localStorage.getItem("heroal_db_v2");
             if (legacy) {
               appDB = migrateAppDB(JSON.parse(legacy));
-              await applyPhotoQueueToCatalog();
+              await hydratePhotoQueuePreviews();
               await idbSet("heroal_db", appDB);
               localStorage.removeItem("heroal_db_v2");
             } else {
               appDB = DEFAULT_DATA;
-              await applyPhotoQueueToCatalog();
+              await hydratePhotoQueuePreviews();
               await idbSet("heroal_db", appDB);
             }
           }
@@ -10077,12 +10178,16 @@
 
       function syncArticlePhotoAliases(row) {
         if (!row || typeof row !== "object") return row;
-        const main = pickFirstText(row.bild_haupt, row.img_url, row.image_url);
+        const main = catalogMediaUrl(
+          pickFirstText(row.bild_haupt, row.img_url, row.image_url),
+        );
         row.bild_haupt = main;
         row.img_url = main;
         row.image_url = main;
         for (let n = 1; n <= 4; n++) {
-          const slot = pickFirstText(row["bild_" + n], row["img_" + n]);
+          const slot = catalogMediaUrl(
+            pickFirstText(row["bild_" + n], row["img_" + n]),
+          );
           row["bild_" + n] = slot;
           row["img_" + n] = slot;
         }
@@ -10103,8 +10208,8 @@
       }
 
       function mergePhotoField(localVal, remoteVal) {
-        const remote = String(remoteVal || "").trim();
-        const local = String(localVal || "").trim();
+        const remote = catalogMediaUrl(remoteVal);
+        const local = catalogMediaUrl(localVal);
         if (remote) return remote;
         return local;
       }
@@ -10132,41 +10237,107 @@
 
       function patchRecordPhoto(target, recordId, field, url) {
         const id = String(recordId || "").trim();
-        if (!id) return;
+        const safeUrl = catalogMediaUrl(url);
+        if (!id || !safeUrl) return;
         if (target === "farben") {
           const row = (appDB.farben || {})[id];
           if (!row) return;
-          row[field] = url;
+          row[field] = safeUrl;
           appDB.farben[id] = row;
           return;
         }
         const row = (appDB.artikel || {})[id];
         if (!row) return;
         if (field === "img_url" || field === "bild_haupt" || field === "image_url") {
-          row.img_url = url;
-          row.image_url = url;
-          row.bild_haupt = url;
+          row.img_url = safeUrl;
+          row.image_url = safeUrl;
+          row.bild_haupt = safeUrl;
         } else {
-          row[field] = url;
+          row[field] = safeUrl;
           const slot = String(field || "").match(/^(?:bild|img)_([1-4])$/);
           if (slot) {
-            row["bild_" + slot[1]] = url;
-            row["img_" + slot[1]] = url;
+            row["bild_" + slot[1]] = safeUrl;
+            row["img_" + slot[1]] = safeUrl;
           }
         }
         appDB.artikel[id] = row;
       }
 
-      async function applyPhotoQueueToCatalog() {
-        const items = await photoQueueAll();
-        items.forEach((item) => {
-          if (!item || !item.base64Data) return;
-          const field =
-            item.target === "farben"
-              ? item.field
-              : canonicalArtikelPhotoField(item.field);
-          patchRecordPhoto(item.target, item.recordId, field, item.base64Data);
+      function dataUrlToBlob(dataUrl) {
+        const raw = String(dataUrl || "");
+        if (!raw) return null;
+        const match = raw.match(/^data:([^;,]+)?(;base64)?,(.*)$/i);
+        let mime = "image/jpeg";
+        let b64 = raw;
+        if (match) {
+          mime = match[1] || mime;
+          b64 = match[3] || "";
+        }
+        try {
+          const binary = atob(b64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          return new Blob([bytes], { type: mime });
+        } catch (err) {
+          console.warn("photo dataUrl decode failed", err);
+          return null;
+        }
+      }
+
+      function blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+          if (!(blob instanceof Blob)) {
+            reject(new Error("empty blob"));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(reader.error || new Error("read"));
+          reader.readAsDataURL(blob);
         });
+      }
+
+      function photoQueueBlob(item) {
+        if (item && item.blob instanceof Blob) return item.blob;
+        if (item && item.base64Data) return dataUrlToBlob(item.base64Data);
+        return null;
+      }
+
+      function photoQueueRecord(item, blob) {
+        const target = item.target;
+        const recordId = String(item.recordId || "").trim();
+        return {
+          id: item.id,
+          target: target,
+          recordId: recordId,
+          artikel_nr: target === "artikel" ? recordId : String(item.artikel_nr || ""),
+          field: item.field,
+          fileName: item.fileName,
+          blob: blob,
+          mimeType: "image/jpeg",
+          status: item.status || "pending",
+          createdAt: item.createdAt || Date.now(),
+        };
+      }
+
+      async function hydratePhotoQueuePreviews() {
+        const items = await photoQueueAll();
+        for (const item of items) {
+          if (!item) continue;
+          let blob = photoQueueBlob(item);
+          if (!blob) continue;
+          if (!(item.blob instanceof Blob) || item.base64Data) {
+            await photoQueuePut(photoQueueRecord(item, blob));
+          }
+          setPhotoPreview(
+            item.target,
+            item.recordId,
+            item.field,
+            URL.createObjectURL(blob),
+          );
+        }
       }
 
       function lookupPhotoRecord(target, query) {
@@ -10198,21 +10369,33 @@
         return null;
       }
 
-      function rasterToJpegDataUrl(source, sw, sh) {
-        let w = sw;
-        let h = sh;
-        if (!w || !h) throw new Error("empty image");
-        const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(w, h));
-        w = Math.max(1, Math.round(w * scale));
-        h = Math.max(1, Math.round(h * scale));
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(source, 0, 0, w, h);
-        return canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY);
+      function rasterToJpegBlob(source, sw, sh) {
+        return new Promise((resolve, reject) => {
+          let w = sw;
+          let h = sh;
+          if (!w || !h) {
+            reject(new Error("empty image"));
+            return;
+          }
+          const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(w, h));
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(source, 0, 0, w, h);
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) reject(new Error("empty jpeg"));
+              else resolve(blob);
+            },
+            "image/jpeg",
+            PHOTO_JPEG_QUALITY,
+          );
+        });
       }
 
       function compressImageFile(file) {
@@ -10221,17 +10404,11 @@
           const objectUrl = URL.createObjectURL(file);
           img.onload = () => {
             URL.revokeObjectURL(objectUrl);
-            try {
-              resolve(
-                rasterToJpegDataUrl(
-                  img,
-                  img.naturalWidth || img.width,
-                  img.naturalHeight || img.height,
-                ),
-              );
-            } catch (err) {
-              reject(err);
-            }
+            rasterToJpegBlob(
+              img,
+              img.naturalWidth || img.width,
+              img.naturalHeight || img.height,
+            ).then(resolve, reject);
           };
           img.onerror = () => {
             URL.revokeObjectURL(objectUrl);
@@ -10252,15 +10429,25 @@
 
       function farbeDummySlotOccupied(col) {
         if (!col) return false;
-        const raw =
+        const raw = catalogMediaUrl(
           recordPhotoValue(col, "bild_dummyimage") ||
-          String(col.bild_de || "").trim();
+            String(col.bild_de || "").trim(),
+        );
         if (isDisplayableMediaUrl(raw)) return true;
         return !!colorHex(col);
       }
 
       function currentPhotoSlotOccupied() {
         if (!photoCaptureState.recordId || !photoCaptureState.field) return false;
+        if (
+          queuedPhotoPreview(
+            photoCaptureState.target,
+            photoCaptureState.recordId,
+            photoCaptureState.field,
+          )
+        ) {
+          return true;
+        }
         const catalog =
           photoCaptureState.target === "farben"
             ? appDB.farben || {}
@@ -10273,7 +10460,7 @@
           return farbeDummySlotOccupied(record);
         }
         return isDisplayableMediaUrl(
-          recordPhotoValue(record, photoCaptureState.field),
+          catalogMediaUrl(recordPhotoValue(record, photoCaptureState.field)),
         );
       }
 
@@ -10283,7 +10470,7 @@
         save.disabled = !(
           photoCaptureState.recordId &&
           photoCaptureState.field &&
-          photoCaptureState.dataUrl
+          photoCaptureState.blob
         );
       }
 
@@ -10306,7 +10493,13 @@
       }
 
       function clearPhotoPreview() {
-        photoCaptureState.dataUrl = "";
+        photoCaptureState.blob = null;
+        if (photoCaptureState.previewUrl) {
+          try {
+            URL.revokeObjectURL(photoCaptureState.previewUrl);
+          } catch (e) {}
+        }
+        photoCaptureState.previewUrl = "";
         const preview = document.getElementById("photo-preview");
         const wrap = document.getElementById("photo-preview-wrap");
         if (preview) preview.removeAttribute("src");
@@ -10323,7 +10516,8 @@
         photoCaptureState.target = "artikel";
         photoCaptureState.recordId = "";
         photoCaptureState.recordName = "";
-        photoCaptureState.dataUrl = "";
+        photoCaptureState.blob = null;
+        photoCaptureState.previewUrl = "";
         photoCaptureState.field = "bild_haupt";
         const input = document.getElementById("photo-id");
         if (input) input.value = "";
@@ -10423,18 +10617,25 @@
           wrap.classList.add("is-farben");
           const col = (appDB.farben || {})[photoCaptureState.recordId];
           FARBEN_PHOTO_SLOTS.forEach((slot) => {
+            const queued = queuedPhotoPreview(
+              "farben",
+              photoCaptureState.recordId,
+              slot.field,
+            );
             const raw =
-              recordPhotoValue(col, slot.field) ||
+              queued ||
+              catalogMediaUrl(recordPhotoValue(col, slot.field)) ||
               (slot.field === "bild_dummyimage"
-                ? String((col && col.bild_de) || "").trim()
+                ? catalogMediaUrl(String((col && col.bild_de) || "").trim())
                 : "");
             const url = isDisplayableMediaUrl(raw) ? raw : "";
             const hex =
               slot.field === "bild_dummyimage" ? colorHex(col) : "";
             const occupied =
-              slot.field === "bild_dummyimage"
+              !!queued ||
+              (slot.field === "bild_dummyimage"
                 ? farbeDummySlotOccupied(col)
-                : isDisplayableMediaUrl(url);
+                : isDisplayableMediaUrl(url));
             wrap.appendChild(
               photoSlotButton(
                 slot.field,
@@ -10453,7 +10654,12 @@
         wrap.classList.add("is-artikel");
         const item = (appDB.artikel || {})[photoCaptureState.recordId];
         ARTIKEL_PHOTO_SLOTS.forEach((slot) => {
-          const url = recordPhotoValue(item, slot.field);
+          const url =
+            queuedPhotoPreview(
+              "artikel",
+              photoCaptureState.recordId,
+              slot.field,
+            ) || catalogMediaUrl(recordPhotoValue(item, slot.field));
           wrap.appendChild(
             photoSlotButton(
               slot.field,
@@ -10529,7 +10735,7 @@
 
       async function commitPhotoToQueue(field) {
         if (!isAdministrator(currentUser)) return;
-        if (!photoCaptureState.dataUrl || !photoCaptureState.recordId) return;
+        if (!photoCaptureState.blob || !photoCaptureState.recordId) return;
         const target = photoCaptureState.target;
         const recordId = photoCaptureState.recordId;
         const slotField =
@@ -10549,19 +10755,22 @@
             })
             .map((it) => photoQueueDelete(it.id)),
         );
-        const item = {
-          id: newPhotoId(),
-          target: target,
-          recordId: recordId,
-          field: slotField,
-          fileName: photoFileName(target, recordId, slotField),
-          base64Data: photoCaptureState.dataUrl,
-          status: "pending",
-          createdAt: Date.now(),
-        };
-        patchRecordPhoto(target, recordId, slotField, item.base64Data);
+        revokePhotoPreview(target, recordId, slotField);
+        const blob = photoCaptureState.blob;
+        const item = photoQueueRecord(
+          {
+            id: newPhotoId(),
+            target: target,
+            recordId: recordId,
+            field: slotField,
+            fileName: photoFileName(target, recordId, slotField),
+            status: "pending",
+            createdAt: Date.now(),
+          },
+          blob,
+        );
         await photoQueuePut(item);
-        await idbSet("heroal_db", appDB);
+        setPhotoPreview(target, recordId, slotField, URL.createObjectURL(blob));
         refreshPhotoTargetViews();
         const slotLabel = photoSlotTitle(slotField);
         const msg = wasOccupied
@@ -10581,7 +10790,7 @@
           showToast(t("itemNotFound"), "warn");
           return;
         }
-        if (!photoCaptureState.dataUrl) {
+        if (!photoCaptureState.blob) {
           showToast(t("photo_need_photo"), "warn");
           return;
         }
@@ -10591,18 +10800,25 @@
       async function handlePhotoFile(file) {
         if (!file) return;
         try {
-          applyPhotoDataUrl(await compressImageFile(file));
+          applyPhotoCaptureBlob(await compressImageFile(file));
         } catch (err) {
           console.warn("photo compress failed", err);
           showToast(t("photo_compress_fail"), "error");
         }
       }
 
-      function applyPhotoDataUrl(dataUrl) {
-        photoCaptureState.dataUrl = dataUrl;
+      function applyPhotoCaptureBlob(blob) {
+        if (!(blob instanceof Blob)) return;
+        if (photoCaptureState.previewUrl) {
+          try {
+            URL.revokeObjectURL(photoCaptureState.previewUrl);
+          } catch (e) {}
+        }
+        photoCaptureState.blob = blob;
+        photoCaptureState.previewUrl = URL.createObjectURL(blob);
         const preview = document.getElementById("photo-preview");
         const wrap = document.getElementById("photo-preview-wrap");
-        if (preview) preview.src = dataUrl;
+        if (preview) preview.src = photoCaptureState.previewUrl;
         if (wrap) wrap.classList.add("is-on");
         updatePhotoSaveState();
       }
@@ -10714,9 +10930,15 @@
           return;
         }
         try {
-          const dataUrl = rasterToJpegDataUrl(video, w, h);
-          stopPhotoLiveCamera();
-          applyPhotoDataUrl(dataUrl);
+          rasterToJpegBlob(video, w, h)
+            .then((blob) => {
+              stopPhotoLiveCamera();
+              applyPhotoCaptureBlob(blob);
+            })
+            .catch((err) => {
+              console.warn("photo snap failed", err);
+              showToast(t("photo_compress_fail"), "error");
+            });
         } catch (err) {
           console.warn("photo snap failed", err);
           showToast(t("photo_compress_fail"), "error");
@@ -10791,6 +11013,7 @@
       }
       function closePhotoCapture() {
         stopPhotoLiveCamera();
+        clearPhotoPreview();
         const dlg = document.getElementById("photo-dialog");
         if (!dlg) return;
         dlg.classList.remove("active");
@@ -10805,16 +11028,26 @@
         ).trim();
       }
 
+      async function photoQueuePayload(item) {
+        if (item && item.blob instanceof Blob) {
+          return blobToDataUrl(item.blob);
+        }
+        if (item && item.base64Data) return String(item.base64Data);
+        return "";
+      }
+
       async function uploadPhotoQueueItem(item) {
         const endpoint = photoUploadEndpoint();
         if (!endpoint) throw new Error("missing upload url");
+        const fileData = await photoQueuePayload(item);
+        if (!fileData) throw new Error("missing photo payload");
         const payload = {
           action: "uploadPhoto",
           target: item.target,
           recordId: item.recordId,
           field: sheetPhotoField(item.target, item.field),
           fileName: item.fileName,
-          fileData: item.base64Data,
+          fileData: fileData,
           mimeType: "image/jpeg",
         };
         // text/plain avoids a CORS preflight; GAS still reads postData.contents.
@@ -10847,30 +11080,30 @@
         if (!navigator.onLine) return;
         if (photoSyncCtl.running) return photoSyncCtl.running;
         const run = (async () => {
-          const items = await photoQueueAll();
-          const pending = items.filter(
-            (it) => it && (it.status === "pending" || it.status === "failed"),
-          );
-          if (!pending.length) return;
+          const keys = await photoQueueKeys();
+          if (!keys.length) return;
           if (!photoUploadEndpoint()) return;
-          for (const item of pending) {
+          for (const id of keys) {
+            const item = await photoQueueGet(id);
+            if (!item || (item.status !== "pending" && item.status !== "failed")) {
+              continue;
+            }
+            const blob = photoQueueBlob(item);
+            if (!blob) continue;
+            item.blob = blob;
             try {
               item.status = "syncing";
-              await photoQueuePut(item);
+              await photoQueuePut(photoQueueRecord(item, blob));
               const fileUrl = await uploadPhotoQueueItem(item);
+              revokePhotoPreview(item.target, item.recordId, item.field);
               patchRecordPhoto(item.target, item.recordId, item.field, fileUrl);
               await photoQueueDelete(item.id);
               await idbSet("heroal_db", appDB);
-              if (item.target === "artikel" && lastActiveArticle === item.recordId) {
-                renderProfileCard(item.recordId);
-              }
-              if (item.target === "farben" && lastActiveColorCode === item.recordId) {
-                renderColorCard(item.recordId);
-              }
+              refreshPhotoTargetViews();
             } catch (err) {
               console.warn("[photo sync]", err);
               item.status = "failed";
-              await photoQueuePut(item);
+              await photoQueuePut(photoQueueRecord(item, blob));
             }
           }
         })();
@@ -13680,7 +13913,6 @@
 
               updateSyncProgress(55, t("sync_save"));
               appDB = migrateAppDB({ ...appDB, ...staged });
-              await applyPhotoQueueToCatalog();
               await idbSet("heroal_db", appDB);
               applyLanguage();
               revalidateSession();
