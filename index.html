@@ -7822,7 +7822,7 @@
           name_ru: it.name_ru || "",
           category: it.category || it.kategorie_de || it.kat || "",
           kategorie_de: it.kategorie_de || it.category || it.kat || "",
-          system: it.system || "",
+          system: it.system || it.systeme || "",
           masse_de: it.masse_de || it.size || "",
           hinweis_de: pickFirstText(it.hinweis_de, it.beschreibung_de, it.hinweis),
           hinweis_en: pickFirstText(it.hinweis_en, it.beschreibung_en),
@@ -13227,13 +13227,14 @@
             "img_url",
             "image_url",
           ]);
+          const rawSystem = csvCellAny(row, map, ["system", "systeme"]);
           const rec = {
             id: csvCell(row, map, "id"),
             artikel_nr: artNr,
             art_nr: artNr,
             barcode: csvCellAny(row, map, ["barcode", "ean", "ean13"]),
             category: csvCellAny(row, map, ["kategorie_de", "category"]),
-            system: csvCell(row, map, "system"),
+            system: String(rawSystem || "").trim(),
             image_url: bildHaupt,
             img_url: bildHaupt,
             bild_haupt: bildHaupt,
