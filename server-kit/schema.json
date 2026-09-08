@@ -1,0 +1,204 @@
+{
+  "collections": [
+    {
+      "name": "artikel",
+      "type": "base",
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "",
+      "updateRule": "",
+      "deleteRule": null,
+      "indexes": [
+        "CREATE UNIQUE INDEX `idx_artikel_nr` ON `artikel` (`artikel_nr`)"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "autogeneratePattern": "[a-z0-9]{15}",
+          "required": true
+        },
+        { "name": "sheet_id", "type": "text" },
+        { "name": "artikel_nr", "type": "text", "required": true, "presentable": true },
+        { "name": "art_nr", "type": "text" },
+        { "name": "barcode", "type": "text" },
+        { "name": "category", "type": "text" },
+        { "name": "system", "type": "text" },
+        { "name": "kategorie_de", "type": "text" },
+        { "name": "kategorie_en", "type": "text" },
+        { "name": "kategorie_ru", "type": "text" },
+        { "name": "name_de", "type": "text" },
+        { "name": "name_en", "type": "text" },
+        { "name": "name_ru", "type": "text" },
+        { "name": "masse_de", "type": "text" },
+        { "name": "masse_en", "type": "text" },
+        { "name": "masse_ru", "type": "text" },
+        { "name": "beschreibung_de", "type": "text" },
+        { "name": "beschreibung_en", "type": "text" },
+        { "name": "beschreibung_ru", "type": "text" },
+        { "name": "hinweis_de", "type": "text" },
+        { "name": "hinweis_en", "type": "text" },
+        { "name": "hinweis_ru", "type": "text" },
+        { "name": "image_type", "type": "text" },
+        { "name": "drive_folder_id", "type": "text" },
+        { "name": "img_url", "type": "url" },
+        { "name": "image_url", "type": "url" },
+        {
+          "name": "bild_haupt",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "bilder",
+          "type": "file",
+          "maxSelect": 4,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "bild_1",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "bild_2",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "bild_3",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "bild_4",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        { "name": "created", "type": "autodate", "onCreate": true, "onUpdate": false, "hidden": true },
+        { "name": "updated", "type": "autodate", "onCreate": true, "onUpdate": true, "hidden": true }
+      ]
+    },
+    {
+      "name": "farben",
+      "type": "base",
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "",
+      "updateRule": "",
+      "deleteRule": null,
+      "indexes": ["CREATE UNIQUE INDEX `idx_farben_code` ON `farben` (`code`)"],
+      "fields": [
+        {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "autogeneratePattern": "[a-z0-9]{15}",
+          "required": true
+        },
+        { "name": "sheet_id", "type": "text" },
+        { "name": "code", "type": "text", "required": true, "presentable": true },
+        { "name": "hex", "type": "text" },
+        { "name": "name_de", "type": "text" },
+        { "name": "name_en", "type": "text" },
+        { "name": "name_ru", "type": "text" },
+        { "name": "oberflaeche_de", "type": "text" },
+        { "name": "oberflaeche_en", "type": "text" },
+        { "name": "oberflaeche_ru", "type": "text" },
+        { "name": "hinweis_de", "type": "text" },
+        { "name": "hinweis_en", "type": "text" },
+        { "name": "hinweis_ru", "type": "text" },
+        { "name": "image_type", "type": "text" },
+        { "name": "image_url", "type": "url" },
+        {
+          "name": "bild_dummyimage",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        {
+          "name": "echtes_foto",
+          "type": "file",
+          "maxSelect": 1,
+          "maxSize": 5242880,
+          "mimeTypes": ["image/jpeg", "image/png", "image/webp"]
+        },
+        { "name": "created", "type": "autodate", "onCreate": true, "onUpdate": false, "hidden": true },
+        { "name": "updated", "type": "autodate", "onCreate": true, "onUpdate": true, "hidden": true }
+      ]
+    },
+    {
+      "name": "auskunft",
+      "type": "base",
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "",
+      "updateRule": "",
+      "deleteRule": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "autogeneratePattern": "[a-z0-9]{15}",
+          "required": true
+        },
+        { "name": "sheet_id", "type": "text" },
+        { "name": "sort", "type": "number" },
+        { "name": "kategorie_de", "type": "text" },
+        { "name": "kategorie_en", "type": "text" },
+        { "name": "kategorie_ru", "type": "text" },
+        { "name": "name_de", "type": "text" },
+        { "name": "name_en", "type": "text" },
+        { "name": "name_ru", "type": "text" },
+        { "name": "beschreibung_de", "type": "text" },
+        { "name": "beschreibung_en", "type": "text" },
+        { "name": "beschreibung_ru", "type": "text" },
+        { "name": "created", "type": "autodate", "onCreate": true, "onUpdate": false, "hidden": true },
+        { "name": "updated", "type": "autodate", "onCreate": true, "onUpdate": true, "hidden": true }
+      ]
+    },
+    {
+      "name": "benutzer",
+      "type": "base",
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "",
+      "updateRule": "",
+      "deleteRule": null,
+      "indexes": ["CREATE UNIQUE INDEX `idx_benutzer_pin` ON `benutzer` (`pin`)"],
+      "fields": [
+        {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "autogeneratePattern": "[a-z0-9]{15}",
+          "required": true
+        },
+        { "name": "sheet_id", "type": "text" },
+        { "name": "pin", "type": "text", "required": true, "presentable": true },
+        { "name": "nummer", "type": "text" },
+        { "name": "benutzername", "type": "text" },
+        { "name": "vorname_de", "type": "text" },
+        { "name": "nachname_de", "type": "text" },
+        { "name": "rolle_de", "type": "text" },
+        { "name": "benutzer_de", "type": "text" },
+        { "name": "status_de", "type": "text" },
+        { "name": "created", "type": "autodate", "onCreate": true, "onUpdate": false, "hidden": true },
+        { "name": "updated", "type": "autodate", "onCreate": true, "onUpdate": true, "hidden": true }
+      ]
+    }
+  ]
+}

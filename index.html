@@ -7751,6 +7751,11 @@
       };
       let photoSyncCtl = { running: false };
 
+      const CONFIG = {
+        DATA_SOURCE: "GOOGLE",
+        LOCAL_SERVER_URL: "http://localhost:8090",
+      };
+
       // Google Sheets / Apps Script endpoints. Consumed only by GoogleSheetsDataProvider.
       // Keep in sync with links_heroal_artikel.txt (CSV gid exports + web-application).
       const GAS_PHOTO_UPLOAD_URL =
@@ -14262,12 +14267,358 @@
         };
       }
 
+      function createLocalServerDataProvider(getBaseUrl) {
+        function baseUrl() {
+          const raw =
+            typeof getBaseUrl === "function" ? getBaseUrl() : getBaseUrl;
+          return String(raw || CONFIG.LOCAL_SERVER_URL || "")
+            .trim()
+            .replace(/\/$/, "");
+        }
+
+        function reportProgress(onProgress, pct, stage) {
+          if (typeof onProgress === "function") onProgress({ pct, stage });
+        }
+
+        function fileName(value) {
+          if (Array.isArray(value)) return value[0] || "";
+          return String(value || "").trim();
+        }
+
+        function fileAbs(record, field) {
+          const name = fileName(record && record[field]);
+          if (!name) return "";
+          if (/^https?:\/\//i.test(name)) return name;
+          const root = baseUrl();
+          if (!root || !record || !record.id) return "";
+          const col = record.collectionId || record.collectionName || "";
+          if (!col) return "";
+          return (
+            root +
+            "/api/files/" +
+            encodeURIComponent(col) +
+            "/" +
+            encodeURIComponent(record.id) +
+            "/" +
+            encodeURIComponent(name)
+          );
+        }
+
+        function pickMedia(record, fileField, urlFields) {
+          const fromFile = fileAbs(record, fileField);
+          if (fromFile) return fromFile;
+          for (let i = 0; i < urlFields.length; i++) {
+            const v = String((record && record[urlFields[i]]) || "").trim();
+            if (v) return v;
+          }
+          return "";
+        }
+
+        async function fetchJson(url, signal, timeoutMs) {
+          const gate = abortAfter(
+            timeoutMs > 0 ? timeoutMs : MANUAL_FETCH_TIMEOUT_MS,
+          );
+          const combined = combineAbortSignals(gate.signal, signal);
+          try {
+            const res = await fetch(url, { signal: combined, cache: "no-store" });
+            const text = await res.text();
+            let json = null;
+            try {
+              json = text ? JSON.parse(text) : null;
+            } catch (err) {
+              throw new Error(
+                res.ok ? "invalid JSON" : "HTTP " + res.status,
+              );
+            }
+            if (!res.ok) {
+              throw new Error(
+                (json && (json.message || json.error)) || "HTTP " + res.status,
+              );
+            }
+            return json;
+          } finally {
+            gate.cancel();
+          }
+        }
+
+        async function fetchAllRecords(collection, signal, timeoutMs) {
+          const root = baseUrl();
+          const items = [];
+          let page = 1;
+          for (;;) {
+            const url =
+              root +
+              "/api/collections/" +
+              encodeURIComponent(collection) +
+              "/records?page=" +
+              page +
+              "&perPage=500";
+            const json = await fetchJson(url, signal, timeoutMs);
+            const batch = (json && json.items) || [];
+            items.push.apply(items, batch);
+            if (page >= (json && json.totalPages ? json.totalPages : 1)) break;
+            page += 1;
+          }
+          return items;
+        }
+
+        function mapArtikel(record) {
+          const artNr = String(
+            record.artikel_nr || record.art_nr || record.artnr || "",
+          ).trim();
+          if (!artNr) return null;
+          const haupt = pickMedia(record, "bild_haupt", [
+            "img_url",
+            "image_url",
+          ]);
+          const rec = {
+            id: record.sheet_id || record.id || "",
+            artikel_nr: artNr,
+            art_nr: artNr,
+            barcode: record.barcode || "",
+            category: record.category || record.kategorie_de || "",
+            system: record.system || "",
+            image_url: haupt,
+            img_url: haupt,
+            bild_haupt: haupt,
+            image_type: record.image_type || "",
+            drive_folder_id: record.drive_folder_id || "",
+          };
+          LANGS.forEach((code) => {
+            rec["name_" + code] = record["name_" + code] || "";
+            rec["kategorie_" + code] = record["kategorie_" + code] || "";
+            rec["masse_" + code] = record["masse_" + code] || "";
+            const text =
+              record["beschreibung_" + code] || record["hinweis_" + code] || "";
+            rec["beschreibung_" + code] = text;
+            rec["hinweis_" + code] = text;
+          });
+          if (!rec.kategorie_de) rec.kategorie_de = rec.category;
+          for (let n = 1; n <= 4; n++) {
+            let slot = pickMedia(record, "bild_" + n, ["img_" + n]);
+            if (!slot && Array.isArray(record.bilder) && record.bilder[n - 1]) {
+              const extra = record.bilder[n - 1];
+              slot = /^https?:\/\//i.test(extra)
+                ? extra
+                : fileAbs(
+                    Object.assign({}, record, { _slot: extra }),
+                    "_slot",
+                  );
+            }
+            rec["bild_" + n] = slot;
+            rec["img_" + n] = slot;
+          }
+          return rec;
+        }
+
+        function mapFarbe(record) {
+          const code = String(record.code || "").trim();
+          if (!code) return null;
+          let hex = String(record.hex || "").trim();
+          if (hex && hex.charAt(0) !== "#") hex = "#" + hex;
+          const dummy = pickMedia(record, "bild_dummyimage", ["image_url"]);
+          const foto = pickMedia(record, "echtes_foto", []);
+          const rec = {
+            id: record.sheet_id || record.id || "",
+            code,
+            hex: hex || "#ffffff",
+            bild_dummyimage: dummy,
+            echtes_foto: foto,
+            image_url: dummy || record.image_url || "",
+            image_type: record.image_type || "",
+          };
+          LANGS.forEach((lang) => {
+            rec["name_" + lang] = record["name_" + lang] || "";
+            rec["oberflaeche_" + lang] = record["oberflaeche_" + lang] || "";
+            rec["hinweis_" + lang] =
+              record["hinweis_" + lang] ||
+              record["beschreibung_" + lang] ||
+              "";
+          });
+          return rec;
+        }
+
+        function mapAuskunft(record) {
+          const item = { id: record.sheet_id || record.id || "" };
+          LANGS.forEach((code) => {
+            item["kategorie_" + code] = record["kategorie_" + code] || "";
+            item["name_" + code] = record["name_" + code] || "";
+            item["beschreibung_" + code] = record["beschreibung_" + code] || "";
+          });
+          const hasText = LANGS.some(
+            (code) => item["kategorie_" + code] || item["name_" + code],
+          );
+          return hasText ? item : null;
+        }
+
+        function mapBenutzer(record) {
+          const pin = String(record.pin || "").trim();
+          const nummer = String(
+            record.nummer || record.benutzername || pin || "",
+          ).trim();
+          const key = pin || nummer;
+          if (!key) return null;
+          const role = record.rolle_de || record.benutzer_de || "";
+          return {
+            id: record.sheet_id || record.id || "",
+            benutzername: nummer || key,
+            nummer: nummer || key,
+            pin: pin || key,
+            vorname_de: record.vorname_de || "",
+            nachname_de: record.nachname_de || "",
+            rolle_de: role,
+            benutzer_de: role,
+            status_de: record.status_de || "",
+          };
+        }
+
+        function photoFileField(target, field) {
+          if (target === "farben") {
+            if (field === "bild_dummyimage") return "bild_dummyimage";
+            return "echtes_foto";
+          }
+          const name = sheetPhotoField(target, field);
+          if (name === "bild_haupt" || name === "img_url" || name === "image_url") {
+            return "bild_haupt";
+          }
+          const slot = String(name || "").match(/^(?:bild|img)_([1-4])$/);
+          return slot ? "bild_" + slot[1] : "bild_haupt";
+        }
+
+        async function findRecord(collection, filter, signal) {
+          const url =
+            baseUrl() +
+            "/api/collections/" +
+            encodeURIComponent(collection) +
+            "/records?page=1&perPage=1&filter=" +
+            encodeURIComponent(filter);
+          const json = await fetchJson(url, signal);
+          const items = (json && json.items) || [];
+          return items[0] || null;
+        }
+
+        async function fetchCatalog({ signal, onProgress, timeoutMs } = {}) {
+          const catalog = {
+            artikel: {},
+            farben: {},
+            auskunft: [],
+            benutzer: {},
+          };
+          if (!baseUrl()) throw new Error("missing local server url");
+
+          reportProgress(onProgress, 10, "artikel");
+          (await fetchAllRecords("artikel", signal, timeoutMs)).forEach(
+            (row) => {
+              const rec = mapArtikel(row);
+              if (rec) catalog.artikel[rec.artikel_nr] = rec;
+            },
+          );
+
+          reportProgress(onProgress, 25, "farben");
+          (await fetchAllRecords("farben", signal, timeoutMs)).forEach((row) => {
+            const rec = mapFarbe(row);
+            if (rec) catalog.farben[rec.code] = rec;
+          });
+
+          reportProgress(onProgress, 35, "auskunft");
+          catalog.auskunft = (await fetchAllRecords("auskunft", signal, timeoutMs))
+            .map(mapAuskunft)
+            .filter(Boolean);
+
+          reportProgress(onProgress, 45, "benutzer");
+          (await fetchAllRecords("benutzer", signal, timeoutMs)).forEach(
+            (row) => {
+              const rec = mapBenutzer(row);
+              if (rec) catalog.benutzer[rec.pin] = rec;
+            },
+          );
+
+          return catalog;
+        }
+
+        async function uploadPhoto(photoRecord, { signal } = {}) {
+          const root = baseUrl();
+          if (!root) return { success: false, error: "missing local server url" };
+          const blob =
+            photoRecord && photoRecord.blob instanceof Blob
+              ? photoRecord.blob
+              : null;
+          if (!blob) return { success: false, error: "missing photo payload" };
+
+          const target = String((photoRecord && photoRecord.target) || "").toLowerCase();
+          const recordId = String(
+            (photoRecord && photoRecord.recordId) || "",
+          ).trim();
+          const collection = target === "farben" ? "farben" : "artikel";
+          const filter =
+            collection === "farben"
+              ? 'code="' + recordId.replace(/"/g, '\\"') + '"'
+              : 'artikel_nr="' + recordId.replace(/"/g, '\\"') + '"';
+          const existing = await findRecord(collection, filter, signal);
+          if (!existing) {
+            return { success: false, error: "record not found" };
+          }
+
+          const field = photoFileField(target, photoRecord.field);
+          const fileNameSafe =
+            String((photoRecord && photoRecord.fileName) || "photo.jpg").trim() ||
+            "photo.jpg";
+          const form = new FormData();
+          form.append(
+            field,
+            blob,
+            fileNameSafe,
+          );
+
+          const res = await fetch(
+            root +
+              "/api/collections/" +
+              encodeURIComponent(collection) +
+              "/records/" +
+              encodeURIComponent(existing.id),
+            { method: "PATCH", body: form, signal },
+          );
+          const text = await res.text();
+          let json = null;
+          try {
+            json = text ? JSON.parse(text) : null;
+          } catch (err) {
+            return {
+              success: false,
+              error: res.ok ? "invalid upload response" : "HTTP " + res.status,
+            };
+          }
+          if (!res.ok || !json) {
+            return {
+              success: false,
+              error: (json && (json.message || json.error)) || "upload failed",
+            };
+          }
+          const fileUrl = fileAbs(json, field);
+          if (!fileUrl) {
+            return { success: false, error: "upload failed" };
+          }
+          return { success: true, fileUrl: fileUrl };
+        }
+
+        return {
+          fetchCatalog,
+          uploadPhoto,
+        };
+      }
+
       const GoogleSheetsDataProvider = createGoogleSheetsDataProvider(
         function () {
           return appUrls;
         },
       );
-      const DataProvider = GoogleSheetsDataProvider;
+      const LocalServerDataProvider = createLocalServerDataProvider(function () {
+        return CONFIG.LOCAL_SERVER_URL;
+      });
+      const DataProvider =
+        CONFIG.DATA_SOURCE === "LOCAL"
+          ? LocalServerDataProvider
+          : GoogleSheetsDataProvider;
       const dataProvider = DataProvider;
 
       function reportManualSyncResult(mediaResult) {
