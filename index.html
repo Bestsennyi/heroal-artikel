@@ -7751,6 +7751,7 @@
       };
       let photoSyncCtl = { running: false };
 
+      // Google Sheets / Apps Script endpoints. Consumed only by GoogleSheetsDataProvider.
       // Keep in sync with links_heroal_artikel.txt (CSV gid exports + web-application).
       const GAS_PHOTO_UPLOAD_URL =
         "https://script.google.com/macros/s/AKfycbwaX5aZ072Di_QuwSI0rI88EyvRLwiAtxnZlu6-VJgWkCn9lOHHpsrNEe4vsJEtwaQxeA/exec";
@@ -11266,52 +11267,12 @@
         ).trim();
       }
 
-      async function photoQueuePayload(item) {
-        if (item && item.blob instanceof Blob) {
-          return blobToDataUrl(item.blob);
+      async function uploadPhotoQueueItem(item, signal) {
+        const result = await dataProvider.uploadPhoto(item, { signal });
+        if (!result || !result.success || !result.fileUrl) {
+          throw new Error((result && result.error) || "upload failed");
         }
-        if (item && item.base64Data) return String(item.base64Data);
-        return "";
-      }
-
-      async function uploadPhotoQueueItem(item) {
-        const endpoint = photoUploadEndpoint();
-        if (!endpoint) throw new Error("missing upload url");
-        const fileData = await photoQueuePayload(item);
-        if (!fileData) throw new Error("missing photo payload");
-        const payload = {
-          action: "uploadPhoto",
-          target: item.target,
-          recordId: item.recordId,
-          field: sheetPhotoField(item.target, item.field),
-          fileName: item.fileName,
-          fileData: fileData,
-          mimeType: "image/jpeg",
-        };
-        // text/plain avoids a CORS preflight; GAS still reads postData.contents.
-        const res = await fetch(endpoint, {
-          method: "POST",
-          mode: "cors",
-          redirect: "follow",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload),
-        });
-        const text = await res.text();
-        let json = null;
-        try {
-          json = text ? JSON.parse(text) : null;
-        } catch (err) {
-          throw new Error(
-            res.ok ? "invalid upload response" : "HTTP " + res.status,
-          );
-        }
-        if (!res.ok && !(json && json.success)) {
-          throw new Error((json && json.error) || "HTTP " + res.status);
-        }
-        if (!json || !json.success || !json.fileUrl) {
-          throw new Error((json && json.error) || "upload failed");
-        }
-        return String(json.fileUrl);
+        return String(result.fileUrl);
       }
 
       async function triggerPhotoSync() {
@@ -11321,6 +11282,7 @@
           const keys = await photoQueueKeys();
           if (!keys.length) return;
           if (!photoUploadEndpoint()) return;
+          const signal = syncCtl.abort && syncCtl.abort.signal;
           for (const id of keys) {
             const item = await photoQueueGet(id);
             if (!item || (item.status !== "pending" && item.status !== "failed")) {
@@ -11332,7 +11294,7 @@
             try {
               item.status = "syncing";
               await photoQueuePut(photoQueueRecord(item, blob));
-              const fileUrl = await uploadPhotoQueueItem(item);
+              const fileUrl = await uploadPhotoQueueItem(item, signal);
               revokePhotoPreview(item.target, item.recordId, item.field);
               patchRecordPhoto(item.target, item.recordId, item.field, fileUrl);
               await photoQueueDelete(item.id);
@@ -13739,264 +13701,10 @@
         syncAuskunftDir();
       }
 
-      function parseCSV(text) {
-        const lines = text.trim().split(/\r?\n/);
-        return lines.map((line) => {
-          const row = [];
-          let inside = false;
-          let cell = "";
-          for (let i = 0; i < line.length; i++) {
-            const c = line[i];
-            if (c === '"') inside = !inside;
-            else if (c === "," && !inside) {
-              row.push(cell.trim());
-              cell = "";
-            } else {
-              cell += c;
-            }
-          }
-          row.push(cell.trim());
-          return row;
-        });
-      }
-
-      function isSkippedCsvHeader(h) {
-        const s = String(h || "").trim();
-        if (!s) return true;
-        return /^unnamed(\s*:|\.|$)/i.test(s);
-      }
-
-      function csvHeaderMap(headerRow) {
-        const map = {};
-        const seen = {};
-        (headerRow || []).forEach((raw, i) => {
-          if (isSkippedCsvHeader(raw)) return;
-          const name = String(raw).trim();
-          const n = seen[name] || 0;
-          seen[name] = n + 1;
-          const key = n === 0 ? name : name + "." + n;
-          map[key] = i;
-          map[key.toLowerCase()] = i;
-        });
-        return map;
-      }
-
-      function csvCell(row, map, name) {
-        if (!row || !map || !name) return "";
-        let i = map[name];
-        if (i == null) i = map[String(name).toLowerCase()];
-        if (i == null) return "";
-        return String(row[i] == null ? "" : row[i]).trim();
-      }
-
-      function parseCsvTable(text) {
-        if (looksLikeHtmlDocument(text)) return { map: {}, rows: [] };
-        const rows = parseCSV(String(text || "").replace(/^\uFEFF/, ""));
-        if (!rows.length) return { map: {}, rows: [] };
-        return { map: csvHeaderMap(rows[0]), rows: rows.slice(1) };
-      }
-
-      function csvCellAny(row, map, names) {
-        for (let i = 0; i < names.length; i++) {
-          const v = csvCell(row, map, names[i]);
-          if (v) return v;
-        }
-        return "";
-      }
-
-      function parseArtikelCsv(text) {
-        const { map, rows } = parseCsvTable(text);
-        const out = {};
-        rows.forEach((row) => {
-          const artNr = csvCellAny(row, map, [
-            "artikel_nr",
-            "art_nr",
-            "artnr",
-            "art-nr",
-          ]);
-          if (!artNr) return;
-          const bildHaupt = csvCellAny(row, map, [
-            "bild_haupt",
-            "img_url",
-            "image_url",
-          ]);
-          const rawSystem = csvCellAny(row, map, ["system", "systeme"]);
-          const rec = {
-            id: csvCell(row, map, "id"),
-            artikel_nr: artNr,
-            art_nr: artNr,
-            barcode: csvCellAny(row, map, ["barcode", "ean", "ean13"]),
-            category: csvCellAny(row, map, ["kategorie_de", "category"]),
-            system: String(rawSystem || "").trim(),
-            image_url: bildHaupt,
-            img_url: bildHaupt,
-            bild_haupt: bildHaupt,
-            image_type: csvCellAny(row, map, ["image_type", "type"]),
-            drive_folder_id: csvCell(row, map, "drive_folder_id"),
-          };
-          LANGS.forEach((code) => {
-            rec["name_" + code] = csvCell(row, map, "name_" + code);
-            rec["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
-            rec["masse_" + code] = csvCellAny(row, map, [
-              "masse_" + code,
-              code === "de" ? "masse" : "",
-              code === "de" ? "size" : "",
-            ].filter(Boolean));
-            const text = csvCellAny(row, map, [
-              "beschreibung_" + code,
-              "hinweis_" + code,
-            ]);
-            rec["beschreibung_" + code] = text;
-            rec["hinweis_" + code] = text;
-          });
-          if (!rec.kategorie_de) rec.kategorie_de = rec.category;
-          for (let n = 1; n <= 4; n++) {
-            const slot = csvCellAny(row, map, ["bild_" + n, "img_" + n]);
-            rec["bild_" + n] = slot;
-            rec["img_" + n] = slot;
-            rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
-          }
-          out[artNr] = rec;
-        });
-        return out;
-      }
-
-      function parseFarbenCsv(text) {
-        const { map, rows } = parseCsvTable(text);
-        const out = {};
-        rows.forEach((row) => {
-          const code = csvCell(row, map, "code");
-          if (!code) return;
-          const rec = {
-            id: csvCell(row, map, "id"),
-            code,
-            hex: (function (h) {
-              h = String(h || "").trim();
-              if (!h) return "#ffffff";
-              return h.charAt(0) === "#" ? h : "#" + h;
-            })(csvCell(row, map, "hex")),
-            bild_dummyimage:
-              csvCell(row, map, "bild_dummyimage") ||
-              csvCell(row, map, "bild_de"),
-            echtes_foto: csvCell(row, map, "echtes_foto"),
-            image_url: csvCellAny(row, map, ["image_url", "img_url"]),
-            image_type: csvCellAny(row, map, ["image_type", "type"]),
-          };
-          LANGS.forEach((lang) => {
-            rec["name_" + lang] = csvCell(row, map, "name_" + lang);
-            rec["oberflaeche_" + lang] = csvCell(row, map, "oberflaeche_" + lang);
-            rec["hinweis_" + lang] = csvCellAny(row, map, [
-              "hinweis_" + lang,
-              "beschreibung_" + lang,
-            ]);
-          });
-          for (let n = 1; n <= 4; n++) {
-            rec["img_" + n] = csvCell(row, map, "img_" + n);
-            rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
-          }
-          out[code] = rec;
-        });
-        return out;
-      }
-
-      function parseAuskunftCsv(text) {
-        const { map, rows } = parseCsvTable(text);
-        const out = [];
-        rows.forEach((row) => {
-          const item = { id: csvCell(row, map, "id") };
-          LANGS.forEach((code) => {
-            item["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
-            item["name_" + code] = csvCell(row, map, "name_" + code);
-            item["beschreibung_" + code] = csvCell(
-              row,
-              map,
-              "beschreibung_" + code,
-            );
-          });
-          if (!item.kategorie_ru) {
-            item.kategorie_ru = csvCell(row, map, "kategorie_de.1");
-          }
-          const hasText = LANGS.some(
-            (code) => item["kategorie_" + code] || item["name_" + code],
-          );
-          if (hasText) out.push(item);
-        });
-        return out;
-      }
-
-      function parseBenutzerCsv(text) {
-        const { map, rows } = parseCsvTable(text);
-        const out = {};
-        rows.forEach((row) => {
-          const pin = csvCellAny(row, map, ["pin"]);
-          const nummer = csvCellAny(row, map, [
-            "benutzername",
-            "nummer",
-            "nr",
-          ]);
-          const key = pin || nummer;
-          if (!key) return;
-          const role = csvCellAny(row, map, [
-            "rolle_de",
-            "benutzer_de",
-            "rolle",
-            "role",
-            "benutzer",
-          ]);
-          out[key] = {
-            id: csvCell(row, map, "id"),
-            benutzername: nummer || key,
-            nummer: nummer || key,
-            pin: pin || key,
-            vorname_de: csvCellAny(row, map, [
-              "vorname_de",
-              "vorname",
-              "first",
-            ]),
-            nachname_de: csvCellAny(row, map, [
-              "nachname_de",
-              "nachname",
-              "last",
-            ]),
-            rolle_de: role,
-            benutzer_de: role,
-            status_de: csvCellAny(row, map, ["status_de", "status"]),
-          };
-        });
-        return out;
-      }
-
       /** Label for the drawing stage; `total` is only what still needs fetching. */
       function drawingProgressLabel(done, total) {
         if (!total) return t("drawings_check");
         return tf("drawings_load", { done, total });
-      }
-
-      function rowsToTranslationBundle(rows) {
-        const bundle = {};
-        LANGS.forEach(function (lang) {
-          bundle[lang] = {};
-        });
-        if (!rows || rows.length < 2) return bundle;
-        const header = rows[0].map((h) => String(h || "").trim().toLowerCase());
-        const keyIdx = header.indexOf("key") !== -1 ? header.indexOf("key") : 0;
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i];
-          const key = usableText(row[keyIdx]);
-          if (!key || LANGS.indexOf(key) !== -1) continue;
-          LANGS.forEach(function (lang) {
-            let idx = header.indexOf(lang);
-            if (idx === -1) {
-              if (lang === "de") idx = 1;
-              else if (lang === "en") idx = 2;
-              else if (lang === "ru") idx = 3;
-            }
-            if (idx < 0) return;
-            const val = usableText(row[idx]);
-            if (val) bundle[lang][key] = val;
-          });
-        }
-        return bundle;
       }
 
       const BACKGROUND_SYNC_DELAY_MS = 2500;
@@ -14121,31 +13829,446 @@
         }
       }
 
-      function looksLikeHtmlDocument(text) {
-        const s = String(text || "").replace(/^\uFEFF/, "").trim();
-        return /^<!DOCTYPE html/i.test(s) || /^<html[\s>]/i.test(s);
+      /**
+       * DataProvider contract:
+       *   fetchCatalog({ signal, onProgress }) ->
+       *     Promise<{ artikel, farben, auskunft, benutzer }>
+       *   uploadPhoto(photoRecord, { signal }) ->
+       *     Promise<{ success, fileUrl?, error? }>
+       *
+       * GoogleSheetsDataProvider is the current adapter: published CSV exports
+       * (docs.google.com/spreadsheets/.../pub?output=csv) plus Apps Script
+       * photo upload (script.google.com/.../exec).
+       */
+      function createGoogleSheetsDataProvider(getUrls) {
+        function urls() {
+          const current = typeof getUrls === "function" ? getUrls() : null;
+          return current && typeof current === "object" ? current : DEFAULT_URLS;
+        }
+
+        function looksLikeHtmlDocument(text) {
+          const s = String(text || "")
+            .replace(/^\uFEFF/, "")
+            .trim();
+          return /^<!DOCTYPE html/i.test(s) || /^<html[\s>]/i.test(s);
+        }
+
+        function parseCSV(text) {
+          const lines = String(text || "").trim().split(/\r?\n/);
+          return lines.map((line) => {
+            const row = [];
+            let inside = false;
+            let cell = "";
+            for (let i = 0; i < line.length; i++) {
+              const c = line[i];
+              if (c === '"') inside = !inside;
+              else if (c === "," && !inside) {
+                row.push(cell.trim());
+                cell = "";
+              } else {
+                cell += c;
+              }
+            }
+            row.push(cell.trim());
+            return row;
+          });
+        }
+
+        function isSkippedCsvHeader(h) {
+          const s = String(h || "").trim();
+          if (!s) return true;
+          return /^unnamed(\s*:|\.|$)/i.test(s);
+        }
+
+        function csvHeaderMap(headerRow) {
+          const map = {};
+          const seen = {};
+          (headerRow || []).forEach((raw, i) => {
+            if (isSkippedCsvHeader(raw)) return;
+            const name = String(raw).trim();
+            const n = seen[name] || 0;
+            seen[name] = n + 1;
+            const key = n === 0 ? name : name + "." + n;
+            map[key] = i;
+            map[key.toLowerCase()] = i;
+          });
+          return map;
+        }
+
+        function csvCell(row, map, name) {
+          if (!row || !map || !name) return "";
+          let i = map[name];
+          if (i == null) i = map[String(name).toLowerCase()];
+          if (i == null) return "";
+          return String(row[i] == null ? "" : row[i]).trim();
+        }
+
+        function parseCsvTable(text) {
+          if (looksLikeHtmlDocument(text)) return { map: {}, rows: [] };
+          const rows = parseCSV(String(text || "").replace(/^\uFEFF/, ""));
+          if (!rows.length) return { map: {}, rows: [] };
+          return { map: csvHeaderMap(rows[0]), rows: rows.slice(1) };
+        }
+
+        function csvCellAny(row, map, names) {
+          for (let i = 0; i < names.length; i++) {
+            const v = csvCell(row, map, names[i]);
+            if (v) return v;
+          }
+          return "";
+        }
+
+        function parseArtikelCsv(text) {
+          const { map, rows } = parseCsvTable(text);
+          const out = {};
+          rows.forEach((row) => {
+            const artNr = csvCellAny(row, map, [
+              "artikel_nr",
+              "art_nr",
+              "artnr",
+              "art-nr",
+            ]);
+            if (!artNr) return;
+            const bildHaupt = csvCellAny(row, map, [
+              "bild_haupt",
+              "img_url",
+              "image_url",
+            ]);
+            const rawSystem = csvCellAny(row, map, ["system", "systeme"]);
+            const rec = {
+              id: csvCell(row, map, "id"),
+              artikel_nr: artNr,
+              art_nr: artNr,
+              barcode: csvCellAny(row, map, ["barcode", "ean", "ean13"]),
+              category: csvCellAny(row, map, ["kategorie_de", "category"]),
+              system: String(rawSystem || "").trim(),
+              image_url: bildHaupt,
+              img_url: bildHaupt,
+              bild_haupt: bildHaupt,
+              image_type: csvCellAny(row, map, ["image_type", "type"]),
+              drive_folder_id: csvCell(row, map, "drive_folder_id"),
+            };
+            LANGS.forEach((code) => {
+              rec["name_" + code] = csvCell(row, map, "name_" + code);
+              rec["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
+              rec["masse_" + code] = csvCellAny(
+                row,
+                map,
+                [
+                  "masse_" + code,
+                  code === "de" ? "masse" : "",
+                  code === "de" ? "size" : "",
+                ].filter(Boolean),
+              );
+              const textVal = csvCellAny(row, map, [
+                "beschreibung_" + code,
+                "hinweis_" + code,
+              ]);
+              rec["beschreibung_" + code] = textVal;
+              rec["hinweis_" + code] = textVal;
+            });
+            if (!rec.kategorie_de) rec.kategorie_de = rec.category;
+            for (let n = 1; n <= 4; n++) {
+              const slot = csvCellAny(row, map, ["bild_" + n, "img_" + n]);
+              rec["bild_" + n] = slot;
+              rec["img_" + n] = slot;
+              rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
+            }
+            out[artNr] = rec;
+          });
+          return out;
+        }
+
+        function parseFarbenCsv(text) {
+          const { map, rows } = parseCsvTable(text);
+          const out = {};
+          rows.forEach((row) => {
+            const code = csvCell(row, map, "code");
+            if (!code) return;
+            const rec = {
+              id: csvCell(row, map, "id"),
+              code,
+              hex: (function (h) {
+                h = String(h || "").trim();
+                if (!h) return "#ffffff";
+                return h.charAt(0) === "#" ? h : "#" + h;
+              })(csvCell(row, map, "hex")),
+              bild_dummyimage:
+                csvCell(row, map, "bild_dummyimage") ||
+                csvCell(row, map, "bild_de"),
+              echtes_foto: csvCell(row, map, "echtes_foto"),
+              image_url: csvCellAny(row, map, ["image_url", "img_url"]),
+              image_type: csvCellAny(row, map, ["image_type", "type"]),
+            };
+            LANGS.forEach((lang) => {
+              rec["name_" + lang] = csvCell(row, map, "name_" + lang);
+              rec["oberflaeche_" + lang] = csvCell(
+                row,
+                map,
+                "oberflaeche_" + lang,
+              );
+              rec["hinweis_" + lang] = csvCellAny(row, map, [
+                "hinweis_" + lang,
+                "beschreibung_" + lang,
+              ]);
+            });
+            for (let n = 1; n <= 4; n++) {
+              rec["img_" + n] = csvCell(row, map, "img_" + n);
+              rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
+            }
+            out[code] = rec;
+          });
+          return out;
+        }
+
+        function parseAuskunftCsv(text) {
+          const { map, rows } = parseCsvTable(text);
+          const out = [];
+          rows.forEach((row) => {
+            const item = { id: csvCell(row, map, "id") };
+            LANGS.forEach((code) => {
+              item["kategorie_" + code] = csvCell(row, map, "kategorie_" + code);
+              item["name_" + code] = csvCell(row, map, "name_" + code);
+              item["beschreibung_" + code] = csvCell(
+                row,
+                map,
+                "beschreibung_" + code,
+              );
+            });
+            if (!item.kategorie_ru) {
+              item.kategorie_ru = csvCell(row, map, "kategorie_de.1");
+            }
+            const hasText = LANGS.some(
+              (code) => item["kategorie_" + code] || item["name_" + code],
+            );
+            if (hasText) out.push(item);
+          });
+          return out;
+        }
+
+        function parseBenutzerCsv(text) {
+          const { map, rows } = parseCsvTable(text);
+          const out = {};
+          rows.forEach((row) => {
+            const pin = csvCellAny(row, map, ["pin"]);
+            const nummer = csvCellAny(row, map, [
+              "benutzername",
+              "nummer",
+              "nr",
+            ]);
+            const key = pin || nummer;
+            if (!key) return;
+            const role = csvCellAny(row, map, [
+              "rolle_de",
+              "benutzer_de",
+              "rolle",
+              "role",
+              "benutzer",
+            ]);
+            out[key] = {
+              id: csvCell(row, map, "id"),
+              benutzername: nummer || key,
+              nummer: nummer || key,
+              pin: pin || key,
+              vorname_de: csvCellAny(row, map, [
+                "vorname_de",
+                "vorname",
+                "first",
+              ]),
+              nachname_de: csvCellAny(row, map, [
+                "nachname_de",
+                "nachname",
+                "last",
+              ]),
+              rolle_de: role,
+              benutzer_de: role,
+              status_de: csvCellAny(row, map, ["status_de", "status"]),
+            };
+          });
+          return out;
+        }
+
+        function rowsToTranslationBundle(rows) {
+          const bundle = {};
+          LANGS.forEach(function (lang) {
+            bundle[lang] = {};
+          });
+          if (!rows || rows.length < 2) return bundle;
+          const header = rows[0].map((h) =>
+            String(h || "")
+              .trim()
+              .toLowerCase(),
+          );
+          const keyIdx =
+            header.indexOf("key") !== -1 ? header.indexOf("key") : 0;
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const key = usableText(row[keyIdx]);
+            if (!key || LANGS.indexOf(key) !== -1) continue;
+            LANGS.forEach(function (lang) {
+              let idx = header.indexOf(lang);
+              if (idx === -1) {
+                if (lang === "de") idx = 1;
+                else if (lang === "en") idx = 2;
+                else if (lang === "ru") idx = 3;
+              }
+              if (idx < 0) return;
+              const val = usableText(row[idx]);
+              if (val) bundle[lang][key] = val;
+            });
+          }
+          return bundle;
+        }
+
+        async function fetchCsvText(url, outerSignal, timeoutMs) {
+          if (!url) return "";
+          const gate = abortAfter(
+            timeoutMs > 0 ? timeoutMs : MANUAL_FETCH_TIMEOUT_MS,
+          );
+          const signal = combineAbortSignals(gate.signal, outerSignal);
+          try {
+            const r = await fetch(url, { signal, cache: "no-store" });
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            const text = await r.text();
+            if (looksLikeHtmlDocument(text)) {
+              throw new Error("CSV expected, got HTML");
+            }
+            return text;
+          } finally {
+            gate.cancel();
+          }
+        }
+
+        async function photoPayload(item) {
+          if (item && item.blob instanceof Blob) {
+            return blobToDataUrl(item.blob);
+          }
+          if (item && item.base64Data) return String(item.base64Data);
+          return "";
+        }
+
+        async function fetchCatalog({ signal, onProgress, timeoutMs } = {}) {
+          const cfg = urls();
+          const report = (pct, stage) => {
+            if (typeof onProgress === "function") onProgress({ pct, stage });
+          };
+          const catalog = {
+            artikel: {},
+            farben: {},
+            auskunft: [],
+            benutzer: {},
+          };
+
+          report(10, "artikel");
+          if (cfg.artikel) {
+            const parsed = parseArtikelCsv(
+              await fetchCsvText(cfg.artikel, signal, timeoutMs),
+            );
+            if (Object.keys(parsed).length) catalog.artikel = parsed;
+          }
+
+          report(25, "farben");
+          if (cfg.farben) {
+            const parsed = parseFarbenCsv(
+              await fetchCsvText(cfg.farben, signal, timeoutMs),
+            );
+            if (Object.keys(parsed).length) catalog.farben = parsed;
+          }
+
+          report(35, "auskunft");
+          if (cfg.auskunft) {
+            const parsed = parseAuskunftCsv(
+              await fetchCsvText(cfg.auskunft, signal, timeoutMs),
+            );
+            if (parsed.length > 0) catalog.auskunft = parsed;
+          }
+
+          report(45, "benutzer");
+          const usersUrl = cfg.users || cfg.benutzer;
+          if (usersUrl) {
+            const parsed = parseBenutzerCsv(
+              await fetchCsvText(usersUrl, signal, timeoutMs),
+            );
+            if (Object.keys(parsed).length) catalog.benutzer = parsed;
+          }
+
+          if (cfg.translations) {
+            report(50, "translations");
+            catalog.translations = rowsToTranslationBundle(
+              parseCSV(await fetchCsvText(cfg.translations, signal, timeoutMs)),
+            );
+          }
+
+          return catalog;
+        }
+
+        async function uploadPhoto(photoRecord, { signal } = {}) {
+          const endpoint = String(
+            (urls().photoUpload || GAS_PHOTO_UPLOAD_URL || "").trim(),
+          );
+          if (!endpoint) {
+            return { success: false, error: "missing upload url" };
+          }
+          const fileData = await photoPayload(photoRecord);
+          if (!fileData) {
+            return { success: false, error: "missing photo payload" };
+          }
+          const payload = {
+            action: "uploadPhoto",
+            target: photoRecord.target,
+            recordId: photoRecord.recordId,
+            field: sheetPhotoField(photoRecord.target, photoRecord.field),
+            fileName: photoRecord.fileName,
+            fileData: fileData,
+            mimeType: "image/jpeg",
+          };
+          // text/plain avoids a CORS preflight; GAS still reads postData.contents.
+          const res = await fetch(endpoint, {
+            method: "POST",
+            mode: "cors",
+            redirect: "follow",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload),
+            signal,
+          });
+          const text = await res.text();
+          let json = null;
+          try {
+            json = text ? JSON.parse(text) : null;
+          } catch (err) {
+            return {
+              success: false,
+              error: res.ok ? "invalid upload response" : "HTTP " + res.status,
+            };
+          }
+          if (!res.ok && !(json && json.success)) {
+            return {
+              success: false,
+              error: (json && json.error) || "HTTP " + res.status,
+            };
+          }
+          if (!json || !json.success || !json.fileUrl) {
+            return {
+              success: false,
+              error: (json && json.error) || "upload failed",
+            };
+          }
+          return json;
+        }
+
+        return {
+          fetchCatalog,
+          uploadPhoto,
+        };
       }
 
-      async function fetchCsvText(url, silent) {
-        if (!url) return "";
-        const timeout = silent ? SILENT_FETCH_TIMEOUT_MS : MANUAL_FETCH_TIMEOUT_MS;
-        const gate = abortAfter(timeout);
-        const signal = combineAbortSignals(
-          gate.signal,
-          syncCtl.abort && syncCtl.abort.signal,
-        );
-        try {
-          const r = await fetch(url, { signal, cache: "no-store" });
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          const text = await r.text();
-          if (looksLikeHtmlDocument(text)) {
-            throw new Error("CSV expected, got HTML");
-          }
-          return text;
-        } finally {
-          gate.cancel();
-        }
-      }
+      const GoogleSheetsDataProvider = createGoogleSheetsDataProvider(
+        function () {
+          return appUrls;
+        },
+      );
+      const DataProvider = GoogleSheetsDataProvider;
+      const dataProvider = DataProvider;
 
       function reportManualSyncResult(mediaResult) {
         const cached = mediaResult ? mediaResult.cached : 0;
@@ -14206,13 +14329,32 @@
 
             try {
               await triggerPhotoSync();
-              updateSyncProgress(10, t("sync_load_profiles"));
-              if (appUrls.artikel) {
-                const parsed = parseArtikelCsv(
-                  await fetchCsvText(appUrls.artikel, syncCtl.silent),
-                );
-                if (Object.keys(parsed).length) {
-                  staged.artikel = mergeIncomingTablePhotos(parsed, appDB.artikel, [
+              const catalog = await dataProvider.fetchCatalog({
+                signal: syncCtl.abort && syncCtl.abort.signal,
+                timeoutMs: syncCtl.silent
+                  ? SILENT_FETCH_TIMEOUT_MS
+                  : MANUAL_FETCH_TIMEOUT_MS,
+                onProgress: (evt) => {
+                  const stage = evt && evt.stage;
+                  const labels = {
+                    artikel: t("sync_load_profiles"),
+                    farben: t("sync_load_colors"),
+                    auskunft: t("sync_load_auskunft"),
+                    benutzer: t("sync_load_users"),
+                    translations: t("sync_load_i18n"),
+                  };
+                  updateSyncProgress(
+                    evt && evt.pct,
+                    labels[stage] || t("sync_load_start"),
+                  );
+                },
+              });
+
+              if (catalog.artikel && Object.keys(catalog.artikel).length) {
+                staged.artikel = mergeIncomingTablePhotos(
+                  catalog.artikel,
+                  appDB.artikel,
+                  [
                     "bild_haupt",
                     "img_url",
                     "img_1",
@@ -14223,51 +14365,30 @@
                     "bild_2",
                     "bild_3",
                     "bild_4",
-                  ]);
-                }
+                  ],
+                );
               }
 
-              updateSyncProgress(25, t("sync_load_colors"));
-              if (appUrls.farben) {
-                const parsed = parseFarbenCsv(
-                  await fetchCsvText(appUrls.farben, syncCtl.silent),
+              if (catalog.farben && Object.keys(catalog.farben).length) {
+                staged.farben = mergeIncomingTablePhotos(
+                  catalog.farben,
+                  appDB.farben,
+                  ["echtes_foto", "bild_dummyimage"],
                 );
-                if (Object.keys(parsed).length) {
-                  staged.farben = mergeIncomingTablePhotos(parsed, appDB.farben, [
-                    "echtes_foto",
-                    "bild_dummyimage",
-                  ]);
-                }
               }
 
-              updateSyncProgress(35, t("sync_load_auskunft"));
-              if (appUrls.auskunft) {
-                const newAuskunft = parseAuskunftCsv(
-                  await fetchCsvText(appUrls.auskunft, syncCtl.silent),
-                );
-                if (newAuskunft.length > 0) staged.auskunft = newAuskunft;
+              if (catalog.auskunft && catalog.auskunft.length > 0) {
+                staged.auskunft = catalog.auskunft;
               }
 
-              updateSyncProgress(45, t("sync_load_users"));
-              if (appUrls.users) {
-                const parsed = parseBenutzerCsv(
-                  await fetchCsvText(appUrls.users, syncCtl.silent),
-                );
-                if (Object.keys(parsed).length) {
-                  staged.users = parsed;
-                  staged.benutzer = parsed;
-                }
+              if (catalog.benutzer && Object.keys(catalog.benutzer).length) {
+                staged.users = catalog.benutzer;
+                staged.benutzer = catalog.benutzer;
               }
 
-              if (appUrls.translations) {
-                updateSyncProgress(50, t("sync_load_i18n"));
-                const bundle = rowsToTranslationBundle(
-                  parseCSV(
-                    await fetchCsvText(appUrls.translations, syncCtl.silent),
-                  ),
-                );
-                mergeTranslationBundle(bundle);
-                await idbSetTranslation("bundle", bundle);
+              if (catalog.translations) {
+                mergeTranslationBundle(catalog.translations);
+                await idbSetTranslation("bundle", catalog.translations);
                 applyLanguage();
               }
 
