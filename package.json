@@ -1,0 +1,12 @@
+{
+  "name": "heroal-artikel",
+  "private": true,
+  "description": "heroal LagerGuide PWA — static warehouse assistant",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "serve": "^14.2.4"
+  }
+}
