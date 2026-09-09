@@ -4105,10 +4105,11 @@
         padding: 0;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        align-items: stretch;
+        gap: 0;
       }
       .sync-box {
+        position: relative;
         width: 100%;
         min-width: 0;
         background: var(--card-bg);
@@ -4125,6 +4126,7 @@
         align-items: center;
         gap: 16px;
         min-width: 0;
+        padding-right: 40px;
       }
       .sync-icon-wrap {
         width: 48px;
@@ -4172,21 +4174,21 @@
         flex-shrink: 0;
       }
       .sync-close {
-        position: relative;
-        top: auto;
-        right: auto;
+        position: absolute;
+        top: 4px;
+        right: 4px;
         z-index: 2;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto;
+        width: 32px;
+        height: 32px;
+        margin: 0;
         flex: 0 0 auto;
-        align-self: center;
+        align-self: auto;
         padding: 0;
-        border-radius: 10px;
+        border-radius: 8px;
         background: rgba(147, 197, 253, 0.14);
         border: 1px solid #93c5fd;
         color: #93c5fd;
-        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.22);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -4198,8 +4200,8 @@
         background: rgba(147, 197, 253, 0.22);
       }
       .sync-close .ico {
-        width: 16px;
-        height: 16px;
+        width: 13px;
+        height: 13px;
       }
       .sync-progress-bar-bg {
         width: 100%;
@@ -4232,6 +4234,13 @@
         }
         .sync-head {
           gap: 10px;
+          padding-right: 40px;
+        }
+        .sync-close {
+          top: 4px;
+          right: 4px;
+          width: 32px;
+          height: 32px;
         }
         .sync-icon-wrap {
           width: 40px;
@@ -4250,17 +4259,13 @@
         .sync-pct {
           font-size: 14px;
         }
-        .sync-close {
-          width: 44px;
-          height: 44px;
-        }
       }
       @media (max-width: 380px) {
         .sync-head {
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
         }
         .sync-pct {
-          margin-left: auto;
+          margin-left: 0;
         }
       }
 
@@ -4860,14 +4865,14 @@
         padding: 0;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        align-items: stretch;
+        gap: 0;
       }
       .photo-modal .photo-card {
         width: 100%;
         max-width: 560px;
         min-width: 0;
-        max-height: min(calc(100vh - 32px - 12px - 44px), calc(100dvh - 32px - 12px - 44px), 820px);
+        max-height: min(calc(100vh - 32px), calc(100dvh - 32px), 820px);
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -4888,28 +4893,36 @@
         align-items: center;
         justify-content: flex-start;
         gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        margin: 0;
+        padding: 0 40px 0 0;
+        min-height: 32px;
+        background: var(--card-bg);
       }
       .photo-head-title {
         font-size: 16px;
         font-weight: 700;
         color: #fff;
+        min-width: 0;
       }
       .photo-close {
-        position: relative;
-        top: auto;
-        right: auto;
-        z-index: 2;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto;
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        z-index: 4;
+        width: 32px;
+        height: 32px;
+        margin: 0;
         padding: 0;
         flex: 0 0 auto;
-        align-self: center;
-        border-radius: 10px;
+        align-self: auto;
+        border-radius: 8px;
         background: rgba(147, 197, 253, 0.14);
         border: 1px solid #93c5fd;
         color: #93c5fd;
-        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.22);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -4921,8 +4934,8 @@
         background: rgba(147, 197, 253, 0.22);
       }
       .photo-close .ico {
-        width: 16px;
-        height: 16px;
+        width: 13px;
+        height: 13px;
       }
       .photo-tabs {
         display: flex;
@@ -5258,10 +5271,6 @@
       }
 
       @media (pointer: coarse) {
-        .photo-close {
-          width: 44px;
-          height: 44px;
-        }
         .photo-preview-clear {
           width: 44px;
           height: 44px;
@@ -5272,10 +5281,6 @@
       }
 
       @media (max-width: 899px) {
-        .photo-close {
-          width: 44px;
-          height: 44px;
-        }
         .photo-preview-clear {
           width: 44px;
           height: 44px;
@@ -5308,8 +5313,8 @@
           gap: 10px;
           border-radius: 16px;
           max-height: min(
-            calc(100vh - 24px - 12px - 44px),
-            calc(100dvh - 24px - 12px - 44px)
+            calc(100vh - 24px),
+            calc(100dvh - 24px)
           );
         }
         .photo-slots.is-artikel {
@@ -5342,8 +5347,8 @@
       @media (max-height: 720px) {
         .photo-modal .photo-card {
           max-height: min(
-            calc(100vh - 24px - 12px - 44px),
-            calc(100dvh - 24px - 12px - 44px)
+            calc(100vh - 24px),
+            calc(100dvh - 24px)
           );
           gap: 8px;
           padding-top: 12px;
@@ -6346,26 +6351,29 @@
           </div>
           <div class="sync-pct" id="sync-pct">0%</div>
         </div>
+        <button
+          type="button"
+          class="sync-close"
+          id="sync-close"
+          data-i18n-title="modal.sync_cancel"
+          title="Abbrechen"
+          aria-label="Abbrechen"
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
         <div class="sync-progress-bar-bg">
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
         </div>
       </div>
-      <button
-        type="button"
-        class="sync-close"
-        id="sync-close"
-        data-i18n-title="modal.sync_cancel"
-        title="Abbrechen"
-        aria-label="Abbrechen"
-      >
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
       </div>
     </div>
 
     <div id="photo-dialog" class="photo-modal" data-photo-target="artikel" aria-hidden="true" onclick="if(event.target===this)closePhotoCapture()">
       <div class="photo-panel" onclick="event.stopPropagation()">
         <div class="photo-card">
+        <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
         <div class="photo-head">
           <span class="photo-head-title" data-i18n="photo.modalTitle">Foto erfassen</span>
         </div>
@@ -6454,9 +6462,6 @@
           <div class="osk is-hidden" id="osk-photo" data-target="photo-id"></div>
         </div>
         </div>
-        <button type="button" class="photo-close" id="photo-close" aria-label="Close" data-i18n-title="a11y.close">
-          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-        </button>
       </div>
     </div>
 
