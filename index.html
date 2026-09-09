@@ -3381,6 +3381,16 @@
         .zone-prof {
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        #view-suche .zone-header {
+          display: flex;
+        }
+        .search-field {
+          height: 48px;
+          min-height: 48px;
+        }
+        .zone-toolbar {
+          padding: 8px 12px;
+        }
       }
 
       /* Tablet landscape + desktop: exact 50/50 split, independent column scroll */
@@ -3474,6 +3484,39 @@
         }
       }
 
+      /* Medium PC and short landscape tablets: denser Artikel/Farben cards */
+      @media (min-width: 901px) and (max-width: 1279px) {
+        .zone-toolbar {
+          padding: 8px 10px;
+        }
+        .zone-scroll {
+          padding: 0 10px 10px;
+        }
+        .display-card-prof,
+        .display-card-color {
+          padding: 8px 10px 10px;
+          gap: 6px;
+        }
+        .display-card-prof .info-tags-row .tag-chip,
+        .display-card-color .info-tags-row .tag-chip {
+          font-size: 0.8125rem;
+          padding: 4px 10px;
+        }
+        .display-card-prof.is-solo .profile-drawing-box,
+        .display-card-color.is-solo .color-showcase-box {
+          min-height: 140px;
+        }
+      }
+      @media (min-width: 901px) and (max-height: 800px) {
+        .zone-toolbar {
+          padding: 8px 10px 6px;
+        }
+        .display-card-prof.is-solo .profile-drawing-box,
+        .display-card-color.is-solo .color-showcase-box {
+          min-height: 110px;
+        }
+      }
+
       .app-footer {
         flex-shrink: 0;
         height: 30px;
@@ -3530,27 +3573,16 @@
           text-align: left;
         }
       }
-      @media (max-width: 860px) {
-        .hdr-user-name {
-          max-width: 120px;
-        }
-        .brand-title .heroal-logo {
-          height: 21.6px;
-          max-height: 21.6px;
-        }
-        .header-left {
-          max-width: min(160px, 36vw);
-        }
-      }
-
-      /* Tablet (and below desktop): compact header, no overlapping coords */
-      @media (max-width: 1024px) {
+      /* Medium PC / tablet / phone: icon header, identity lives in account sheet */
+      @media (max-width: 1279px) {
         header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           gap: 8px;
           flex-wrap: nowrap;
+          height: 64px;
+          min-height: 64px;
           padding: 0 12px;
           position: relative;
         }
@@ -3567,49 +3599,83 @@
           max-width: min(180px, 28vw);
           flex: 0 1 auto;
         }
+        .brand-title .heroal-logo {
+          height: 22px;
+          max-height: 22px;
+        }
         .header-center {
           justify-self: auto;
           flex: 1 1 auto;
           min-width: 0;
+          gap: 6px;
         }
         .header-right {
           justify-self: auto;
           flex: 0 1 auto;
-          gap: 8px;
+          gap: 6px;
         }
-        .net-cluster {
-          width: 28px;
-          height: 28px;
-          min-height: 28px;
+        header .btn-quick {
+          width: 44px;
+          min-width: 44px;
           padding: 0;
           justify-content: center;
-          background: transparent;
-          border: none;
           gap: 0;
         }
-        .net-cluster:hover {
-          background: transparent;
-        }
-        .net-cluster .net-text,
-        .net-cluster .ico {
+        header .btn-quick-label {
           display: none;
         }
-        .net-dot {
-          width: 10px;
-          height: 10px;
+        header .net-cluster {
+          position: relative;
+          width: 44px;
+          height: 44px;
+          min-height: 44px;
+          padding: 0;
+          justify-content: center;
+          gap: 0;
+          overflow: visible;
         }
-        .hdr-user {
-          padding: 0 10px;
+        header .net-cluster .net-text {
+          display: none;
+        }
+        header .net-cluster .ico {
+          display: block;
+          width: 20px;
+          height: 20px;
+          color: #ffffff;
+        }
+        header .net-cluster .net-dot {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          border: 2px solid #003366;
+          box-sizing: content-box;
+          box-shadow: none;
+        }
+        header .hdr-user,
+        header .hdr-logout {
+          display: none !important;
+        }
+        header .hdr-lang-trigger {
+          width: 44px;
           min-width: 44px;
+          padding: 0;
+          justify-content: center;
+          gap: 0;
         }
-        .hdr-user-name {
+        header .hdr-lang-trigger .lang-flag,
+        header .hdr-lang-trigger .hdr-lang-caret {
           display: none;
         }
-        .hdr-user-short {
-          display: inline;
+        #btn-hdr-account {
+          display: inline-flex;
         }
-        .hdr-user-role {
+        #btn-hdr-account .ico {
           display: none;
+        }
+        #btn-hdr-account .hdr-account-initials {
+          display: flex;
         }
         .zone-empty-img {
           max-width: 100%;
@@ -3641,20 +3707,6 @@
         }
         #view-auskunft:has(#osk-guide:not(.is-hidden)) .auskunft-list {
           padding-bottom: 220px;
-        }
-      }
-
-      @media (max-width: 899px) {
-        #btnPhotoCapture .btn-quick-label,
-        .hdr-logout > span {
-          display: none;
-        }
-        #btnPhotoCapture,
-        .hdr-logout {
-          min-width: 44px;
-          width: 44px;
-          padding-left: 0;
-          padding-right: 0;
         }
       }
 
@@ -3997,6 +4049,129 @@
         }
       }
 
+      /* Phone landscape: short icon header, no bottom nav, mini-desktop 50/50 */
+      @media (orientation: landscape) and (max-height: 500px) {
+        header {
+          display: flex !important;
+          justify-content: space-between;
+          align-items: center;
+          gap: 6px;
+          flex-wrap: nowrap;
+          height: 56px;
+          min-height: 56px;
+          padding: 0 8px;
+        }
+        .header-center {
+          display: flex !important;
+          flex: 1 1 auto;
+          min-width: 0;
+          gap: 4px;
+        }
+        header #btnPhotoCapture:not([hidden]) {
+          display: inline-flex !important;
+        }
+        .header-right > .hdr-lang-dd {
+          display: none !important;
+        }
+        header .hdr-user,
+        header .hdr-logout {
+          display: none !important;
+        }
+        .header-left {
+          grid-column: auto;
+          grid-row: auto;
+          justify-self: auto;
+          max-width: min(140px, 22vw);
+          flex: 0 1 auto;
+        }
+        .header-left .brand-title .heroal-logo {
+          height: 20px;
+          max-height: 20px;
+          object-position: left center;
+          transform-origin: left center;
+        }
+        .header-right {
+          display: flex !important;
+          flex: 0 1 auto;
+          gap: 4px;
+        }
+        #netStatus.net-cluster {
+          grid-column: auto;
+          grid-row: auto;
+          justify-self: auto;
+          width: 44px;
+          height: 44px;
+          min-height: 44px;
+        }
+        #btn-hdr-account {
+          display: inline-flex;
+          grid-column: auto;
+          grid-row: auto;
+          justify-self: auto;
+        }
+        main {
+          padding-bottom: 0;
+        }
+        #app-footer,
+        #bottom-nav {
+          display: none !important;
+        }
+        .suche-pane-tabs {
+          display: none !important;
+        }
+        #view-suche.tab-view.active {
+          overflow: hidden;
+        }
+        .suche-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
+          height: 100%;
+          min-height: 0;
+          flex: 1;
+        }
+        .suche-grid.pane-artikel .zone-color,
+        .suche-grid.pane-farben .zone-prof {
+          display: flex !important;
+        }
+        .suche-grid .zone-prof,
+        .suche-grid .zone-color {
+          flex: none;
+          width: auto;
+          height: 100%;
+          min-height: 0;
+          border-bottom: none;
+        }
+        .zone-prof {
+          border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #view-suche .zone-header {
+          display: flex;
+        }
+        #view-suche .zone-toolbar {
+          padding: 6px 8px;
+        }
+        .search-field {
+          height: 44px;
+          min-height: 44px;
+        }
+        .display-card-prof.is-solo .profile-drawing-box,
+        .display-card-color.is-solo .color-showcase-box {
+          flex: 1 1 0;
+          min-height: 72px;
+          max-height: none;
+        }
+        .zone-scroll {
+          padding-bottom: 8px;
+        }
+        .search-stack .osk[data-target]:not(.is-hidden) {
+          bottom: 0;
+        }
+        #app-toast {
+          bottom: 12px;
+        }
+      }
+
       @media (min-width: 601px) and (max-width: 1024px) {
         .display-card-prof.is-solo .profile-note.is-on,
         .display-card-color.is-solo .profile-note.is-on {
@@ -4223,17 +4398,22 @@
         font-variant-numeric: tabular-nums;
         flex-shrink: 0;
       }
-      .sync-close {
+      .modal-quiet-close,
+      .photo-close,
+      .sync-close,
+      .account-sheet-close,
+      .zoom-close,
+      .note-modal-close {
         position: absolute;
         top: 4px;
         right: 4px;
-        z-index: 2;
+        z-index: 4;
         width: 28px;
         height: 28px;
         margin: 0;
+        padding: 0;
         flex: 0 0 auto;
         align-self: auto;
-        padding: 0;
         border-radius: 6px;
         background: transparent;
         border: 1px solid transparent;
@@ -4244,13 +4424,33 @@
         align-items: center;
         justify-content: center;
       }
-      .sync-close:hover {
+      .modal-quiet-close:hover,
+      .photo-close:hover,
+      .sync-close:hover,
+      .account-sheet-close:hover,
+      .zoom-close:hover,
+      .note-modal-close:hover {
         color: #e2e8f0;
         filter: none;
         background: rgba(148, 163, 184, 0.12);
         border-color: transparent;
+        box-shadow: none;
       }
-      .sync-close .ico {
+      .modal-quiet-close:focus-visible,
+      .photo-close:focus-visible,
+      .sync-close:focus-visible,
+      .account-sheet-close:focus-visible,
+      .zoom-close:focus-visible,
+      .note-modal-close:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+      .modal-quiet-close .ico,
+      .photo-close .ico,
+      .sync-close .ico,
+      .account-sheet-close .ico,
+      .zoom-close .ico,
+      .note-modal-close .ico {
         width: 12px;
         height: 12px;
       }
@@ -4286,12 +4486,6 @@
         .sync-head {
           gap: 10px;
           padding-right: 36px;
-        }
-        .sync-close {
-          top: 4px;
-          right: 4px;
-          width: 28px;
-          height: 28px;
         }
         .sync-icon-wrap {
           width: 40px;
@@ -4348,13 +4542,14 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 12px;
+        gap: 0;
         padding: 16px;
       }
       .note-modal-card {
+        position: relative;
         width: 100%;
         max-width: 560px;
-        max-height: min(calc(80vh - 70px), 640px);
+        max-height: min(80vh, 640px);
         overflow-x: hidden;
         overflow-y: auto;
         background: #131b2e;
@@ -4373,6 +4568,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
+        padding-right: 32px;
         font-size: 15px;
         font-weight: 700;
         color: #f8fafc;
@@ -4382,40 +4578,6 @@
         align-items: center;
         gap: 6px;
         flex-shrink: 0;
-      }
-      .note-modal-close {
-        width: 40px;
-        height: 40px;
-        flex: 0 0 auto;
-        align-self: center;
-        margin: 0;
-        border: 1px solid rgba(56, 189, 248, 0.45);
-        border-radius: 999px;
-        background: rgba(2, 6, 23, 0.88);
-        color: #7dd3fc;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        transition: background-color 0.15s ease, border-color 0.15s ease,
-          color 0.15s ease;
-      }
-      .note-modal-close:hover {
-        background: rgba(14, 165, 233, 0.22);
-        border-color: rgba(56, 189, 248, 0.75);
-        color: #e0f2fe;
-      }
-      .note-modal-close .ico {
-        width: 18px;
-        height: 18px;
-      }
-      @media (max-width: 1024px) {
-        .note-modal-close {
-          display: none;
-        }
       }
       #note-dialog-copy {
         width: 36px;
@@ -4465,25 +4627,6 @@
       }
       .account-sheet-handle {
         display: none;
-      }
-      .account-sheet-close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 2;
-        width: 36px;
-        height: 36px;
-        border: 1px solid #93c5fd;
-        background: #131b2e;
-        color: #93c5fd;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
-      }
-      .account-sheet-close:hover {
-        background: #1a2438;
-        border-color: #93c5fd;
-        color: #e0f2fe;
-        box-shadow: 0 0 12px rgba(147, 197, 253, 0.5);
       }
       .account-sheet-identity {
         display: flex;
@@ -4589,10 +4732,20 @@
       }
       .account-sheet .hdr-lang-trigger {
         width: 100%;
+        min-width: 0;
         justify-content: center;
+        gap: 8px;
+        padding: 0 14px;
         background: #131b2e;
         border-color: #93c5fd;
         box-shadow: 0 0 10px rgba(147, 197, 253, 0.4);
+      }
+      .account-sheet .hdr-lang-trigger .lang-flag {
+        display: inline-block;
+      }
+      .account-sheet .hdr-lang-trigger .lang-flag svg,
+      .account-sheet .hdr-lang-trigger .hdr-lang-caret {
+        display: block;
       }
       .account-sheet .hdr-lang-trigger:hover,
       .account-sheet .hdr-lang-dd.is-open .hdr-lang-trigger {
@@ -4642,6 +4795,8 @@
         flex-direction: column;
         gap: 14px;
         padding: 16px;
+        padding-top: max(40px, env(safe-area-inset-top, 0px));
+        padding-right: max(40px, env(safe-area-inset-right, 0px));
         pointer-events: auto;
         overscroll-behavior: none;
         isolation: isolate;
@@ -4716,47 +4871,9 @@
         border-color: #38bdf8;
       }
       .zoom-close {
-        position: relative;
-        top: auto;
-        right: auto;
-        z-index: 4;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto;
-        flex: 0 0 auto;
-        align-self: center;
-        padding: 0;
-        border: 1px solid rgba(56, 189, 248, 0.45);
-        border-radius: 999px;
-        background: rgba(2, 6, 23, 0.88);
-        color: #7dd3fc;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-        transition: background-color 0.15s ease, border-color 0.15s ease,
-          color 0.15s ease;
-      }
-      .zoom-close:hover {
-        background: rgba(14, 165, 233, 0.22);
-        border-color: rgba(56, 189, 248, 0.75);
-        color: #e0f2fe;
-      }
-      .zoom-close:focus-visible {
-        outline: 2px solid #38bdf8;
-        outline-offset: 2px;
-      }
-      .zoom-close .ico {
-        width: 18px;
-        height: 18px;
-      }
-      @media (max-width: 1024px), (any-pointer: coarse) {
-        .zoom-close {
-          display: none;
-        }
+        top: max(8px, env(safe-area-inset-top, 0px));
+        right: max(8px, env(safe-area-inset-right, 0px));
+        z-index: 5;
       }
       .drawing-hover-pop {
         position: fixed;
@@ -4957,37 +5074,6 @@
         font-weight: 700;
         color: #fff;
         min-width: 0;
-      }
-      .photo-close {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        z-index: 4;
-        width: 28px;
-        height: 28px;
-        margin: 0;
-        padding: 0;
-        flex: 0 0 auto;
-        align-self: auto;
-        border-radius: 6px;
-        background: transparent;
-        border: 1px solid transparent;
-        color: #64748b;
-        box-shadow: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .photo-close:hover {
-        color: #e2e8f0;
-        filter: none;
-        background: rgba(148, 163, 184, 0.12);
-        border-color: transparent;
-      }
-      .photo-close .ico {
-        width: 12px;
-        height: 12px;
       }
       .photo-tabs {
         display: flex;
@@ -6293,7 +6379,7 @@
     <div id="account-sheet" class="account-sheet" aria-hidden="true">
       <div class="account-sheet-card" role="dialog" aria-modal="true" aria-labelledby="account-user-name">
         <span class="account-sheet-handle" aria-hidden="true"></span>
-        <button type="button" class="note-modal-close account-sheet-close" id="account-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
+        <button type="button" class="account-sheet-close" id="account-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
           <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
         </button>
         <div class="account-sheet-identity">
@@ -6348,7 +6434,7 @@
         <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" data-i18n-title="a11y.zoom" />
       </div>
       <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
-        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-x"></use></svg>
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
       </button>
       <div id="zoom-thumbs" class="zoom-thumbs"></div>
     </div>
@@ -6367,6 +6453,9 @@
 
     <div id="note-dialog" class="note-modal" aria-hidden="true">
       <div class="note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-dialog-title">
+        <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
         <div class="note-modal-head">
           <span id="note-dialog-title" data-i18n="catalog_ui.hint_title">Beschreibung</span>
           <div class="note-modal-actions">
@@ -6385,9 +6474,6 @@
         </div>
         <p id="note-dialog-body" class="note-modal-body"></p>
       </div>
-      <button type="button" class="note-modal-close" id="note-dialog-close" aria-label="Close" data-i18n-title="a11y.close">
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
     </div>
 
     <!-- 6. SYNC PROGRESS MODAL -->
@@ -11476,7 +11562,7 @@
           if (noteCard) {
             let noteTap = null;
             noteCard.addEventListener("pointerdown", (e) => {
-              if (e.target.closest && e.target.closest("#note-dialog-copy")) return;
+              if (e.target.closest && e.target.closest("#note-dialog-copy, #note-dialog-close")) return;
               noteTap = { x: e.clientX, y: e.clientY, moved: false };
             });
             noteCard.addEventListener("pointermove", (e) => {
