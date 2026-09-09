@@ -3152,7 +3152,13 @@
       .auskunft-card:has(.auskunft-card-head:focus-visible),
       .auskunft-card.is-kb {
         border-color: var(--heroal-accent);
-        box-shadow: inset 0 0 0 2px var(--heroal-accent);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+      @media (pointer: coarse) {
+        .auskunft-card:has(.auskunft-card-head:focus-visible),
+        .auskunft-card.is-kb {
+          border-color: var(--border-color);
+        }
       }
       .auskunft-card-head {
         display: flex;
@@ -13745,7 +13751,7 @@
             setAuskunftCardOpen(card, !card.classList.contains("open"));
             const cards = auskunftCards();
             auskunftKbIndex = cards.indexOf(card);
-            cards.forEach((c, i) => c.classList.toggle("is-kb", i === auskunftKbIndex));
+            cards.forEach((c) => c.classList.remove("is-kb"));
           });
         }
         syncAuskunftDir();
