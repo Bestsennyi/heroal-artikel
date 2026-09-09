@@ -12,7 +12,7 @@
 
 ## 2. Service Worker (`sw.js`) и Политика Кэширования
 - **Двухуровневая структура кэша:**
-  1. `heroal-shell-v*` (текущая: `heroal-shell-v300`): кэш оболочки (HTML, `manifest.json`, `src/i18n.js`, `translations.json`, иконки, логотипы).
+  1. `heroal-shell-v*` (текущая: `heroal-shell-v302`): кэш оболочки (HTML, `manifest.json`, `src/i18n.js`, `translations.json`, иконки, логотипы).
   2. `heroal-media-v*` (текущая: `heroal-media-v2`): кэш чертежей и медиа. Сохраняется и переживает обновление версии оболочки (`bump`).
 - **Строгие правила версионирования кэшей:**
   - При любых правках UI, стилей, логики или добавлении файлов в массив `SHELL_ASSETS` — **обязательно инкрементировать `SHELL_VERSION`**.

@@ -3149,14 +3149,18 @@
         border-radius: 14px;
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
       }
-      .auskunft-card:has(.auskunft-card-head:focus-visible),
-      .auskunft-card.is-kb {
+      .auskunft-card.open {
+        border-color: #93c5fd;
+        box-shadow: 0 0 14px rgba(147, 197, 253, 0.28);
+      }
+      .auskunft-card:has(.auskunft-card-head:focus-visible):not(.open),
+      .auskunft-card.is-kb:not(.open) {
         border-color: var(--heroal-accent);
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
       }
       @media (pointer: coarse) {
-        .auskunft-card:has(.auskunft-card-head:focus-visible),
-        .auskunft-card.is-kb {
+        .auskunft-card:has(.auskunft-card-head:focus-visible):not(.open),
+        .auskunft-card.is-kb:not(.open) {
           border-color: var(--border-color);
         }
       }
@@ -3225,11 +3229,11 @@
         transform: rotate(180deg);
       }
       .auskunft-card .acc-body {
-        margin: 0 12px 12px;
-        padding: 12px 12px 14px;
+        margin: 0;
+        padding: 16px;
         border-top: 1px solid var(--border-color);
-        border-radius: 0 0 10px 10px;
-        background: var(--card-inner);
+        border-radius: 0;
+        background: transparent;
         color: #cbd5e1;
         font-size: 16px;
         line-height: 1.65;
@@ -3274,6 +3278,9 @@
         .auskunft-card-head {
           min-height: 56px;
           padding: 16px 18px;
+        }
+        .auskunft-card .acc-body {
+          padding: 18px;
         }
         .auskunft-card .acc-title {
           font-size: 16px;
