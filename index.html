@@ -4081,6 +4081,28 @@
       #app-toast.toast-error .toast-mark {
         background: #ef4444;
       }
+      #app-toast-msg.toast-stats {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+      }
+      #app-toast-msg.toast-stats .toast-stat:not(:last-child)::after {
+        content: "·";
+        padding: 0 0.4em;
+      }
+      @media (max-width: 600px) {
+        #app-toast-msg.toast-stats {
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          align-items: flex-start;
+          gap: 2px;
+        }
+        #app-toast-msg.toast-stats .toast-stat:not(:last-child)::after {
+          content: none;
+          padding: 0;
+        }
+      }
 
       /* Sync Progress Modal */
       .sync-modal {
@@ -9028,13 +9050,29 @@
 
       // Toast Notification
       let toastHideTimer = null;
-      function showToast(msg, kind) {
+      function showToast(msg, kind, lines) {
         const box = document.getElementById("app-toast");
         const msgEl = document.getElementById("app-toast-msg");
         const iconUse = document.getElementById("toast-icon-use");
         if (!box) return;
-        if (msgEl) msgEl.textContent = msg;
-        else box.textContent = msg;
+        const statLines = Array.isArray(lines)
+          ? lines.map((line) => String(line || "").trim()).filter(Boolean)
+          : [];
+        if (msgEl) {
+          msgEl.replaceChildren();
+          if (statLines.length > 1) {
+            msgEl.classList.add("toast-stats");
+            statLines.forEach((line) => {
+              const part = document.createElement("span");
+              part.className = "toast-stat";
+              part.textContent = line;
+              msgEl.appendChild(part);
+            });
+          } else {
+            msgEl.classList.remove("toast-stats");
+            msgEl.textContent = statLines[0] || msg;
+          }
+        } else box.textContent = msg;
         box.classList.remove("show", "toast-ok", "toast-warn", "toast-error");
         if (kind === "ok" || kind === "warn" || kind === "error") {
           box.classList.add("toast-" + kind);
@@ -14645,10 +14683,21 @@
             "warn",
           );
         } else if (missing > 0) {
-          showToast(tf("sync_partial", { artikel, farben, cached, missing }), "warn");
+          const lines = [
+            tf("sync_stat_artikel", { n: artikel }),
+            tf("sync_stat_farben", { n: farben }),
+            tf("sync_stat_drawings_missing", { n: missing }),
+          ];
+          showToast(tf("sync_partial", { artikel, farben, cached, missing }), "warn", lines);
         } else {
           const newly = added > 0 ? tf("sync_newly", { n: added }) : "";
-          showToast(tf("sync_ok", { artikel, farben, cached, newly }), "ok");
+          const lines = [
+            tf("sync_stat_artikel", { n: artikel }),
+            tf("sync_stat_farben", { n: farben }),
+            tf("sync_stat_drawings", { n: cached }),
+          ];
+          if (added > 0) lines.push(tf("sync_stat_new", { n: added }));
+          showToast(tf("sync_ok", { artikel, farben, cached, newly }), "ok", lines);
         }
       }
 

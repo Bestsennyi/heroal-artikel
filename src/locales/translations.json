@@ -699,6 +699,31 @@
       "en": "{artikel} articles · {farben} colours · {cached} drawings{newly}",
       "ru": "{artikel} артикулов · {farben} красок · {cached} чертежей{newly}"
     },
+    "sync_stat_artikel": {
+      "de": "{n} Artikel",
+      "en": "{n} articles",
+      "ru": "{n} артикулов"
+    },
+    "sync_stat_farben": {
+      "de": "{n} Farben",
+      "en": "{n} colours",
+      "ru": "{n} красок"
+    },
+    "sync_stat_drawings": {
+      "de": "{n} Zeichnungen",
+      "en": "{n} drawings",
+      "ru": "{n} чертежей"
+    },
+    "sync_stat_drawings_missing": {
+      "de": "{n} Zeichnungen fehlen",
+      "en": "{n} drawings missing",
+      "ru": "нет {n} чертежей"
+    },
+    "sync_stat_new": {
+      "de": "{n} neu",
+      "en": "{n} new",
+      "ru": "{n} новых"
+    },
     "sync_newly": {
       "de": " · {n} neu",
       "en": " · {n} new",
