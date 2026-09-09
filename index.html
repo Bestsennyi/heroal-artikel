@@ -1455,6 +1455,11 @@
         white-space: nowrap;
       }
       #prof-list .result-chip-masse {
+        background: #2a3038;
+        border: 1px solid #6b7380;
+        color: #c5ccd4;
+      }
+      #prof-list .result-chip-system {
         background: rgba(245, 158, 11, 0.15);
         border: 1px solid rgba(245, 158, 11, 0.3);
         color: #fcd34d;
@@ -2594,6 +2599,11 @@
         line-height: 1.4;
         box-shadow: none;
       }
+      .display-card-prof .info-tags-row .tag-masse {
+        background: #2a3038;
+        color: #c5ccd4;
+        border: 1px solid #6b7380;
+      }
       .display-card-prof .info-tags-row .tag-size {
         background: rgba(69, 26, 3, 0.7);
         color: #fcd34d;
@@ -2623,6 +2633,11 @@
         background: rgba(16, 185, 129, 0.18);
         color: #6ee7b7;
         border: 1px solid rgba(16, 185, 129, 0.4);
+      }
+      .tag-masse {
+        background: #1f242b;
+        color: #c5ccd4;
+        border: 1px solid #4b5563;
       }
       .tag-size {
         background: #261f0c;
@@ -5925,8 +5940,9 @@
                   <span class="info-name" id="prof-title-de">--</span>
                 </div>
                 <div class="info-tags-row">
-                  <span class="tag-chip tag-size" id="prof-size">--</span>
                   <span class="tag-chip tag-kat" id="prof-kat">--</span>
+                  <span class="tag-chip tag-size" id="prof-size">--</span>
+                  <span class="tag-chip tag-masse" id="prof-masse" hidden></span>
                 </div>
                 <div class="info-artnr-row">
                   <span class="tag-artnr" id="prof-artnr">--</span>
@@ -9285,6 +9301,7 @@
       async function buildArticleShareBlob(item, nr) {
         const name = locField(item, "name", appLang) || item.name_de || "";
         const masse = articleMasse(item);
+        const system = articleSystem(item);
         const category = articleCategory(item);
         const hint = articleHint(item);
         const imgEl = document.getElementById("prof-img");
@@ -9302,7 +9319,7 @@
         const nameLines = wrapCanvasLines(measure, name, cssW - pad * 2, 3);
         measure.font = "400 15px " + font;
         const hintLines = wrapCanvasLines(measure, hint, cssW - pad * 2, 10);
-        const chipsH = masse || category ? 36 : 0;
+        const chipsH = masse || system || category ? 36 : 0;
         const hintBlock = hintLines.length
           ? 28 + hintLines.length * 22
           : 0;
@@ -9403,8 +9420,9 @@
         ctx.textBaseline = "middle";
         ctx.font = "600 14px " + font;
         const chips = [];
-        if (masse) chips.push({ text: masse, bg: "rgba(245, 158, 11, 0.18)", fg: "#fcd34d", bd: "rgba(245, 158, 11, 0.35)" });
         if (category) chips.push({ text: category, bg: "rgba(168, 85, 247, 0.2)", fg: "#d8b4fe", bd: "rgba(168, 85, 247, 0.4)" });
+        if (system) chips.push({ text: system, bg: "rgba(245, 158, 11, 0.18)", fg: "#fcd34d", bd: "rgba(245, 158, 11, 0.35)" });
+        if (masse) chips.push({ text: masse, bg: "rgba(42, 48, 56, 0.95)", fg: "#c5ccd4", bd: "rgba(107, 115, 128, 0.9)" });
         if (chips.length) {
           const gap = 10;
           const widths = chips.map((c) => ctx.measureText(c.text).width + 28);
@@ -9483,7 +9501,7 @@
         if (!item) return;
         const nr = articleNr(item, key);
         const name = locField(item, "name", appLang) || item.name_de || "";
-        const masse = articleMasse(item);
+        const system = articleSystem(item);
         const btn = document.getElementById("btn-share-prof");
         if (btn) btn.disabled = true;
         try {
@@ -9491,7 +9509,7 @@
           const filename = shareArticleFileName(nr);
           const file = new File([blob], filename, { type: "image/png" });
           const title = "heroal " + nr + (name ? " - " + name : "");
-          const text = name + (masse ? " (" + masse + ")" : "");
+          const text = name + (system ? " (" + system + ")" : "");
           const payload = { title: title, text: text, files: [file] };
           const canFiles =
             typeof navigator.canShare === "function" &&
@@ -12406,6 +12424,7 @@
               const nr = articleNr(item, key);
               const name = locField(item, "name", appLang) || item.name_de || "";
               const masse = articleMasse(item);
+              const system = articleSystem(item);
               const category = articleCategory(item);
               const media = articleImageEntries(item)[0];
               const thumb = (media && media.url) || getSvgPlaceholder(nr);
@@ -12418,9 +12437,12 @@
               const catChip = category
                 ? `<span class="result-chip result-chip-cat">${escapeHtml(category)}</span>`
                 : "";
+              const systemChip = system
+                ? `<span class="result-chip result-chip-system">${escapeHtml(system)}</span>`
+                : "";
               const stats =
-                masseChip || catChip
-                  ? `<span class="result-row-stats">${masseChip}${catChip}</span>`
+                masseChip || catChip || systemChip
+                  ? `<span class="result-row-stats">${catChip}${systemChip}${masseChip}</span>`
                   : "";
               return `<button type="button" class="result-row${active}" data-art="${escapeHtml(key)}"><span class="result-row-thumb"><img class="${invertClass.trim()}" src="${escapeHtml(thumb)}" alt=""></span><span class="result-row-meta"><span class="result-row-title"><span class="result-row-code">${escapeHtml(nr)}</span><span class="result-row-name">${escapeHtml(name)}</span></span>${stats}</span></button>`;
             })
@@ -12665,10 +12687,22 @@
         if (artnrEl) artnrEl.innerText = nr;
         document.getElementById("prof-title-de").innerText = name;
         lastActiveArticleName = name;
-        const sizeEl = document.getElementById("prof-size");
+        const masseEl = document.getElementById("prof-masse");
         const masse = articleMasse(it);
-        const system = articleSystem(it);
-        const sizeLabel = masse || system;
+        if (masseEl) {
+          if (masse) {
+            masseEl.innerText = masse;
+            masseEl.hidden = false;
+          } else {
+            masseEl.innerText = "";
+            masseEl.hidden = true;
+          }
+        }
+        const katEl = document.getElementById("prof-kat");
+        const category = articleCategory(it);
+        katEl.innerText = category || "heroal";
+        const sizeEl = document.getElementById("prof-size");
+        const sizeLabel = articleSystem(it);
         if (sizeLabel) {
           sizeEl.innerText = sizeLabel;
           sizeEl.style.display = "";
@@ -12676,9 +12710,6 @@
           sizeEl.innerText = "";
           sizeEl.style.display = "none";
         }
-        const katEl = document.getElementById("prof-kat");
-        const category = articleCategory(it);
-        katEl.innerText = category || "heroal";
 
         renderProfileGallery(it, nr);
         renderProfileNote(it);
