@@ -2308,7 +2308,7 @@
         display: none;
         position: absolute;
         top: 10px;
-        right: 10px;
+        left: 10px;
         z-index: 3;
         pointer-events: none;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -4550,8 +4550,7 @@
         width: 100%;
         max-width: 560px;
         max-height: min(80vh, 640px);
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden;
         background: #131b2e;
         border: 1px solid rgba(148, 163, 184, 0.22);
         border-radius: 16px;
@@ -4560,41 +4559,59 @@
         flex-direction: column;
         gap: 12px;
         cursor: pointer;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
       }
       .note-modal-head {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 12px;
         padding-right: 32px;
+        flex-shrink: 0;
         font-size: 15px;
         font-weight: 700;
         color: #f8fafc;
       }
       .note-modal-actions {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        z-index: 4;
         display: flex;
         align-items: center;
-        gap: 6px;
-        flex-shrink: 0;
+        justify-content: flex-end;
+        margin: 0;
+        pointer-events: none;
       }
       #note-dialog-copy {
-        width: 36px;
-        height: 36px;
-        min-height: 36px;
+        width: 28px;
+        height: 28px;
+        min-height: 28px;
         padding: 0;
         gap: 0;
+        border-radius: 9999px;
+        pointer-events: auto;
+      }
+      #note-dialog-copy .ico {
+        width: 12px;
+        height: 12px;
       }
       #note-dialog-copy span {
         display: none;
       }
       .note-modal-body {
         margin: 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        flex: 1 1 auto;
+        padding-right: 4px;
+        padding-bottom: 4px;
         font-size: 1rem;
         line-height: 1.55;
         color: #e2e8f0;
         white-space: pre-wrap;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
       }
       .account-sheet {
         display: none;
@@ -4795,8 +4812,8 @@
         flex-direction: column;
         gap: 14px;
         padding: 16px;
-        padding-top: max(40px, env(safe-area-inset-top, 0px));
-        padding-right: max(40px, env(safe-area-inset-right, 0px));
+        padding-top: max(16px, env(safe-area-inset-top, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
         pointer-events: auto;
         overscroll-behavior: none;
         isolation: isolate;
@@ -4870,9 +4887,9 @@
       .zoom-thumb.active {
         border-color: #38bdf8;
       }
-      .zoom-close {
-        top: max(8px, env(safe-area-inset-top, 0px));
-        right: max(8px, env(safe-area-inset-right, 0px));
+      .zoom-stage .zoom-close {
+        top: 4px;
+        right: 4px;
         z-index: 5;
       }
       .drawing-hover-pop {
@@ -6422,6 +6439,9 @@
     <div id="zoom-dialog" class="zoom-modal">
       <div class="zoom-stage" id="zoom-stage">
         <span class="zoom-nr" id="zoom-nr" hidden></span>
+        <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
         <button
           type="button"
           class="media-mode-btn"
@@ -6433,9 +6453,6 @@
         </button>
         <img id="zoom-img-target" class="zoom-img-view" src="" alt="Zoom" data-i18n-title="a11y.zoom" />
       </div>
-      <button type="button" class="zoom-close" id="zoom-close" aria-label="Close" data-i18n-title="a11y.close">
-        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-      </button>
       <div id="zoom-thumbs" class="zoom-thumbs"></div>
     </div>
 
@@ -6458,21 +6475,21 @@
         </button>
         <div class="note-modal-head">
           <span id="note-dialog-title" data-i18n="catalog_ui.hint_title">Beschreibung</span>
-          <div class="note-modal-actions">
-            <button
-              type="button"
-              class="btn-copy-action"
-              id="note-dialog-copy"
-              data-i18n-title="catalog_ui.copy_hint_title"
-              title="Beschreibung kopieren"
-              aria-label="Beschreibung kopieren"
-            >
-              <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
-              <span data-i18n="catalog_ui.copy_hint_btn">Beschreibung</span>
-            </button>
-          </div>
         </div>
         <p id="note-dialog-body" class="note-modal-body"></p>
+        <div class="note-modal-actions">
+          <button
+            type="button"
+            class="btn-copy-action"
+            id="note-dialog-copy"
+            data-i18n-title="catalog_ui.copy_hint_title"
+            title="Beschreibung kopieren"
+            aria-label="Beschreibung kopieren"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-copy"></use></svg>
+            <span data-i18n="catalog_ui.copy_hint_btn">Beschreibung</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -13420,11 +13437,14 @@
         const dlg = document.getElementById("zoom-dialog");
         const stage = document.getElementById("zoom-stage");
         const closeBtn = document.getElementById("zoom-close");
-        if (closeBtn) closeBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          armZoomGhostGuard();
-          closeZoom();
-        });
+        if (closeBtn) {
+          closeBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
+          closeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            armZoomGhostGuard();
+            closeZoom();
+          });
+        }
         const zoomMode = document.getElementById("zoom-media-mode");
         if (zoomMode) {
           zoomMode.addEventListener("click", toggleMediaInvert);
@@ -13471,7 +13491,7 @@
         );
         stage.addEventListener("pointerdown", (e) => {
           if (!isZoomOpen()) return;
-          if (e.target.closest && e.target.closest(".media-mode-btn")) return;
+          if (e.target.closest && e.target.closest(".zoom-close, .media-mode-btn")) return;
           zoomDismissBlocked = false;
           if (zoomPointers.size === 0) {
             zoomTapDismiss = { x: e.clientX, y: e.clientY, moved: false, pinch: false };
