@@ -3573,8 +3573,8 @@
           text-align: left;
         }
       }
-      /* Medium PC / tablet / phone: icon header, identity lives in account sheet */
-      @media (max-width: 1279px) {
+      /* Tablets, 13" iPads, 1366 laptops: icon header, identity lives in account sheet */
+      @media (max-width: 1439px) {
         header {
           display: flex;
           justify-content: space-between;
@@ -3654,19 +3654,9 @@
           box-shadow: none;
         }
         header .hdr-user,
-        header .hdr-logout {
+        header .hdr-logout,
+        header .hdr-lang-dd {
           display: none !important;
-        }
-        header .hdr-lang-trigger {
-          width: 44px;
-          min-width: 44px;
-          padding: 0;
-          justify-content: center;
-          gap: 0;
-        }
-        header .hdr-lang-trigger .lang-flag,
-        header .hdr-lang-trigger .hdr-lang-caret {
-          display: none;
         }
         #btn-hdr-account {
           display: inline-flex;
@@ -4403,7 +4393,8 @@
       .sync-close,
       .account-sheet-close,
       .zoom-close,
-      .note-modal-close {
+      .note-modal-close,
+      .drawing-hover-pop-close {
         position: absolute;
         top: 4px;
         right: 4px;
@@ -4429,7 +4420,8 @@
       .sync-close:hover,
       .account-sheet-close:hover,
       .zoom-close:hover,
-      .note-modal-close:hover {
+      .note-modal-close:hover,
+      .drawing-hover-pop-close:hover {
         color: #e2e8f0;
         filter: none;
         background: rgba(148, 163, 184, 0.12);
@@ -4441,7 +4433,8 @@
       .sync-close:focus-visible,
       .account-sheet-close:focus-visible,
       .zoom-close:focus-visible,
-      .note-modal-close:focus-visible {
+      .note-modal-close:focus-visible,
+      .drawing-hover-pop-close:focus-visible {
         outline: 2px solid #38bdf8;
         outline-offset: 2px;
       }
@@ -4450,7 +4443,8 @@
       .sync-close .ico,
       .account-sheet-close .ico,
       .zoom-close .ico,
-      .note-modal-close .ico {
+      .note-modal-close .ico,
+      .drawing-hover-pop-close .ico {
         width: 12px;
         height: 12px;
       }
@@ -4894,9 +4888,9 @@
       }
       .drawing-hover-pop {
         position: fixed;
-        width: 240px;
-        height: 240px;
-        padding: 8px;
+        width: 264px;
+        height: 264px;
+        padding: 28px 10px 10px;
         background: rgba(15, 23, 42, 0.95);
         border: 1px solid rgba(56, 189, 248, 0.6);
         border-radius: 12px;
@@ -4915,7 +4909,7 @@
         height: auto;
         justify-content: flex-start;
         gap: 8px;
-        padding: 8px 8px 10px;
+        padding: 28px 10px 12px;
       }
       .drawing-hover-pop[hidden] {
         display: none;
@@ -4938,7 +4932,7 @@
       .drawing-hover-pop.is-article .drawing-hover-pop-stage,
       .drawing-hover-pop.is-color .drawing-hover-pop-stage {
         flex: none;
-        height: 216px;
+        height: 228px;
       }
       .drawing-hover-pop-nr {
         display: none;
@@ -4972,25 +4966,31 @@
         pointer-events: auto;
         cursor: pointer;
       }
+      .drawing-hover-pop-close {
+        top: 2px;
+        right: 2px;
+        pointer-events: auto;
+        z-index: 5;
+      }
       @media (max-width: 600px) {
         .drawing-hover-pop {
-          width: 288px;
-          height: 288px;
+          width: 312px;
+          height: 312px;
           z-index: 150;
         }
         .drawing-hover-pop.is-article .drawing-hover-pop-stage,
         .drawing-hover-pop.is-color .drawing-hover-pop-stage {
-          height: 259px;
+          height: 272px;
         }
       }
       @media (min-width: 901px) {
         .drawing-hover-pop {
-          width: 312px;
-          height: 312px;
+          width: 336px;
+          height: 336px;
         }
         .drawing-hover-pop.is-article .drawing-hover-pop-stage,
         .drawing-hover-pop.is-color .drawing-hover-pop-stage {
-          height: 281px;
+          height: 296px;
         }
       }
       .settings-card {
@@ -6457,6 +6457,9 @@
     </div>
 
     <div id="drawing-hover-pop" class="drawing-hover-pop" hidden>
+      <button type="button" class="drawing-hover-pop-close" id="drawing-hover-pop-close" aria-label="Close" data-i18n-title="a11y.close">
+        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
       <div class="drawing-hover-pop-stage">
         <img alt="" />
         <span
@@ -11661,6 +11664,15 @@
         window.addEventListener("scroll", hideDrawingHover, true);
         window.addEventListener("resize", updateNoteClamp);
         const drawingPop = document.getElementById("drawing-hover-pop");
+        const drawingPopClose = document.getElementById("drawing-hover-pop-close");
+        if (drawingPopClose) {
+          drawingPopClose.addEventListener("pointerdown", (e) => e.stopPropagation());
+          drawingPopClose.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            hideDrawingHover();
+          });
+        }
         if (drawingPop) {
           drawingPop.addEventListener("click", (e) => {
             if (!drawingPreviewSticky) return;
