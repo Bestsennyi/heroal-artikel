@@ -213,6 +213,36 @@
       "en": "All",
       "ru": "Все"
     },
+    "filter_title": {
+      "de": "Filter",
+      "en": "Filter",
+      "ru": "Фильтр"
+    },
+    "filter_kategorie": {
+      "de": "Kategorie",
+      "en": "Category",
+      "ru": "Категория"
+    },
+    "filter_system": {
+      "de": "System",
+      "en": "System",
+      "ru": "Система"
+    },
+    "filter_kollektion": {
+      "de": "Kollektion",
+      "en": "Collection",
+      "ru": "Коллекция"
+    },
+    "filter_reset": {
+      "de": "Zurücksetzen",
+      "en": "Reset",
+      "ru": "Сбросить"
+    },
+    "filter_done": {
+      "de": "Fertig",
+      "en": "Done",
+      "ru": "Готово"
+    },
     "cat_ral": {
       "de": "RAL",
       "en": "RAL",
@@ -777,6 +807,16 @@
       "de": "Ziffernblock",
       "en": "Numpad",
       "ru": "Цифровая клавиатура"
+    },
+    "filter": {
+      "de": "Artikel filtern",
+      "en": "Filter articles",
+      "ru": "Фильтр артикулов"
+    },
+    "filter_farben": {
+      "de": "Farben filtern",
+      "en": "Filter colours",
+      "ru": "Фильтр красок"
     },
     "previous": {
       "de": "Vorheriges Bild",

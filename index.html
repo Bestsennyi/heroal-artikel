@@ -97,6 +97,17 @@
         -webkit-tap-highlight-color: transparent;
         user-select: none;
       }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
       input,
       textarea {
         user-select: text;
@@ -1132,6 +1143,8 @@
         flex-shrink: 0;
         padding: 10px 12px 8px;
         background: transparent;
+        position: relative;
+        z-index: 20;
       }
       .zone-scroll {
         flex: 1;
@@ -1449,6 +1462,7 @@
         align-items: center;
         flex-shrink: 0;
         padding: 2px 8px;
+        border: 1px solid transparent;
         border-radius: 6px;
         font-size: 0.75rem;
         font-weight: 500;
@@ -1459,35 +1473,14 @@
         border: 1px solid #6b7380;
         color: #c5ccd4;
       }
-      #prof-list .result-chip-system {
-        background: rgba(245, 158, 11, 0.15);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        color: #fcd34d;
+      #col-list .result-row-stats {
+        flex-wrap: nowrap;
       }
-      #col-list .result-chip-matt {
-        background: #1f2124;
-        border: 1px solid #444950;
-        color: #d1d5db;
-      }
-      #prof-list .result-chip-cat {
-        background: rgba(168, 85, 247, 0.2);
-        border: 1px solid rgba(168, 85, 247, 0.4);
-        color: #d8b4fe;
-      }
-      #col-list .result-chip-fine {
-        background: #241f1c;
-        border: 1px solid #544842;
-        color: #dfd5cf;
-      }
-      #col-list .result-chip-gloss {
-        background: #17212b;
-        border: 1px solid #3b5266;
-        color: #cce3f5;
-      }
-      #col-list .result-chip-heroal {
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.35);
-        color: #6ee7b7;
+      #col-list .result-chip-hex {
+        background: #2a3038;
+        border: 1px solid #6b7380;
+        color: #c5ccd4;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       }
       @media (min-width: 640px) {
         #prof-list .result-row-name,
@@ -1535,6 +1528,161 @@
       }
       .search-stack .input-box {
         --search-icon-slot: 88px;
+      }
+      .catalog-search-bar,
+      .artikel-search-bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+      }
+      .catalog-search-bar .input-box,
+      .artikel-search-bar .input-box {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      .artikel-filter-btn {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        flex-shrink: 0;
+        touch-action: manipulation;
+      }
+      .artikel-filter-btn.is-on,
+      .catalog-search-bar.is-open .artikel-filter-btn,
+      .artikel-search-bar.is-open .artikel-filter-btn {
+        border-color: #00a2ff;
+        color: #7dd3fc;
+        background: #1e3a5f;
+        box-shadow: 0 0 12px rgba(0, 162, 255, 0.28);
+      }
+      .artikel-filter-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background: #00a2ff;
+        color: #041018;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 18px;
+        text-align: center;
+        pointer-events: none;
+      }
+      .artikel-filter-count[hidden] {
+        display: none !important;
+      }
+      .artikel-filter-pop {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 162, 255, 0.4);
+        background: rgba(15, 23, 42, 0.96);
+        backdrop-filter: blur(16px) saturate(1.1);
+        -webkit-backdrop-filter: blur(16px) saturate(1.1);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+      }
+      .catalog-search-bar.is-open .artikel-filter-pop,
+      .artikel-search-bar.is-open .artikel-filter-pop,
+      .artikel-filter-pop:not([hidden]) {
+        display: flex;
+      }
+      .artikel-filter-pop[hidden] {
+        display: none !important;
+      }
+      .artikel-filter-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        min-width: 0;
+      }
+      .artikel-filter-col {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .artikel-filter-col-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #7dd3fc;
+        padding: 0 4px;
+      }
+      .artikel-filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 240px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 2px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+      .artikel-filter-option {
+        min-height: 40px;
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #334155;
+        background: #0f172a;
+        color: #e2e8f0;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .artikel-filter-option:hover {
+        border-color: #64748b;
+        background: #1e293b;
+      }
+      .artikel-filter-option.active {
+        border-color: #00a2ff;
+        background: rgba(0, 162, 255, 0.14);
+        color: #e0f2fe;
+        box-shadow: 0 0 10px rgba(0, 162, 255, 0.18);
+      }
+      .artikel-filter-foot {
+        display: flex;
+        gap: 8px;
+        padding-top: 2px;
+      }
+      .artikel-filter-foot button {
+        flex: 1 1 0;
+        min-height: 42px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .artikel-filter-reset {
+        border: 1px solid #475569;
+        background: #0f172a;
+        color: #cbd5e1;
+      }
+      .artikel-filter-done {
+        border: 1px solid #00a2ff;
+        background: #12324d;
+        color: #e0f2fe;
       }
       .input-box {
         position: relative;
@@ -2568,6 +2716,7 @@
         font-size: 10px;
         font-weight: 600;
         padding: 2px 8px;
+        border: 1px solid transparent;
         border-radius: 4px;
       }
       .display-card-prof .info-tags-row .tag-chip,
@@ -2604,50 +2753,10 @@
         color: #c5ccd4;
         border: 1px solid #6b7380;
       }
-      .display-card-prof .info-tags-row .tag-size {
-        background: rgba(69, 26, 3, 0.7);
-        color: #fcd34d;
-        border: 1px solid rgba(251, 191, 36, 0.5);
-      }
-      .display-card-prof .info-tags-row .tag-kat {
-        background: rgba(46, 16, 101, 0.7);
-        color: #d8b4fe;
-        border: 1px solid rgba(192, 132, 252, 0.5);
-      }
-      .display-card-color .info-tags-row .tag-matt {
-        background: #1f2124;
-        color: #d1d5db;
-        border: 1px solid #444950;
-      }
-      .display-card-color .info-tags-row .tag-fine {
-        background: #241f1c;
-        color: #dfd5cf;
-        border: 1px solid #544842;
-      }
-      .display-card-color .info-tags-row .tag-gloss {
-        background: #17212b;
-        color: #cce3f5;
-        border: 1px solid #3b5266;
-      }
-      .display-card-color .info-tags-row .tag-heroal {
-        background: rgba(16, 185, 129, 0.18);
-        color: #6ee7b7;
-        border: 1px solid rgba(16, 185, 129, 0.4);
-      }
       .tag-masse {
         background: #1f242b;
         color: #c5ccd4;
         border: 1px solid #4b5563;
-      }
-      .tag-size {
-        background: #261f0c;
-        color: var(--highlight);
-        border: 1px solid #574618;
-      }
-      .tag-kat {
-        background: #0e2b48;
-        color: #7dd3fc;
-        border: 1px solid #1e496d;
       }
       .tag-hex {
         background: #1c1917;
@@ -2869,21 +2978,6 @@
         display: inline-flex;
         bottom: 12px;
         right: 12px;
-      }
-      .display-card-color .info-tags-row .tag-surface-gloss {
-        background: #17212b;
-        color: #cce3f5;
-        border: 1px solid #3b5266;
-      }
-      .display-card-color .info-tags-row .tag-surface-matt {
-        background: #1f2124;
-        color: #d1d5db;
-        border: 1px solid #444950;
-      }
-      .display-card-color .info-tags-row .tag-surface-fine {
-        background: #241f1c;
-        color: #dfd5cf;
-        border: 1px solid #544842;
       }
       .color-hex-panel {
         display: none;
@@ -5582,6 +5676,9 @@
         <circle cx="11" cy="11" r="8"/>
         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+      </symbol>
       <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
         <line x1="12" y1="9" x2="12" y2="13"/>
@@ -5954,39 +6051,77 @@
                   <svg class="zone-ico" aria-hidden="true"><use href="#i-box"></use></svg>
                   <span class="zone-label" id="lbl-prof-head">Artikel</span>
                 </div>
-                <div class="input-box">
-                  <input
-                    type="text"
-                    id="find-prof"
-                    class="search-field"
-                    placeholder="Artikelnummer oder Name eingeben..."
-                    data-i18n-placeholder="catalog_ui.ph_artikel"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                    inputmode="text"
-                    enterkeyhint="search"
-                  />
-                  <div class="search-field-actions">
-                    <button
-                      type="button"
-                      class="search-icon-btn btn-clear"
-                      id="clr-prof"
-                      aria-label="Clear" data-i18n-title="a11y.clear"
-                    >
-                      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                    </button>
-                    <button
-                      type="button"
-                      class="search-icon-btn osk-toggle"
-                      id="btn-osk-prof"
-                      data-osk="osk-prof"
-                      aria-label="Numpad" data-i18n-title="a11y.numpad"
-                      aria-pressed="false"
-                    >
-                      <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-                    </button>
+                <div class="catalog-search-bar artikel-search-bar" id="artikel-search-bar">
+                  <button
+                    type="button"
+                    class="search-icon-btn artikel-filter-btn"
+                    id="btnFilterToggle"
+                    aria-expanded="false"
+                    aria-controls="artikel-filter-pop"
+                    aria-label="Filter"
+                    title="Filter"
+                    data-i18n-title="a11y.filter"
+                  >
+                    <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
+                    <span class="artikel-filter-count" id="artikel-filter-count" hidden>0</span>
+                  </button>
+                  <div class="input-box">
+                    <input
+                      type="text"
+                      id="find-prof"
+                      class="search-field"
+                      placeholder="Artikelnummer oder Name eingeben..."
+                      data-i18n-placeholder="catalog_ui.ph_artikel"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      inputmode="text"
+                      enterkeyhint="search"
+                    />
+                    <div class="search-field-actions">
+                      <button
+                        type="button"
+                        class="search-icon-btn btn-clear"
+                        id="clr-prof"
+                        aria-label="Clear" data-i18n-title="a11y.clear"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="search-icon-btn osk-toggle"
+                        id="btn-osk-prof"
+                        data-osk="osk-prof"
+                        aria-label="Numpad" data-i18n-title="a11y.numpad"
+                        aria-pressed="false"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    id="artikel-filter-pop"
+                    class="artikel-filter-pop"
+                    hidden
+                    role="dialog"
+                    aria-labelledby="artikel-filter-title"
+                  >
+                    <span id="artikel-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
+                    <div class="artikel-filter-cols">
+                      <div class="artikel-filter-col">
+                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kategorie">Kategorie</div>
+                        <div class="artikel-filter-list" id="artikel-filter-kategorie"></div>
+                      </div>
+                      <div class="artikel-filter-col">
+                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
+                        <div class="artikel-filter-list" id="artikel-filter-system"></div>
+                      </div>
+                    </div>
+                    <div class="artikel-filter-foot">
+                      <button type="button" class="artikel-filter-reset" id="artikel-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
+                      <button type="button" class="artikel-filter-done" id="artikel-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
+                    </div>
                   </div>
                 </div>
                 <div class="osk is-hidden" id="osk-prof" data-target="find-prof"></div>
@@ -6143,39 +6278,77 @@
                   <svg class="zone-ico" aria-hidden="true"><use href="#i-palette"></use></svg>
                   <span class="zone-label" id="lbl-color-head">Farben</span>
                 </div>
-                <div class="input-box">
-                  <input
-                    type="text"
-                    id="find-color"
-                    class="search-field"
-                    placeholder="Farbnummer oder Farbname eingeben..."
-                    data-i18n-placeholder="catalog_ui.ph_farben"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                    inputmode="text"
-                    enterkeyhint="search"
-                  />
-                  <div class="search-field-actions">
-                    <button
-                      type="button"
-                      class="search-icon-btn btn-clear"
-                      id="clr-col"
-                      aria-label="Clear" data-i18n-title="a11y.clear"
-                    >
-                      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                    </button>
-                    <button
-                      type="button"
-                      class="search-icon-btn osk-toggle"
-                      id="btn-osk-color"
-                      data-osk="osk-color"
-                      aria-label="Numpad" data-i18n-title="a11y.numpad"
-                      aria-pressed="false"
-                    >
-                      <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-                    </button>
+                <div class="catalog-search-bar" id="farben-search-bar">
+                  <button
+                    type="button"
+                    class="search-icon-btn artikel-filter-btn"
+                    id="btnFarbeFilterToggle"
+                    aria-expanded="false"
+                    aria-controls="farben-filter-pop"
+                    aria-label="Filter"
+                    title="Filter"
+                    data-i18n-title="a11y.filter_farben"
+                  >
+                    <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
+                    <span class="artikel-filter-count" id="farben-filter-count" hidden>0</span>
+                  </button>
+                  <div class="input-box">
+                    <input
+                      type="text"
+                      id="find-color"
+                      class="search-field"
+                      placeholder="Farbnummer oder Farbname eingeben..."
+                      data-i18n-placeholder="catalog_ui.ph_farben"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      inputmode="text"
+                      enterkeyhint="search"
+                    />
+                    <div class="search-field-actions">
+                      <button
+                        type="button"
+                        class="search-icon-btn btn-clear"
+                        id="clr-col"
+                        aria-label="Clear" data-i18n-title="a11y.clear"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="search-icon-btn osk-toggle"
+                        id="btn-osk-color"
+                        data-osk="osk-color"
+                        aria-label="Numpad" data-i18n-title="a11y.numpad"
+                        aria-pressed="false"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    id="farben-filter-pop"
+                    class="artikel-filter-pop"
+                    hidden
+                    role="dialog"
+                    aria-labelledby="farben-filter-title"
+                  >
+                    <span id="farben-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
+                    <div class="artikel-filter-cols">
+                      <div class="artikel-filter-col">
+                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kollektion">Kollektion</div>
+                        <div class="artikel-filter-list" id="farben-filter-kollektion"></div>
+                      </div>
+                      <div class="artikel-filter-col">
+                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
+                        <div class="artikel-filter-list" id="farben-filter-system"></div>
+                      </div>
+                    </div>
+                    <div class="artikel-filter-foot">
+                      <button type="button" class="artikel-filter-reset" id="farben-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
+                      <button type="button" class="artikel-filter-done" id="farben-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
+                    </div>
                   </div>
                 </div>
                 <div class="osk is-hidden" id="osk-color" data-target="find-color"></div>
@@ -6223,6 +6396,7 @@
                 </div>
                 <div class="info-tags-row">
                   <span class="tag-chip tag-surface" id="col-surface"></span>
+                  <span class="tag-chip tag-kat" id="col-kollektion" hidden></span>
                 </div>
                 <div class="info-artnr-row">
                   <span class="tag-artnr" id="col-code">--</span>
@@ -6700,6 +6874,10 @@
         var findColor = document.getElementById("find-color");
         if (findProf) findProf.dispatchEvent(new Event("input"));
         if (findColor) findColor.dispatchEvent(new Event("input"));
+        if (typeof renderArtikelFilterOptions === "function") renderArtikelFilterOptions();
+        if (typeof syncArtikelFilterButton === "function") syncArtikelFilterButton();
+        if (typeof renderFarbeFilterOptions === "function") renderFarbeFilterOptions();
+        if (typeof syncFarbeFilterButton === "function") syncFarbeFilterButton();
         if (typeof renderAuskunft === "function") renderAuskunft();
       });
 
@@ -6994,6 +7172,88 @@
         return raw.charAt(0) === "#" ? raw : "#" + raw;
       }
 
+      function normalizeBadgeKey(text) {
+        return String(text || "")
+          .trim()
+          .replace(/ß/g, "ss")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/\s+/g, " ");
+      }
+
+      function hashBadgeKey(key) {
+        let h = 2166136261;
+        for (let i = 0; i < key.length; i++) {
+          h ^= key.charCodeAt(i);
+          h = Math.imul(h, 16777619);
+        }
+        return h >>> 0;
+      }
+
+      function badgeColorsFromText(text) {
+        const key = normalizeBadgeKey(text);
+        if (!key) return null;
+        const n = hashBadgeKey(key);
+        const mixed = Math.imul(n ^ (n >>> 16), 0x45d9f3b) >>> 0;
+        const slot = mixed % 17;
+        const hue = Math.round((slot * 137.508) % 360);
+        const sat = 64 + ((mixed >>> 8) % 14);
+        const lit = 62 + ((mixed >>> 16) % 10);
+        return {
+          fg: "hsl(" + hue + ", " + sat + "%, " + lit + "%)",
+          bg: "hsla(" + hue + ", " + sat + "%, 26%, 0.32)",
+          bd:
+            "hsla(" +
+            hue +
+            ", " +
+            sat +
+            "%, " +
+            Math.max(44, lit - 14) +
+            "%, 0.52)",
+        };
+      }
+
+      function badgeColorStyleAttr(text) {
+        const s = badgeColorsFromText(text);
+        if (!s) return "";
+        return (
+          ' style="background:' +
+          s.bg +
+          ";border-color:" +
+          s.bd +
+          ";color:" +
+          s.fg +
+          '"'
+        );
+      }
+
+      function applyBadgeColors(el, text) {
+        if (!el) return;
+        const s = badgeColorsFromText(text);
+        if (!s) {
+          el.style.background = "";
+          el.style.borderColor = "";
+          el.style.color = "";
+          return;
+        }
+        el.style.background = s.bg;
+        el.style.borderColor = s.bd;
+        el.style.color = s.fg;
+      }
+
+      function resultBadgeHtml(text) {
+        const label = String(text || "").trim();
+        if (!label) return "";
+        return (
+          '<span class="result-chip"' +
+          badgeColorStyleAttr(label) +
+          ">" +
+          escapeHtml(label) +
+          "</span>"
+        );
+      }
+
       function colorHint(col) {
         return (
           locField(col, "hinweis", appLang) ||
@@ -7049,6 +7309,66 @@
           add("heroal", "tag-heroal", "finish_heroal");
         }
         return out;
+      }
+
+      function colorKollektion(col) {
+        return String(
+          (col && (col.kollektion || col.collection || col.kollektion_de)) || "",
+        ).trim();
+      }
+
+      function colorCategoryKey(col) {
+        if (!col) return "";
+        const kol = colorKollektion(col);
+        if (kol) return kol;
+        const sheet = String(
+          col.kategorie_de || locField(col, "kategorie") || col.category || "",
+        ).trim();
+        if (sheet) return sheet;
+        const name = [
+          col.name_de,
+          col.name_en,
+          col.name_ru,
+          col.hinweis_de,
+          col.hinweis_en,
+          col.hinweis_ru,
+        ]
+          .filter(Boolean)
+          .join(" ");
+        const hay = name.toLowerCase();
+        if (/eloxal/.test(hay)) return "Eloxal";
+        if (/le corbusier/.test(hay)) return "Le Corbusier";
+        if (/db colours|db colors/.test(hay)) return "DB colours";
+        if (/heroal\s*sd|\bsd\b/.test(hay)) return "SD";
+        if (/\bvsr\b/.test(hay)) return "VSR";
+        if (/\(baum\)/i.test(name)) return "Baum";
+        if (/\(standard\)/i.test(name) || /\bstandard\b/i.test(hay)) {
+          return "Standard";
+        }
+        return "RAL";
+      }
+
+      function colorCategoryLabel(col) {
+        const kol = colorKollektion(col);
+        if (kol) return kol;
+        const key = colorCategoryKey(col);
+        if (key === "RAL") return t("catalog_ui.cat_ral") || key;
+        if (key === "SD") return t("catalog_ui.cat_sd") || key;
+        return locField(col, "kategorie") || key;
+      }
+
+      function colorSystemKey(col) {
+        if (!col) return "";
+        return String(
+          col.system || col.oberflaeche_de || locField(col, "oberflaeche") || "",
+        ).trim();
+      }
+
+      function colorSystemLabel(col) {
+        if (col && col.system && !col.oberflaeche_de) {
+          return String(col.system).trim();
+        }
+        return locField(col, "oberflaeche") || colorSystemKey(col);
       }
 
       function normalizeImageEntry(value, fallbackType) {
@@ -7574,6 +7894,8 @@
       }
 
       // IndexedDB Database Wrapper
+      // store_data holds one catalog blob keyed "heroal_db" (no secondary
+      // indexes). Fields such as farben.kollektion are indexed in RAM.
       const DB_NAME = "heroal_warehouse_db";
       const DB_VERSION = 4;
       let dbInstance = null;
@@ -7761,6 +8083,7 @@
             echtes_foto: "",
             name_de: "Anthrazitgrau",
             oberflaeche_de: "RAL 7016 Matt / Glanz",
+            kollektion: "RAL",
             hinweis_de:
               "Standard-Anthrazit für heroal Profile. Matt- und Glanzvarianten prüfen. Bei SD-Sonderbeschichtung den Auftrag mit der Farbkarte abgleichen.",
             name_en: "Anthracite grey",
@@ -7775,6 +8098,7 @@
             echtes_foto: "",
             name_de: "Verkehrsweiß",
             oberflaeche_de: "RAL 9016 Standard",
+            kollektion: "RAL",
             name_en: "Traffic white",
             oberflaeche_en: "",
             name_ru: "Транспортный белый",
@@ -7787,6 +8111,7 @@
             echtes_foto: "",
             name_de: "Grünbraun",
             oberflaeche_de: "heroal Standard",
+            kollektion: "heroal",
             name_en: "Green brown",
             oberflaeche_en: "",
             name_ru: "Зелёно-коричневый",
@@ -7862,7 +8187,13 @@
       let lastArticleHits = [];
       let lastColorHits = [];
       let lastArtikelQuery = "";
+      let lastArtikelFilterSig = "";
+      let artikelFilters = { category: "", system: "" };
+      let artikelFilterBound = false;
       let lastColorQuery = "";
+      let lastFarbeFilterSig = "";
+      let farbeFilters = { kollektion: "", system: "" };
+      let farbeFilterBound = false;
       let kbArtikelIndex = -1;
       let kbColorIndex = -1;
       let drawingPreviewSticky = false;
@@ -8415,11 +8746,18 @@
             .filter(Boolean),
           name_de: it.name_de || it.name || "",
           oberflaeche_de: it.oberflaeche_de || it.desc || "",
+          kollektion: String(
+            it.kollektion || it.collection || it.kollektion_de || "",
+          ).trim(),
+          kategorie_de: it.kategorie_de || it.category || it.kat || "",
+          system: String(it.system || it.systeme || "").trim(),
         };
         LANGS.forEach((code) => {
           row["name_" + code] = it["name_" + code] || row["name_" + code] || "";
           row["oberflaeche_" + code] =
             it["oberflaeche_" + code] || row["oberflaeche_" + code] || "";
+          row["kategorie_" + code] =
+            it["kategorie_" + code] || row["kategorie_" + code] || "";
           row["hinweis_" + code] = pickFirstText(
             it["hinweis_" + code],
             it["beschreibung_" + code],
@@ -8709,7 +9047,12 @@
       function confirmColorSelection() {
         hideDrawingHover();
         const cIn = document.getElementById("find-color");
-        const exact = findExactColorKey(cIn && cIn.value);
+        const parsed = parseArtikelQuery(cIn && cIn.value);
+        const exact =
+          findExactColorKey(cIn && cIn.value) ||
+          (parsed.general.length === 1
+            ? findExactColorKey(parsed.general[0])
+            : "");
         const key =
           kbColorIndex >= 0
             ? lastColorHits[kbColorIndex]
@@ -8732,6 +9075,8 @@
       function handleSearchEscape(active) {
         schedulePlaceholderRestore(active);
         hideDrawingHover();
+        if (typeof closeArtikelFilterPop === "function" && closeArtikelFilterPop()) return;
+        if (typeof closeFarbeFilterPop === "function" && closeFarbeFilterPop()) return;
         if (isSyncModalOpen()) {
           cancelManualSync();
           return;
@@ -9533,8 +9878,14 @@
         ctx.textBaseline = "middle";
         ctx.font = "600 14px " + font;
         const chips = [];
-        if (category) chips.push({ text: category, bg: "rgba(168, 85, 247, 0.2)", fg: "#d8b4fe", bd: "rgba(168, 85, 247, 0.4)" });
-        if (system) chips.push({ text: system, bg: "rgba(245, 158, 11, 0.18)", fg: "#fcd34d", bd: "rgba(245, 158, 11, 0.35)" });
+        if (category) {
+          const s = badgeColorsFromText(category);
+          if (s) chips.push({ text: category, bg: s.bg, fg: s.fg, bd: s.bd });
+        }
+        if (system) {
+          const s = badgeColorsFromText(system);
+          if (s) chips.push({ text: system, bg: s.bg, fg: s.fg, bd: s.bd });
+        }
         if (masse) chips.push({ text: masse, bg: "rgba(42, 48, 56, 0.95)", fg: "#c5ccd4", bd: "rgba(107, 115, 128, 0.9)" });
         if (chips.length) {
           const gap = 10;
@@ -9659,7 +10010,7 @@
         const hex = colorHex(col) || "";
         const fill = hex || "#64748b";
         const surface = locField(col, "oberflaeche", appLang) || "";
-        const kind = colorSurfaceKind(col);
+        const surfaceStyle = badgeColorsFromText(surface);
         const imgEl = document.getElementById("col-swatch-img");
         const photo = await loadShareDrawing(imgEl);
         const hasPhoto = !!(photo && photo.naturalWidth);
@@ -9669,24 +10020,6 @@
           hasPhoto || !bright
             ? "rgba(0, 0, 0, 0.4)"
             : "rgba(255, 255, 255, 0.45)";
-        const surfaceStyle =
-          kind === "matt"
-            ? {
-                bg: "#1f2124",
-                fg: "#d1d5db",
-                bd: "#444950",
-              }
-            : kind === "fine"
-              ? {
-                  bg: "#241f1c",
-                  fg: "#dfd5cf",
-                  bd: "#544842",
-                }
-              : {
-                  bg: "#17212b",
-                  fg: "#cce3f5",
-                  bd: "#3b5266",
-                };
 
         const cssW = 720;
         const scale = 2;
@@ -9839,7 +10172,7 @@
           y += 28;
         });
         y += 12;
-        if (surface) {
+        if (surface && surfaceStyle) {
           chipCentered(
             surface,
             cssW / 2,
@@ -10322,6 +10655,8 @@
       function navigate(viewId, btn) {
         closePhotoCapture();
         hideAllSearchOsk();
+        if (typeof closeArtikelFilterPop === "function") closeArtikelFilterPop();
+        if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
         if (typeof closeAuskunftCatMenu === "function") closeAuskunftCatMenu();
         document
           .querySelectorAll(".tab-view")
@@ -11683,6 +12018,8 @@
         document.getElementById("clr-col").addEventListener("click", () => {
           clearInput("find-color");
         });
+        bindArtikelFilterUi();
+        bindFarbeFilterUi();
         mountSearchKeypads();
         bindProfileGalleryUi();
         bindColorGalleryUi();
@@ -12105,11 +12442,17 @@
         else closeNumpadPop(pad);
         if (visible && oskId === "osk-guide") closeAuskunftCatMenu();
         if (oskId === "osk-prof") {
-          if (visible) artikelDetailOpen = false;
+          if (visible) {
+            artikelDetailOpen = false;
+            if (typeof closeArtikelFilterPop === "function") closeArtikelFilterPop();
+          }
           applyArtikelWorkspace();
         }
         if (oskId === "osk-color") {
-          if (visible) farbeDetailOpen = false;
+          if (visible) {
+            farbeDetailOpen = false;
+            if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
+          }
           applyFarbeWorkspace();
         }
       }
@@ -12272,20 +12615,37 @@
         "barcode",
         "system",
         "kategorie_de",
+        "kategorie_en",
+        "kategorie_ru",
         "name_de",
+        "name_en",
+        "name_ru",
         "masse_de",
+        "masse_en",
+        "masse_ru",
         "beschreibung_de",
         "beschreibung_en",
         "beschreibung_ru",
+        "hinweis_de",
+        "hinweis_en",
+        "hinweis_ru",
       ];
       const FARBEN_INDEX_FIELDS = [
         "code",
+        "system",
+        "kategorie_de",
+        "kategorie_en",
+        "kategorie_ru",
         "name_de",
-        "oberflaeche_de",
         "name_ru",
-        "oberflaeche_ru",
         "name_en",
+        "oberflaeche_de",
+        "oberflaeche_ru",
         "oberflaeche_en",
+        "kollektion",
+        "hinweis_de",
+        "hinweis_en",
+        "hinweis_ru",
       ];
       const AUSKUNFT_INDEX_FIELDS = [
         "kategorie_de",
@@ -12317,6 +12677,470 @@
 
       function compactSearchToken(value) {
         return normalizeSearchText(value).replace(/\s+/g, "");
+      }
+
+      function parseArtikelQuery(raw) {
+        const cats = [];
+        const systems = [];
+        const kols = [];
+        const general = [];
+        String(raw || "")
+          .trim()
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean)
+          .forEach((part) => {
+            if (part.charAt(0) === "#" && part.length > 1) {
+              const tok = compactSearchToken(part.slice(1));
+              if (tok) cats.push(tok);
+              return;
+            }
+            if (part.charAt(0) === "@" && part.length > 1) {
+              const tok = compactSearchToken(part.slice(1));
+              if (tok) systems.push(tok);
+              return;
+            }
+            if (part.charAt(0) === "*" && part.length > 1) {
+              const tok = compactSearchToken(part.slice(1));
+              if (tok) kols.push(tok);
+              return;
+            }
+            const spaced = normalizeSearchText(part).split(/\s+/).filter(Boolean);
+            if (spaced.length > 1) {
+              spaced.forEach((tok) => general.push(tok));
+              return;
+            }
+            const tok = compactSearchToken(part) || normalizeSearchText(part);
+            if (tok) general.push(tok);
+          });
+        return { cats, systems, kols, general };
+      }
+
+      function searchFieldMatches(hay, compact, token) {
+        if (!token) return true;
+        if (hay && hay.includes(token)) return true;
+        const compactTok = String(token).replace(/\s+/g, "");
+        return !!(compact && compactTok && compact.includes(compactTok));
+      }
+
+      function artikelCategoryKey(item) {
+        return String(
+          (item && (item.kategorie_de || articleCategory(item))) || "",
+        ).trim();
+      }
+
+      function itemMatchesArtikelFilters(item) {
+        if (artikelFilters.category) {
+          if (artikelCategoryKey(item) !== artikelFilters.category) return false;
+        }
+        if (artikelFilters.system) {
+          if (articleSystem(item) !== artikelFilters.system) return false;
+        }
+        return true;
+      }
+
+      function artikelIndexMatches(row, parsed) {
+        if (!row || !itemMatchesArtikelFilters(row.item)) return false;
+        for (let i = 0; i < parsed.cats.length; i++) {
+          if (!searchFieldMatches(row.catHay, row.catCompact, parsed.cats[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < parsed.systems.length; i++) {
+          if (!searchFieldMatches(row.sysHay, row.sysCompact, parsed.systems[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < parsed.general.length; i++) {
+          if (!searchFieldMatches(row.indexStr, row.compactStr, parsed.general[i])) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function artikelFilterCount() {
+        let n = 0;
+        if (artikelFilters.category) n += 1;
+        if (artikelFilters.system) n += 1;
+        return n;
+      }
+
+      function artikelFilterSignature() {
+        return (artikelFilters.category || "") + "\t" + (artikelFilters.system || "");
+      }
+
+      function isArtikelFilterOpen() {
+        const bar = document.getElementById("artikel-search-bar");
+        return !!(bar && bar.classList.contains("is-open"));
+      }
+
+      function syncArtikelFilterButton() {
+        const btn = document.getElementById("btnFilterToggle");
+        const badge = document.getElementById("artikel-filter-count");
+        const n = artikelFilterCount();
+        if (btn) btn.classList.toggle("is-on", n > 0);
+        if (badge) {
+          badge.textContent = n ? String(n) : "";
+          badge.hidden = n < 1;
+        }
+      }
+
+      function uniqueArtikelFilterValues() {
+        const cats = new Map();
+        const systems = new Map();
+        const catalog = (appDB && appDB.artikel) || {};
+        Object.keys(catalog).forEach((key) => {
+          const item = catalog[key];
+          if (!item) return;
+          const catKey = artikelCategoryKey(item);
+          const catLabel = articleCategory(item) || catKey;
+          if (catKey && !cats.has(catKey)) cats.set(catKey, catLabel);
+          const sys = articleSystem(item);
+          if (sys && !systems.has(sys)) systems.set(sys, sys);
+        });
+        const collator = new Intl.Collator(appLang || "de", {
+          sensitivity: "base",
+        });
+        const toList = (map) =>
+          Array.from(map, ([value, label]) => ({ value, label })).sort((a, b) =>
+            collator.compare(a.label, b.label),
+          );
+        return { categories: toList(cats), systems: toList(systems) };
+      }
+
+      function artikelFilterOptionHtml(kind, value, label, selected) {
+        const active = selected ? " active" : "";
+        return (
+          `<button type="button" class="artikel-filter-option${active}" data-filter-kind="${escapeHtml(kind)}" data-value="${escapeHtml(value)}">${escapeHtml(label)}</button>`
+        );
+      }
+
+      function renderArtikelFilterOptions() {
+        const catEl = document.getElementById("artikel-filter-kategorie");
+        const sysEl = document.getElementById("artikel-filter-system");
+        if (!catEl || !sysEl) return;
+        const lists = uniqueArtikelFilterValues();
+        const allLabel = t("catalog_ui.cat_all") || "Alle";
+        catEl.innerHTML =
+          artikelFilterOptionHtml("category", "", allLabel, !artikelFilters.category) +
+          lists.categories
+            .map((it) =>
+              artikelFilterOptionHtml(
+                "category",
+                it.value,
+                it.label,
+                it.value === artikelFilters.category,
+              ),
+            )
+            .join("");
+        sysEl.innerHTML =
+          artikelFilterOptionHtml("system", "", allLabel, !artikelFilters.system) +
+          lists.systems
+            .map((it) =>
+              artikelFilterOptionHtml(
+                "system",
+                it.value,
+                it.label,
+                it.value === artikelFilters.system,
+              ),
+            )
+            .join("");
+      }
+
+      function closeArtikelFilterPop() {
+        const bar = document.getElementById("artikel-search-bar");
+        const pop = document.getElementById("artikel-filter-pop");
+        const btn = document.getElementById("btnFilterToggle");
+        if (!bar || !bar.classList.contains("is-open")) return false;
+        bar.classList.remove("is-open");
+        if (pop) pop.hidden = true;
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        return true;
+      }
+
+      function openArtikelFilterPop() {
+        if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
+        const bar = document.getElementById("artikel-search-bar");
+        const pop = document.getElementById("artikel-filter-pop");
+        const btn = document.getElementById("btnFilterToggle");
+        renderArtikelFilterOptions();
+        if (bar) bar.classList.add("is-open");
+        if (pop) pop.hidden = false;
+        if (btn) btn.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleArtikelFilterPop() {
+        if (isArtikelFilterOpen()) closeArtikelFilterPop();
+        else openArtikelFilterPop();
+      }
+
+      function applyArtikelFilterChange() {
+        syncArtikelFilterButton();
+        renderArtikelFilterOptions();
+        ensureSearchDebouncers();
+        debouncedRefreshArticleResults.flush();
+      }
+
+      function resetArtikelFilters() {
+        artikelFilters.category = "";
+        artikelFilters.system = "";
+        applyArtikelFilterChange();
+      }
+
+      function bindArtikelFilterUi() {
+        if (artikelFilterBound) return;
+        artikelFilterBound = true;
+        const btn = document.getElementById("btnFilterToggle");
+        const pop = document.getElementById("artikel-filter-pop");
+        const resetBtn = document.getElementById("artikel-filter-reset");
+        const doneBtn = document.getElementById("artikel-filter-done");
+        if (btn) {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleArtikelFilterPop();
+          });
+        }
+        if (pop) {
+          pop.addEventListener("click", (e) => {
+            const opt = e.target.closest(".artikel-filter-option");
+            if (!opt || !pop.contains(opt)) return;
+            e.preventDefault();
+            const kind = opt.getAttribute("data-filter-kind");
+            const value = opt.getAttribute("data-value") || "";
+            if (kind === "category") artikelFilters.category = value;
+            if (kind === "system") artikelFilters.system = value;
+            applyArtikelFilterChange();
+          });
+        }
+        if (resetBtn) {
+          resetBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            resetArtikelFilters();
+          });
+        }
+        if (doneBtn) {
+          doneBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            closeArtikelFilterPop();
+          });
+        }
+        document.addEventListener("pointerdown", (e) => {
+          if (!isArtikelFilterOpen()) return;
+          const bar = document.getElementById("artikel-search-bar");
+          if (bar && bar.contains(e.target)) return;
+          closeArtikelFilterPop();
+        });
+        syncArtikelFilterButton();
+      }
+
+      function itemMatchesFarbeFilters(col) {
+        if (farbeFilters.kollektion) {
+          if (colorKollektion(col) !== farbeFilters.kollektion) return false;
+        }
+        if (farbeFilters.system) {
+          if (colorSystemKey(col) !== farbeFilters.system) return false;
+        }
+        return true;
+      }
+
+      function farbeIndexMatches(row, parsed) {
+        if (!row || !itemMatchesFarbeFilters(row.item)) return false;
+        const kols = parsed.kols || [];
+        for (let i = 0; i < parsed.cats.length; i++) {
+          if (!searchFieldMatches(row.catHay, row.catCompact, parsed.cats[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < parsed.systems.length; i++) {
+          if (!searchFieldMatches(row.sysHay, row.sysCompact, parsed.systems[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < kols.length; i++) {
+          if (!searchFieldMatches(row.kolHay, row.kolCompact, kols[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < parsed.general.length; i++) {
+          if (!searchFieldMatches(row.indexStr, row.compactStr, parsed.general[i])) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function farbeFilterCount() {
+        let n = 0;
+        if (farbeFilters.kollektion) n += 1;
+        if (farbeFilters.system) n += 1;
+        return n;
+      }
+
+      function farbeFilterSignature() {
+        return (farbeFilters.kollektion || "") + "\t" + (farbeFilters.system || "");
+      }
+
+      function isFarbeFilterOpen() {
+        const bar = document.getElementById("farben-search-bar");
+        return !!(bar && bar.classList.contains("is-open"));
+      }
+
+      function syncFarbeFilterButton() {
+        const btn = document.getElementById("btnFarbeFilterToggle");
+        const badge = document.getElementById("farben-filter-count");
+        const n = farbeFilterCount();
+        if (btn) btn.classList.toggle("is-on", n > 0);
+        if (badge) {
+          badge.textContent = n ? String(n) : "";
+          badge.hidden = n < 1;
+        }
+      }
+
+      function uniqueFarbeFilterValues() {
+        const kols = new Map();
+        const systems = new Map();
+        const catalog = (appDB && appDB.farben) || {};
+        Object.keys(catalog).forEach((key) => {
+          const col = catalog[key];
+          if (!col) return;
+          const kol = colorKollektion(col);
+          if (kol && !kols.has(kol)) kols.set(kol, kol);
+          const sysKey = colorSystemKey(col);
+          const sysLabel = colorSystemLabel(col) || sysKey;
+          if (sysKey && !systems.has(sysKey)) systems.set(sysKey, sysLabel);
+        });
+        const collator = new Intl.Collator(appLang || "de", {
+          sensitivity: "base",
+        });
+        const toList = (map) =>
+          Array.from(map, ([value, label]) => ({ value, label })).sort((a, b) =>
+            collator.compare(a.label, b.label),
+          );
+        return { kollektionen: toList(kols), systems: toList(systems) };
+      }
+
+      function renderFarbeFilterOptions() {
+        const kolEl = document.getElementById("farben-filter-kollektion");
+        const sysEl = document.getElementById("farben-filter-system");
+        if (!kolEl || !sysEl) return;
+        const lists = uniqueFarbeFilterValues();
+        const allLabel = t("catalog_ui.cat_all") || "Alle";
+        kolEl.innerHTML =
+          artikelFilterOptionHtml(
+            "kollektion",
+            "",
+            allLabel,
+            !farbeFilters.kollektion,
+          ) +
+          lists.kollektionen
+            .map((it) =>
+              artikelFilterOptionHtml(
+                "kollektion",
+                it.value,
+                it.label,
+                it.value === farbeFilters.kollektion,
+              ),
+            )
+            .join("");
+        sysEl.innerHTML =
+          artikelFilterOptionHtml("system", "", allLabel, !farbeFilters.system) +
+          lists.systems
+            .map((it) =>
+              artikelFilterOptionHtml(
+                "system",
+                it.value,
+                it.label,
+                it.value === farbeFilters.system,
+              ),
+            )
+            .join("");
+      }
+
+      function closeFarbeFilterPop() {
+        const bar = document.getElementById("farben-search-bar");
+        const pop = document.getElementById("farben-filter-pop");
+        const btn = document.getElementById("btnFarbeFilterToggle");
+        if (!bar || !bar.classList.contains("is-open")) return false;
+        bar.classList.remove("is-open");
+        if (pop) pop.hidden = true;
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        return true;
+      }
+
+      function openFarbeFilterPop() {
+        closeArtikelFilterPop();
+        const bar = document.getElementById("farben-search-bar");
+        const pop = document.getElementById("farben-filter-pop");
+        const btn = document.getElementById("btnFarbeFilterToggle");
+        renderFarbeFilterOptions();
+        if (bar) bar.classList.add("is-open");
+        if (pop) pop.hidden = false;
+        if (btn) btn.setAttribute("aria-expanded", "true");
+      }
+
+      function toggleFarbeFilterPop() {
+        if (isFarbeFilterOpen()) closeFarbeFilterPop();
+        else openFarbeFilterPop();
+      }
+
+      function applyFarbeFilterChange() {
+        syncFarbeFilterButton();
+        renderFarbeFilterOptions();
+        ensureSearchDebouncers();
+        debouncedRefreshColorResults.flush();
+      }
+
+      function resetFarbeFilters() {
+        farbeFilters.kollektion = "";
+        farbeFilters.system = "";
+        applyFarbeFilterChange();
+      }
+
+      function bindFarbeFilterUi() {
+        if (farbeFilterBound) return;
+        farbeFilterBound = true;
+        const btn = document.getElementById("btnFarbeFilterToggle");
+        const pop = document.getElementById("farben-filter-pop");
+        const resetBtn = document.getElementById("farben-filter-reset");
+        const doneBtn = document.getElementById("farben-filter-done");
+        if (btn) {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleFarbeFilterPop();
+          });
+        }
+        if (pop) {
+          pop.addEventListener("click", (e) => {
+            const opt = e.target.closest(".artikel-filter-option");
+            if (!opt || !pop.contains(opt)) return;
+            e.preventDefault();
+            const kind = opt.getAttribute("data-filter-kind");
+            const value = opt.getAttribute("data-value") || "";
+            if (kind === "kollektion") farbeFilters.kollektion = value;
+            if (kind === "system") farbeFilters.system = value;
+            applyFarbeFilterChange();
+          });
+        }
+        if (resetBtn) {
+          resetBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            resetFarbeFilters();
+          });
+        }
+        if (doneBtn) {
+          doneBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            closeFarbeFilterPop();
+          });
+        }
+        document.addEventListener("pointerdown", (e) => {
+          if (!isFarbeFilterOpen()) return;
+          const bar = document.getElementById("farben-search-bar");
+          if (bar && bar.contains(e.target)) return;
+          closeFarbeFilterPop();
+        });
+        syncFarbeFilterButton();
       }
 
       function querySearchTokens(query) {
@@ -12362,10 +13186,28 @@
           const nr = usableSearchPart(item.artikel_nr) || articleNr(item, key);
           if (!nr) return;
           const row = Object.assign({}, item, { artikel_nr: nr });
+          const catHay = normalizeSearchText(
+            [
+              item.kategorie_de,
+              item.kategorie_en,
+              item.kategorie_ru,
+              item.category,
+              articleCategory(item),
+            ]
+              .filter(Boolean)
+              .join(" "),
+          );
+          const sysHay = normalizeSearchText(item.system);
+          const indexStr = indexStringFromFields(row, ARTIKEL_INDEX_FIELDS);
           index.push({
             key,
             item,
-            indexStr: indexStringFromFields(row, ARTIKEL_INDEX_FIELDS),
+            indexStr,
+            compactStr: indexStr.replace(/\s+/g, ""),
+            catHay,
+            catCompact: catHay.replace(/\s+/g, ""),
+            sysHay,
+            sysCompact: sysHay.replace(/\s+/g, ""),
             nrNorm: compactSearchToken(nr),
           });
         });
@@ -12380,10 +13222,44 @@
           const code = usableSearchPart(item && item.code) || usableSearchPart(key);
           if (!code) return;
           const row = Object.assign({}, item, { code });
+          const catHay = normalizeSearchText(
+            [
+              colorCategoryKey(item),
+              colorCategoryLabel(item),
+              item.kollektion,
+              item.kategorie_de,
+              item.kategorie_en,
+              item.kategorie_ru,
+              item.category,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          );
+          const kolHay = normalizeSearchText(colorKollektion(item));
+          const sysHay = normalizeSearchText(
+            [
+              colorSystemKey(item),
+              colorSystemLabel(item),
+              item.system,
+              item.oberflaeche_de,
+              item.oberflaeche_en,
+              item.oberflaeche_ru,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          );
+          const indexStr = indexStringFromFields(row, FARBEN_INDEX_FIELDS);
           index.push({
             key,
             item,
-            indexStr: indexStringFromFields(row, FARBEN_INDEX_FIELDS),
+            indexStr,
+            compactStr: indexStr.replace(/\s+/g, ""),
+            catHay,
+            catCompact: catHay.replace(/\s+/g, ""),
+            kolHay,
+            kolCompact: kolHay.replace(/\s+/g, ""),
+            sysHay,
+            sysCompact: sysHay.replace(/\s+/g, ""),
             codeNorm: compactSearchToken(code),
           });
         });
@@ -12471,7 +13347,12 @@
       function confirmArtikelSelection() {
         hideDrawingHover();
         const pIn = document.getElementById("find-prof");
-        const exact = findExactArticleKey(pIn && pIn.value);
+        const parsed = parseArtikelQuery(pIn && pIn.value);
+        const exact =
+          findExactArticleKey(pIn && pIn.value) ||
+          (parsed.general.length === 1
+            ? findExactArticleKey(parsed.general[0])
+            : "");
         const key =
           kbArtikelIndex >= 0
             ? lastArticleHits[kbArtikelIndex]
@@ -12518,11 +13399,13 @@
         const listEl = document.getElementById("prof-list");
         const emptyEl = document.getElementById("prof-empty");
         const query = (pIn.value || "").trim().toLowerCase();
+        const filterSig = artikelFilterSignature();
         if (pClr) pClr.classList.toggle("is-on", !!(pIn && pIn.value));
-        if (query !== lastArtikelQuery) {
+        if (query !== lastArtikelQuery || filterSig !== lastArtikelFilterSig) {
           artikelDetailOpen = false;
           kbArtikelIndex = -1;
           lastArtikelQuery = query;
+          lastArtikelFilterSig = filterSig;
         }
 
         const catalog = appDB.artikel || {};
@@ -12532,15 +13415,22 @@
         ) {
           rebuildAllSearchIndexes();
         }
-        const tokens = querySearchTokens(query);
+        const parsed = parseArtikelQuery(pIn.value || "");
+        const hasFilters = artikelFilterCount() > 0;
         const keys = [];
-        if (tokens.length) {
+        if (
+          parsed.cats.length ||
+          parsed.systems.length ||
+          parsed.general.length ||
+          hasFilters
+        ) {
           for (let i = 0; i < artikelSearchIndex.length; i++) {
             const row = artikelSearchIndex[i];
-            if (searchIndexMatches(row, tokens)) keys.push(row.key);
+            if (artikelIndexMatches(row, parsed)) keys.push(row.key);
           }
         }
-        const exact = findExactArticleKey(query);
+        const exact = findExactArticleKey(query) ||
+          (parsed.general.length === 1 ? findExactArticleKey(parsed.general[0]) : "");
         promoteExactKey(keys, exact);
         const shown = keys.slice(0, RESULT_LIMIT);
         lastArticleHits = shown.slice();
@@ -12575,12 +13465,8 @@
               const masseChip = masse
                 ? `<span class="result-chip result-chip-masse">${escapeHtml(masse)}</span>`
                 : "";
-              const catChip = category
-                ? `<span class="result-chip result-chip-cat">${escapeHtml(category)}</span>`
-                : "";
-              const systemChip = system
-                ? `<span class="result-chip result-chip-system">${escapeHtml(system)}</span>`
-                : "";
+              const catChip = resultBadgeHtml(category);
+              const systemChip = resultBadgeHtml(system);
               const stats =
                 masseChip || catChip || systemChip
                   ? `<span class="result-row-stats">${catChip}${systemChip}${masseChip}</span>`
@@ -12602,7 +13488,7 @@
           highlightArtikelRows();
         }
 
-        const hasQuery = !!query;
+        const hasQuery = !!(query || hasFilters);
         if (emptyEl) emptyEl.hidden = !!(shown.length || hasQuery);
         if (!shown.length) {
           lastActiveArticle = "";
@@ -12638,11 +13524,13 @@
         const listEl = document.getElementById("col-list");
         const emptyEl = document.getElementById("col-empty");
         const query = (cIn.value || "").trim().toLowerCase();
+        const filterSig = farbeFilterSignature();
         if (cClr) cClr.classList.toggle("is-on", !!(cIn && cIn.value));
-        if (query !== lastColorQuery) {
+        if (query !== lastColorQuery || filterSig !== lastFarbeFilterSig) {
           farbeDetailOpen = false;
           kbColorIndex = -1;
           lastColorQuery = query;
+          lastFarbeFilterSig = filterSig;
         }
 
         const catalog = appDB.farben || {};
@@ -12652,15 +13540,26 @@
         ) {
           rebuildAllSearchIndexes();
         }
-        const tokens = querySearchTokens(query);
+        const parsed = parseArtikelQuery(cIn.value || "");
+        const hasFilters = farbeFilterCount() > 0;
         const keys = [];
-        if (tokens.length) {
+        if (
+          parsed.cats.length ||
+          parsed.systems.length ||
+          (parsed.kols && parsed.kols.length) ||
+          parsed.general.length ||
+          hasFilters
+        ) {
           for (let i = 0; i < farbenSearchIndex.length; i++) {
             const row = farbenSearchIndex[i];
-            if (searchIndexMatches(row, tokens)) keys.push(row.key);
+            if (farbeIndexMatches(row, parsed)) keys.push(row.key);
           }
         }
-        const exact = findExactColorKey(query);
+        const exact =
+          findExactColorKey(query) ||
+          (parsed.general.length === 1
+            ? findExactColorKey(parsed.general[0])
+            : "");
         promoteExactKey(keys, exact);
         const shown = keys.slice(0, RESULT_LIMIT);
         lastColorHits = shown.slice();
@@ -12685,22 +13584,18 @@
               const hex = colorHex(col) || "#64748b";
               const name = locField(col, "name", appLang) || "";
               const code = colorCode(col, key);
+              const kollektion = colorKollektion(col);
               const badges = colorFinishBadges(col);
-              const chips = badges
-                .map((b) => {
-                  const chipCls =
-                    b.id === "matt"
-                      ? "result-chip-matt"
-                      : b.id === "fine"
-                        ? "result-chip-fine"
-                        : b.id === "gloss"
-                          ? "result-chip-gloss"
-                          : "result-chip-heroal";
-                  return `<span class="result-chip ${chipCls}">${escapeHtml(b.label)}</span>`;
-                })
+              const kolChip = resultBadgeHtml(kollektion);
+              const finishChips = badges
+                .map((b) => resultBadgeHtml(b.label))
                 .join("");
-              const stats = chips
-                ? `<span class="result-row-stats">${chips}</span>`
+              const hexChip = hex
+                ? `<span class="result-chip result-chip-hex">${escapeHtml(hex)}</span>`
+                : "";
+              const statsRow = finishChips + kolChip + hexChip;
+              const stats = statsRow
+                ? `<span class="result-row-stats">${statsRow}</span>`
                 : "";
               const photo = farbePreviewEntries(col)[0];
               const thumb = (photo && photo.url) || getColorFillDataUrl(hex);
@@ -12727,7 +13622,7 @@
           highlightColorRows();
         }
 
-        const hasQuery = !!query;
+        const hasQuery = !!(query || hasFilters);
         if (emptyEl) emptyEl.hidden = !!(shown.length || hasQuery);
         if (!shown.length) {
           lastActiveColorCode = "";
@@ -12763,6 +13658,7 @@
         const hex = colorHex(col);
         const nr = colorCode(col, code);
         const surface = locField(col, "oberflaeche", appLang);
+        const kollektion = colorKollektion(col);
         lastActiveColorName = name;
         lastActiveColorHex = hex;
         lastActiveColorCode = nr || code;
@@ -12773,13 +13669,18 @@
           codeEl.innerText = nr || "--";
           codeEl.style.display = nr ? "" : "none";
         }
+        const kolEl = document.getElementById("col-kollektion");
+        if (kolEl) {
+          kolEl.innerText = kollektion;
+          kolEl.hidden = !kollektion;
+          applyBadgeColors(kolEl, kollektion);
+        }
         const surfaceEl = document.getElementById("col-surface");
         if (surfaceEl) {
           surfaceEl.innerText = surface;
           surfaceEl.style.display = surface ? "" : "none";
-          const kind = colorSurfaceKind(col);
-          surfaceEl.className =
-            "tag-chip tag-surface tag-surface-" + (kind || "gloss");
+          surfaceEl.className = "tag-chip tag-surface";
+          applyBadgeColors(surfaceEl, surface);
         }
         const hexPanel = document.getElementById("col-hex-panel");
         const fill = hex || "#ffffff";
@@ -12841,15 +13742,19 @@
         }
         const katEl = document.getElementById("prof-kat");
         const category = articleCategory(it);
-        katEl.innerText = category || "heroal";
+        const katLabel = category || "heroal";
+        katEl.innerText = katLabel;
+        applyBadgeColors(katEl, katLabel);
         const sizeEl = document.getElementById("prof-size");
         const sizeLabel = articleSystem(it);
         if (sizeLabel) {
           sizeEl.innerText = sizeLabel;
           sizeEl.style.display = "";
+          applyBadgeColors(sizeEl, sizeLabel);
         } else {
           sizeEl.innerText = "";
           sizeEl.style.display = "none";
+          applyBadgeColors(sizeEl, "");
         }
 
         renderProfileGallery(it, nr);
@@ -14245,11 +15150,15 @@
                 map,
                 "oberflaeche_" + lang,
               );
+              rec["kategorie_" + lang] = csvCell(row, map, "kategorie_" + lang);
               rec["hinweis_" + lang] = csvCellAny(row, map, [
                 "hinweis_" + lang,
                 "beschreibung_" + lang,
               ]);
             });
+            rec.kollektion = csvCellAny(row, map, ["kollektion", "collection"]);
+            rec.category = csvCellAny(row, map, ["kategorie_de", "category"]);
+            rec.system = csvCellAny(row, map, ["system", "systeme"]);
             for (let n = 1; n <= 4; n++) {
               rec["img_" + n] = csvCell(row, map, "img_" + n);
               rec["img_" + n + "_type"] = csvCell(row, map, "img_" + n + "_type");
@@ -14663,11 +15572,15 @@
           LANGS.forEach((lang) => {
             rec["name_" + lang] = record["name_" + lang] || "";
             rec["oberflaeche_" + lang] = record["oberflaeche_" + lang] || "";
+            rec["kategorie_" + lang] = record["kategorie_" + lang] || "";
             rec["hinweis_" + lang] =
               record["hinweis_" + lang] ||
               record["beschreibung_" + lang] ||
               "";
           });
+          rec.kollektion = String(record.kollektion || record.collection || "").trim();
+          rec.category = record.category || record.kategorie_de || "";
+          rec.system = record.system || "";
           return rec;
         }
 

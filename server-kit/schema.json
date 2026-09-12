@@ -114,6 +114,7 @@
         { "name": "name_en", "type": "text" },
         { "name": "name_ru", "type": "text" },
         { "name": "oberflaeche_de", "type": "text" },
+        { "name": "kollektion", "type": "text" },
         { "name": "oberflaeche_en", "type": "text" },
         { "name": "oberflaeche_ru", "type": "text" },
         { "name": "hinweis_de", "type": "text" },
