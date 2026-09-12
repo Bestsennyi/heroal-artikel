@@ -1869,6 +1869,42 @@
         background: rgba(147, 197, 253, 0.12);
         box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
       }
+      #auskunft-search-bar .search-field {
+        border-color: #93c5fd;
+      }
+      #auskunft-search-bar .search-field:hover {
+        border-color: #93c5fd;
+      }
+      #auskunft-search-bar .search-field:focus,
+      #auskunft-search-bar .search-field:active {
+        border-color: #93c5fd;
+        box-shadow: 0 0 16px rgba(147, 197, 253, 0.4);
+      }
+      #auskunft-search-bar .search-icon-btn {
+        color: #93c5fd;
+        border-color: #93c5fd;
+      }
+      #auskunft-search-bar .search-icon-btn:hover {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+      }
+      #auskunft-search-bar .search-icon-btn.is-on {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
+      }
+      #auskunft-search-bar:has(.auskunft-cat-wrap.is-open) .artikel-filter-btn {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
+      }
+      #auskunft-search-bar .artikel-filter-count {
+        background: #93c5fd;
+        color: #041018;
+      }
       #farben-search-bar .search-field {
         border-color: #38bdf8;
       }
@@ -3341,7 +3377,6 @@
         inset-inline-start: 6px;
       }
       .auskunft-search .search-icon-btn,
-      .auskunft-cat-trigger,
       .auskunft-cat-option {
         touch-action: manipulation;
       }
@@ -3354,76 +3389,32 @@
       .auskunft-osk-stack .osk:not(.is-hidden) {
         margin-bottom: 2px;
       }
-      .auskunft-cat-wrap {
-        position: relative;
-        flex: 0 1 13.5rem;
-        min-width: 10rem;
-        z-index: 8;
-      }
-      .auskunft-cat-trigger {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        width: 100%;
-        min-height: 48px;
-        height: 48px;
-        padding-inline: 12px 10px;
-        background: #1e293b;
-        border: 2px solid #475569;
-        border-radius: 10px;
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 600;
-        font-family: inherit;
-        text-align: start;
-        cursor: pointer;
-        outline: none;
-        touch-action: manipulation;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-      }
-      .auskunft-cat-trigger:hover {
-        border-color: #64748b;
-      }
-      .auskunft-cat-wrap.is-open .auskunft-cat-trigger,
-      .auskunft-cat-trigger:focus,
-      .auskunft-cat-trigger:focus-visible {
-        border-color: var(--heroal-accent);
-        box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
-        outline: none;
-      }
-      .auskunft-cat-label {
-        flex: 1 1 auto;
+      #auskunft-search-bar .auskunft-cat-wrap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 12;
+        flex: none;
         min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .auskunft-cat-caret {
-        flex: 0 0 auto;
-        width: 18px;
-        height: 18px;
-        color: var(--text-sub);
-        transition: transform 0.16s ease;
-      }
-      .auskunft-cat-wrap.is-open .auskunft-cat-caret {
-        transform: rotate(180deg);
-        color: var(--text-main);
       }
       .auskunft-cat-menu {
         display: none;
         position: absolute;
-        top: calc(100% + 6px);
+        top: 6px;
         inset-inline-start: 0;
         inset-inline-end: 0;
         flex-direction: column;
         gap: 2px;
         padding: 6px;
         border-radius: 12px;
-        border: 1px solid rgba(125, 211, 252, 0.28);
+        border: 1px solid #93c5fd;
         background: rgba(15, 23, 42, 0.96);
         backdrop-filter: blur(16px) saturate(1.1);
         -webkit-backdrop-filter: blur(16px) saturate(1.1);
-        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+        box-shadow:
+          0 0 16px rgba(147, 197, 253, 0.32),
+          0 14px 32px rgba(0, 0, 0, 0.5);
         z-index: 12;
         max-height: min(50vh, 280px);
         overflow-x: hidden;
@@ -3444,7 +3435,7 @@
         border-radius: 8px;
         background: transparent;
         color: #e2e8f0;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
         font-family: inherit;
         text-align: start;
@@ -3452,13 +3443,13 @@
         touch-action: manipulation;
       }
       .auskunft-cat-option:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(147, 197, 253, 0.12);
         color: #fff;
       }
       .auskunft-cat-option.is-active {
-        background: rgba(59, 130, 246, 0.28);
-        color: #fff;
-        box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.35);
+        background: rgba(147, 197, 253, 0.14);
+        color: #dbeafe;
+        box-shadow: inset 0 0 0 1px #93c5fd;
       }
       .auskunft-list.acc-list {
         gap: 10px;
@@ -3517,8 +3508,9 @@
       }
       .auskunft-cat-option:focus-visible {
         outline: none;
-        background: rgba(59, 130, 246, 0.28);
-        color: #fff;
+        background: rgba(147, 197, 253, 0.14);
+        color: #dbeafe;
+        box-shadow: inset 0 0 0 1px #93c5fd;
       }
       .auskunft-card .acc-title {
         flex: 1 1 auto;
@@ -3616,8 +3608,7 @@
         }
       }
       @media (max-width: 640px) {
-        .auskunft-search,
-        .auskunft-cat-wrap {
+        .auskunft-search {
           flex: 1 1 100%;
           min-width: 0;
         }
@@ -7001,69 +6992,70 @@
         <div class="auskunft-shell">
           <div class="auskunft-toolbar">
             <div class="auskunft-search">
-              <div class="input-box">
-                <input
-                  type="text"
-                  id="find-guide"
-                  class="search-field"
-                  placeholder="Thema suchen..."
-                  data-i18n-placeholder="catalog_ui.ph_guide"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  inputmode="text"
-                  enterkeyhint="search"
-                />
-                <div class="search-field-actions">
-                  <button
-                    type="button"
-                    class="search-icon-btn btn-clear"
-                    id="clr-guide"
-                    tabindex="-1"
-                    aria-label="Clear"
-                    data-i18n-title="a11y.clear"
-                  >
-                    <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                  </button>
-                  <button
-                    type="button"
-                    class="search-icon-btn osk-toggle"
-                    id="btn-osk-guide"
-                    data-osk="osk-guide"
-                    tabindex="-1"
-                    aria-label="Numpad"
-                    data-i18n-title="a11y.numpad"
-                    aria-pressed="false"
-                  >
-                    <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-                  </button>
+              <div class="catalog-search-bar" id="auskunft-search-bar">
+                <div class="catalog-search-field">
+                  <div class="input-box">
+                    <input
+                      type="text"
+                      id="find-guide"
+                      class="search-field"
+                      placeholder="Thema suchen..."
+                      data-i18n-placeholder="catalog_ui.ph_guide"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      inputmode="text"
+                      enterkeyhint="search"
+                    />
+                    <div class="search-field-actions">
+                      <button
+                        type="button"
+                        class="search-icon-btn btn-clear"
+                        id="clr-guide"
+                        aria-label="Clear"
+                        data-i18n-title="a11y.clear"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="search-icon-btn artikel-filter-btn"
+                        id="auskunft-cat-btn"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-controls="auskunft-cat-menu"
+                        data-i18n-title="catalog_ui.auskunft_filters"
+                      >
+                        <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
+                        <span class="artikel-filter-count" id="auskunft-filter-count" hidden>0</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="auskunft-cat-wrap" id="auskunft-cat-dd">
+                    <span id="auskunft-cat-label" class="visually-hidden"></span>
+                    <div
+                      id="auskunft-cat-menu"
+                      class="auskunft-cat-menu"
+                      role="listbox"
+                    ></div>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  class="search-icon-btn osk-toggle"
+                  id="btn-osk-guide"
+                  data-osk="osk-guide"
+                  aria-label="Numpad"
+                  data-i18n-title="a11y.numpad"
+                  aria-pressed="false"
+                >
+                  <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+                </button>
               </div>
               <div class="search-stack auskunft-osk-stack">
                 <div class="osk is-hidden" id="osk-guide" data-target="find-guide"></div>
               </div>
-            </div>
-            <div class="auskunft-cat-wrap" id="auskunft-cat-dd">
-              <button
-                type="button"
-                id="auskunft-cat-btn"
-                class="auskunft-cat-trigger"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="auskunft-cat-menu"
-                data-i18n-title="catalog_ui.auskunft_filters"
-              >
-                <span id="auskunft-cat-label" class="auskunft-cat-label"></span>
-                <svg class="ico auskunft-cat-caret" aria-hidden="true">
-                  <use href="#i-chevron-down"></use>
-                </svg>
-              </button>
-              <div
-                id="auskunft-cat-menu"
-                class="auskunft-cat-menu"
-                role="listbox"
-              ></div>
             </div>
           </div>
           <div id="auskunft-container" class="acc-list auskunft-list"></div>
@@ -15917,6 +15909,14 @@
         );
         const current = options.find((opt) => opt.key === auskunftKatKey) || options[0];
         labelEl.textContent = current ? current.label : t("catalog_ui.auskunft_cat_all");
+        const countEl = document.getElementById("auskunft-filter-count");
+        const btn = document.getElementById("auskunft-cat-btn");
+        const filtered = !!auskunftKatKey;
+        if (countEl) {
+          countEl.hidden = !filtered;
+          countEl.textContent = filtered ? "1" : "0";
+        }
+        if (btn) btn.classList.toggle("is-on", filtered);
         menu.innerHTML = options
           .map((opt) => {
             const active = opt.key === auskunftKatKey;
@@ -15998,7 +15998,8 @@
             focusAuskunftSearch(false);
           });
           document.addEventListener("click", (e) => {
-            if (!dd.contains(e.target)) closeAuskunftCatMenu();
+            if (btn.contains(e.target) || menu.contains(e.target)) return;
+            closeAuskunftCatMenu();
           });
         }
         const cont = document.getElementById("auskunft-container");
