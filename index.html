@@ -1148,7 +1148,14 @@
         overflow: visible;
       }
       .zone-toolbar:has(.catalog-search-bar.is-open) {
-        z-index: 40;
+        z-index: 50;
+      }
+      .catalog-search-bar.is-open {
+        z-index: 5;
+      }
+      .search-stack > .osk[data-target] {
+        position: relative;
+        z-index: 1;
       }
       .zone-scroll {
         flex: 1;
@@ -3905,7 +3912,7 @@
           left: 0;
           right: 0;
           bottom: 30px;
-          z-index: 90;
+          z-index: 2;
           width: auto;
           max-width: none;
           margin: 0;
@@ -12583,14 +12590,12 @@
         if (oskId === "osk-prof") {
           if (visible) {
             artikelDetailOpen = false;
-            if (typeof closeArtikelFilterPop === "function") closeArtikelFilterPop();
           }
           applyArtikelWorkspace();
         }
         if (oskId === "osk-color") {
           if (visible) {
             farbeDetailOpen = false;
-            if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
           }
           applyFarbeWorkspace();
         }
@@ -12984,7 +12989,10 @@
         return !!(
           node &&
           node.closest &&
-          (node.closest("#artikel-search-bar") || node.closest("#farben-search-bar"))
+          (node.closest("#artikel-search-bar") ||
+            node.closest("#farben-search-bar") ||
+            node.closest("#osk-prof") ||
+            node.closest("#osk-color"))
         );
       }
 
@@ -13203,10 +13211,6 @@
       }
 
       function openArtikelFilterPop() {
-        const pad = document.getElementById("osk-prof");
-        if (pad && !pad.classList.contains("is-hidden") && typeof setSearchOskVisible === "function") {
-          setSearchOskVisible("osk-prof", false);
-        }
         const bar = document.getElementById("artikel-search-bar");
         const pop = document.getElementById("artikel-filter-pop");
         const btn = document.getElementById("btnFilterToggle");
@@ -13214,7 +13218,11 @@
         if (bar) bar.classList.add("is-open");
         if (pop) pop.hidden = false;
         if (btn) btn.setAttribute("aria-expanded", "true");
-        requestAnimationFrame(() => focusOpenFilterPop(pop));
+        requestAnimationFrame(() => {
+          const pad = document.getElementById("osk-prof");
+          if (pad && !pad.classList.contains("is-hidden")) return;
+          focusOpenFilterPop(pop);
+        });
       }
 
       function toggleArtikelFilterPop() {
@@ -13415,10 +13423,6 @@
       }
 
       function openFarbeFilterPop() {
-        const pad = document.getElementById("osk-color");
-        if (pad && !pad.classList.contains("is-hidden") && typeof setSearchOskVisible === "function") {
-          setSearchOskVisible("osk-color", false);
-        }
         const bar = document.getElementById("farben-search-bar");
         const pop = document.getElementById("farben-filter-pop");
         const btn = document.getElementById("btnFarbeFilterToggle");
@@ -13426,7 +13430,11 @@
         if (bar) bar.classList.add("is-open");
         if (pop) pop.hidden = false;
         if (btn) btn.setAttribute("aria-expanded", "true");
-        requestAnimationFrame(() => focusOpenFilterPop(pop));
+        requestAnimationFrame(() => {
+          const pad = document.getElementById("osk-color");
+          if (pad && !pad.classList.contains("is-hidden")) return;
+          focusOpenFilterPop(pop);
+        });
       }
 
       function toggleFarbeFilterPop() {
