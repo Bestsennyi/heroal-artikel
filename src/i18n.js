@@ -10,7 +10,7 @@
   var DEFAULT_LANG = "de";
   var STORAGE_KEY = "lagerguide_lang";
   var LEGACY_STORAGE_KEY = "heroal_lang";
-  var CACHE_KEY = "heroal_ui_i18n_v2";
+  var CACHE_KEY = "heroal_ui_i18n_v3";
   var DICT_URL = "./src/locales/translations.json";
   var RTL_LANGS = [];
 

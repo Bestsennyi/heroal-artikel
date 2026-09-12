@@ -904,6 +904,36 @@
       "de": "Auto",
       "en": "Auto",
       "ru": "Авто"
+    },
+    "search_tips_title": {
+      "de": "Such-Tipps",
+      "en": "Search Tips",
+      "ru": "Подсказка по поиску"
+    },
+    "search_tips_lead": {
+      "de": "Wörter mit Leerzeichen trennen = Suche nach allen Begriffen gleichzeitig.",
+      "en": "Separate words with spaces = matches all terms simultaneously.",
+      "ru": "Слова через пробел = поиск сразу по всем указанным словам."
+    },
+    "search_tips_artikel": {
+      "de": "ARTIKEL: #kategorie (z. B. #blende), @system (z. B. @rs37).",
+      "en": "ARTICLES: #category (e.g. #blende), @system (e.g. @rs37).",
+      "ru": "ARTIKEL: #категория (напр. #blende), @система (напр. @rs37)."
+    },
+    "search_tips_farben": {
+      "de": "FARBEN: *kollektion (z. B. *ral), !oberfläche (z. B. !matt).",
+      "en": "COLORS: *collection (e.g. *ral), !finish (e.g. !matt).",
+      "ru": "FARBEN: *коллекция (напр. *ral), !поверхность (напр. !matt)."
+    },
+    "search_tips_example_label": {
+      "de": "Beispiel",
+      "en": "Example",
+      "ru": "Пример"
+    },
+    "search_tips_example": {
+      "de": "50 #blende @rs37 | 703 *ral !matt",
+      "en": "50 #blende @rs37 | 703 *ral !matt",
+      "ru": "50 #blende @rs37 | 703 *ral !matt"
     }
   },
   "footer": {
