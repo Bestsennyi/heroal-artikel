@@ -1145,6 +1145,10 @@
         background: transparent;
         position: relative;
         z-index: 20;
+        overflow: visible;
+      }
+      .zone-toolbar:has(.catalog-search-bar.is-open) {
+        z-index: 40;
       }
       .zone-scroll {
         flex: 1;
@@ -1534,22 +1538,33 @@
         position: relative;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         width: 100%;
       }
-      .catalog-search-bar .input-box,
-      .artikel-search-bar .input-box {
+      .catalog-search-field {
+        position: relative;
         flex: 1 1 auto;
         min-width: 0;
       }
-      .artikel-filter-btn {
-        position: relative;
+      .catalog-search-bar .input-box,
+      .artikel-search-bar .input-box {
+        width: 100%;
+        flex: none;
+      }
+      .catalog-search-bar > .osk-toggle {
         width: 48px;
         height: 48px;
         min-width: 48px;
         min-height: 48px;
         flex-shrink: 0;
         touch-action: manipulation;
+      }
+      .search-field-actions .artikel-filter-btn {
+        position: relative;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
       }
       .artikel-filter-btn.is-on,
       .catalog-search-bar.is-open .artikel-filter-btn,
@@ -1611,6 +1626,7 @@
       }
       .artikel-filter-col {
         min-width: 0;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -1627,15 +1643,34 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        max-height: 240px;
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: min(240px, 42vh);
         overflow-x: hidden;
         overflow-y: auto;
-        padding-right: 2px;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        padding-right: 6px;
         scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+      }
+      .artikel-filter-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .artikel-filter-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .artikel-filter-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.22);
+        border-radius: 9999px;
+      }
+      .artikel-filter-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.38);
       }
       .artikel-filter-option {
-        min-height: 40px;
+        min-height: 44px;
+        flex: 0 0 auto;
         width: 100%;
         padding: 8px 10px;
         border-radius: 10px;
@@ -1647,11 +1682,18 @@
         font-family: inherit;
         text-align: left;
         cursor: pointer;
-        touch-action: manipulation;
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
       }
       .artikel-filter-option:hover {
         border-color: #64748b;
         background: #1e293b;
+      }
+      .artikel-filter-option:focus-visible,
+      .artikel-filter-foot button:focus-visible {
+        outline: none;
+        border-color: var(--heroal-accent);
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.45);
       }
       .artikel-filter-option.active {
         border-color: #00a2ff;
@@ -1666,13 +1708,14 @@
       }
       .artikel-filter-foot button {
         flex: 1 1 0;
-        min-height: 42px;
+        min-height: 44px;
         border-radius: 10px;
         font-size: 13px;
         font-weight: 700;
         font-family: inherit;
         cursor: pointer;
         touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
       .artikel-filter-reset {
         border: 1px solid #475569;
@@ -1683,6 +1726,88 @@
         border: 1px solid #00a2ff;
         background: #12324d;
         color: #e0f2fe;
+      }
+      #artikel-search-bar .artikel-filter-btn {
+        color: #93c5fd;
+        border-color: #93c5fd;
+      }
+      #artikel-search-bar .artikel-filter-btn.is-on,
+      #artikel-search-bar.is-open .artikel-filter-btn {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
+      }
+      #artikel-search-bar .artikel-filter-count {
+        background: #93c5fd;
+        color: #041018;
+      }
+      #artikel-search-bar .artikel-filter-pop {
+        border-color: #93c5fd;
+        box-shadow:
+          0 0 16px rgba(147, 197, 253, 0.32),
+          0 14px 32px rgba(0, 0, 0, 0.5);
+      }
+      #artikel-search-bar .artikel-filter-col-title {
+        color: #93c5fd;
+      }
+      #artikel-search-bar .artikel-filter-option.active {
+        border-color: #93c5fd;
+        background: rgba(147, 197, 253, 0.14);
+        color: #dbeafe;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.32);
+      }
+      #artikel-search-bar .artikel-filter-option:focus-visible,
+      #artikel-search-bar .artikel-filter-foot button:focus-visible {
+        border-color: #93c5fd;
+        box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.5);
+      }
+      #artikel-search-bar .artikel-filter-done {
+        border-color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        color: #93c5fd;
+        box-shadow: 0 0 10px rgba(147, 197, 253, 0.28);
+      }
+      #farben-search-bar .artikel-filter-btn {
+        color: #38bdf8;
+        border-color: #38bdf8;
+      }
+      #farben-search-bar .artikel-filter-btn.is-on,
+      #farben-search-bar.is-open .artikel-filter-btn {
+        border-color: #38bdf8;
+        color: #38bdf8;
+        background: rgba(56, 189, 248, 0.12);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+      }
+      #farben-search-bar .artikel-filter-count {
+        background: #38bdf8;
+        color: #041018;
+      }
+      #farben-search-bar .artikel-filter-pop {
+        border-color: #38bdf8;
+        box-shadow:
+          0 0 16px rgba(56, 189, 248, 0.32),
+          0 14px 32px rgba(0, 0, 0, 0.5);
+      }
+      #farben-search-bar .artikel-filter-col-title {
+        color: #38bdf8;
+      }
+      #farben-search-bar .artikel-filter-option.active {
+        border-color: #38bdf8;
+        background: rgba(56, 189, 248, 0.14);
+        color: #e0f2fe;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.32);
+      }
+      #farben-search-bar .artikel-filter-option:focus-visible,
+      #farben-search-bar .artikel-filter-foot button:focus-visible {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.5);
+      }
+      #farben-search-bar .artikel-filter-done {
+        border-color: #38bdf8;
+        background: rgba(56, 189, 248, 0.12);
+        color: #38bdf8;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.28);
       }
       .input-box {
         position: relative;
@@ -1750,6 +1875,10 @@
       .search-icon-btn .ico {
         width: 18px;
         height: 18px;
+      }
+      .catalog-search-bar > .osk-toggle .ico {
+        width: 22px;
+        height: 22px;
       }
       .search-icon-btn:hover {
         filter: none;
@@ -6052,77 +6181,80 @@
                   <span class="zone-label" id="lbl-prof-head">Artikel</span>
                 </div>
                 <div class="catalog-search-bar artikel-search-bar" id="artikel-search-bar">
+                  <div class="catalog-search-field">
+                    <div class="input-box">
+                      <input
+                        type="text"
+                        id="find-prof"
+                        class="search-field"
+                        placeholder="Artikelnummer oder Name eingeben..."
+                        data-i18n-placeholder="catalog_ui.ph_artikel"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        inputmode="text"
+                        enterkeyhint="search"
+                      />
+                      <div class="search-field-actions">
+                        <button
+                          type="button"
+                          class="search-icon-btn btn-clear"
+                          id="clr-prof"
+                          aria-label="Clear" data-i18n-title="a11y.clear"
+                        >
+                          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="search-icon-btn artikel-filter-btn"
+                          id="btnFilterToggle"
+                          aria-expanded="false"
+                          aria-controls="artikel-filter-pop"
+                          aria-label="Filter"
+                          title="Filter"
+                          data-i18n-title="a11y.filter"
+                        >
+                          <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
+                          <span class="artikel-filter-count" id="artikel-filter-count" hidden>0</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      id="artikel-filter-pop"
+                      class="artikel-filter-pop"
+                      hidden
+                      role="dialog"
+                      aria-modal="false"
+                      aria-labelledby="artikel-filter-title"
+                    >
+                      <span id="artikel-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
+                      <div class="artikel-filter-cols">
+                        <div class="artikel-filter-col">
+                          <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kategorie">Kategorie</div>
+                          <div class="artikel-filter-list" id="artikel-filter-kategorie"></div>
+                        </div>
+                        <div class="artikel-filter-col">
+                          <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
+                          <div class="artikel-filter-list" id="artikel-filter-system"></div>
+                        </div>
+                      </div>
+                      <div class="artikel-filter-foot">
+                        <button type="button" class="artikel-filter-reset" id="artikel-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
+                        <button type="button" class="artikel-filter-done" id="artikel-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
+                      </div>
+                    </div>
+                  </div>
                   <button
                     type="button"
-                    class="search-icon-btn artikel-filter-btn"
-                    id="btnFilterToggle"
-                    aria-expanded="false"
-                    aria-controls="artikel-filter-pop"
-                    aria-label="Filter"
-                    title="Filter"
-                    data-i18n-title="a11y.filter"
+                    class="search-icon-btn osk-toggle"
+                    id="btn-osk-prof"
+                    data-osk="osk-prof"
+                    aria-label="Numpad" data-i18n-title="a11y.numpad"
+                    aria-pressed="false"
                   >
-                    <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
-                    <span class="artikel-filter-count" id="artikel-filter-count" hidden>0</span>
+                    <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
                   </button>
-                  <div class="input-box">
-                    <input
-                      type="text"
-                      id="find-prof"
-                      class="search-field"
-                      placeholder="Artikelnummer oder Name eingeben..."
-                      data-i18n-placeholder="catalog_ui.ph_artikel"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                      inputmode="text"
-                      enterkeyhint="search"
-                    />
-                    <div class="search-field-actions">
-                      <button
-                        type="button"
-                        class="search-icon-btn btn-clear"
-                        id="clr-prof"
-                        aria-label="Clear" data-i18n-title="a11y.clear"
-                      >
-                        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                      </button>
-                      <button
-                        type="button"
-                        class="search-icon-btn osk-toggle"
-                        id="btn-osk-prof"
-                        data-osk="osk-prof"
-                        aria-label="Numpad" data-i18n-title="a11y.numpad"
-                        aria-pressed="false"
-                      >
-                        <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    id="artikel-filter-pop"
-                    class="artikel-filter-pop"
-                    hidden
-                    role="dialog"
-                    aria-labelledby="artikel-filter-title"
-                  >
-                    <span id="artikel-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
-                    <div class="artikel-filter-cols">
-                      <div class="artikel-filter-col">
-                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kategorie">Kategorie</div>
-                        <div class="artikel-filter-list" id="artikel-filter-kategorie"></div>
-                      </div>
-                      <div class="artikel-filter-col">
-                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
-                        <div class="artikel-filter-list" id="artikel-filter-system"></div>
-                      </div>
-                    </div>
-                    <div class="artikel-filter-foot">
-                      <button type="button" class="artikel-filter-reset" id="artikel-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
-                      <button type="button" class="artikel-filter-done" id="artikel-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
-                    </div>
-                  </div>
                 </div>
                 <div class="osk is-hidden" id="osk-prof" data-target="find-prof"></div>
               </div>
@@ -6279,77 +6411,80 @@
                   <span class="zone-label" id="lbl-color-head">Farben</span>
                 </div>
                 <div class="catalog-search-bar" id="farben-search-bar">
+                  <div class="catalog-search-field">
+                    <div class="input-box">
+                      <input
+                        type="text"
+                        id="find-color"
+                        class="search-field"
+                        placeholder="Farbnummer oder Farbname eingeben..."
+                        data-i18n-placeholder="catalog_ui.ph_farben"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        inputmode="text"
+                        enterkeyhint="search"
+                      />
+                      <div class="search-field-actions">
+                        <button
+                          type="button"
+                          class="search-icon-btn btn-clear"
+                          id="clr-col"
+                          aria-label="Clear" data-i18n-title="a11y.clear"
+                        >
+                          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="search-icon-btn artikel-filter-btn"
+                          id="btnFarbeFilterToggle"
+                          aria-expanded="false"
+                          aria-controls="farben-filter-pop"
+                          aria-label="Filter"
+                          title="Filter"
+                          data-i18n-title="a11y.filter_farben"
+                        >
+                          <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
+                          <span class="artikel-filter-count" id="farben-filter-count" hidden>0</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      id="farben-filter-pop"
+                      class="artikel-filter-pop"
+                      hidden
+                      role="dialog"
+                      aria-modal="false"
+                      aria-labelledby="farben-filter-title"
+                    >
+                      <span id="farben-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
+                      <div class="artikel-filter-cols">
+                        <div class="artikel-filter-col">
+                          <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kollektion">Kollektion</div>
+                          <div class="artikel-filter-list" id="farben-filter-kollektion"></div>
+                        </div>
+                        <div class="artikel-filter-col">
+                          <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
+                          <div class="artikel-filter-list" id="farben-filter-system"></div>
+                        </div>
+                      </div>
+                      <div class="artikel-filter-foot">
+                        <button type="button" class="artikel-filter-reset" id="farben-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
+                        <button type="button" class="artikel-filter-done" id="farben-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
+                      </div>
+                    </div>
+                  </div>
                   <button
                     type="button"
-                    class="search-icon-btn artikel-filter-btn"
-                    id="btnFarbeFilterToggle"
-                    aria-expanded="false"
-                    aria-controls="farben-filter-pop"
-                    aria-label="Filter"
-                    title="Filter"
-                    data-i18n-title="a11y.filter_farben"
+                    class="search-icon-btn osk-toggle"
+                    id="btn-osk-color"
+                    data-osk="osk-color"
+                    aria-label="Numpad" data-i18n-title="a11y.numpad"
+                    aria-pressed="false"
                   >
-                    <svg class="ico" aria-hidden="true"><use href="#i-filter"></use></svg>
-                    <span class="artikel-filter-count" id="farben-filter-count" hidden>0</span>
+                    <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
                   </button>
-                  <div class="input-box">
-                    <input
-                      type="text"
-                      id="find-color"
-                      class="search-field"
-                      placeholder="Farbnummer oder Farbname eingeben..."
-                      data-i18n-placeholder="catalog_ui.ph_farben"
-                      autocomplete="off"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      spellcheck="false"
-                      inputmode="text"
-                      enterkeyhint="search"
-                    />
-                    <div class="search-field-actions">
-                      <button
-                        type="button"
-                        class="search-icon-btn btn-clear"
-                        id="clr-col"
-                        aria-label="Clear" data-i18n-title="a11y.clear"
-                      >
-                        <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
-                      </button>
-                      <button
-                        type="button"
-                        class="search-icon-btn osk-toggle"
-                        id="btn-osk-color"
-                        data-osk="osk-color"
-                        aria-label="Numpad" data-i18n-title="a11y.numpad"
-                        aria-pressed="false"
-                      >
-                        <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    id="farben-filter-pop"
-                    class="artikel-filter-pop"
-                    hidden
-                    role="dialog"
-                    aria-labelledby="farben-filter-title"
-                  >
-                    <span id="farben-filter-title" class="visually-hidden" data-i18n="catalog_ui.filter_title">Filter</span>
-                    <div class="artikel-filter-cols">
-                      <div class="artikel-filter-col">
-                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_kollektion">Kollektion</div>
-                        <div class="artikel-filter-list" id="farben-filter-kollektion"></div>
-                      </div>
-                      <div class="artikel-filter-col">
-                        <div class="artikel-filter-col-title" data-i18n="catalog_ui.filter_system">System</div>
-                        <div class="artikel-filter-list" id="farben-filter-system"></div>
-                      </div>
-                    </div>
-                    <div class="artikel-filter-foot">
-                      <button type="button" class="artikel-filter-reset" id="farben-filter-reset" data-i18n="catalog_ui.filter_reset">Zurücksetzen</button>
-                      <button type="button" class="artikel-filter-done" id="farben-filter-done" data-i18n="catalog_ui.filter_done">Fertig</button>
-                    </div>
-                  </div>
                 </div>
                 <div class="osk is-hidden" id="osk-color" data-target="find-color"></div>
               </div>
@@ -8194,6 +8329,7 @@
       let lastFarbeFilterSig = "";
       let farbeFilters = { kollektion: "", system: "" };
       let farbeFilterBound = false;
+      let catalogFilterOutsideBound = false;
       let kbArtikelIndex = -1;
       let kbColorIndex = -1;
       let drawingPreviewSticky = false;
@@ -9075,8 +9211,7 @@
       function handleSearchEscape(active) {
         schedulePlaceholderRestore(active);
         hideDrawingHover();
-        if (typeof closeArtikelFilterPop === "function" && closeArtikelFilterPop()) return;
-        if (typeof closeFarbeFilterPop === "function" && closeFarbeFilterPop()) return;
+        if (closeCatalogFilterFromEscape(active)) return;
         if (isSyncModalOpen()) {
           cancelManualSync();
           return;
@@ -9410,6 +9545,10 @@
               e.preventDefault();
               stepZoomGallery(1);
             }
+            return;
+          }
+
+          if (typeof handleCatalogFilterKeys === "function" && handleCatalogFilterKeys(e, active)) {
             return;
           }
 
@@ -12811,9 +12950,212 @@
 
       function artikelFilterOptionHtml(kind, value, label, selected) {
         const active = selected ? " active" : "";
+        const pressed = selected ? "true" : "false";
         return (
-          `<button type="button" class="artikel-filter-option${active}" data-filter-kind="${escapeHtml(kind)}" data-value="${escapeHtml(value)}">${escapeHtml(label)}</button>`
+          `<button type="button" class="artikel-filter-option${active}" data-filter-kind="${escapeHtml(kind)}" data-value="${escapeHtml(value)}" aria-pressed="${pressed}">${escapeHtml(label)}</button>`
         );
+      }
+
+      function syncFilterOptionState(pop, selectedByKind) {
+        if (!pop) return;
+        pop.querySelectorAll(".artikel-filter-option").forEach((opt) => {
+          const kind = opt.getAttribute("data-filter-kind");
+          const value = opt.getAttribute("data-value") || "";
+          const on = (selectedByKind[kind] || "") === value;
+          opt.classList.toggle("active", on);
+          opt.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+
+      function focusFilterNavTarget(el) {
+        if (!el || typeof el.focus !== "function") return;
+        el.focus({ preventScroll: true });
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "nearest", inline: "nearest" });
+        }
+      }
+
+      function catalogFilterPopFromEl(el) {
+        if (!el || !el.closest) return null;
+        return el.closest(".artikel-filter-pop");
+      }
+
+      function isInsideAnyCatalogFilterUi(node) {
+        return !!(
+          node &&
+          node.closest &&
+          (node.closest("#artikel-search-bar") || node.closest("#farben-search-bar"))
+        );
+      }
+
+      function resolveOpenFilterPop(active) {
+        const fromEl = catalogFilterPopFromEl(active);
+        if (fromEl && !fromEl.hidden) return fromEl;
+        if (
+          isArtikelFilterOpen() &&
+          active &&
+          (active.id === "find-prof" ||
+            active.id === "btnFilterToggle" ||
+            (active.closest && active.closest("#artikel-search-bar")))
+        ) {
+          return document.getElementById("artikel-filter-pop");
+        }
+        if (
+          isFarbeFilterOpen() &&
+          active &&
+          (active.id === "find-color" ||
+            active.id === "btnFarbeFilterToggle" ||
+            (active.closest && active.closest("#farben-search-bar")))
+        ) {
+          return document.getElementById("farben-filter-pop");
+        }
+        return null;
+      }
+
+      function filterNavColumns(pop) {
+        return Array.from(pop.querySelectorAll(".artikel-filter-list")).map((list) =>
+          Array.from(list.querySelectorAll(".artikel-filter-option")),
+        );
+      }
+
+      function handleCatalogFilterKeys(e, active) {
+        const key = e.key;
+        if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "ArrowLeft" && key !== "ArrowRight" && key !== "Home" && key !== "End") {
+          return false;
+        }
+        if (active && active.id === "btnFilterToggle" && !isArtikelFilterOpen()) {
+          if (key === "ArrowDown" || key === "ArrowUp") {
+            e.preventDefault();
+            openArtikelFilterPop();
+            return true;
+          }
+        }
+        if (active && active.id === "btnFarbeFilterToggle" && !isFarbeFilterOpen()) {
+          if (key === "ArrowDown" || key === "ArrowUp") {
+            e.preventDefault();
+            openFarbeFilterPop();
+            return true;
+          }
+        }
+        const pop = resolveOpenFilterPop(active);
+        if (!pop || pop.hidden) return false;
+        const cols = filterNavColumns(pop);
+        const footer = [
+          pop.querySelector(".artikel-filter-reset"),
+          pop.querySelector(".artikel-filter-done"),
+        ].filter(Boolean);
+        const inPop = !!(active && pop.contains(active));
+        let colIdx = -1;
+        let rowIdx = -1;
+        const footIdx = footer.indexOf(active);
+        cols.forEach((opts, ci) => {
+          const ri = opts.indexOf(active);
+          if (ri >= 0) {
+            colIdx = ci;
+            rowIdx = ri;
+          }
+        });
+
+        if (!inPop) {
+          if (key === "ArrowDown" || key === "ArrowRight" || key === "Home") {
+            e.preventDefault();
+            const start =
+              pop.querySelector(".artikel-filter-option.active") ||
+              (cols[0] && cols[0][0]) ||
+              footer[0];
+            focusFilterNavTarget(start);
+            return true;
+          }
+          if (key === "ArrowUp" || key === "End") {
+            e.preventDefault();
+            const lastCol = cols[cols.length - 1] || [];
+            const start = footer[footer.length - 1] || lastCol[lastCol.length - 1];
+            focusFilterNavTarget(start);
+            return true;
+          }
+          return false;
+        }
+
+        e.preventDefault();
+        let next = null;
+        if (footIdx >= 0) {
+          if (key === "ArrowLeft") next = footer[Math.max(0, footIdx - 1)];
+          else if (key === "ArrowRight") next = footer[Math.min(footer.length - 1, footIdx + 1)];
+          else if (key === "Home") next = (cols[footIdx] && cols[footIdx][0]) || (cols[0] && cols[0][0]);
+          else if (key === "ArrowDown") next = footer[footIdx];
+          else if (key === "ArrowUp" || key === "End") {
+            const col = cols[Math.min(footIdx, cols.length - 1)] || [];
+            next = col[col.length - 1] || footer[footIdx];
+          }
+        } else if (colIdx >= 0) {
+          const col = cols[colIdx] || [];
+          const otherIdx = key === "ArrowLeft" ? colIdx - 1 : colIdx + 1;
+          const other = cols[otherIdx];
+          if (key === "ArrowDown") {
+            next =
+              rowIdx < col.length - 1
+                ? col[rowIdx + 1]
+                : footer[Math.min(colIdx, footer.length - 1)] || footer[0];
+          } else if (key === "ArrowUp") {
+            next = rowIdx > 0 ? col[rowIdx - 1] : col[0];
+          } else if (key === "ArrowLeft" || key === "ArrowRight") {
+            if (other && other.length) next = other[Math.min(rowIdx, other.length - 1)];
+          } else if (key === "Home") next = col[0];
+          else if (key === "End") next = col[col.length - 1];
+        }
+        if (next) focusFilterNavTarget(next);
+        return true;
+      }
+
+      function closeCatalogFilterFromEscape(active) {
+        const inArtikel =
+          isArtikelFilterOpen() &&
+          active &&
+          active.closest &&
+          (active.closest("#artikel-filter-pop") ||
+            active.id === "btnFilterToggle" ||
+            active.id === "find-prof" ||
+            active.closest("#artikel-search-bar"));
+        const inFarbe =
+          isFarbeFilterOpen() &&
+          active &&
+          active.closest &&
+          (active.closest("#farben-filter-pop") ||
+            active.id === "btnFarbeFilterToggle" ||
+            active.id === "find-color" ||
+            active.closest("#farben-search-bar"));
+        if (inArtikel && (!inFarbe || (active.closest && active.closest("#artikel-search-bar")))) {
+          closeArtikelFilterPop({ restoreFocus: active.id !== "btnFilterToggle" && active.id !== "find-prof" });
+          return true;
+        }
+        if (inFarbe) {
+          closeFarbeFilterPop({ restoreFocus: active.id !== "btnFarbeFilterToggle" && active.id !== "find-color" });
+          return true;
+        }
+        if (typeof closeArtikelFilterPop === "function" && closeArtikelFilterPop()) return true;
+        if (typeof closeFarbeFilterPop === "function" && closeFarbeFilterPop()) return true;
+        return false;
+      }
+
+      function bindCatalogFilterOutsideClose() {
+        if (catalogFilterOutsideBound) return;
+        catalogFilterOutsideBound = true;
+        document.addEventListener("pointerdown", (e) => {
+          if (!isArtikelFilterOpen() && !isFarbeFilterOpen()) return;
+          const node = e.target;
+          if (isInsideAnyCatalogFilterUi(node)) return;
+          closeArtikelFilterPop();
+          closeFarbeFilterPop();
+        });
+      }
+
+      function focusOpenFilterPop(pop) {
+        if (!pop || pop.hidden) return;
+        const start =
+          pop.querySelector(".artikel-filter-option.active") ||
+          pop.querySelector(".artikel-filter-option") ||
+          pop.querySelector("button");
+        focusFilterNavTarget(start);
       }
 
       function renderArtikelFilterOptions() {
@@ -12848,7 +13190,7 @@
             .join("");
       }
 
-      function closeArtikelFilterPop() {
+      function closeArtikelFilterPop(opts) {
         const bar = document.getElementById("artikel-search-bar");
         const pop = document.getElementById("artikel-filter-pop");
         const btn = document.getElementById("btnFilterToggle");
@@ -12856,11 +13198,15 @@
         bar.classList.remove("is-open");
         if (pop) pop.hidden = true;
         if (btn) btn.setAttribute("aria-expanded", "false");
+        if (opts && opts.restoreFocus && btn) btn.focus();
         return true;
       }
 
       function openArtikelFilterPop() {
-        if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
+        const pad = document.getElementById("osk-prof");
+        if (pad && !pad.classList.contains("is-hidden") && typeof setSearchOskVisible === "function") {
+          setSearchOskVisible("osk-prof", false);
+        }
         const bar = document.getElementById("artikel-search-bar");
         const pop = document.getElementById("artikel-filter-pop");
         const btn = document.getElementById("btnFilterToggle");
@@ -12868,6 +13214,7 @@
         if (bar) bar.classList.add("is-open");
         if (pop) pop.hidden = false;
         if (btn) btn.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(() => focusOpenFilterPop(pop));
       }
 
       function toggleArtikelFilterPop() {
@@ -12877,7 +13224,10 @@
 
       function applyArtikelFilterChange() {
         syncArtikelFilterButton();
-        renderArtikelFilterOptions();
+        syncFilterOptionState(document.getElementById("artikel-filter-pop"), {
+          category: artikelFilters.category,
+          system: artikelFilters.system,
+        });
         ensureSearchDebouncers();
         debouncedRefreshArticleResults.flush();
       }
@@ -12925,12 +13275,7 @@
             closeArtikelFilterPop();
           });
         }
-        document.addEventListener("pointerdown", (e) => {
-          if (!isArtikelFilterOpen()) return;
-          const bar = document.getElementById("artikel-search-bar");
-          if (bar && bar.contains(e.target)) return;
-          closeArtikelFilterPop();
-        });
+        bindCatalogFilterOutsideClose();
         syncArtikelFilterButton();
       }
 
@@ -13057,7 +13402,7 @@
             .join("");
       }
 
-      function closeFarbeFilterPop() {
+      function closeFarbeFilterPop(opts) {
         const bar = document.getElementById("farben-search-bar");
         const pop = document.getElementById("farben-filter-pop");
         const btn = document.getElementById("btnFarbeFilterToggle");
@@ -13065,11 +13410,15 @@
         bar.classList.remove("is-open");
         if (pop) pop.hidden = true;
         if (btn) btn.setAttribute("aria-expanded", "false");
+        if (opts && opts.restoreFocus && btn) btn.focus();
         return true;
       }
 
       function openFarbeFilterPop() {
-        closeArtikelFilterPop();
+        const pad = document.getElementById("osk-color");
+        if (pad && !pad.classList.contains("is-hidden") && typeof setSearchOskVisible === "function") {
+          setSearchOskVisible("osk-color", false);
+        }
         const bar = document.getElementById("farben-search-bar");
         const pop = document.getElementById("farben-filter-pop");
         const btn = document.getElementById("btnFarbeFilterToggle");
@@ -13077,6 +13426,7 @@
         if (bar) bar.classList.add("is-open");
         if (pop) pop.hidden = false;
         if (btn) btn.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(() => focusOpenFilterPop(pop));
       }
 
       function toggleFarbeFilterPop() {
@@ -13086,7 +13436,10 @@
 
       function applyFarbeFilterChange() {
         syncFarbeFilterButton();
-        renderFarbeFilterOptions();
+        syncFilterOptionState(document.getElementById("farben-filter-pop"), {
+          kollektion: farbeFilters.kollektion,
+          system: farbeFilters.system,
+        });
         ensureSearchDebouncers();
         debouncedRefreshColorResults.flush();
       }
@@ -13134,12 +13487,7 @@
             closeFarbeFilterPop();
           });
         }
-        document.addEventListener("pointerdown", (e) => {
-          if (!isFarbeFilterOpen()) return;
-          const bar = document.getElementById("farben-search-bar");
-          if (bar && bar.contains(e.target)) return;
-          closeFarbeFilterPop();
-        });
+        bindCatalogFilterOutsideClose();
         syncFarbeFilterButton();
       }
 
