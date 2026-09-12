@@ -405,6 +405,11 @@
       "en": "Capture photo",
       "ru": "Захват фото"
     },
+    "admin_only": {
+      "de": "Nur mit Administratorrechten.",
+      "en": "Administrator rights required.",
+      "ru": "Работает только на правах администратора."
+    },
     "modalTitle": {
       "de": "Foto erfassen",
       "en": "Capture photo",

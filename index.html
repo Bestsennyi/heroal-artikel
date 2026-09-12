@@ -7700,6 +7700,7 @@
             pin: "1234",
             vorname_de: "Max",
             nachname_de: "Best",
+            rolle_de: "Mitarbeiter",
             benutzer_de: "Mitarbeiter",
             status_de: "Aktiv",
           },
@@ -7708,6 +7709,7 @@
             pin: "1111",
             vorname_de: "Admin",
             nachname_de: "heroal",
+            rolle_de: "Administrator",
             benutzer_de: "Administrator",
             status_de: "Aktiv",
           },
@@ -7716,6 +7718,7 @@
             pin: "0001",
             vorname_de: "Inaktiv",
             nachname_de: "Konto",
+            rolle_de: "Mitarbeiter",
             benutzer_de: "Mitarbeiter",
             status_de: "Inaktiv",
           },
@@ -7957,8 +7960,10 @@
             pin: String(parsed.pin || ""),
             vorname_de: parsed.vorname_de || "",
             nachname_de: parsed.nachname_de || "",
-            benutzer_de: parsed.benutzer_de || "",
-            role: parsed.role || parsed.benutzer_de || "",
+            rolle_de: parsed.rolle_de || parsed.benutzer_de || parsed.role || "",
+            benutzer_de: parsed.benutzer_de || parsed.rolle_de || parsed.role || "",
+            role: parsed.role || parsed.rolle_de || parsed.benutzer_de || "",
+            status_de: parsed.status_de || "",
           };
         } catch (e) {
           return null;
@@ -7971,8 +7976,10 @@
           pin: String(user.pin || ""),
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
-          benutzer_de: user.benutzer_de || "",
-          role: user.role || user.benutzer_de || "",
+          rolle_de: user.rolle_de || user.benutzer_de || user.role || "",
+          benutzer_de: user.benutzer_de || user.rolle_de || user.role || "",
+          role: user.role || user.rolle_de || user.benutzer_de || "",
+          status_de: user.status_de || "",
         });
         try {
           sessionStorage.setItem(USER_STORAGE_KEY, payload);
@@ -10019,14 +10026,28 @@
       }
 
       function sessionRecord(user) {
+        const role = userRoleValue(user);
         return {
           nummer: String(user.nummer || ""),
           pin: String(user.pin || ""),
           vorname_de: user.vorname_de || "",
           nachname_de: user.nachname_de || "",
-          benutzer_de: user.benutzer_de || "",
-          role: user.benutzer_de || user.role || "",
+          rolle_de: role,
+          benutzer_de: role,
+          role,
+          status_de: String((user && user.status_de) || ""),
         };
+      }
+
+      function userRoleValue(user) {
+        if (!user) return "";
+        return (
+          user.rolle_de ||
+          user.benutzer_de ||
+          user.role ||
+          user.rolle ||
+          ""
+        );
       }
 
       function normalizeRoleKey(role) {
@@ -10036,20 +10057,23 @@
       }
 
       function isAdministrator(user) {
-        const role = normalizeRoleKey(
-          (user && (user.role || user.benutzer_de)) || "",
-        );
+        const role = normalizeRoleKey(userRoleValue(user));
         return role === "administrator" || role === "admin";
       }
 
       function isStaff(user) {
-        const role = normalizeRoleKey(user && user.benutzer_de);
+        const role = normalizeRoleKey(userRoleValue(user));
         return role === "mitarbeiter" || role === "staff";
       }
 
       function isCustomer(user) {
-        const role = normalizeRoleKey(user && user.benutzer_de);
+        const role = normalizeRoleKey(userRoleValue(user));
         return role === "kunde" || role === "customer" || role === "client";
+      }
+
+      function canCapturePhotos(user) {
+        const live = (user && findLiveUser(user)) || user;
+        return !!(live && isAdministrator(live) && isUserActive(live));
       }
 
       function applyRoleBadgeClass(el, user) {
@@ -10062,7 +10086,7 @@
       }
 
       function roleLabel(user) {
-        const raw = String((user && user.benutzer_de) || "").trim();
+        const raw = String(userRoleValue(user) || "").trim();
         const role = normalizeRoleKey(raw);
         if (role === "administrator" || role === "admin") return t("role_admin");
         if (role === "mitarbeiter" || role === "staff") return t("role_staff");
@@ -10163,15 +10187,14 @@
         if (accountInitials) accountInitials.textContent = letters;
         if (accountAvatar) accountAvatar.textContent = letters;
         if (accountName) accountName.textContent = fullName;
-        const admin = isAdministrator(currentUser);
         roleEl.textContent = roleLabel(currentUser);
         applyRoleBadgeClass(roleEl, currentUser);
         if (accountRole) {
           accountRole.textContent = roleLabel(currentUser);
           applyRoleBadgeClass(accountRole, currentUser);
         }
-        if (photoBtn) photoBtn.hidden = !admin;
-        if (navPhoto) navPhoto.hidden = !admin;
+        if (photoBtn) photoBtn.hidden = false;
+        if (navPhoto) navPhoto.hidden = false;
       }
 
       function shakeLogin() {
@@ -11160,7 +11183,7 @@
       }
 
       async function commitPhotoToQueue(field) {
-        if (!isAdministrator(currentUser)) return;
+        if (!canCapturePhotos(currentUser)) return;
         if (!photoCaptureState.blob || !photoCaptureState.recordId) return;
         const target = photoCaptureState.target;
         const recordId = photoCaptureState.recordId;
@@ -11427,7 +11450,10 @@
       }
 
       function openPhotoCapture() {
-        if (!isAdministrator(currentUser)) return;
+        if (!canCapturePhotos(currentUser)) {
+          showToast(t("photo.admin_only"), "warn");
+          return;
+        }
         resetPhotoCaptureState();
         const dlg = document.getElementById("photo-dialog");
         dlg.classList.add("active");
