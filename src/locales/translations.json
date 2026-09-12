@@ -877,6 +877,33 @@
       "de": "Konto",
       "en": "Account",
       "ru": "Аккаунт"
+    },
+    "settings": {
+      "de": "Einstellungen",
+      "en": "Settings",
+      "ru": "Настройки"
+    }
+  },
+  "settings": {
+    "title": {
+      "de": "Einstellungen",
+      "en": "Settings",
+      "ru": "Настройки"
+    },
+    "badges_title": {
+      "de": "Abzeichen",
+      "en": "Badges",
+      "ru": "Значки"
+    },
+    "badge_surface": {
+      "de": "Oberfläche",
+      "en": "Surface",
+      "ru": "Поверхность"
+    },
+    "badge_auto": {
+      "de": "Auto",
+      "en": "Auto",
+      "ru": "Авто"
     }
   },
   "footer": {

@@ -138,6 +138,7 @@
       html:not(.authed) #note-dialog,
       html:not(.authed) #photo-dialog,
       html:not(.authed) #account-sheet,
+      html:not(.authed) #settings-sheet,
       html:not(.authed) #drawing-hover-pop {
         visibility: hidden;
         pointer-events: none;
@@ -859,6 +860,32 @@
       }
       .hdr-logout:active {
         transform: scale(0.95);
+      }
+      #btn-hdr-settings {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        padding: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        cursor: pointer;
+        flex-shrink: 0;
+        touch-action: manipulation;
+      }
+      #btn-hdr-settings .ico {
+        width: 20px;
+        height: 20px;
+      }
+      #btn-hdr-settings:hover,
+      #btn-hdr-settings[aria-expanded="true"] {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.28);
       }
       #btn-hdr-account {
         display: none;
@@ -3944,7 +3971,8 @@
         }
         .header-center,
         header #btnPhotoCapture,
-        .header-right > .hdr-lang-dd,
+        header .hdr-lang-dd,
+        header #btn-hdr-settings,
         header .hdr-user,
         header .hdr-logout {
           display: none !important;
@@ -4622,6 +4650,7 @@
       .photo-close,
       .sync-close,
       .account-sheet-close,
+      .settings-sheet-close,
       .zoom-close,
       .note-modal-close,
       .drawing-hover-pop-close {
@@ -4649,6 +4678,7 @@
       .photo-close:hover,
       .sync-close:hover,
       .account-sheet-close:hover,
+      .settings-sheet-close:hover,
       .zoom-close:hover,
       .note-modal-close:hover,
       .drawing-hover-pop-close:hover {
@@ -4662,6 +4692,7 @@
       .photo-close:focus-visible,
       .sync-close:focus-visible,
       .account-sheet-close:focus-visible,
+      .settings-sheet-close:focus-visible,
       .zoom-close:focus-visible,
       .note-modal-close:focus-visible,
       .drawing-hover-pop-close:focus-visible {
@@ -4672,6 +4703,7 @@
       .photo-close .ico,
       .sync-close .ico,
       .account-sheet-close .ico,
+      .settings-sheet-close .ico,
       .zoom-close .ico,
       .note-modal-close .ico,
       .drawing-hover-pop-close .ico {
@@ -5031,6 +5063,220 @@
       }
       .account-sheet .hdr-logout > span {
         display: inline;
+      }
+      .account-settings-btn {
+        display: none;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(147, 197, 253, 0.35);
+        background: rgba(147, 197, 253, 0.08);
+        color: #e2e8f0;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .account-settings-btn .ico {
+        width: 18px;
+        height: 18px;
+        color: #93c5fd;
+      }
+      .account-settings-btn:hover {
+        background: rgba(147, 197, 253, 0.16);
+      }
+      @media (max-width: 600px) {
+        .account-settings-btn {
+          display: flex;
+        }
+      }
+      .settings-sheet {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        z-index: 2110;
+        justify-content: center;
+        align-items: center;
+        padding: 24px 16px;
+      }
+      .settings-sheet.active {
+        display: flex;
+      }
+      .settings-sheet-card {
+        position: relative;
+        width: min(100%, 440px);
+        max-height: min(90vh, 720px);
+        overflow: hidden;
+        background: #0f172a;
+        border: 1px solid #93c5fd;
+        border-radius: 20px;
+        padding: 18px 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4),
+          0 18px 40px rgba(0, 0, 0, 0.55);
+      }
+      .settings-sheet-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 2px 36px 4px 4px;
+        flex-shrink: 0;
+      }
+      .settings-sheet-head .ico {
+        width: 20px;
+        height: 20px;
+        color: #93c5fd;
+      }
+      .settings-sheet-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .settings-acc-list {
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-right: 2px;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+      }
+      .settings-acc {
+        border: 1px solid #1e293b;
+        border-radius: 14px;
+        background: #131b2e;
+        overflow: hidden;
+      }
+      .settings-acc-head {
+        width: 100%;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        color: #f1f5f9;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .settings-acc-head .ico {
+        width: 18px;
+        height: 18px;
+        color: #93c5fd;
+        flex-shrink: 0;
+      }
+      .settings-acc-head-label {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      .settings-acc-caret {
+        width: 18px;
+        height: 18px;
+        color: #94a3b8;
+        transition: transform 0.15s ease;
+        flex-shrink: 0;
+      }
+      .settings-acc.is-open .settings-acc-caret {
+        transform: rotate(180deg);
+        color: #e2e8f0;
+      }
+      .settings-acc-body {
+        display: none;
+        padding: 0 12px 14px;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .settings-acc.is-open .settings-acc-body {
+        display: flex;
+      }
+      .settings-badge-group-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #93c5fd;
+        padding: 0 2px;
+      }
+      .settings-acc[data-acc="badges"] .settings-badge-group[data-group="farben"] .settings-badge-group-title {
+        color: #38bdf8;
+      }
+      .settings-badge-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .settings-badge-row-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .settings-badge-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+      .settings-badge-preview {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 2px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid #334155;
+      }
+      .settings-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .settings-swatch {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        padding: 0;
+        border-radius: 999px;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        cursor: pointer;
+        touch-action: manipulation;
+        background: #1e293b;
+      }
+      .settings-swatch.is-auto {
+        width: auto;
+        min-width: 52px;
+        padding: 0 10px;
+        border-radius: 10px;
+        color: #cbd5e1;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: inherit;
+      }
+      .settings-swatch.is-on {
+        box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #93c5fd;
+      }
+      .settings-acc[data-acc="badges"] .settings-badge-group[data-group="farben"] .settings-swatch.is-on {
+        box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #38bdf8;
       }
       .zoom-modal {
         flex-direction: column;
@@ -5788,6 +6034,10 @@
         <polyline points="1 20 1 14 7 14"/>
         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
       </symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </symbol>
       <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -6134,6 +6384,17 @@
         <button type="button" class="hdr-logout" id="btn-logout" title="Abmelden" aria-label="Abmelden" data-i18n-title="auth.logout_btn">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
           <span data-i18n="auth.logout_btn">Abmelden</span>
+        </button>
+        <button
+          type="button"
+          id="btn-hdr-settings"
+          data-i18n-title="a11y.settings"
+          title="Einstellungen"
+          aria-label="Einstellungen"
+          aria-expanded="false"
+          aria-controls="settings-sheet"
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-settings"></use></svg>
         </button>
         <button
           type="button"
@@ -6740,6 +7001,10 @@
             <div class="hdr-lang-menu" id="account-lang-menu" role="listbox" aria-label="Language" data-i18n-title="a11y.language"></div>
           </div>
         </div>
+        <button type="button" class="account-settings-btn" id="btn-account-settings" data-i18n-title="a11y.settings">
+          <svg class="ico" aria-hidden="true"><use href="#i-settings"></use></svg>
+          <span data-i18n="settings.title">Einstellungen</span>
+        </button>
         <button type="button" class="hdr-logout" id="btn-account-logout" data-i18n-title="auth.logout_btn">
           <svg class="ico" aria-hidden="true"><use href="#i-logout"></use></svg>
           <span data-i18n="auth.logout_btn">Abmelden</span>
@@ -6747,6 +7012,63 @@
         <div class="account-sheet-meta">
           <span class="account-sheet-status" id="account-pwa-status" data-i18n="footer.footer_brand">heroal Artikel App • PWA Offline Ready</span>
           <span class="account-sheet-status" id="account-idb-status">IndexedDB: Bereit (Synchronisiert)</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings-sheet" class="settings-sheet" aria-hidden="true">
+      <div class="settings-sheet-card" role="dialog" aria-modal="true" aria-labelledby="settings-sheet-title">
+        <button type="button" class="settings-sheet-close" id="settings-sheet-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
+        <div class="settings-sheet-head">
+          <svg class="ico" aria-hidden="true"><use href="#i-settings"></use></svg>
+          <span class="settings-sheet-title" id="settings-sheet-title" data-i18n="settings.title">Einstellungen</span>
+        </div>
+        <div class="settings-acc-list" id="settings-acc-list">
+          <section class="settings-acc is-open" data-acc="badges">
+            <button type="button" class="settings-acc-head" id="settings-acc-badges" aria-expanded="true" aria-controls="settings-acc-badges-body" data-i18n-title="settings.badges_title">
+              <svg class="ico" aria-hidden="true"><use href="#i-palette"></use></svg>
+              <span class="settings-acc-head-label" data-i18n="settings.badges_title">Abzeichen</span>
+              <svg class="ico settings-acc-caret" aria-hidden="true"><use href="#i-chevron-down"></use></svg>
+            </button>
+            <div class="settings-acc-body" id="settings-acc-badges-body">
+              <div class="settings-badge-group" data-group="artikel">
+                <div class="settings-badge-group-title" data-i18n="catalog_ui.lbl_profiles">Artikel</div>
+                <div class="settings-badge-row" data-kind="category">
+                  <div class="settings-badge-row-top">
+                    <span class="settings-badge-label" data-i18n="catalog_ui.filter_kategorie">Kategorie</span>
+                    <span class="settings-badge-preview" data-preview="category">Abc</span>
+                  </div>
+                  <div class="settings-swatches" data-kind="category"></div>
+                </div>
+                <div class="settings-badge-row" data-kind="system">
+                  <div class="settings-badge-row-top">
+                    <span class="settings-badge-label" data-i18n="catalog_ui.filter_system">System</span>
+                    <span class="settings-badge-preview" data-preview="system">Abc</span>
+                  </div>
+                  <div class="settings-swatches" data-kind="system"></div>
+                </div>
+              </div>
+              <div class="settings-badge-group" data-group="farben">
+                <div class="settings-badge-group-title" data-i18n="catalog_ui.lbl_colors">Farben</div>
+                <div class="settings-badge-row" data-kind="surface">
+                  <div class="settings-badge-row-top">
+                    <span class="settings-badge-label" data-i18n="settings.badge_surface">Oberfläche</span>
+                    <span class="settings-badge-preview" data-preview="surface">Abc</span>
+                  </div>
+                  <div class="settings-swatches" data-kind="surface"></div>
+                </div>
+                <div class="settings-badge-row" data-kind="kollektion">
+                  <div class="settings-badge-row-top">
+                    <span class="settings-badge-label" data-i18n="catalog_ui.filter_kollektion">Kollektion</span>
+                    <span class="settings-badge-preview" data-preview="kollektion">Abc</span>
+                  </div>
+                  <div class="settings-swatches" data-kind="kollektion"></div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -7162,6 +7484,7 @@
         if (typeof refreshPhotoCaptureUi === "function") refreshPhotoCaptureUi();
         if (typeof applyNetBadge === "function") applyNetBadge();
         syncAuskunftDir();
+        if (typeof syncBadgeSettingsUi === "function") syncBadgeSettingsUi();
       }
 
       function setLanguage(lang) {
@@ -7324,6 +7647,47 @@
           .replace(/\s+/g, " ");
       }
 
+      const BADGE_KIND_STORAGE_KEY = "heroal_badge_kinds_v1";
+      const BADGE_KIND_KEYS = ["category", "system", "surface", "kollektion"];
+      const BADGE_PALETTE_HUES = [12, 32, 48, 88, 145, 172, 199, 214, 250, 280, 320, 350];
+      let badgeKindColors = {};
+
+      function loadBadgeKindColors() {
+        badgeKindColors = {};
+        try {
+          const raw = localStorage.getItem(BADGE_KIND_STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : null;
+          if (!parsed || typeof parsed !== "object") return;
+          BADGE_KIND_KEYS.forEach((kind) => {
+            const hue = Number(parsed[kind]);
+            if (Number.isFinite(hue)) badgeKindColors[kind] = hue;
+          });
+        } catch (err) {}
+      }
+
+      function saveBadgeKindColors() {
+        try {
+          localStorage.setItem(BADGE_KIND_STORAGE_KEY, JSON.stringify(badgeKindColors));
+        } catch (err) {}
+      }
+
+      function colorsFromHue(hue) {
+        const sat = 66;
+        const lit = 64;
+        return {
+          fg: "hsl(" + hue + ", " + sat + "%, " + lit + "%)",
+          bg: "hsla(" + hue + ", " + sat + "%, 26%, 0.32)",
+          bd:
+            "hsla(" +
+            hue +
+            ", " +
+            sat +
+            "%, " +
+            Math.max(44, lit - 14) +
+            "%, 0.52)",
+        };
+      }
+
       function hashBadgeKey(key) {
         let h = 2166136261;
         for (let i = 0; i < key.length; i++) {
@@ -7333,9 +7697,12 @@
         return h >>> 0;
       }
 
-      function badgeColorsFromText(text) {
+      function badgeColorsFromText(text, kind) {
         const key = normalizeBadgeKey(text);
         if (!key) return null;
+        if (kind && Number.isFinite(Number(badgeKindColors[kind]))) {
+          return colorsFromHue(Number(badgeKindColors[kind]));
+        }
         const n = hashBadgeKey(key);
         const mixed = Math.imul(n ^ (n >>> 16), 0x45d9f3b) >>> 0;
         const slot = mixed % 17;
@@ -7356,8 +7723,8 @@
         };
       }
 
-      function badgeColorStyleAttr(text) {
-        const s = badgeColorsFromText(text);
+      function badgeColorStyleAttr(text, kind) {
+        const s = badgeColorsFromText(text, kind);
         if (!s) return "";
         return (
           ' style="background:' +
@@ -7370,9 +7737,9 @@
         );
       }
 
-      function applyBadgeColors(el, text) {
+      function applyBadgeColors(el, text, kind) {
         if (!el) return;
-        const s = badgeColorsFromText(text);
+        const s = badgeColorsFromText(text, kind);
         if (!s) {
           el.style.background = "";
           el.style.borderColor = "";
@@ -7384,16 +7751,215 @@
         el.style.color = s.fg;
       }
 
-      function resultBadgeHtml(text) {
+      function resultBadgeHtml(text, kind) {
         const label = String(text || "").trim();
         if (!label) return "";
         return (
           '<span class="result-chip"' +
-          badgeColorStyleAttr(label) +
+          badgeColorStyleAttr(label, kind) +
           ">" +
           escapeHtml(label) +
           "</span>"
         );
+      }
+
+      function sampleBadgePreviewText(kind) {
+        if (kind === "category") {
+          const catalog = appDB.artikel || {};
+          const keys = Object.keys(catalog);
+          for (let i = 0; i < keys.length; i++) {
+            const label = articleCategory(catalog[keys[i]]);
+            if (label) return label;
+          }
+          return t("catalog_ui.filter_kategorie") || "Kategorie";
+        }
+        if (kind === "system") {
+          const catalog = appDB.artikel || {};
+          const keys = Object.keys(catalog);
+          for (let i = 0; i < keys.length; i++) {
+            const label = articleSystem(catalog[keys[i]]);
+            if (label) return label;
+          }
+          return t("catalog_ui.filter_system") || "System";
+        }
+        if (kind === "surface") {
+          const catalog = appDB.farben || {};
+          const keys = Object.keys(catalog);
+          for (let i = 0; i < keys.length; i++) {
+            const label = locField(catalog[keys[i]], "oberflaeche", appLang);
+            if (label) return label;
+          }
+          return t("settings.badge_surface") || "Oberfläche";
+        }
+        if (kind === "kollektion") {
+          const catalog = appDB.farben || {};
+          const keys = Object.keys(catalog);
+          for (let i = 0; i < keys.length; i++) {
+            const label = colorKollektion(catalog[keys[i]]);
+            if (label) return label;
+          }
+          return t("catalog_ui.filter_kollektion") || "Kollektion";
+        }
+        return "Abc";
+      }
+
+      function refreshBadgeAppearance() {
+        if (typeof refreshArticleResults === "function") refreshArticleResults();
+        if (typeof refreshColorResults === "function") refreshColorResults();
+        if (lastActiveArticle && typeof renderProfileCard === "function") {
+          renderProfileCard(lastActiveArticle);
+        }
+        if (lastActiveColorCode && typeof renderColorCard === "function") {
+          renderColorCard(lastActiveColorCode);
+        }
+        syncBadgeSettingsUi();
+      }
+
+      function fillBadgeSwatches() {
+        const autoLabel = t("settings.badge_auto") || "Auto";
+        document.querySelectorAll(".settings-swatches[data-kind]").forEach((row) => {
+          if (row.childElementCount) {
+            const autoBtn = row.querySelector(".settings-swatch.is-auto");
+            if (autoBtn) autoBtn.textContent = autoLabel;
+            return;
+          }
+          const kind = row.getAttribute("data-kind");
+          const auto = document.createElement("button");
+          auto.type = "button";
+          auto.className = "settings-swatch is-auto";
+          auto.setAttribute("data-kind", kind);
+          auto.setAttribute("data-hue", "");
+          auto.textContent = autoLabel;
+          row.appendChild(auto);
+          BADGE_PALETTE_HUES.forEach((hue) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "settings-swatch";
+            btn.setAttribute("data-kind", kind);
+            btn.setAttribute("data-hue", String(hue));
+            const s = colorsFromHue(hue);
+            btn.style.background = s.fg;
+            btn.style.borderColor = s.bd;
+            btn.title = String(hue);
+            row.appendChild(btn);
+          });
+        });
+      }
+
+      function syncBadgeSettingsUi() {
+        fillBadgeSwatches();
+        BADGE_KIND_KEYS.forEach((kind) => {
+          const chosen = Number(badgeKindColors[kind]);
+          const hasHue = Number.isFinite(chosen);
+          document
+            .querySelectorAll('.settings-swatch[data-kind="' + kind + '"]')
+            .forEach((btn) => {
+              const raw = btn.getAttribute("data-hue");
+              const on = hasHue ? raw === String(chosen) : raw === "";
+              btn.classList.toggle("is-on", on);
+              btn.setAttribute("aria-pressed", on ? "true" : "false");
+            });
+          const preview = document.querySelector(
+            '.settings-badge-preview[data-preview="' + kind + '"]',
+          );
+          if (preview) {
+            const sample = sampleBadgePreviewText(kind);
+            preview.textContent = sample;
+            applyBadgeColors(preview, sample, kind);
+          }
+        });
+      }
+
+      function setBadgeKindHue(kind, hue) {
+        if (BADGE_KIND_KEYS.indexOf(kind) < 0) return;
+        if (hue == null || hue === "") delete badgeKindColors[kind];
+        else badgeKindColors[kind] = Number(hue);
+        saveBadgeKindColors();
+        refreshBadgeAppearance();
+      }
+
+      function isSettingsSheetOpen() {
+        const el = document.getElementById("settings-sheet");
+        return !!(el && el.classList.contains("active"));
+      }
+
+      function closeSettingsSheet() {
+        const el = document.getElementById("settings-sheet");
+        const btn = document.getElementById("btn-hdr-settings");
+        if (!el || !el.classList.contains("active")) return false;
+        el.classList.remove("active");
+        el.setAttribute("aria-hidden", "true");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        armOverlayGhostGuard();
+        return true;
+      }
+
+      function openSettingsSheet() {
+        closeAccountSheet();
+        fillBadgeSwatches();
+        syncBadgeSettingsUi();
+        const el = document.getElementById("settings-sheet");
+        const btn = document.getElementById("btn-hdr-settings");
+        if (!el) return;
+        el.classList.add("active");
+        el.setAttribute("aria-hidden", "false");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        const closeBtn = document.getElementById("settings-sheet-close");
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function setSettingsAccordion(id) {
+        document.querySelectorAll("#settings-acc-list .settings-acc").forEach((sec) => {
+          const open = sec.getAttribute("data-acc") === id;
+          sec.classList.toggle("is-open", open);
+          const head = sec.querySelector(".settings-acc-head");
+          if (head) head.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+
+      function bindSettingsUi() {
+        loadBadgeKindColors();
+        fillBadgeSwatches();
+        const hdrBtn = document.getElementById("btn-hdr-settings");
+        if (hdrBtn) {
+          hdrBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (isSettingsSheetOpen()) closeSettingsSheet();
+            else openSettingsSheet();
+          });
+        }
+        const acctBtn = document.getElementById("btn-account-settings");
+        if (acctBtn) {
+          acctBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openSettingsSheet();
+          });
+        }
+        const closeBtn = document.getElementById("settings-sheet-close");
+        if (closeBtn) closeBtn.addEventListener("click", () => closeSettingsSheet());
+        const sheet = document.getElementById("settings-sheet");
+        if (sheet) {
+          sheet.addEventListener("click", (e) => {
+            if (e.target === sheet) closeSettingsSheet();
+          });
+        }
+        document.querySelectorAll("#settings-acc-list .settings-acc-head").forEach((head) => {
+          head.addEventListener("click", () => {
+            const sec = head.closest(".settings-acc");
+            const id = sec && sec.getAttribute("data-acc");
+            if (id) setSettingsAccordion(id);
+          });
+        });
+        const accList = document.getElementById("settings-acc-list");
+        if (accList) {
+          accList.addEventListener("click", (e) => {
+            const btn = e.target.closest && e.target.closest(".settings-swatch");
+            if (!btn) return;
+            const kind = btn.getAttribute("data-kind");
+            const hue = btn.getAttribute("data-hue");
+            setBadgeKindHue(kind, hue);
+          });
+        }
       }
 
       function colorHint(col) {
@@ -9052,6 +9618,7 @@
           "note-dialog",
           "photo-dialog",
           "account-sheet",
+          "settings-sheet",
         ];
         return ids.some((id) => {
           const el = document.getElementById(id);
@@ -9223,6 +9790,7 @@
           cancelManualSync();
           return;
         }
+        if (typeof closeSettingsSheet === "function" && closeSettingsSheet()) return;
         if (closeAccountSheet()) return;
         if (closeNoteModal()) return;
         if (isZoomOpen()) {
@@ -9387,6 +9955,7 @@
           cancelManualSync();
           return;
         }
+        if (typeof closeSettingsSheet === "function" && closeSettingsSheet()) return;
         if (closeAccountSheet()) return;
         if (isZoomOpen()) {
           closeZoom();
@@ -10025,11 +10594,11 @@
         ctx.font = "600 14px " + font;
         const chips = [];
         if (category) {
-          const s = badgeColorsFromText(category);
+          const s = badgeColorsFromText(category, "category");
           if (s) chips.push({ text: category, bg: s.bg, fg: s.fg, bd: s.bd });
         }
         if (system) {
-          const s = badgeColorsFromText(system);
+          const s = badgeColorsFromText(system, "system");
           if (s) chips.push({ text: system, bg: s.bg, fg: s.fg, bd: s.bd });
         }
         if (masse) chips.push({ text: masse, bg: "rgba(42, 48, 56, 0.95)", fg: "#c5ccd4", bd: "rgba(107, 115, 128, 0.9)" });
@@ -10156,7 +10725,7 @@
         const hex = colorHex(col) || "";
         const fill = hex || "#64748b";
         const surface = locField(col, "oberflaeche", appLang) || "";
-        const surfaceStyle = badgeColorsFromText(surface);
+        const surfaceStyle = badgeColorsFromText(surface, "surface");
         const imgEl = document.getElementById("col-swatch-img");
         const photo = await loadShareDrawing(imgEl);
         const hasPhoto = !!(photo && photo.naturalWidth);
@@ -10621,7 +11190,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog, #account-sheet",
+            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog, #account-sheet, #settings-sheet",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -10783,6 +11352,7 @@
         clearStoredUser();
         closePhotoCapture();
         closeAccountSheet();
+        if (typeof closeSettingsSheet === "function") closeSettingsSheet();
         restoreLoginPack();
         clearLoginFeedback();
         setNumpadVisible(false);
@@ -10800,6 +11370,7 @@
 
       function navigate(viewId, btn) {
         closePhotoCapture();
+        if (typeof closeSettingsSheet === "function") closeSettingsSheet();
         hideAllSearchOsk();
         if (typeof closeArtikelFilterPop === "function") closeArtikelFilterPop();
         if (typeof closeFarbeFilterPop === "function") closeFarbeFilterPop();
@@ -11061,6 +11632,7 @@
         bindPhotoCaptureUi();
         bindSyncModalUi();
         bindAuskunftUi();
+        bindSettingsUi();
         syncHdrQuickTabs();
       }
 
@@ -13834,8 +14406,8 @@
               const masseChip = masse
                 ? `<span class="result-chip result-chip-masse">${escapeHtml(masse)}</span>`
                 : "";
-              const catChip = resultBadgeHtml(category);
-              const systemChip = resultBadgeHtml(system);
+              const catChip = resultBadgeHtml(category, "category");
+              const systemChip = resultBadgeHtml(system, "system");
               const stats =
                 masseChip || catChip || systemChip
                   ? `<span class="result-row-stats">${catChip}${systemChip}${masseChip}</span>`
@@ -13955,9 +14527,9 @@
               const code = colorCode(col, key);
               const kollektion = colorKollektion(col);
               const badges = colorFinishBadges(col);
-              const kolChip = resultBadgeHtml(kollektion);
+              const kolChip = resultBadgeHtml(kollektion, "kollektion");
               const finishChips = badges
-                .map((b) => resultBadgeHtml(b.label))
+                .map((b) => resultBadgeHtml(b.label, "surface"))
                 .join("");
               const hexChip = hex
                 ? `<span class="result-chip result-chip-hex">${escapeHtml(hex)}</span>`
@@ -14042,14 +14614,14 @@
         if (kolEl) {
           kolEl.innerText = kollektion;
           kolEl.hidden = !kollektion;
-          applyBadgeColors(kolEl, kollektion);
+          applyBadgeColors(kolEl, kollektion, "kollektion");
         }
         const surfaceEl = document.getElementById("col-surface");
         if (surfaceEl) {
           surfaceEl.innerText = surface;
           surfaceEl.style.display = surface ? "" : "none";
           surfaceEl.className = "tag-chip tag-surface";
-          applyBadgeColors(surfaceEl, surface);
+          applyBadgeColors(surfaceEl, surface, "surface");
         }
         const hexPanel = document.getElementById("col-hex-panel");
         const fill = hex || "#ffffff";
@@ -14113,17 +14685,17 @@
         const category = articleCategory(it);
         const katLabel = category || "heroal";
         katEl.innerText = katLabel;
-        applyBadgeColors(katEl, katLabel);
+        applyBadgeColors(katEl, katLabel, "category");
         const sizeEl = document.getElementById("prof-size");
         const sizeLabel = articleSystem(it);
         if (sizeLabel) {
           sizeEl.innerText = sizeLabel;
           sizeEl.style.display = "";
-          applyBadgeColors(sizeEl, sizeLabel);
+          applyBadgeColors(sizeEl, sizeLabel, "system");
         } else {
           sizeEl.innerText = "";
           sizeEl.style.display = "none";
-          applyBadgeColors(sizeEl, "");
+          applyBadgeColors(sizeEl, "", "system");
         }
 
         renderProfileGallery(it, nr);
@@ -14660,6 +15232,8 @@
         if (note && note.classList.contains("active")) return;
         const account = document.getElementById("account-sheet");
         if (account && account.classList.contains("active")) return;
+        const settings = document.getElementById("settings-sheet");
+        if (settings && settings.classList.contains("active")) return;
         zoomMediaKind = kind === "color" ? "color" : "article";
         const list =
           Array.isArray(urls) && urls.length
