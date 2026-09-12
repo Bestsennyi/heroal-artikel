@@ -7659,6 +7659,21 @@
         I18N.setLanguage(lang);
       }
 
+      window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason;
+        const msg = String(
+          (reason && (reason.message || reason.name)) || reason || "",
+        );
+        if (
+          /fetch|network|Failed to fetch|Load failed|abort|QuotaExceeded|chunked|precache/i.test(
+            msg,
+          )
+        ) {
+          console.debug("[heroal] rejected", reason);
+          event.preventDefault();
+        }
+      });
+
       // Service Worker Registration
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
@@ -8308,11 +8323,13 @@
       function normalizeImageEntry(value, fallbackType) {
         if (value == null || value === "") return null;
         if (typeof value === "string") {
-          const url = value.trim();
+          const url = catalogMediaUrl(value);
           return url ? { url: url, type: String(fallbackType || "").trim() } : null;
         }
         if (typeof value !== "object") return null;
-        const url = String(value.url || value.src || value.image_url || "").trim();
+        const url = catalogMediaUrl(
+          value.url || value.src || value.image_url || "",
+        );
         if (!url) return null;
         return {
           url: url,
@@ -8327,6 +8344,7 @@
         const add = (raw, type) => {
           const entry = normalizeImageEntry(raw, type);
           if (!entry || seen[entry.url]) return;
+          if (!isDisplayableMediaUrl(entry.url)) return;
           if (isHeavyInlinePhoto(entry.url) && !/^blob:/i.test(entry.url)) return;
           seen[entry.url] = true;
           out.push(entry);
@@ -8355,6 +8373,51 @@
         return /^(data:image\/|blob:)/i.test(String(value || "").trim());
       }
 
+      function isJunkMediaToken(value) {
+        const token = String(value == null ? "" : value).trim();
+        if (!token) return true;
+        return /^(n\/?a|#n\/?a|null|undefined|none|nil|nan|-|—|–|\.|0)$/i.test(
+          token,
+        );
+      }
+
+      function unwrapQuotedMedia(value) {
+        let url = String(value == null ? "" : value).trim();
+        if (
+          (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') ||
+          (url.charAt(0) === "'" && url.charAt(url.length - 1) === "'")
+        ) {
+          url = url.slice(1, -1).trim();
+        }
+        return url;
+      }
+
+      /**
+       * Drive thumbnail / file links only send CORS on lh3.googleusercontent.com.
+       * Fetching the Drive URL from the page produces console errors and opaque
+       * responses; the SW already rewrites these, and the page must do the same
+       * before <img> / precache.
+       */
+      function corsDrawingUrl(value) {
+        const raw = unwrapQuotedMedia(value);
+        if (!raw || isJunkMediaToken(raw)) return "";
+        try {
+          const url = new URL(raw, location.href);
+          if (/googleusercontent\.com$/i.test(url.hostname)) return url.href;
+          if (!/^drive\.google\.com$/i.test(url.hostname)) return "";
+          let id = url.searchParams.get("id");
+          if (!id) {
+            const match = url.pathname.match(/\/(?:file|folders)\/d\/([^/]+)/i);
+            if (match) id = match[1];
+          }
+          if (!id) return "";
+          const size = url.searchParams.get("sz") || "w1000";
+          return "https://lh3.googleusercontent.com/d/" + id + "=" + size;
+        } catch (err) {
+          return "";
+        }
+      }
+
       function isHeavyInlinePhoto(value) {
         const url = String(value || "").trim();
         if (!url) return false;
@@ -8365,9 +8428,30 @@
       }
 
       function catalogMediaUrl(value) {
-        const url = String(value || "").trim();
-        if (!url || isHeavyInlinePhoto(url)) return "";
-        return url;
+        if (value == null || value === "") return "";
+        if (typeof value === "object") {
+          return catalogMediaUrl(
+            value.url || value.src || value.image_url || "",
+          );
+        }
+        let url = unwrapQuotedMedia(value);
+        if (!url || isJunkMediaToken(url) || isHeavyInlinePhoto(url)) return "";
+        const cors = corsDrawingUrl(url);
+        if (cors) return cors;
+        if (isLocalMediaUrl(url)) return url;
+        if (/^https?:\/\//i.test(url)) {
+          try {
+            const parsed = new URL(url);
+            if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+              return "";
+            }
+            return parsed.href;
+          } catch (err) {
+            return "";
+          }
+        }
+        if (/^(?:\.\.?\/|\/)?(?:icons|images|logo)\//i.test(url)) return url;
+        return "";
       }
 
       function sanitizeStoredMedia(value) {
@@ -8517,10 +8601,17 @@
       const PRECACHE_IMAGE_TIMEOUT_MS = 20000;
 
       function isPrecacheableDrawingUrl(value) {
-        const url = String(value || "").trim();
-        if (!url) return false;
-        if (isLocalMediaUrl(url)) return false;
-        return /^https:\/\/lh3\.googleusercontent\.com\//i.test(url);
+        const url = catalogMediaUrl(value);
+        if (!url || isLocalMediaUrl(url)) return false;
+        try {
+          const parsed = new URL(url, location.href);
+          if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+            return false;
+          }
+          return /googleusercontent\.com$/i.test(parsed.hostname);
+        } catch (err) {
+          return false;
+        }
       }
 
       function collectArtikelDrawingUrls() {
@@ -8572,6 +8663,10 @@
       }
 
       async function putDrawingInMediaCache(cache, url, signal) {
+        if (!isPrecacheableDrawingUrl(url)) {
+          console.debug("[precache] skip invalid url", url);
+          return false;
+        }
         const gate = abortAfter(PRECACHE_IMAGE_TIMEOUT_MS);
         const combined = combineAbortSignals(gate.signal, signal);
         try {
@@ -8580,11 +8675,15 @@
             cache: "default",
             signal: combined,
           });
-          if (!isImageResponse(response)) return false;
+          if (!isImageResponse(response)) {
+            console.debug("[precache] not an image", url, response && response.status);
+            return false;
+          }
           await cache.put(url, response);
           return true;
         } catch (err) {
           if (signal && signal.aborted) throw err;
+          console.debug("[precache] drawing skip", url, err && err.message);
           return false;
         } finally {
           gate.cancel();
@@ -8710,6 +8809,7 @@
                   return await putDrawingInMediaCache(cache, url, signal);
                 } catch (err) {
                   if (isAbortError(err)) throw err;
+                  console.debug("[precache] drawing failed", url, err && err.message);
                   return false;
                 }
               }),
@@ -8992,7 +9092,7 @@
             hinweis_de:
               "Blende oben für FMR HC. Bei Verpackung auf Kantenschutz achten. Zusätzlich Folie verwenden, wenn die Sichtseite lackiert ist. Nicht auf der Dichtungsfläche stapeln. Hinweis gilt auch für Varianten mit Sonderlänge und für Kommissionen mit gemischten Farbtönen.",
             image_url:
-              "https://drive.google.com/thumbnail?sz=w1000&id=1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL",
+              "https://lh3.googleusercontent.com/d/1yr4XwcJ42a-HL_YVqBV-WhMnPOpKuqGL=w1000",
             drive_folder_id: "",
           },
           5044: {
@@ -9798,7 +9898,12 @@
           } else {
             const legacy = localStorage.getItem("heroal_db_v2");
             if (legacy) {
-              appDB = migrateAppDB(JSON.parse(legacy));
+              try {
+                appDB = migrateAppDB(JSON.parse(legacy));
+              } catch (parseErr) {
+                console.warn("legacy catalog parse failed", parseErr);
+                appDB = DEFAULT_DATA;
+              }
               await hydratePhotoQueuePreviews();
               await idbSet("heroal_db", appDB);
               localStorage.removeItem("heroal_db_v2");
@@ -12744,6 +12849,7 @@
         }
         resetPhotoCaptureState();
         const dlg = document.getElementById("photo-dialog");
+        if (!dlg) return;
         dlg.classList.add("active");
         dlg.setAttribute("aria-hidden", "false");
         syncHdrQuickTabs();
@@ -12832,12 +12938,14 @@
         const noteClose = document.getElementById("note-dialog-close");
         const noteCopy = document.getElementById("note-dialog-copy");
 
-        copyProfBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (!lastActiveArticle) return;
-          flashCopyButton(copyProfBtn);
-          copyToClipboard(lastActiveArticle, "Art.-Nr.", t("copied_short"), () => {});
-        });
+        if (copyProfBtn) {
+          copyProfBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!lastActiveArticle) return;
+            flashCopyButton(copyProfBtn);
+            copyToClipboard(lastActiveArticle, "Art.-Nr.", t("copied_short"), () => {});
+          });
+        }
         if (copyProfNameBtn) {
           copyProfNameBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -12956,29 +13064,38 @@
           });
         }
 
-        pIn.addEventListener("input", debouncedRefreshArticleResults);
-        pIn.addEventListener("focus", () => {
-          setElPlaceholder(pIn, pIn.getAttribute("data-i18n-placeholder"));
-        });
-        pIn.addEventListener("pointerdown", () => {
-          if (!artikelDetailOpen) return;
-          artikelDetailOpen = false;
-          applyArtikelWorkspace();
-        });
-        document
-          .getElementById("find-color")
-          .addEventListener("input", debouncedRefreshColorResults);
-        document.getElementById("find-color").addEventListener("pointerdown", () => {
-          if (!farbeDetailOpen) return;
-          farbeDetailOpen = false;
-          applyFarbeWorkspace();
-        });
-        document.getElementById("clr-prof").addEventListener("click", () => {
-          clearInput("find-prof");
-        });
-        document.getElementById("clr-col").addEventListener("click", () => {
-          clearInput("find-color");
-        });
+        if (pIn) {
+          pIn.addEventListener("input", debouncedRefreshArticleResults);
+          pIn.addEventListener("focus", () => {
+            setElPlaceholder(pIn, pIn.getAttribute("data-i18n-placeholder"));
+          });
+          pIn.addEventListener("pointerdown", () => {
+            if (!artikelDetailOpen) return;
+            artikelDetailOpen = false;
+            applyArtikelWorkspace();
+          });
+        }
+        const cIn = document.getElementById("find-color");
+        if (cIn) {
+          cIn.addEventListener("input", debouncedRefreshColorResults);
+          cIn.addEventListener("pointerdown", () => {
+            if (!farbeDetailOpen) return;
+            farbeDetailOpen = false;
+            applyFarbeWorkspace();
+          });
+        }
+        const clrProf = document.getElementById("clr-prof");
+        if (clrProf) {
+          clrProf.addEventListener("click", () => {
+            clearInput("find-prof");
+          });
+        }
+        const clrCol = document.getElementById("clr-col");
+        if (clrCol) {
+          clrCol.addEventListener("click", () => {
+            clearInput("find-color");
+          });
+        }
         bindArtikelFilterUi();
         bindFarbeFilterUi();
         mountSearchKeypads();
@@ -14617,6 +14734,7 @@
         const pCard = document.getElementById("prof-card");
         const listEl = document.getElementById("prof-list");
         const emptyEl = document.getElementById("prof-empty");
+        if (!pIn || !listEl) return;
         const query = (pIn.value || "").trim().toLowerCase();
         const filterSig = artikelFilterSignature();
         if (pClr) pClr.classList.toggle("is-on", !!(pIn && pIn.value));
@@ -14677,7 +14795,10 @@
               const system = articleSystem(item);
               const category = articleCategory(item);
               const media = articleImageEntries(item)[0];
-              const thumb = (media && media.url) || getSvgPlaceholder(nr);
+              const thumb =
+                media && isDisplayableMediaUrl(media.url)
+                  ? media.url
+                  : getSvgPlaceholder(nr);
               const invertClass = isMediaInverted(thumb, media && media.type)
                 ? " media-invert"
                 : "";
@@ -14742,6 +14863,7 @@
         const cCard = document.getElementById("col-card");
         const listEl = document.getElementById("col-list");
         const emptyEl = document.getElementById("col-empty");
+        if (!cIn || !listEl) return;
         const query = (cIn.value || "").trim().toLowerCase();
         const filterSig = farbeFilterSignature();
         if (cClr) cClr.classList.toggle("is-on", !!(cIn && cIn.value));
@@ -14817,7 +14939,10 @@
                 ? `<span class="result-row-stats">${statsRow}</span>`
                 : "";
               const photo = farbePreviewEntries(col)[0];
-              const thumb = (photo && photo.url) || getColorFillDataUrl(hex);
+              const thumb =
+                photo && isDisplayableMediaUrl(photo.url)
+                  ? photo.url
+                  : getColorFillDataUrl(hex);
               const overlayTone =
                 getLuminance(hex) > 130 ? "is-bright" : "is-dark";
               const overlay = code

@@ -99,14 +99,23 @@ async function readPhotoQueue(page) {
 test.describe.configure({ mode: "serial" });
 
 test.describe("heroal warehouse PWA", () => {
+  test.beforeEach(async ({ page }) => {
+    const pageErrors = [];
+    page.on("pageerror", (err) => pageErrors.push(String(err)));
+    page.__heroalPageErrors = pageErrors;
+  });
+
+  test.afterEach(async ({ page }) => {
+    const pageErrors = page.__heroalPageErrors || [];
+    expect(pageErrors, "uncaught page errors").toEqual([]);
+  });
   test("PIN login opens the catalog and shows the active user", async ({
     page,
   }) => {
     await openApp(page);
     await loginWithPin(page, PIN);
 
-    const header = page.locator("#hdr-user");
-    await expect(header).toBeVisible();
+    await expect(page.locator("#btn-hdr-account")).toBeVisible();
     const headerText = (
       (await page.locator("#hdr-user-name").textContent()) +
       " " +

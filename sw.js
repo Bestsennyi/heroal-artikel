@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v369";
+const SHELL_VERSION = "v370";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.
@@ -68,13 +68,32 @@ const NETWORK_ABORT_THRESHOLD = 6;
 const FAILURE_ABORT_THRESHOLD = 8;
 const PRECACHE_DEADLINE_MS = 120000;
 
+function isUsableRequestUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return false;
+  if (/^(n\/?a|#n\/?a|null|undefined|none|nil|-|—|–|\.|0)$/i.test(raw)) {
+    return false;
+  }
+  try {
+    const url = new URL(raw, self.location.href);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch (err) {
+    return false;
+  }
+}
+
 /** Requests for article drawings and other pictures. */
 function isImageRequest(request) {
-  return (
-    request.destination === "image" ||
-    /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(new URL(request.url).pathname) ||
-    /(googleusercontent\.com|drive\.google\.com)/.test(request.url)
-  );
+  try {
+    const url = new URL(request.url);
+    return (
+      request.destination === "image" ||
+      /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(url.pathname) ||
+      /(googleusercontent\.com|drive\.google\.com)/.test(request.url)
+    );
+  } catch (err) {
+    return request.destination === "image";
+  }
 }
 
 /**
@@ -86,14 +105,27 @@ function isImageRequest(request) {
  * padding the browser applies to unreadable opaque responses.
  */
 function corsCandidate(url) {
-  const match = /^https?:\/\/drive\.google\.com\/thumbnail\?(.*)$/i.exec(url);
-  if (!match) return null;
-
-  const params = new URLSearchParams(match[1]);
-  const id = params.get("id");
-  if (!id) return null;
-
-  return `https://lh3.googleusercontent.com/d/${id}=${params.get("sz") || "w1000"}`;
+  const raw = String(url || "").trim();
+  const thumb = /^https?:\/\/drive\.google\.com\/thumbnail\?(.*)$/i.exec(raw);
+  if (thumb) {
+    const params = new URLSearchParams(thumb[1]);
+    const id = params.get("id");
+    if (!id) return null;
+    return `https://lh3.googleusercontent.com/d/${id}=${params.get("sz") || "w1000"}`;
+  }
+  const file = /^https?:\/\/drive\.google\.com\/(?:file|folders)\/d\/([^/?#]+)/i.exec(
+    raw,
+  );
+  if (file && file[1]) {
+    return `https://lh3.googleusercontent.com/d/${file[1]}=w1000`;
+  }
+  const open = /^https?:\/\/drive\.google\.com\/open\?(.*)$/i.exec(raw);
+  if (open) {
+    const id = new URLSearchParams(open[1]).get("id");
+    if (!id) return null;
+    return `https://lh3.googleusercontent.com/d/${id}=w1000`;
+  }
+  return null;
 }
 
 function sleep(ms) {
@@ -212,21 +244,35 @@ async function handleShell(request) {
 }
 
 self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  if (request.method !== "GET") return;
+  try {
+    const { request } = event;
+    if (request.method !== "GET") return;
+    if (!isUsableRequestUrl(request.url)) return;
 
-  const url = new URL(request.url);
-  if (url.protocol !== "http:" && url.protocol !== "https:") return;
+    const url = new URL(request.url);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return;
 
-  // The browser must fetch sw.js itself, or updates never install.
-  if (url.pathname.endsWith("/sw.js")) return;
+    // The browser must fetch sw.js itself, or updates never install.
+    if (url.pathname.endsWith("/sw.js")) return;
 
-  // Spreadsheet exports must always be fresh; they are the sync source.
-  if (url.hostname === "docs.google.com") return;
+    // Spreadsheet exports must always be fresh; they are the sync source.
+    if (url.hostname === "docs.google.com") return;
 
-  event.respondWith(
-    isImageRequest(request) ? handleImage(request) : handleShell(request),
-  );
+    event.respondWith(
+      (async () => {
+        try {
+          return await (isImageRequest(request)
+            ? handleImage(request)
+            : handleShell(request));
+        } catch (err) {
+          console.debug("[sw] fetch fallback", request.url, err);
+          return offlineResponse();
+        }
+      })(),
+    );
+  } catch (err) {
+    console.debug("[sw] fetch handler skipped", err);
+  }
 });
 
 /**
@@ -303,7 +349,14 @@ async function downloadDrawing(url, deadline) {
 async function precacheMedia(urls, port, options) {
   const force = Boolean(options && options.force);
   const cache = await caches.open(MEDIA_CACHE);
-  const wanted = [...new Set((urls || []).filter(Boolean))];
+  const wanted = [
+    ...new Set(
+      (urls || [])
+        .map((item) => String(item || "").trim())
+        .filter(isUsableRequestUrl)
+        .map((item) => corsCandidate(item) || item),
+    ),
+  ];
 
   // Drop entries no longer referenced by the database so a renamed or removed
   // drawing cannot linger in the cache forever.
