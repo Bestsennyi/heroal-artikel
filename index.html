@@ -7532,6 +7532,23 @@
         });
       }
 
+      const PLACEHOLDER_KEYS = {
+        "find-prof": "catalog_ui.ph_artikel",
+        "find-color": "catalog_ui.ph_farben",
+        "find-guide": "catalog_ui.ph_guide",
+        "input-login-nr": "auth.login_placeholder",
+        "photo-id": "photo.phArtikel",
+      };
+
+      function placeholderKeyFor(el, key) {
+        return (
+          usableText(key) ||
+          usableText(el && el.getAttribute("data-i18n-placeholder")) ||
+          PLACEHOLDER_KEYS[el && el.id] ||
+          ""
+        );
+      }
+
       function bakedPlaceholder(el, extra) {
         if (!el) return usableText(extra);
         const stored = usableText(el.getAttribute("data-placeholder-fallback"));
@@ -7564,27 +7581,58 @@
         return "";
       }
 
-      function setElPlaceholder(el, key, extra) {
-        if (!el) return;
-        const k =
-          usableText(key) ||
-          usableText(el.getAttribute("data-i18n-placeholder"));
+      function translatePlaceholder(k, baked) {
+        try {
+          if (I18N && typeof I18N.t === "function") return usableText(I18N.t(k, baked));
+        } catch (err) {}
+        try {
+          if (typeof t === "function") return usableText(t(k, baked));
+        } catch (err) {}
+        return "";
+      }
+
+      function pickPlaceholderText(el, key, extra) {
+        const k = placeholderKeyFor(el, key);
         const baked = bakedPlaceholder(el, extra);
-        const fromI18n = usableText(t(k, baked));
-        const fromDe = usableText(I18N.getBuiltin("de", k));
-        const next =
+        const fromI18n = translatePlaceholder(k, baked);
+        let fromDe = "";
+        try {
+          fromDe = usableText(I18N.getBuiltin && I18N.getBuiltin("de", k));
+        } catch (err) {}
+        return (
           usableText(fromI18n && fromI18n !== k ? fromI18n : "") ||
           usableText(fromDe && fromDe !== k ? fromDe : "") ||
           usableText(baked) ||
-          usableText(placeholderDefault(k));
+          usableText(placeholderDefault(k)) ||
+          usableText(placeholderDefault(PLACEHOLDER_KEYS[el && el.id])) ||
+          usableText(el && el.getAttribute("data-placeholder-fallback"))
+        );
+      }
+
+      function setElPlaceholder(el, key, extra) {
+        if (!el) return;
+        const k = placeholderKeyFor(el, key);
+        if (k && el.getAttribute("data-i18n-placeholder") !== k) {
+          el.setAttribute("data-i18n-placeholder", k);
+        }
+        const next = pickPlaceholderText(el, k, extra);
         if (!next) return;
         el.setAttribute("placeholder", next);
         el.placeholder = next;
       }
 
+      function sanitizeSearchField(el) {
+        if (!el) return;
+        if (!usableText(el.value)) el.value = "";
+        setElPlaceholder(el);
+      }
+
       function restoreSearchPlaceholders() {
         document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-          setElPlaceholder(el, el.getAttribute("data-i18n-placeholder"));
+          sanitizeSearchField(el);
+        });
+        ["find-prof", "find-color", "find-guide"].forEach((id) => {
+          sanitizeSearchField(document.getElementById(id));
         });
       }
 
@@ -7593,9 +7641,7 @@
           restoreSearchPlaceholders();
           return;
         }
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (key) setElPlaceholder(el, key);
-        else restoreSearchPlaceholders();
+        sanitizeSearchField(el);
       }
 
       function schedulePlaceholderRestore(el) {
@@ -10114,7 +10160,7 @@
       }
 
       function handleSearchEscape(active) {
-        schedulePlaceholderRestore(active);
+        restoreSearchPlaceholders();
         hideDrawingHover();
         if (closeCatalogFilterFromEscape(active)) return;
         if (isSyncModalOpen()) {
@@ -10280,7 +10326,7 @@
       }
 
       function handleAuskunftEscape() {
-        schedulePlaceholderRestore(document.activeElement);
+        restoreSearchPlaceholders();
         hideDrawingHover();
         if (isSyncModalOpen()) {
           cancelManualSync();
@@ -10416,7 +10462,8 @@
               return;
             }
             e.preventDefault();
-            schedulePlaceholderRestore(el);
+            restoreSearchPlaceholders();
+            sanitizeSearchField(el);
           },
           true,
         );
@@ -13067,7 +13114,7 @@
         if (pIn) {
           pIn.addEventListener("input", debouncedRefreshArticleResults);
           pIn.addEventListener("focus", () => {
-            setElPlaceholder(pIn, pIn.getAttribute("data-i18n-placeholder"));
+            sanitizeSearchField(pIn);
           });
           pIn.addEventListener("pointerdown", () => {
             if (!artikelDetailOpen) return;
@@ -13078,6 +13125,9 @@
         const cIn = document.getElementById("find-color");
         if (cIn) {
           cIn.addEventListener("input", debouncedRefreshColorResults);
+          cIn.addEventListener("focus", () => {
+            sanitizeSearchField(cIn);
+          });
           cIn.addEventListener("pointerdown", () => {
             if (!farbeDetailOpen) return;
             farbeDetailOpen = false;
@@ -13624,8 +13674,7 @@
         }
         if (act === "clear") {
           input.value = "";
-          const key = input.getAttribute("data-i18n-placeholder");
-          if (key) setElPlaceholder(input, key);
+          sanitizeSearchField(input);
           input.dispatchEvent(new Event("input"));
           input.focus();
           return;
@@ -15990,9 +16039,7 @@
         const el = document.getElementById(id);
         if (!el) return;
         el.value = "";
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (key) setElPlaceholder(el, key);
-        else restoreSearchPlaceholders();
+        sanitizeSearchField(el);
         flushSearchInput(id);
         el.focus();
       }
@@ -16183,6 +16230,7 @@
           find.dataset.boundInput = "1";
           ensureSearchDebouncers();
           find.addEventListener("input", debouncedRenderAuskunft);
+          find.addEventListener("focus", () => sanitizeSearchField(find));
         }
         if (clr && !clr.dataset.bound) {
           clr.dataset.bound = "1";
