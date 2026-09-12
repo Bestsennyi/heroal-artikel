@@ -233,6 +233,11 @@
       "en": "Collection",
       "ru": "Коллекция"
     },
+    "filter_oberflaeche": {
+      "de": "Oberfläche",
+      "en": "Surface",
+      "ru": "Поверхность"
+    },
     "filter_reset": {
       "de": "Zurücksetzen",
       "en": "Reset",
