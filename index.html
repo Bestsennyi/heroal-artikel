@@ -8360,7 +8360,7 @@
       let zoomBound = false;
       let zoomTapDismiss = null;
       let zoomDismissBlocked = false;
-      let zoomGhostGuard = null;
+      let overlayGhostGuard = null;
       const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
       let farbeDetailOpen = false;
@@ -10893,6 +10893,7 @@
         el.setAttribute("aria-hidden", "true");
         if (btn) btn.setAttribute("aria-expanded", "false");
         closeHdrLangDropdown();
+        armOverlayGhostGuard();
         return true;
       }
 
@@ -11022,10 +11023,14 @@
                 accountTap.moved = true;
               }
             });
-            const endAccountTap = () => {
+            const endAccountTap = (e) => {
               const tap = accountTap;
               accountTap = null;
-              if (tap && !tap.moved) closeAccountSheet();
+              if (tap && !tap.moved) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeAccountSheet();
+              }
             };
             accountCard.addEventListener("pointerup", endAccountTap);
             accountCard.addEventListener("pointercancel", () => {
@@ -12098,14 +12103,22 @@
                 noteTap.moved = true;
               }
             });
-            const endNoteTap = () => {
+            const endNoteTap = (e) => {
               const tap = noteTap;
               noteTap = null;
-              if (tap && !tap.moved) closeNoteModal();
+              if (tap && !tap.moved) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeNoteModal();
+              }
             };
             noteCard.addEventListener("pointerup", endNoteTap);
             noteCard.addEventListener("pointercancel", () => {
               noteTap = null;
+            });
+            noteCard.addEventListener("click", (e) => {
+              e.preventDefault();
+              e.stopPropagation();
             });
           }
         }
@@ -14175,6 +14188,7 @@
         if (!dlg || !dlg.classList.contains("active")) return false;
         dlg.classList.remove("active");
         dlg.setAttribute("aria-hidden", "true");
+        armOverlayGhostGuard();
         return true;
       }
 
@@ -14641,6 +14655,11 @@
       }
 
       function showZoom(url, urls, kind) {
+        if (overlayGhostGuard) return;
+        const note = document.getElementById("note-dialog");
+        if (note && note.classList.contains("active")) return;
+        const account = document.getElementById("account-sheet");
+        if (account && account.classList.contains("active")) return;
         zoomMediaKind = kind === "color" ? "color" : "article";
         const list =
           Array.isArray(urls) && urls.length
@@ -14688,25 +14707,45 @@
         el.hidden = !nr;
       }
 
-      function disarmZoomGhostGuard() {
-        if (!zoomGhostGuard) return;
-        document.removeEventListener("click", zoomGhostGuard.fn, true);
-        clearTimeout(zoomGhostGuard.timer);
-        zoomGhostGuard = null;
+      function disarmOverlayGhostGuard() {
+        if (!overlayGhostGuard) return;
+        overlayGhostGuard.types.forEach((type) => {
+          document.removeEventListener(type, overlayGhostGuard.fn, true);
+        });
+        clearTimeout(overlayGhostGuard.timer);
+        overlayGhostGuard = null;
       }
 
-      function armZoomGhostGuard() {
-        disarmZoomGhostGuard();
+      function armOverlayGhostGuard() {
+        disarmOverlayGhostGuard();
         const fn = (e) => {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
         };
-        document.addEventListener("click", fn, true);
-        zoomGhostGuard = {
+        const types = [
+          "click",
+          "pointerdown",
+          "pointerup",
+          "mousedown",
+          "mouseup",
+          "touchstart",
+          "touchend",
+        ];
+        types.forEach((type) => document.addEventListener(type, fn, true));
+        overlayGhostGuard = {
+          types,
           fn,
-          timer: setTimeout(disarmZoomGhostGuard, 400),
+          timer: setTimeout(disarmOverlayGhostGuard, 450),
         };
+      }
+
+      function disarmZoomGhostGuard() {
+        disarmOverlayGhostGuard();
+      }
+
+      function armZoomGhostGuard() {
+        armOverlayGhostGuard();
       }
 
       function closeZoom() {
