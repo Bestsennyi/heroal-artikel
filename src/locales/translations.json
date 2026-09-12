@@ -930,6 +930,11 @@
       "en": "COLORS: *collection (e.g. *ral), !finish (e.g. !matt).",
       "ru": "FARBEN: *коллекция (напр. *ral), !поверхность (напр. !matt)."
     },
+    "search_tips_auskunft": {
+      "de": "AUSKUNFT: #kategorie (z. B. #folie).",
+      "en": "INFO: #category (e.g. #folie).",
+      "ru": "AUSKUNFT: #категория (напр. #folie)."
+    },
     "search_tips_example_label": {
       "de": "Beispiel",
       "en": "Example",

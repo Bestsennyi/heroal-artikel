@@ -5384,7 +5384,8 @@
       .settings-tips p {
         margin: 0;
       }
-      .settings-tips-line.is-artikel {
+      .settings-tips-line.is-artikel,
+      .settings-tips-line.is-auskunft {
         padding-left: 8px;
         border-left: 2px solid #93c5fd;
       }
@@ -7219,6 +7220,7 @@
                 <p data-i18n="settings.search_tips_lead">Wörter mit Leerzeichen trennen = Suche nach allen Begriffen gleichzeitig.</p>
                 <p class="settings-tips-line is-artikel" data-i18n="settings.search_tips_artikel">ARTIKEL: #kategorie (z. B. #blende), @system (z. B. @rs37).</p>
                 <p class="settings-tips-line is-farben" data-i18n="settings.search_tips_farben">FARBEN: *kollektion (z. B. *ral), !oberfläche (z. B. !matt).</p>
+                <p class="settings-tips-line is-auskunft" data-i18n="settings.search_tips_auskunft">AUSKUNFT: #kategorie (z. B. #folie).</p>
                 <p class="settings-tips-example">
                   <span data-i18n="settings.search_tips_example_label">Beispiel</span>
                   <code data-i18n="settings.search_tips_example">50 #blende @rs37 | 703 *ral !matt</code>
@@ -13629,6 +13631,49 @@
         return normalizeSearchText(value).replace(/\s+/g, "");
       }
 
+      function parseAuskunftQuery(raw) {
+        const cats = [];
+        const general = [];
+        String(raw || "")
+          .trim()
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean)
+          .forEach((part) => {
+            if (part.charAt(0) === "#" && part.length > 1) {
+              const tok = compactSearchToken(part.slice(1));
+              if (tok) cats.push(tok);
+              return;
+            }
+            const spaced = normalizeSearchText(part).split(/\s+/).filter(Boolean);
+            if (spaced.length > 1) {
+              spaced.forEach((tok) => general.push(tok));
+              return;
+            }
+            const tok = compactSearchToken(part) || normalizeSearchText(part);
+            if (tok) general.push(tok);
+          });
+        return { cats, general };
+      }
+
+      function auskunftIndexMatches(row, parsed) {
+        if (!row || !row.item) return false;
+        if (auskunftKatKey && auskunftCategoryKey(row.item) !== auskunftKatKey) {
+          return false;
+        }
+        for (let i = 0; i < parsed.cats.length; i++) {
+          if (!searchFieldMatches(row.catHay, row.catCompact, parsed.cats[i])) {
+            return false;
+          }
+        }
+        for (let i = 0; i < parsed.general.length; i++) {
+          if (!searchFieldMatches(row.indexStr, row.compactStr, parsed.general[i])) {
+            return false;
+          }
+        }
+        return true;
+      }
+
       function parseArtikelQuery(raw) {
         const cats = [];
         const systems = [];
@@ -14309,10 +14354,6 @@
         syncFarbeFilterButton();
       }
 
-      function querySearchTokens(query) {
-        return normalizeSearchText(query).split(/\s+/).filter(Boolean);
-      }
-
       function indexStringFromFields(obj, fields) {
         const parts = [];
         for (let i = 0; i < fields.length; i++) {
@@ -14320,15 +14361,6 @@
           if (part) parts.push(part);
         }
         return normalizeSearchText(parts.join(" "));
-      }
-
-      function searchIndexMatches(entry, tokens) {
-        if (!tokens.length) return false;
-        const hay = entry.indexStr;
-        for (let i = 0; i < tokens.length; i++) {
-          if (!hay.includes(tokens[i])) return false;
-        }
-        return true;
       }
 
       function promoteExactKey(keys, exact) {
@@ -14438,9 +14470,23 @@
         for (let i = 0; i < rows.length; i++) {
           const item = rows[i];
           if (!item) continue;
+          const catHay = normalizeSearchText(
+            [
+              item.kategorie_de,
+              item.kategorie_en,
+              item.kategorie_ru,
+              auskunftCategoryKey(item),
+            ]
+              .filter(Boolean)
+              .join(" "),
+          );
+          const indexStr = indexStringFromFields(item, AUSKUNFT_INDEX_FIELDS);
           index.push({
             item,
-            indexStr: indexStringFromFields(item, AUSKUNFT_INDEX_FIELDS),
+            indexStr,
+            compactStr: indexStr.replace(/\s+/g, ""),
+            catHay,
+            catCompact: catHay.replace(/\s+/g, ""),
           });
         }
         auskunftSearchIndex = index;
@@ -15849,15 +15895,12 @@
         if (!auskunftSearchIndex.length && items.length) {
           rebuildAllSearchIndexes();
         }
-        const tokens = querySearchTokens(q);
+        const parsed = parseAuskunftQuery(find && find.value);
         const list = [];
         for (let i = 0; i < auskunftSearchIndex.length; i++) {
           const entry = auskunftSearchIndex[i];
-          const a = entry.item;
-          const katKey = auskunftCategoryKey(a);
-          if (auskunftKatKey && katKey !== auskunftKatKey) continue;
-          if (tokens.length && !searchIndexMatches(entry, tokens)) continue;
-          list.push(a);
+          if (!auskunftIndexMatches(entry, parsed)) continue;
+          list.push(entry.item);
         }
         renderAuskunftFilters(items);
         const cont = document.getElementById("auskunft-container");
