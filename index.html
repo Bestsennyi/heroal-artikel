@@ -195,18 +195,21 @@
         margin-bottom: 16px;
       }
       .login-field {
-        position: relative;
         width: 100%;
         margin-bottom: 12px;
-        --login-icon-slot: 48px;
+      }
+      .login-field-row {
+        position: relative;
+        width: 100%;
       }
       .login-input {
+        display: block;
         width: 100%;
         min-height: 48px;
         height: 48px;
-        padding: 0 var(--login-icon-slot);
+        padding: 0 48px;
         background: #1e293b;
-        border: 2px solid #475569;
+        border: 2px solid #93c5fd;
         border-radius: 10px;
         color: #ffffff;
         font-size: clamp(20px, 4.8vw, 24px);
@@ -242,42 +245,47 @@
         padding: 0;
       }
       .login-input:hover {
-        border-color: #64748b;
+        border-color: #93c5fd;
       }
       .login-input:focus,
       .login-input:active {
-        border-color: var(--heroal-accent);
-        box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+        border-color: #93c5fd;
+        box-shadow: 0 0 16px rgba(147, 197, 253, 0.4);
       }
       .numpad-toggle {
         position: absolute;
-        right: 8px;
         top: 50%;
+        right: 6px;
         transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
-        border: 1px solid #475569;
+        border: 1px solid #93c5fd;
         border-radius: 8px;
         background: #0f172a;
-        color: #e2e8f0;
+        color: #93c5fd;
         cursor: pointer;
-        transition: all 0.15s ease-in-out;
+        touch-action: manipulation;
+        transition: border-color 0.15s ease-in-out, background 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out, color 0.15s ease-in-out;
       }
       .numpad-toggle svg,
       .numpad-toggle .ico {
         display: block;
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
         pointer-events: none;
       }
       .numpad-toggle.is-on {
-        border-color: var(--heroal-accent);
-        color: #fff;
-        background: #1e3a5f;
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
       }
       input[type="number"] {
         -moz-appearance: textfield;
@@ -307,12 +315,13 @@
       }
       .numpad-toggle:hover {
         filter: none;
-        border: 1.5px solid #60a5fa;
-        background: #243248;
-        transform: translateY(calc(-50% - 1px));
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        transform: translateY(-50%);
       }
       .numpad-toggle:active {
-        transform: translateY(-50%) scale(0.97);
+        transform: translateY(-50%) scale(0.95);
       }
       .login-btn,
       button.login-btn {
@@ -552,18 +561,9 @@
           font-size: 13px;
         }
         .login-input {
-          min-height: 42px;
-          height: 42px;
           font-size: 20px;
           letter-spacing: 0.18em;
           text-indent: 0.18em;
-        }
-        .numpad-toggle {
-          width: 32px;
-          height: 32px;
-        }
-        .login-field {
-          --login-icon-slot: 40px;
         }
         .login-btn {
           min-height: 40px;
@@ -6307,34 +6307,36 @@
           PIN eingeben
         </div>
         <div class="login-field">
-          <input
-            type="text"
-            id="input-login-nr"
-            class="login-input"
-            placeholder="PIN"
-            data-i18n-placeholder="auth.login_placeholder"
-            value=""
-            inputmode="text"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-            data-lpignore="true"
-            data-1p-ignore="true"
-            data-form-type="other"
-            maxlength="4"
-            enterkeyhint="done"
-          />
-          <button
-            type="button"
-            class="numpad-toggle"
-            id="btn-numpad-toggle"
-            aria-label="Keyboard"
-            data-i18n-title="a11y.keyboard"
-            aria-pressed="false"
-          >
-            <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
-          </button>
+          <div class="login-field-row">
+            <input
+              type="text"
+              id="input-login-nr"
+              class="login-input"
+              placeholder="PIN"
+              data-i18n-placeholder="auth.login_placeholder"
+              value=""
+              inputmode="text"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-form-type="other"
+              maxlength="4"
+              enterkeyhint="done"
+            />
+            <button
+              type="button"
+              class="numpad-toggle"
+              id="btn-numpad-toggle"
+              aria-label="Keyboard"
+              data-i18n-title="a11y.keyboard"
+              aria-pressed="false"
+            >
+              <svg class="ico" aria-hidden="true"><use href="#i-keyboard"></use></svg>
+            </button>
+          </div>
         </div>
         <div class="login-msg" id="login-error-msg"></div>
         <div
