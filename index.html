@@ -1755,6 +1755,22 @@
         border: 1px solid #475569;
         background: #0f172a;
         color: #cbd5e1;
+        transition:
+          color 0.15s ease,
+          border-color 0.15s ease,
+          background-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .artikel-filter-reset.is-armed {
+        border-color: #fb7185;
+        color: #fda4af;
+        background: rgba(251, 113, 133, 0.14);
+        box-shadow: 0 0 12px rgba(251, 113, 133, 0.32);
+      }
+      .artikel-filter-reset.is-armed:hover {
+        border-color: #fda4af;
+        color: #fecdd3;
+        background: rgba(251, 113, 133, 0.22);
       }
       .artikel-filter-done {
         border: 1px solid #00a2ff;
@@ -1802,6 +1818,10 @@
         color: #93c5fd;
         box-shadow: 0 0 10px rgba(147, 197, 253, 0.28);
       }
+      #artikel-search-bar .artikel-filter-reset.is-armed:focus-visible {
+        border-color: #fb7185;
+        box-shadow: 0 0 0 2px rgba(251, 113, 133, 0.5);
+      }
       #farben-search-bar .artikel-filter-btn {
         color: #38bdf8;
         border-color: #38bdf8;
@@ -1842,6 +1862,10 @@
         background: rgba(56, 189, 248, 0.12);
         color: #38bdf8;
         box-shadow: 0 0 10px rgba(56, 189, 248, 0.28);
+      }
+      #farben-search-bar .artikel-filter-reset.is-armed:focus-visible {
+        border-color: #fb7185;
+        box-shadow: 0 0 0 2px rgba(251, 113, 133, 0.5);
       }
       #artikel-search-bar .search-field {
         border-color: #93c5fd;
@@ -13704,8 +13728,10 @@
       function syncArtikelFilterButton() {
         const btn = document.getElementById("btnFilterToggle");
         const badge = document.getElementById("artikel-filter-count");
+        const resetBtn = document.getElementById("artikel-filter-reset");
         const n = artikelFilterCount();
         if (btn) btn.classList.toggle("is-on", n > 0);
+        if (resetBtn) resetBtn.classList.toggle("is-armed", n > 0);
         if (badge) {
           badge.textContent = n ? String(n) : "";
           badge.hidden = n < 1;
@@ -14124,8 +14150,10 @@
       function syncFarbeFilterButton() {
         const btn = document.getElementById("btnFarbeFilterToggle");
         const badge = document.getElementById("farben-filter-count");
+        const resetBtn = document.getElementById("farben-filter-reset");
         const n = farbeFilterCount();
         if (btn) btn.classList.toggle("is-on", n > 0);
+        if (resetBtn) resetBtn.classList.toggle("is-armed", n > 0);
         if (badge) {
           badge.textContent = n ? String(n) : "";
           badge.hidden = n < 1;
