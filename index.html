@@ -5764,14 +5764,52 @@
       .photo-search .search-field {
         padding-right: var(--search-icon-slot);
         font-size: 18px;
-      }
-      .photo-modal[data-photo-target="artikel"] #photo-id:focus {
         border-color: #93c5fd;
-        box-shadow: 0 0 16px rgba(147, 197, 253, 0.35);
       }
-      .photo-modal[data-photo-target="farben"] #photo-id:focus {
+      .photo-search .search-field:hover {
+        border-color: #93c5fd;
+      }
+      .photo-modal[data-photo-target="artikel"] #photo-id:focus,
+      .photo-modal[data-photo-target="artikel"] #photo-id:active {
+        border-color: #93c5fd;
+        box-shadow: 0 0 16px rgba(147, 197, 253, 0.4);
+      }
+      .photo-modal[data-photo-target="farben"] .photo-search .search-field,
+      .photo-modal[data-photo-target="farben"] .photo-search .search-field:hover {
         border-color: #38bdf8;
-        box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      }
+      .photo-modal[data-photo-target="farben"] #photo-id:focus,
+      .photo-modal[data-photo-target="farben"] #photo-id:active {
+        border-color: #38bdf8;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+      }
+      .photo-modal #btn-osk-photo {
+        color: #93c5fd;
+        border-color: #93c5fd;
+      }
+      .photo-modal #btn-osk-photo:hover {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+      }
+      .photo-modal #btn-osk-photo.is-on {
+        border-color: #93c5fd;
+        color: #93c5fd;
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
+      }
+      .photo-modal[data-photo-target="farben"] #btn-osk-photo {
+        color: #38bdf8;
+        border-color: #38bdf8;
+      }
+      .photo-modal[data-photo-target="farben"] #btn-osk-photo:hover,
+      .photo-modal[data-photo-target="farben"] #btn-osk-photo.is-on {
+        border-color: #38bdf8;
+        color: #38bdf8;
+        background: rgba(56, 189, 248, 0.12);
+      }
+      .photo-modal[data-photo-target="farben"] #btn-osk-photo.is-on {
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
       }
       .photo-match {
         min-height: 20px;
@@ -5998,6 +6036,21 @@
       .photo-actions .photo-file-btn .ico {
         width: 18px;
         height: 18px;
+      }
+      .photo-actions .photo-file-btn:hover {
+        background: #93c5fd;
+        color: #0d1322;
+        border-color: #93c5fd;
+        filter: brightness(1.06);
+        box-shadow: 0 0 20px rgba(147, 197, 253, 0.45);
+      }
+      .photo-actions .photo-file-btn:active {
+        background: #93c5fd;
+        color: #0d1322;
+        border-color: #93c5fd;
+        filter: brightness(0.92);
+        transform: scale(0.97);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
       }
       #photo-save {
         width: 100%;
