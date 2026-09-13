@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v380";
+const SHELL_VERSION = "v381";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.
@@ -22,6 +22,8 @@ const SHELL_ASSETS = [
   "./index.html",
   "./manifest.json",
   "./icons/favicon.ico",
+  "./icons/favicon-16x16.png",
+  "./icons/favicon-32x32.png",
   "./icons/apple-touch-icon.png",
   "./logo/heroal-artikel-logo-hell.png",
   "./images/artikel-empty.png",
