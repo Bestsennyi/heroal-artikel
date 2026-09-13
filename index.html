@@ -2618,17 +2618,32 @@
         top: 50%;
         transform: translateY(-50%);
         z-index: 2;
-        width: 36px;
-        height: 36px;
+        width: 31px;
+        height: 31px;
+        min-width: 31px;
+        min-height: 31px;
+        padding: 0;
+        margin: 0;
         border: none;
         border-radius: 999px;
         background: rgba(0, 0, 0, 0.55);
         color: #fff;
-        font-size: 22px;
-        line-height: 1;
         cursor: pointer;
         align-items: center;
         justify-content: center;
+        line-height: 0;
+        flex-shrink: 0;
+      }
+      .drawing-nav .ico {
+        display: block;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        pointer-events: none;
+      }
+      .profile-drawing-box.has-multi,
+      .color-showcase-box.has-multi {
+        touch-action: pan-y;
       }
       .profile-drawing-box.has-multi .drawing-nav,
       .color-showcase-box.has-multi .drawing-nav {
@@ -2673,10 +2688,8 @@
         .profile-drawing-box {
         height: 100px;
       }
-      .display-card-prof:not(.is-solo) .profile-thumbs,
       .display-card-prof:not(.is-solo) .profile-note,
       .display-card-prof:not(.is-solo) .info-copy-bar,
-      .display-card-color:not(.is-solo) .profile-thumbs,
       .display-card-color:not(.is-solo) .color-hex-panel,
       .display-card-color:not(.is-solo) .info-copy-bar {
         display: none;
@@ -2777,54 +2790,7 @@
         height: 14px;
       }
       .profile-thumbs {
-        display: none;
-        gap: 6px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        flex-shrink: 0;
-        padding: 2px 0;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        touch-action: pan-x;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-      }
-      .profile-thumbs::-webkit-scrollbar {
-        height: 6px;
-      }
-      .profile-thumbs::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .profile-thumbs::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 9999px;
-      }
-      .profile-thumbs.has-thumbs {
-        display: flex;
-      }
-      .profile-thumb {
-        width: 48px;
-        height: 48px;
-        padding: 2px;
-        background: #0f172a;
-        border: 1px solid rgba(51, 65, 85, 0.5);
-        border-radius: 8px;
-        cursor: pointer;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .profile-thumb img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        padding: 4px;
-        border-radius: 8px;
-        pointer-events: none;
-      }
-      .profile-thumb.active {
-        border-color: var(--heroal-light-blue);
+        display: none !important;
       }
 
       .info-details {
@@ -6309,6 +6275,12 @@
       <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9"/>
       </symbol>
+      <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 6 9 12 15 18"/>
+      </symbol>
+      <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 6 15 12 9 18"/>
+      </symbol>
       <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
         <path d="m3.3 7 8.7 5 8.7-5"/>
@@ -6739,7 +6711,7 @@
                   id="prof-draw-prev"
                   aria-label="Previous" data-i18n-title="a11y.previous"
                 >
-                  ‹
+                  <svg class="ico" aria-hidden="true"><use href="#i-chevron-left"></use></svg>
                 </button>
                 <img
                   id="prof-img"
@@ -6753,7 +6725,7 @@
                   id="prof-draw-next"
                   aria-label="Next" data-i18n-title="a11y.next"
                 >
-                  ›
+                  <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
                 </button>
                 <span class="drawing-counter" id="prof-draw-count"></span>
                 <button
@@ -6966,7 +6938,7 @@
                   id="col-draw-prev"
                   aria-label="Previous" data-i18n-title="a11y.previous"
                 >
-                  ‹
+                  <svg class="ico" aria-hidden="true"><use href="#i-chevron-left"></use></svg>
                 </button>
                 <img
                   id="col-swatch-img"
@@ -6981,7 +6953,7 @@
                   id="col-draw-next"
                   aria-label="Next" data-i18n-title="a11y.next"
                 >
-                  ›
+                  <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
                 </button>
                 <span class="drawing-counter" id="col-draw-count"></span>
                 <span class="color-showcase-code" id="col-swatch-code"></span>
@@ -9351,6 +9323,8 @@
       let zoomBound = false;
       let zoomTapDismiss = null;
       let zoomDismissBlocked = false;
+      let zoomSwipeDx = 0;
+      let zoomSwipeDy = 0;
       let overlayGhostGuard = null;
       const imageInvertByUrl = Object.create(null);
       let artikelDetailOpen = false;
@@ -15339,7 +15313,7 @@
             !skipInvert && isMediaInverted(popImg.src),
           );
         }
-        document.querySelectorAll(".profile-thumb img, .zoom-thumb img, #prof-list .result-row-thumb img").forEach((img) => {
+        document.querySelectorAll(".zoom-thumb img, #prof-list .result-row-thumb img").forEach((img) => {
           if (img.getAttribute("data-media") === "color") {
             setMediaInvertedClass(img, false);
             return;
@@ -15364,7 +15338,6 @@
         profileGalleryIndex = ((index % total) + total) % total;
         const imgEl = document.getElementById("prof-img");
         const countEl = document.getElementById("prof-draw-count");
-        const thumbs = document.getElementById("prof-thumbs");
         const url = urls[profileGalleryIndex];
         if (imgEl) {
           imgEl.onerror = () => {
@@ -15374,11 +15347,6 @@
           imgEl.src = url;
         }
         if (countEl) countEl.textContent = profileGalleryIndex + 1 + " / " + total;
-        if (thumbs) {
-          thumbs.querySelectorAll(".profile-thumb").forEach((el, i) => {
-            el.classList.toggle("active", i === profileGalleryIndex);
-          });
-        }
         applyMediaInvertUi();
       }
 
@@ -15396,32 +15364,9 @@
         profileGalleryUrls = profileGalleryEntries.map((e) => e.url);
         profileGalleryIndex = 0;
         const box = document.getElementById("prof-drawing-box");
-        const thumbs = document.getElementById("prof-thumbs");
         const multi = entries.length > 1;
         if (box) {
           box.classList.toggle("has-multi", multi);
-          box.style.touchAction = multi ? "pan-y" : "";
-        }
-        if (thumbs) {
-          thumbs.innerHTML = "";
-          thumbs.classList.toggle("has-thumbs", multi);
-          if (multi) {
-            profileGalleryEntries.forEach((entry, i) => {
-              const btn = document.createElement("button");
-              btn.type = "button";
-              btn.className = "profile-thumb" + (i === 0 ? " active" : "");
-              const thumbImg = document.createElement("img");
-              thumbImg.src = entry.url;
-              thumbImg.alt = "";
-              setMediaInvertedClass(thumbImg, isMediaInverted(entry.url, entry.type));
-              btn.appendChild(thumbImg);
-              btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                setProfileDrawing(i);
-              });
-              thumbs.appendChild(btn);
-            });
-          }
         }
         setProfileDrawing(0);
       }
@@ -15430,7 +15375,6 @@
         const urls = colorGalleryUrls;
         const imgEl = document.getElementById("col-swatch-img");
         const countEl = document.getElementById("col-draw-count");
-        const thumbs = document.getElementById("col-thumbs");
         const box = document.getElementById("col-swatch");
         if (!urls.length) {
           if (box) {
@@ -15465,11 +15409,6 @@
           imgEl.src = url;
         }
         if (countEl) countEl.textContent = colorGalleryIndex + 1 + " / " + total;
-        if (thumbs) {
-          thumbs.querySelectorAll(".profile-thumb").forEach((el, i) => {
-            el.classList.toggle("active", i === colorGalleryIndex);
-          });
-        }
       }
 
       function stepColorGallery(delta) {
@@ -15483,32 +15422,9 @@
         colorGalleryUrls = colorGalleryEntries.map((e) => e.url);
         colorGalleryIndex = 0;
         const box = document.getElementById("col-swatch");
-        const thumbs = document.getElementById("col-thumbs");
         const multi = colorGalleryUrls.length > 1;
         if (box) {
           box.classList.toggle("has-multi", multi);
-          box.style.touchAction = multi ? "pan-y" : "";
-        }
-        if (thumbs) {
-          thumbs.innerHTML = "";
-          thumbs.classList.toggle("has-thumbs", multi);
-          if (multi) {
-            colorGalleryEntries.forEach((entry, i) => {
-              const btn = document.createElement("button");
-              btn.type = "button";
-              btn.className = "profile-thumb" + (i === 0 ? " active" : "");
-              const thumbImg = document.createElement("img");
-              thumbImg.src = entry.url;
-              thumbImg.alt = "";
-              thumbImg.setAttribute("data-media", "color");
-              btn.appendChild(thumbImg);
-              btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                setColorDrawing(i);
-              });
-              thumbs.appendChild(btn);
-            });
-          }
         }
         setColorDrawing(0);
       }
@@ -15912,6 +15828,8 @@
           zoomDismissBlocked = false;
           if (zoomPointers.size === 0) {
             zoomTapDismiss = { x: e.clientX, y: e.clientY, moved: false, pinch: false };
+            zoomSwipeDx = 0;
+            zoomSwipeDy = 0;
           } else if (zoomTapDismiss) {
             zoomTapDismiss.pinch = true;
           }
@@ -15950,6 +15868,9 @@
             zoomX += e.clientX - prev.x;
             zoomY += e.clientY - prev.y;
             applyZoomTransform();
+          } else if (zoomPointers.size === 1 && zoomScale <= 1.01) {
+            zoomSwipeDx += e.clientX - prev.x;
+            zoomSwipeDy += e.clientY - prev.y;
           }
         });
         const endPtr = (e) => {
@@ -15960,7 +15881,20 @@
             stage.classList.remove("is-panning");
             const tap = zoomTapDismiss;
             zoomTapDismiss = null;
-            if (!tap || tap.moved || tap.pinch) zoomDismissBlocked = true;
+            const swipedGallery =
+              zoomScale <= 1.01 &&
+              zoomGalleryUrls.length > 1 &&
+              !(tap && tap.pinch) &&
+              Math.abs(zoomSwipeDx) >= 40 &&
+              Math.abs(zoomSwipeDx) > Math.abs(zoomSwipeDy);
+            if (swipedGallery) {
+              stepZoomGallery(zoomSwipeDx < 0 ? 1 : -1);
+              zoomDismissBlocked = true;
+            } else if (!tap || tap.moved || tap.pinch) {
+              zoomDismissBlocked = true;
+            }
+            zoomSwipeDx = 0;
+            zoomSwipeDy = 0;
           }
         };
         stage.addEventListener("pointerup", endPtr);
@@ -15971,6 +15905,74 @@
           if (zoomPointers.size < 2) zoomPinchStart = 0;
           if (!zoomPointers.size) stage.classList.remove("is-panning");
         });
+      }
+
+      function bindTouchGallerySwipe(el, canStep, step) {
+        if (!el || el.dataset.gallerySwipeBound === "1") return;
+        el.dataset.gallerySwipeBound = "1";
+        let startX = 0;
+        let startY = 0;
+        let tracking = false;
+        let axis = "";
+        let consumed = false;
+        const chromeSel = ".drawing-nav, .media-mode-btn";
+        el.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.touches.length !== 1 || !canStep()) {
+              tracking = false;
+              return;
+            }
+            if (e.target.closest && e.target.closest(chromeSel)) {
+              tracking = false;
+              return;
+            }
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            tracking = true;
+            axis = "";
+            consumed = false;
+          },
+          { passive: true },
+        );
+        el.addEventListener(
+          "touchmove",
+          (e) => {
+            if (!tracking || e.touches.length !== 1) return;
+            const dx = e.touches[0].clientX - startX;
+            const dy = e.touches[0].clientY - startY;
+            if (!axis && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+              axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+            }
+            if (axis === "x") {
+              consumed = true;
+              e.preventDefault();
+            }
+          },
+          { passive: false },
+        );
+        el.addEventListener(
+          "touchend",
+          (e) => {
+            if (!tracking) return;
+            tracking = false;
+            const t = e.changedTouches[0];
+            if (!t || axis !== "x") return;
+            const dx = t.clientX - startX;
+            if (Math.abs(dx) >= 36) step(dx < 0 ? 1 : -1);
+          },
+          { passive: true },
+        );
+        el.addEventListener(
+          "click",
+          (e) => {
+            if (!consumed) return;
+            consumed = false;
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          true,
+        );
       }
 
       function bindProfileGalleryUi() {
@@ -15998,32 +16000,10 @@
             "";
           showZoom(url, profileGalleryUrls);
         });
-        let swipeX = 0;
-        let swipeY = 0;
-        let swiping = false;
-        box.addEventListener(
-          "touchstart",
-          (e) => {
-            if (e.touches.length !== 1 || profileGalleryUrls.length < 2) return;
-            swipeX = e.touches[0].clientX;
-            swipeY = e.touches[0].clientY;
-            swiping = true;
-          },
-          { passive: true },
-        );
-        box.addEventListener(
-          "touchend",
-          (e) => {
-            if (!swiping) return;
-            swiping = false;
-            const t = e.changedTouches[0];
-            if (!t) return;
-            const dx = t.clientX - swipeX;
-            const dy = t.clientY - swipeY;
-            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-            stepProfileGallery(dx < 0 ? 1 : -1);
-          },
-          { passive: true },
+        bindTouchGallerySwipe(
+          box,
+          () => profileGalleryUrls.length > 1,
+          (delta) => stepProfileGallery(delta),
         );
       }
 
@@ -16059,32 +16039,10 @@
           const fillUrl = getColorFillDataUrl(lastActiveColorHex);
           showZoom(fillUrl, [fillUrl], "color");
         });
-        let swipeX = 0;
-        let swipeY = 0;
-        let swiping = false;
-        box.addEventListener(
-          "touchstart",
-          (e) => {
-            if (e.touches.length !== 1 || colorGalleryUrls.length < 2) return;
-            swipeX = e.touches[0].clientX;
-            swipeY = e.touches[0].clientY;
-            swiping = true;
-          },
-          { passive: true },
-        );
-        box.addEventListener(
-          "touchend",
-          (e) => {
-            if (!swiping) return;
-            swiping = false;
-            const t = e.changedTouches[0];
-            if (!t) return;
-            const dx = t.clientX - swipeX;
-            const dy = t.clientY - swipeY;
-            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-            stepColorGallery(dx < 0 ? 1 : -1);
-          },
-          { passive: true },
+        bindTouchGallerySwipe(
+          box,
+          () => colorGalleryUrls.length > 1,
+          (delta) => stepColorGallery(delta),
         );
       }
 
