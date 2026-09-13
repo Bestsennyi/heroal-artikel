@@ -137,6 +137,7 @@
       html:not(.authed) #zoom-dialog,
       html:not(.authed) #note-dialog,
       html:not(.authed) #photo-dialog,
+      html:not(.authed) #auskunft-edit-dialog,
       html:not(.authed) #account-sheet,
       html:not(.authed) #settings-sheet,
       html:not(.authed) #drawing-hover-pop {
@@ -3336,6 +3337,86 @@
         flex-shrink: 0;
         margin-bottom: 8px;
       }
+      .auskunft-add-btn {
+        flex: 0 0 48px;
+        width: 48px;
+        min-width: 48px;
+        height: 48px;
+        min-height: 48px;
+        margin: 0;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        border: 1px solid #93c5fd;
+        background: #0f172a;
+        color: #93c5fd;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .auskunft-add-btn:not([hidden]) {
+        display: inline-flex;
+      }
+      .auskunft-add-btn:hover {
+        background: rgba(147, 197, 253, 0.12);
+        box-shadow: 0 0 12px rgba(147, 197, 253, 0.4);
+      }
+      .auskunft-add-btn .ico {
+        width: 22px;
+        height: 22px;
+      }
+      .auskunft-edit-modal .photo-card {
+        gap: 8px;
+      }
+      .auskunft-edit-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+      .auskunft-edit-label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #93c5fd;
+        margin: 0 0 4px;
+      }
+      .auskunft-edit-fields .search-field {
+        border-color: #93c5fd;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .auskunft-edit-fields .search-field:hover,
+      .auskunft-edit-fields .search-field:focus,
+      .auskunft-edit-fields .search-field:active {
+        border-color: #93c5fd;
+        box-shadow: 0 0 16px rgba(147, 197, 253, 0.4);
+      }
+      .auskunft-edit-fields textarea.search-field {
+        min-height: 96px;
+        height: auto;
+        padding: 10px 14px;
+        line-height: 1.35;
+        resize: vertical;
+        font-weight: 500;
+      }
+      #auskunft-edit-save {
+        width: 100%;
+        min-height: 48px;
+        height: auto;
+        margin: 4px 0 0;
+        padding: 10px 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      #auskunft-edit-save:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
       .auskunft-search {
         flex: 1 1 14rem;
         min-width: 0;
@@ -4688,6 +4769,7 @@
       .settings-sheet-close,
       .zoom-close,
       .note-modal-close,
+      .auskunft-edit-close,
       .drawing-hover-pop-close {
         position: absolute;
         top: 4px;
@@ -4716,6 +4798,7 @@
       .settings-sheet-close:hover,
       .zoom-close:hover,
       .note-modal-close:hover,
+      .auskunft-edit-close:hover,
       .drawing-hover-pop-close:hover {
         color: #e2e8f0;
         filter: none;
@@ -4730,6 +4813,7 @@
       .settings-sheet-close:focus-visible,
       .zoom-close:focus-visible,
       .note-modal-close:focus-visible,
+      .auskunft-edit-close:focus-visible,
       .drawing-hover-pop-close:focus-visible {
         outline: 2px solid #38bdf8;
         outline-offset: 2px;
@@ -6281,6 +6365,10 @@
       <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="9 6 15 12 9 18"/>
       </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </symbol>
       <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
         <path d="m3.3 7 8.7 5 8.7-5"/>
@@ -7114,6 +7202,17 @@
                 <div class="osk is-hidden" id="osk-guide" data-target="find-guide"></div>
               </div>
             </div>
+            <button
+              type="button"
+              class="auskunft-add-btn"
+              id="btn-auskunft-add"
+              hidden
+              data-i18n-title="catalog_ui.auskunft_add"
+              title="Eintrag hinzufügen"
+              aria-label="Eintrag hinzufügen"
+            >
+              <svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>
+            </button>
           </div>
           <div id="auskunft-container" class="acc-list auskunft-list"></div>
         </div>
@@ -7353,6 +7452,115 @@
           <div class="sync-progress-bar-fill" id="sync-progress-fill"></div>
         </div>
       </div>
+      </div>
+    </div>
+
+    <div id="auskunft-edit-dialog" class="photo-modal auskunft-edit-modal" aria-hidden="true" onclick="if(event.target===this)closeAuskunftEditor()">
+      <div class="photo-panel" onclick="event.stopPropagation()">
+        <div class="photo-card">
+        <button type="button" class="photo-close auskunft-edit-close" id="auskunft-edit-close" aria-label="Close" data-i18n-title="a11y.close">
+          <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
+        <div class="photo-head">
+          <span class="photo-head-title" data-i18n="catalog_ui.auskunft_add_title">Auskunft hinzufügen</span>
+        </div>
+        <div class="auskunft-edit-fields">
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_kat">Kategorie</span>
+            <input
+              type="text"
+              id="auskunft-edit-kat"
+              class="search-field"
+              list="auskunft-edit-kat-list"
+              autocomplete="off"
+              spellcheck="false"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_kat"
+              placeholder="z. B. Folie"
+            />
+            <datalist id="auskunft-edit-kat-list"></datalist>
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_name_de">Titel (DE)</span>
+            <input
+              type="text"
+              id="auskunft-edit-name-de"
+              class="search-field"
+              autocomplete="off"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_name"
+              placeholder="Kurzer Titel"
+            />
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_body_de">Text (DE)</span>
+            <textarea
+              id="auskunft-edit-body-de"
+              class="search-field"
+              rows="4"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_body"
+              placeholder="Eine Zeile = ein Schritt. Achtung: … für Hinweis."
+            ></textarea>
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_name_ru">Titel (RU)</span>
+            <input
+              type="text"
+              id="auskunft-edit-name-ru"
+              class="search-field"
+              autocomplete="off"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_name"
+              placeholder="Kurzer Titel"
+            />
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_body_ru">Text (RU)</span>
+            <textarea
+              id="auskunft-edit-body-ru"
+              class="search-field"
+              rows="3"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_body"
+              placeholder="Eine Zeile = ein Schritt. Achtung: … für Hinweis."
+            ></textarea>
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_name_en">Titel (EN)</span>
+            <input
+              type="text"
+              id="auskunft-edit-name-en"
+              class="search-field"
+              autocomplete="off"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_name"
+              placeholder="Kurzer Titel"
+            />
+          </label>
+          <label>
+            <span class="auskunft-edit-label" data-i18n="catalog_ui.auskunft_field_body_en">Text (EN)</span>
+            <textarea
+              id="auskunft-edit-body-en"
+              class="search-field"
+              rows="3"
+              spellcheck="true"
+              inputmode="text"
+              data-i18n-placeholder="catalog_ui.auskunft_ph_body"
+              placeholder="Eine Zeile = ein Schritt. Achtung: … für Hinweis."
+            ></textarea>
+          </label>
+        </div>
+        <button type="button" class="login-btn" id="auskunft-edit-save">
+          <svg class="ico" aria-hidden="true"><use href="#i-save"></use></svg>
+          <span data-i18n="catalog_ui.auskunft_save">Speichern</span>
+        </button>
+        </div>
       </div>
     </div>
 
@@ -9002,7 +9210,7 @@
       // store_data holds one catalog blob keyed "heroal_db" (no secondary
       // indexes). Fields such as farben.kollektion are indexed in RAM.
       const DB_NAME = "heroal_warehouse_db";
-      const DB_VERSION = 4;
+      const DB_VERSION = 5;
       let dbInstance = null;
       let dbReady = Promise.resolve();
 
@@ -9020,6 +9228,9 @@
             }
             if (!db.objectStoreNames.contains("photoQueue")) {
               db.createObjectStore("photoQueue", { keyPath: "id" });
+            }
+            if (!db.objectStoreNames.contains("writeQueue")) {
+              db.createObjectStore("writeQueue", { keyPath: "id" });
             }
           };
           req.onsuccess = (e) => {
@@ -9117,6 +9328,21 @@
           (keys) => (Array.isArray(keys) ? keys : []),
           () => [],
         );
+      }
+
+      function writeQueueAll() {
+        return idbRun("readonly", (store) => store.getAll(), "writeQueue").then(
+          (rows) => (Array.isArray(rows) ? rows : []),
+          () => [],
+        );
+      }
+
+      function writeQueuePut(item) {
+        return idbRun("readwrite", (store) => store.put(item), "writeQueue");
+      }
+
+      function writeQueueDelete(id) {
+        return idbRun("readwrite", (store) => store.delete(id), "writeQueue");
       }
 
       // Default Seed Data
@@ -9356,6 +9582,7 @@
         stream: null,
       };
       let photoSyncCtl = { running: false };
+      let writeSyncCtl = { running: false };
 
       const CONFIG = {
         DATA_SOURCE: "GOOGLE",
@@ -9722,6 +9949,7 @@
         reportOfflineReadiness();
         if (idbFooterKey !== "idb_error") setIdbFooter("idb_ready");
         triggerPhotoSync();
+        triggerWriteQueueSync();
       });
 
       /** Logs how much of the database is available without connectivity. */
@@ -9902,6 +10130,54 @@
           }
         });
         return row;
+      }
+
+      const AUSKUNFT_RECORD_FIELDS = [
+        "id",
+        "kategorie_de",
+        "name_de",
+        "beschreibung_de",
+        "kategorie_en",
+        "name_en",
+        "beschreibung_en",
+        "kategorie_ru",
+        "name_ru",
+        "beschreibung_ru",
+      ];
+
+      function normalizeAuskunftRecord(raw) {
+        const src = raw && typeof raw === "object" ? raw : {};
+        const migrated = migrateAuskunftRow(src) || {};
+        const out = {};
+        AUSKUNFT_RECORD_FIELDS.forEach((key) => {
+          out[key] = String(
+            migrated[key] != null ? migrated[key] : src[key] || "",
+          );
+        });
+        out.id = String(out.id || "").trim();
+        return out;
+      }
+
+      function nextAuskunftId(rows) {
+        let max = 0;
+        (rows || []).forEach((row) => {
+          const n = parseInt(String((row && row.id) || "").trim(), 10);
+          if (Number.isFinite(n) && n > max) max = n;
+        });
+        return String(max + 1);
+      }
+
+      function upsertLocalAuskunft(record) {
+        const rec = normalizeAuskunftRecord(record);
+        if (!rec.id) rec.id = nextAuskunftId(appDB.auskunft);
+        if (!Array.isArray(appDB.auskunft)) appDB.auskunft = [];
+        const idx = appDB.auskunft.findIndex(
+          (row) => String((row && row.id) || "") === rec.id,
+        );
+        if (idx >= 0) appDB.auskunft[idx] = rec;
+        else appDB.auskunft.push(rec);
+        rebuildAuskunftSearchIndex();
+        return rec;
       }
 
       function migrateAppDB(raw) {
@@ -10197,6 +10473,7 @@
         if (typeof closeSettingsSheet === "function" && closeSettingsSheet()) return;
         if (closeAccountSheet()) return;
         if (closeNoteModal()) return;
+        if (closeAuskunftEditor()) return;
         if (isZoomOpen()) {
           closeZoom();
           return;
@@ -10361,6 +10638,7 @@
         }
         if (typeof closeSettingsSheet === "function" && closeSettingsSheet()) return;
         if (closeAccountSheet()) return;
+        if (closeAuskunftEditor()) return;
         if (isZoomOpen()) {
           closeZoom();
           return;
@@ -11533,6 +11811,10 @@
         return !!(live && isAdministrator(live) && isUserActive(live));
       }
 
+      function canManageCatalog(user) {
+        return canCapturePhotos(user);
+      }
+
       function applyRoleBadgeClass(el, user) {
         if (!el) return;
         el.classList.remove("is-admin", "is-staff", "is-customer");
@@ -11599,7 +11881,7 @@
       function setWorkspaceLocked(locked) {
         document
           .querySelectorAll(
-            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog, #account-sheet, #settings-sheet",
+            "header, main, nav, #sync-dialog, #zoom-dialog, #note-dialog, #photo-dialog, #auskunft-edit-dialog, #account-sheet, #settings-sheet",
           )
           .forEach((el) => {
             if (locked) el.setAttribute("inert", "");
@@ -11614,6 +11896,7 @@
         const wrap = document.getElementById("hdr-user");
         const photoBtn = document.getElementById("btnPhotoCapture");
         const navPhoto = document.getElementById("nav-photo");
+        const auskunftAdd = document.getElementById("btn-auskunft-add");
         const accountName = document.getElementById("account-user-name");
         const accountRole = document.getElementById("account-user-role");
         const accountAvatar = document.getElementById("account-sheet-avatar");
@@ -11633,6 +11916,7 @@
           if (wrap) wrap.hidden = true;
           if (photoBtn) photoBtn.hidden = true;
           if (navPhoto) navPhoto.hidden = true;
+          if (auskunftAdd) auskunftAdd.hidden = true;
           if (accountName) accountName.textContent = "";
           return;
         }
@@ -11652,6 +11936,7 @@
         }
         if (photoBtn) photoBtn.hidden = false;
         if (navPhoto) navPhoto.hidden = false;
+        if (auskunftAdd) auskunftAdd.hidden = !canManageCatalog(currentUser);
       }
 
       function shakeLogin() {
@@ -12041,6 +12326,7 @@
         bindPhotoCaptureUi();
         bindSyncModalUi();
         bindAuskunftUi();
+        bindAuskunftEditorUi();
         bindSettingsUi();
         syncHdrQuickTabs();
       }
@@ -12993,6 +13279,213 @@
           await run;
         } finally {
           photoSyncCtl.running = null;
+        }
+      }
+
+      function writeQueueItemId(collection, recordId) {
+        return String(collection || "row") + ":" + String(recordId || "");
+      }
+
+      async function mergeAuskunftWithWriteQueue(incoming) {
+        const map = new Map();
+        (incoming || []).forEach((row) => {
+          const rec = normalizeAuskunftRecord(row);
+          if (rec.id) map.set(rec.id, rec);
+        });
+        const queue = await writeQueueAll();
+        for (const item of queue) {
+          if (!item || item.collection !== "auskunft" || !item.record) continue;
+          const rec = normalizeAuskunftRecord(item.record);
+          if (!rec.id) continue;
+          if (map.has(rec.id)) {
+            if (item.status === "acked") await writeQueueDelete(item.id);
+            continue;
+          }
+          map.set(rec.id, rec);
+        }
+        return Array.from(map.values());
+      }
+
+      async function triggerWriteQueueSync() {
+        if (!navigator.onLine) return;
+        if (writeSyncCtl.running) return writeSyncCtl.running;
+        const run = (async () => {
+          const items = await writeQueueAll();
+          if (!items.length) return;
+          const signal = syncCtl.abort && syncCtl.abort.signal;
+          for (const item of items) {
+            if (!item || item.status === "acked") continue;
+            if (item.collection !== "auskunft") continue;
+            try {
+              item.status = "syncing";
+              await writeQueuePut(item);
+              const result = await dataProvider.upsertRecord(
+                item.collection,
+                item.record,
+                { signal },
+              );
+              if (!result || !result.success) {
+                throw new Error((result && result.error) || "write failed");
+              }
+              const saved = normalizeAuskunftRecord(result.record || item.record);
+              upsertLocalAuskunft(saved);
+              item.record = saved;
+              item.status = "acked";
+              await writeQueuePut(item);
+              await idbSet("heroal_db", appDB);
+              if (typeof renderAuskunft === "function") renderAuskunft();
+            } catch (err) {
+              console.warn("[write queue]", err);
+              item.status = "failed";
+              await writeQueuePut(item);
+            }
+          }
+        })();
+        writeSyncCtl.running = run;
+        try {
+          await run;
+        } finally {
+          writeSyncCtl.running = null;
+        }
+      }
+
+      function isAuskunftEditorOpen() {
+        const dlg = document.getElementById("auskunft-edit-dialog");
+        return !!(dlg && dlg.classList.contains("active"));
+      }
+
+      function fillAuskunftCategoryList() {
+        const list = document.getElementById("auskunft-edit-kat-list");
+        if (!list) return;
+        const seen = new Set();
+        (appDB.auskunft || []).forEach((row) => {
+          const key = auskunftCategoryKey(row);
+          if (key) seen.add(key);
+        });
+        list.innerHTML = Array.from(seen)
+          .sort((a, b) => a.localeCompare(b, appLang || "de", { sensitivity: "base" }))
+          .map((key) => '<option value="' + escapeHtml(key) + '"></option>')
+          .join("");
+      }
+
+      function readAuskunftEditorForm() {
+        const val = (id) => {
+          const el = document.getElementById(id);
+          return el ? String(el.value || "").trim() : "";
+        };
+        const kat = val("auskunft-edit-kat");
+        return normalizeAuskunftRecord({
+          kategorie_de: kat,
+          kategorie_en: kat,
+          kategorie_ru: kat,
+          name_de: val("auskunft-edit-name-de"),
+          name_en: val("auskunft-edit-name-en"),
+          name_ru: val("auskunft-edit-name-ru"),
+          beschreibung_de: document.getElementById("auskunft-edit-body-de")
+            ? document.getElementById("auskunft-edit-body-de").value
+            : "",
+          beschreibung_en: document.getElementById("auskunft-edit-body-en")
+            ? document.getElementById("auskunft-edit-body-en").value
+            : "",
+          beschreibung_ru: document.getElementById("auskunft-edit-body-ru")
+            ? document.getElementById("auskunft-edit-body-ru").value
+            : "",
+        });
+      }
+
+      function resetAuskunftEditorForm() {
+        [
+          "auskunft-edit-kat",
+          "auskunft-edit-name-de",
+          "auskunft-edit-name-en",
+          "auskunft-edit-name-ru",
+          "auskunft-edit-body-de",
+          "auskunft-edit-body-en",
+          "auskunft-edit-body-ru",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+      }
+
+      function openAuskunftEditor() {
+        if (!canManageCatalog(currentUser)) {
+          showToast(t("photo.admin_only"), "warn");
+          return;
+        }
+        const dlg = document.getElementById("auskunft-edit-dialog");
+        if (!dlg) return;
+        fillAuskunftCategoryList();
+        resetAuskunftEditorForm();
+        dlg.classList.add("active");
+        dlg.setAttribute("aria-hidden", "false");
+        const first = document.getElementById("auskunft-edit-kat");
+        if (first) setTimeout(() => first.focus(), 0);
+      }
+
+      function closeAuskunftEditor() {
+        const dlg = document.getElementById("auskunft-edit-dialog");
+        if (!dlg || !dlg.classList.contains("active")) return false;
+        dlg.classList.remove("active");
+        dlg.setAttribute("aria-hidden", "true");
+        return true;
+      }
+
+      async function saveAuskunftEditor() {
+        if (!canManageCatalog(currentUser)) {
+          showToast(t("photo.admin_only"), "warn");
+          return;
+        }
+        const rec = readAuskunftEditorForm();
+        if (!String(rec.name_de || "").trim() || !String(rec.beschreibung_de || "").trim()) {
+          showToast(t("catalog_ui.auskunft_need_de"), "warn");
+          return;
+        }
+        rec.id = nextAuskunftId(appDB.auskunft);
+        const saved = upsertLocalAuskunft(rec);
+        const queueItem = {
+          id: writeQueueItemId("auskunft", saved.id),
+          collection: "auskunft",
+          op: "upsert",
+          record: saved,
+          status: "pending",
+          createdAt: Date.now(),
+        };
+        await writeQueuePut(queueItem);
+        await idbSet("heroal_db", appDB);
+        renderAuskunft();
+        closeAuskunftEditor();
+        if (!navigator.onLine) {
+          showToast(t("catalog_ui.auskunft_queued"), "ok");
+          return;
+        }
+        try {
+          await triggerWriteQueueSync();
+          showToast(t("catalog_ui.auskunft_saved"), "ok");
+        } catch (err) {
+          console.warn("[auskunft save]", err);
+          showToast(t("catalog_ui.auskunft_queued"), "warn");
+        }
+      }
+
+      function bindAuskunftEditorUi() {
+        const addBtn = document.getElementById("btn-auskunft-add");
+        if (addBtn && !addBtn.dataset.bound) {
+          addBtn.dataset.bound = "1";
+          addBtn.addEventListener("click", openAuskunftEditor);
+        }
+        const closeBtn = document.getElementById("auskunft-edit-close");
+        if (closeBtn && !closeBtn.dataset.bound) {
+          closeBtn.dataset.bound = "1";
+          closeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            closeAuskunftEditor();
+          });
+        }
+        const saveBtn = document.getElementById("auskunft-edit-save");
+        if (saveBtn && !saveBtn.dataset.bound) {
+          saveBtn.dataset.bound = "1";
+          saveBtn.addEventListener("click", () => saveAuskunftEditor());
         }
       }
 
@@ -16279,6 +16772,7 @@
           });
         }
         syncAuskunftDir();
+        bindAuskunftEditorUi();
       }
 
       /** Label for the drawing stage; `total` is only what still needs fetching. */
@@ -16415,10 +16909,16 @@
        *     Promise<{ artikel, farben, auskunft, benutzer }>
        *   uploadPhoto(photoRecord, { signal }) ->
        *     Promise<{ success, fileUrl?, error? }>
+       *   upsertRecord(collection, record, { signal }) ->
+       *     Promise<{ success, record?, error? }>
+       *
+       * Record shape for collection "auskunft" matches the sheet/import
+       * columns: id, kategorie_*, name_*, beschreibung_* (de/en/ru).
        *
        * GoogleSheetsDataProvider is the current adapter: published CSV exports
        * (docs.google.com/spreadsheets/.../pub?output=csv) plus Apps Script
-       * photo upload (script.google.com/.../exec).
+       * writes (script.google.com/.../exec). LocalServerDataProvider is the
+       * same contract for a later local database.
        */
       function createGoogleSheetsDataProvider(getUrls) {
         function urls() {
@@ -16840,9 +17340,61 @@
           return json;
         }
 
+        async function upsertRecord(collection, record, { signal } = {}) {
+          const name = String(collection || "").toLowerCase();
+          if (name !== "auskunft") {
+            return { success: false, error: "unsupported collection" };
+          }
+          const endpoint = String(
+            (urls().photoUpload || GAS_PHOTO_UPLOAD_URL || "").trim(),
+          );
+          if (!endpoint) {
+            return { success: false, error: "missing write url" };
+          }
+          const payload = {
+            action: "upsertAuskunft",
+            record: normalizeAuskunftRecord(record),
+          };
+          const res = await fetch(endpoint, {
+            method: "POST",
+            mode: "cors",
+            redirect: "follow",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload),
+            signal,
+          });
+          const text = await res.text();
+          let json = null;
+          try {
+            json = text ? JSON.parse(text) : null;
+          } catch (err) {
+            return {
+              success: false,
+              error: res.ok ? "invalid write response" : "HTTP " + res.status,
+            };
+          }
+          if (!res.ok && !(json && json.success)) {
+            return {
+              success: false,
+              error: (json && json.error) || "HTTP " + res.status,
+            };
+          }
+          if (!json || !json.success) {
+            return {
+              success: false,
+              error: (json && json.error) || "write failed",
+            };
+          }
+          return {
+            success: true,
+            record: normalizeAuskunftRecord(json.record || record),
+          };
+        }
+
         return {
           fetchCatalog,
           uploadPhoto,
+          upsertRecord,
         };
       }
 
@@ -17184,9 +17736,66 @@
           return { success: true, fileUrl: fileUrl };
         }
 
+        async function upsertRecord(collection, record, { signal } = {}) {
+          const name = String(collection || "").toLowerCase();
+          if (name !== "auskunft") {
+            return { success: false, error: "unsupported collection" };
+          }
+          const root = baseUrl();
+          if (!root) return { success: false, error: "missing local server url" };
+          const rec = normalizeAuskunftRecord(record);
+          const payload = { sheet_id: rec.id };
+          AUSKUNFT_RECORD_FIELDS.forEach((key) => {
+            payload[key] = rec[key] || "";
+          });
+          let existing = null;
+          if (rec.id) {
+            existing =
+              (await findRecord(
+                "auskunft",
+                'sheet_id="' + rec.id.replace(/"/g, '\\"') + '"',
+                signal,
+              )) ||
+              (await findRecord(
+                "auskunft",
+                'id="' + rec.id.replace(/"/g, '\\"') + '"',
+                signal,
+              ));
+          }
+          const path =
+            root +
+            "/api/collections/auskunft/records" +
+            (existing && existing.id ? "/" + encodeURIComponent(existing.id) : "");
+          const res = await fetch(path, {
+            method: existing && existing.id ? "PATCH" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal,
+          });
+          const text = await res.text();
+          let json = null;
+          try {
+            json = text ? JSON.parse(text) : null;
+          } catch (err) {
+            return {
+              success: false,
+              error: res.ok ? "invalid write response" : "HTTP " + res.status,
+            };
+          }
+          if (!res.ok || !json) {
+            return {
+              success: false,
+              error: (json && (json.message || json.error)) || "write failed",
+            };
+          }
+          const mapped = mapAuskunft(json) || rec;
+          return { success: true, record: normalizeAuskunftRecord(mapped) };
+        }
+
         return {
           fetchCatalog,
           uploadPhoto,
+          upsertRecord,
         };
       }
 
@@ -17274,6 +17883,7 @@
 
             try {
               await triggerPhotoSync();
+              await triggerWriteQueueSync();
               const catalog = await dataProvider.fetchCatalog({
                 signal: syncCtl.abort && syncCtl.abort.signal,
                 timeoutMs: syncCtl.silent
@@ -17323,7 +17933,9 @@
               }
 
               if (catalog.auskunft && catalog.auskunft.length > 0) {
-                staged.auskunft = catalog.auskunft;
+                staged.auskunft = await mergeAuskunftWithWriteQueue(
+                  catalog.auskunft,
+                );
               }
 
               if (catalog.benutzer && Object.keys(catalog.benutzer).length) {
@@ -17438,6 +18050,7 @@
         window.addEventListener("online", () => {
           updateOnlineStatus();
           triggerPhotoSync();
+          triggerWriteQueueSync();
           setTimeout(kickSilent, 800);
         });
         window.addEventListener("offline", () => {

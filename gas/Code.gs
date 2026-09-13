@@ -15,6 +15,21 @@ const FOLDER_FARBEN_ID = "1DU3Xp0nmgeGeVGWn5uyePhSUjvqjkh7n";
 const SHEET_ARTIKEL_NAME = "artikel";
 const SHEET_FARBEN_NAME = "farben";
 const SHEET_SUCHE_NAME = "suche";
+const SHEET_AUSKUNFT_NAME = "auskunft";
+
+// Canonical auskunft columns — same shape as IndexedDB / future local DB import.
+const AUSKUNFT_FIELDS = [
+  "id",
+  "kategorie_de",
+  "name_de",
+  "beschreibung_de",
+  "kategorie_en",
+  "name_en",
+  "beschreibung_en",
+  "kategorie_ru",
+  "name_ru",
+  "beschreibung_ru",
+];
 
 // ==========================================
 // 1. WEB APP API (doPost & doGet)
@@ -23,8 +38,14 @@ function doPost(e) {
   try {
     var raw = e && e.postData && e.postData.contents ? e.postData.contents : "";
     var body = raw ? JSON.parse(raw) : {};
+    var action = String(body.action || "").trim();
 
-    if (body.action !== "uploadPhoto") {
+    if (action === "upsertAuskunft") {
+      var saved = upsertAuskunft_(body.record || body);
+      return jsonOut_({ success: true, record: saved });
+    }
+
+    if (action !== "uploadPhoto") {
       return jsonOut_({ success: false, error: "unknown action" });
     }
 
@@ -79,7 +100,88 @@ function doPost(e) {
 }
 
 function doGet() {
-  return jsonOut_({ ok: true, service: "heroal-photo-upload" });
+  return jsonOut_({ ok: true, service: "heroal-catalog-write" });
+}
+
+function upsertAuskunft_(raw) {
+  var rec = normalizeAuskunftRecord_(raw);
+  if (!rec.name_de && !rec.name_en && !rec.name_ru) {
+    throw new Error("missing name");
+  }
+  if (!rec.beschreibung_de && !rec.beschreibung_en && !rec.beschreibung_ru) {
+    throw new Error("missing beschreibung");
+  }
+
+  var ss = openSpreadsheet_();
+  var sheet = openSheetByNames_(ss, [
+    SHEET_AUSKUNFT_NAME,
+    "Auskunft",
+    "heroal-artikel - Auskunft",
+  ]);
+  if (!sheet) throw new Error("sheet not found: auskunft");
+
+  ensureAuskunftHeaders_(sheet);
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (h) { return String(h || "").trim(); });
+  var idCol = headerIndex_(headers, "id");
+  if (idCol < 0) throw new Error("column not found: id");
+
+  if (!rec.id) rec.id = nextAuskunftId_(values, idCol);
+
+  var rowIndex = -1;
+  var needle = String(rec.id).trim().toLowerCase();
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][idCol] || "").trim().toLowerCase() === needle) {
+      rowIndex = r + 1;
+      break;
+    }
+  }
+  if (rowIndex < 0) {
+    rowIndex = sheet.getLastRow() + 1;
+    if (rowIndex < 2) rowIndex = 2;
+  }
+
+  for (var i = 0; i < AUSKUNFT_FIELDS.length; i++) {
+    var field = AUSKUNFT_FIELDS[i];
+    var col = headerIndex_(headers, field);
+    if (col < 0) continue;
+    sheet.getRange(rowIndex, col + 1).setValue(rec[field] || "");
+  }
+  return rec;
+}
+
+function normalizeAuskunftRecord_(raw) {
+  var src = raw && typeof raw === "object" ? raw : {};
+  var out = {};
+  for (var i = 0; i < AUSKUNFT_FIELDS.length; i++) {
+    var key = AUSKUNFT_FIELDS[i];
+    out[key] = src[key] == null ? "" : String(src[key]);
+  }
+  out.id = String(out.id || "").trim();
+  return out;
+}
+
+function nextAuskunftId_(values, idCol) {
+  var max = 0;
+  for (var r = 1; r < values.length; r++) {
+    var n = parseInt(String(values[r][idCol] || "").trim(), 10);
+    if (isFinite(n) && n > max) max = n;
+  }
+  return String(max + 1);
+}
+
+function ensureAuskunftHeaders_(sheet) {
+  var lastCol = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function (h) {
+    return String(h || "").trim();
+  });
+  var missing = [];
+  for (var i = 0; i < AUSKUNFT_FIELDS.length; i++) {
+    if (headerIndex_(headers, AUSKUNFT_FIELDS[i]) < 0) missing.push(AUSKUNFT_FIELDS[i]);
+  }
+  if (!missing.length) return;
+  sheet.getRange(1, lastCol + 1, 1, missing.length).setValues([missing]);
 }
 
 // ==========================================

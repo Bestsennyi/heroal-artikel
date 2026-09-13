@@ -303,6 +303,91 @@
       "en": "All categories",
       "ru": "Все категории"
     },
+    "auskunft_add": {
+      "de": "Eintrag hinzufügen",
+      "en": "Add entry",
+      "ru": "Добавить запись"
+    },
+    "auskunft_add_title": {
+      "de": "Auskunft hinzufügen",
+      "en": "Add handbook entry",
+      "ru": "Добавить в справку"
+    },
+    "auskunft_field_kat": {
+      "de": "Kategorie",
+      "en": "Category",
+      "ru": "Категория"
+    },
+    "auskunft_field_name_de": {
+      "de": "Titel (DE)",
+      "en": "Title (DE)",
+      "ru": "Заголовок (DE)"
+    },
+    "auskunft_field_body_de": {
+      "de": "Text (DE)",
+      "en": "Text (DE)",
+      "ru": "Текст (DE)"
+    },
+    "auskunft_field_name_ru": {
+      "de": "Titel (RU)",
+      "en": "Title (RU)",
+      "ru": "Заголовок (RU)"
+    },
+    "auskunft_field_body_ru": {
+      "de": "Text (RU)",
+      "en": "Text (RU)",
+      "ru": "Текст (RU)"
+    },
+    "auskunft_field_name_en": {
+      "de": "Titel (EN)",
+      "en": "Title (EN)",
+      "ru": "Заголовок (EN)"
+    },
+    "auskunft_field_body_en": {
+      "de": "Text (EN)",
+      "en": "Text (EN)",
+      "ru": "Текст (EN)"
+    },
+    "auskunft_ph_kat": {
+      "de": "z. B. Folie",
+      "en": "e.g. Foil",
+      "ru": "напр. Folie"
+    },
+    "auskunft_ph_name": {
+      "de": "Kurzer Titel",
+      "en": "Short title",
+      "ru": "Короткий заголовок"
+    },
+    "auskunft_ph_body": {
+      "de": "Eine Zeile = ein Schritt. Achtung: … für Hinweis.",
+      "en": "One line = one step. Warning: … for a callout.",
+      "ru": "Одна строка = один шаг. Внимание: … для предупреждения."
+    },
+    "auskunft_save": {
+      "de": "Speichern",
+      "en": "Save",
+      "ru": "Сохранить"
+    },
+    "auskunft_need_de": {
+      "de": "Titel und Text auf Deutsch sind Pflicht.",
+      "en": "German title and text are required.",
+      "ru": "Нужны заголовок и текст на немецком."
+    },
+    "auskunft_saved": {
+      "de": "Eintrag gespeichert.",
+      "en": "Entry saved.",
+      "ru": "Запись сохранена."
+    },
+    "auskunft_queued": {
+      "de": "Eintrag lokal gespeichert. Wird online in die Tabelle geschrieben.",
+      "en": "Saved locally. It will be written to the sheet when online.",
+      "ru": "Сохранено локально. В таблицу уйдёт при сети."
+    },
+    "auskunft_save_fail": {
+      "de": "Speichern fehlgeschlagen.",
+      "en": "Save failed.",
+      "ru": "Не удалось сохранить."
+    },
     "zoom_btn": {
       "de": "Zoom",
       "en": "Zoom",
