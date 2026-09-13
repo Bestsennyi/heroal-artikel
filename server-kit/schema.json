@@ -44,6 +44,10 @@
         { "name": "drive_folder_id", "type": "text" },
         { "name": "img_url", "type": "url" },
         { "name": "image_url", "type": "url" },
+        { "name": "img_1", "type": "url" },
+        { "name": "img_2", "type": "url" },
+        { "name": "img_3", "type": "url" },
+        { "name": "img_4", "type": "url" },
         {
           "name": "bild_haupt",
           "type": "file",
@@ -113,6 +117,9 @@
         { "name": "name_de", "type": "text" },
         { "name": "name_en", "type": "text" },
         { "name": "name_ru", "type": "text" },
+        { "name": "kategorie_de", "type": "text" },
+        { "name": "kategorie_en", "type": "text" },
+        { "name": "kategorie_ru", "type": "text" },
         { "name": "oberflaeche_de", "type": "text" },
         { "name": "kollektion", "type": "text" },
         { "name": "oberflaeche_en", "type": "text" },
@@ -122,6 +129,7 @@
         { "name": "hinweis_ru", "type": "text" },
         { "name": "image_type", "type": "text" },
         { "name": "image_url", "type": "url" },
+        { "name": "echtes_foto_url", "type": "url" },
         {
           "name": "bild_dummyimage",
           "type": "file",

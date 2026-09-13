@@ -3,3 +3,7 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+server-kit/pocketbase
+server-kit/pocketbase.exe
+server-kit/pb_data/
+server-kit/data/*.csv

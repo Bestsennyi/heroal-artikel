@@ -9,7 +9,7 @@
  *    re-downloading ~200 drawings after every deploy would leave terminals
  *    without drawings until they are online again.
  */
-const SHELL_VERSION = "v375";
+const SHELL_VERSION = "v378";
 const SHELL_CACHE = `heroal-shell-${SHELL_VERSION}`;
 // v2: v1 could contain unverified opaque responses, including cached error
 // pages that render as permanently broken drawings. Renaming discards them once.
@@ -89,6 +89,7 @@ function isImageRequest(request) {
     return (
       request.destination === "image" ||
       /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(url.pathname) ||
+      /\/api\/files\//i.test(url.pathname) ||
       /(googleusercontent\.com|drive\.google\.com)/.test(request.url)
     );
   } catch (err) {
@@ -257,6 +258,11 @@ self.addEventListener("fetch", (event) => {
 
     // Spreadsheet exports must always be fresh; they are the sync source.
     if (url.hostname === "docs.google.com") return;
+
+    // PocketBase catalogue JSON must always be fresh. Same-origin reverse
+    // proxies would otherwise land /api/collections in the shell cache.
+    // File tokens stay on the image path below (/api/files/...).
+    if (/\/api\/collections\//i.test(url.pathname)) return;
 
     event.respondWith(
       (async () => {

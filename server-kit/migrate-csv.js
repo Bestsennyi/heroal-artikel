@@ -230,6 +230,9 @@ function parseArtikelCsv(table) {
       rec["hinweis_" + code] = text;
     });
     if (!rec.kategorie_de) rec.kategorie_de = rec.category;
+    for (let n = 1; n <= 4; n++) {
+      rec["img_" + n] = cell(row, table.map, ["bild_" + n, "img_" + n]);
+    }
     out[artNr] = rec;
   });
   return out;
@@ -247,11 +250,19 @@ function parseFarbenCsv(table) {
       sheet_id: cell(row, table.map, "id"),
       code,
       hex: hex || "#ffffff",
-      image_url: cell(row, table.map, ["image_url", "img_url"]),
+      image_url: cell(row, table.map, [
+        "bild_dummyimage",
+        "image_url",
+        "img_url",
+      ]),
+      echtes_foto_url: cell(row, table.map, ["echtes_foto", "echtes_foto_url"]),
       image_type: cell(row, table.map, ["image_type", "type"]),
       name_de: cell(row, table.map, "name_de"),
       name_en: cell(row, table.map, "name_en"),
       name_ru: cell(row, table.map, "name_ru"),
+      kategorie_de: cell(row, table.map, "kategorie_de"),
+      kategorie_en: cell(row, table.map, "kategorie_en"),
+      kategorie_ru: cell(row, table.map, "kategorie_ru"),
       oberflaeche_de: cell(row, table.map, "oberflaeche_de"),
       oberflaeche_en: cell(row, table.map, "oberflaeche_en"),
       oberflaeche_ru: cell(row, table.map, "oberflaeche_ru"),
@@ -521,11 +532,176 @@ async function seed(token, catalog) {
   }
 }
 
+function corsDrawingUrl(raw) {
+  const url = String(raw || "").trim();
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    if (/googleusercontent\.com$/i.test(u.hostname)) return u.href;
+    if (u.hostname === "drive.google.com") {
+      let id = u.searchParams.get("id");
+      if (!id) {
+        const match = u.pathname.match(/\/(?:file|folders)\/d\/([^/]+)/i);
+        if (match) id = match[1];
+      }
+      if (!id) return "";
+      const size = u.searchParams.get("sz") || "w1600";
+      return "https://lh3.googleusercontent.com/d/" + id + "=" + size;
+    }
+    if (u.protocol === "http:" || u.protocol === "https:") return u.href;
+  } catch (err) {}
+  return "";
+}
+
+function fileExt(type, url) {
+  const t = String(type || "").toLowerCase();
+  if (t.indexOf("png") !== -1) return ".png";
+  if (t.indexOf("webp") !== -1) return ".webp";
+  if (t.indexOf("gif") !== -1) return ".gif";
+  const pathName = String(url || "").split("?")[0];
+  const m = pathName.match(/\.(png|jpe?g|webp|gif)$/i);
+  if (m) return m[0].toLowerCase() === ".jpeg" ? ".jpg" : m[0].toLowerCase();
+  return ".jpg";
+}
+
+async function downloadImage(url) {
+  const target = corsDrawingUrl(url);
+  if (!target) return null;
+  const res = await fetch(target, { redirect: "follow" });
+  const type = String(res.headers.get("content-type") || "").toLowerCase();
+  if (!res.ok || type.indexOf("image/") !== 0) return null;
+  const buf = Buffer.from(await res.arrayBuffer());
+  if (!buf.length) return null;
+  return { buf, type: type.split(";")[0] || "image/jpeg", url: target };
+}
+
+async function patchFile(token, collection, id, field, file, name) {
+  const form = new FormData();
+  form.append(field, new Blob([file.buf], { type: file.type }), name);
+  const res = await fetch(
+    BASE + "/api/collections/" + collection + "/records/" + id,
+    {
+      method: "PATCH",
+      headers: { Authorization: token },
+      body: form,
+    },
+  );
+  if (!res.ok) {
+    throw new Error(
+      "file " + collection + "/" + id + " " + field + " failed: " +
+        JSON.stringify(await readJson(res)),
+    );
+  }
+}
+
+async function mapPool(items, limit, fn) {
+  let i = 0;
+  const n = Math.min(Math.max(1, limit), Math.max(1, items.length));
+  await Promise.all(
+    Array.from({ length: n }, async () => {
+      while (i < items.length) {
+        const idx = i++;
+        await fn(items[idx]);
+      }
+    }),
+  );
+}
+
+async function importRecordFiles(token, collection, record, jobs) {
+  let ok = 0;
+  let fail = 0;
+  for (const job of jobs) {
+    if (!job.url || !job.field) continue;
+    try {
+      const file = await downloadImage(job.url);
+      if (!file) {
+        fail++;
+        continue;
+      }
+      const name = (job.name || "photo") + fileExt(file.type, file.url);
+      await patchFile(token, collection, record.id, job.field, file, name);
+      ok++;
+      await new Promise((r) => setTimeout(r, 120));
+    } catch (err) {
+      fail++;
+      console.warn("[media]", collection, record.id, job.field, err.message || err);
+    }
+  }
+  return { ok, fail };
+}
+
+async function importMedia(token, catalog) {
+  if (String(process.env.PB_IMPORT_MEDIA || "1") === "0") {
+    console.log("skip media import (PB_IMPORT_MEDIA=0)");
+    return;
+  }
+  const artikelRows = await listAll(token, "artikel");
+  const farbenRows = await listAll(token, "farben");
+  const jobs = [];
+
+  artikelRows.forEach((row) => {
+    const src =
+      catalog.artikel[row.artikel_nr] ||
+      catalog.artikel[row.art_nr] ||
+      null;
+    if (!src) return;
+    const nr = String(row.artikel_nr || src.artikel_nr || "art");
+    jobs.push({
+      collection: "artikel",
+      record: row,
+      files: [
+        { field: "bild_haupt", url: src.img_url || src.image_url, name: nr },
+        { field: "bild_1", url: src.img_1, name: nr + "_1" },
+        { field: "bild_2", url: src.img_2, name: nr + "_2" },
+        { field: "bild_3", url: src.img_3, name: nr + "_3" },
+        { field: "bild_4", url: src.img_4, name: nr + "_4" },
+      ],
+    });
+  });
+
+  farbenRows.forEach((row) => {
+    const src = catalog.farben[row.code];
+    if (!src) return;
+    const code = String(row.code || "color");
+    jobs.push({
+      collection: "farben",
+      record: row,
+      files: [
+        {
+          field: "bild_dummyimage",
+          url: src.image_url,
+          name: code + "_dummy",
+        },
+        {
+          field: "echtes_foto",
+          url: src.echtes_foto_url,
+          name: code,
+        },
+      ],
+    });
+  });
+
+  let ok = 0;
+  let fail = 0;
+  await mapPool(jobs, 2, async (job) => {
+    const result = await importRecordFiles(
+      token,
+      job.collection,
+      job.record,
+      job.files,
+    );
+    ok += result.ok;
+    fail += result.fail;
+  });
+  console.log("media imported  ok=%s fail=%s", ok, fail);
+}
+
 async function main() {
   const token = await auth();
   await importSchema(token);
   const catalog = loadCatalog();
   await seed(token, catalog);
+  await importMedia(token, catalog);
   console.log(
     "OK  artikel=%s farben=%s auskunft=%s benutzer=%s",
     Object.keys(catalog.artikel).length,
